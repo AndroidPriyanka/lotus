@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+ 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+	android:background="#1C9B9D" >
+
+   
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       android:layout_margin="2dp"
+        >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" 
+            android:weightSum="100">
+
+            <TextView
+                android:id="@+id/tvdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="100"
+                android:layout_marginTop="8dp"
+                android:text="date"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:maxLines="50"
+                 android:gravity="top"
+                 android:singleLine="false"
+                android:textStyle="italic" />
+        </TableRow>
+</TableLayout>
+        <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+   
+        >
+        
+        <TableRow
+            android:id="@+id/tr_Skin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" 
+            android:layout_marginTop="10dp"
+           
+            >
+
+            <TextView
+                android:id="@+id/tv_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               
+                android:gravity="left"
+                android:text="SKIN = "
+                        android:textStyle="italic"
+                 android:typeface="serif"
+                android:textColor="#F7DCB4" />
+
+            <TextView
+                android:id="@+id/tv_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               	android:gravity="center"
+                android:textStyle="italic"
+                 android:typeface="serif"
+                android:layout_marginLeft="5dp"
+                android:textColor="#F7DCB4" />
+        </TableRow>
+        
+        <TableRow
+            android:id="@+id/tr_Color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" 
+            android:layout_marginTop="10dp"
+           
+            >
+
+            <TextView
+                android:id="@+id/tv_type1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               
+                android:gravity="left"
+                android:text="COLOR = "
+                        android:textStyle="italic"
+                 android:typeface="serif"
+                android:textColor="#F7DCB4" />
+
+            <TextView
+                android:id="@+id/tv_total1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               	android:gravity="center"
+                android:textStyle="italic"
+                 android:typeface="serif"
+                android:layout_marginLeft="5dp"
+                android:textColor="#F7DCB4" />
+        </TableRow>
+        
+    </TableLayout>
+
+</LinearLayout>

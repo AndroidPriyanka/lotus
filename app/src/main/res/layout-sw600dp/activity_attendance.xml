@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical" >
+    
+    
+   <!--  <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fa97cd"
+        android:gravity="center" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/logo" />
+    </LinearLayout> -->
+     <include layout="@layout/headernew"/>
+    <LinearLayout
+        android:id="@+id/buttonlayout"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/topbar"
+        android:gravity="left|top"
+        android:height="60sp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/settings"
+            android:layout_width="54sp"
+            android:layout_height="60sp"
+            android:background="@drawable/meenu" 
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/prevMonth"
+            android:layout_width="20sp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10sp"
+            android:src="@drawable/calendar_left_arrow_selector" >
+        </ImageView>
+
+        <TextView
+            android:id="@+id/currentMonth"
+            android:layout_width="fill_parent"
+            android:layout_height="25sp"
+            android:layout_weight="0.6"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#FFFFFF" >
+        </TextView>
+
+        <ImageView
+            android:id="@+id/nextMonth"
+            android:layout_width="20sp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:layout_marginRight="10sp"
+            android:src="@drawable/calendar_right_arrow_selector" >
+        </ImageView>
+
+        <Button
+            android:id="@+id/addEvent"
+            android:layout_width="54sp"
+            android:layout_height="60sp"
+            android:background="@drawable/plus" 
+            android:visibility="gone"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/selectedDayMonthYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/calendar_top_header"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF" 
+        android:visibility="gone">
+    </Button>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" >
+
+        <ImageView
+            android:id="@+id/calendarheader"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/calendar_days" >
+        </ImageView>
+    </LinearLayout>
+
+    <GridView
+        android:id="@+id/calendar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="7" >
+    </GridView>
+
+   
+
+</LinearLayout>

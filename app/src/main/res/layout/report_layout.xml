@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="1670dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TableLayout
+        android:id="@+id/tr_stock_report"
+        android:layout_width="1760dp"
+        android:layout_height="wrap_content">
+
+        <TableRow
+            android:layout_width="1760dp"
+            android:layout_height="wrap_content"
+            android:weightSum="100">
+
+            <TextView
+                android:id="@+id/tv_productid"
+                style="@style/report_textview"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tv_category"
+                style="@style/report_textview"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:maxLength="5"
+                android:paddingLeft="5dp"
+                android:singleLine="true"
+                android:text="Category" />
+
+
+            <TextView
+                android:id="@+id/tv_type"
+                style="@style/report_textview"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:singleLine="true"
+                android:text="Type" />
+
+            <TextView
+                android:id="@+id/tv_product"
+                style="@style/report_textview"
+                android:layout_width="525dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+
+                android:background="@layout/tableborder_for_fields"
+
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:singleLine="true"
+                android:text="Product" />
+
+
+            <TextView
+                android:id="@+id/tv_report_size"
+                style="@style/report_textview"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:maxLength="12"
+                android:paddingLeft="5dp"
+                android:singleLine="true"
+                android:text="Size" />
+
+            <TextView
+                android:id="@+id/tv_report_price"
+                style="@style/report_textview"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:text="Price" />
+
+            <TextView
+                android:id="@+id/tv_r_open_stock"
+                style="@style/report_textview"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:text="Opening-Bal" />
+
+            <TextView
+                android:id="@+id/tv_r_stock_received"
+                style="@style/report_textview"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:text="Stock received" />
+
+            <TextView
+                android:id="@+id/tv_return_saleable"
+                style="@style/report_textview"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:text="Return-saleable" />
+
+            <TextView
+                android:id="@+id/tv_return_non_saleable"
+                style="@style/report_textview"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:text="Return non saleable" />
+
+            <TextView
+                android:id="@+id/tv_open"
+                style="@style/report_textview"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:text="Stock in hand" />
+
+            <TextView
+                android:id="@+id/tv_sold"
+                style="@style/report_textview"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:text="Sold" />
+
+
+            <TextView
+                android:id="@+id/tv_close"
+                style="@style/report_textview"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:text="Close" />
+
+
+            <TextView
+                android:id="@+id/tv_report_total_amount"
+                style="@style/report_textview"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:text="Total Amount" />
+
+            <TextView
+                android:id="@+id/tv_report_discount"
+                style="@style/report_textview"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:text="discount" />
+
+            <TextView
+                android:id="@+id/tv_report_total_net_amount"
+                style="@style/report_textview"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:text="Total net Amount" />
+
+            <TextView
+                android:id="@+id/tv_status"
+                style="@style/report_textview"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:text="Status" />
+
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>

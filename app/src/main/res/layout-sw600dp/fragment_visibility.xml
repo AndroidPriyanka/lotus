@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#9b68aa"
+    android:orientation="vertical" >
+
+  <include layout="@layout/headernew"
+       
+       />
+  
+   <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="VISIBILITY"
+                    android:textColor="#FFFFFF"
+                    android:textSize="25sp"
+                     android:typeface="serif"
+                    android:textStyle="italic"
+                    android:layout_marginTop="15dp"
+                    android:layout_gravity="center"
+                     />
+  
+    <!-- <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#9b68aa"
+        android:orientation="vertical"
+        android:layout_gravity="center" > -->
+
+       <!--  <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:weightSum="100" >
+
+                <EditText
+                    android:id="@+id/et_other_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_weight="80"
+                    android:hint="Other"
+                    android:textSize="25dp" />
+
+                <Button
+                    android:id="@+id/btn_other_category"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="3dp"
+                    android:layout_weight="20"
+                    android:background="@drawable/other"
+                    android:padding="13dp"
+                    android:textSize="25dp" />
+            </TableRow>
+        </TableLayout> -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="23dp"
+            android:layout_marginLeft="23dp"
+            android:layout_marginRight="23dp"
+            android:gravity="center"
+            android:orientation="vertical" >
+<!-- 
+            <Button
+                android:id="@+id/btn_skincare"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/skincare" />
+
+            <Button
+                android:id="@+id/btn_bodycare"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bodycare" />
+
+            <Button
+                android:id="@+id/btn_haircare"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/haircare" />
+
+            <Button
+                android:id="@+id/btn_suncare"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/suncare" />
+
+            <Button
+                android:id="@+id/btn_makeup"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/makeup" />
+             -->
+       
+            <Button
+                android:id="@+id/btn_lh"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+               android:background="@drawable/lh_v" />
+
+            <Button
+                android:id="@+id/btn_lhm"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="20dp"
+               android:background="@drawable/lhm_v" />
+        
+   
+     
+        </LinearLayout>
+  <!--   </LinearLayout> -->
+
+</LinearLayout>

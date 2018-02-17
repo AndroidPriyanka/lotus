@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android1="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="65dp"
+    android:background="@drawable/header"
+    android:orientation="horizontal" >
+
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/logout" />
+
+    <Button
+        android:id="@+id/btn_home"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/home" />
+
+    <RadioButton
+        android:id="@+id/rb_tester"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="71dp"
+        android:layout_toRightOf="@+id/imageView1"
+        android:text="Tester"
+        android:textStyle="italic"
+        android:typeface="serif" />
+
+    <!--
+          <RadioButton
+        android:id="@+id/rb_sale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btn_home"
+        android:layout_marginLeft="90dp"
+        android:layout_toRightOf="@+id/btn_home"
+        android:text="Sale" 
+        android:typeface="serif"
+        android:textStyle="italic"/>
+
+    -->
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/logonew" />
+
+    <RadioGroup
+        android:id="@+id/rg_lhm_choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/rb_stock"
+        android:layout_marginLeft="5dp" android:visibility="gone">
+
+        <RadioButton
+            android:id="@+id/radio0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LH"
+            android:textSize="12sp" />
+
+        <RadioButton
+            android:id="@+id/radio1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LHM"
+            android1:textSize="12sp" />
+    </RadioGroup>
+
+    <RadioButton
+        android1:id="@+id/rb_attendance"
+        android1:layout_width="wrap_content"
+        android1:layout_height="wrap_content"
+        android1:layout_alignLeft="@+id/rb_tester"
+        android1:layout_below="@+id/rb_tester"
+        android1:text="Attendance"
+        android1:textStyle="italic"
+        android1:typeface="serif" />
+
+    <RadioButton
+        android1:id="@+id/rb_stock"
+        android1:layout_width="wrap_content"
+        android1:layout_height="wrap_content"
+        android1:layout_alignBaseline="@+id/btn_home"
+        android1:layout_alignBottom="@+id/btn_home"
+        android1:layout_toRightOf="@+id/btn_home"
+        android1:text="Stock"
+        android1:textStyle="italic"
+        android1:typeface="serif" />
+
+</RelativeLayout>

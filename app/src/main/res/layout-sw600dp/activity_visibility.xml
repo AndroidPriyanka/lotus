@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="#9b68aa">
+    
+     <include layout="@layout/headernew"/>
+    
+    <!-- <RadioGroup 
+         android:id="@+id/rg_image_category"
+         android:layout_width="match_parent"
+         android:orientation="horizontal"
+         android:layout_marginTop="10dp"
+         android:gravity="center_horizontal"
+         android:layout_height="wrap_content">
+        
+        <RadioButton 
+             android:id="@+id/rb_lh"
+         android:layout_width="wrap_content"
+         android:text="LH"
+         
+         android:layout_height="wrap_content"/>
+        
+        <RadioButton 
+             android:id="@+id/rb_lhm"
+         android:layout_width="wrap_content"
+         android:layout_marginLeft="10dp"
+         android:text="LHM"
+         android:layout_height="wrap_content"/>
+        
+    </RadioGroup>
+     -->
+    
+    <EditText 
+        android:id="@+id/et_image_description"
+         android:layout_width="match_parent"
+         android:hint="Enter Description"
+         android:layout_marginTop="10dp"
+         android:textColor="#FFFFFF"
+         android:singleLine="true"
+         android:layout_height="wrap_content"/>
+    
+    <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" 
+                android:layout_marginTop="5dp">
+
+                <!--
+                     <Button
+                    android:id="@+id/button_next"
+                   
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/buttonNext"
+                    android:layout_alignBottom="@+id/buttonNext"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="15dp"
+                    android:visibility="invisible"
+                   android:background="@drawable/minus"/>
+
+
+                -->
+
+                <Button
+                    android:id="@+id/preview_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+               
+                    android:background="@drawable/plus_v" />
+
+                <Button
+                    android:id="@+id/button_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="20dp"
+            
+                    android:background="@drawable/left_v" />
+
+                <Button
+                    android:id="@+id/buttonNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="20dp"
+             
+                    android:background="@drawable/right_v" />
+            </RelativeLayout>
+            
+    
+         <ListView
+                android:id="@android:id/list"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp" >
+            </ListView>
+
+           <!--  <TextView
+                android:id="@+id/empty"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="No Images" /> -->
+
+</LinearLayout>

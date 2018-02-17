@@ -1,0 +1,117 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+     >
+      <include
+        android:id="@+id/include_header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/headernew" />
+    
+     <HorizontalScrollView 
+         android:id="@+id/horizantalview_for_bamonth_report"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+        android:scrollbars="none"
+         >
+     
+    <LinearLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    
+        <TableRow
+        android:layout_width="705dp"
+        android:layout_height="wrap_content"
+        android:weightSum="10"
+        android:gravity="center"
+        android:background="@layout/tableborder_stock" >
+
+        <TextView
+            style="@style/report_textview_heading"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Code NO." />
+        
+        <TextView
+            style="@style/report_textview_heading"
+            android:layout_width="158dp"
+            android:layout_height="wrap_content"
+            android:background="#841F55"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text="Products" />
+        <TextView
+            style="@style/report_textview_heading"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Size" />
+        <TextView
+            style="@style/report_textview_heading"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="MRP" />
+        <TextView
+            style="@style/report_textview_heading"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Op-Bal" />
+        <TextView
+            style="@style/report_textview_heading"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Rcpt" />
+        <TextView
+            style="@style/report_textview_heading"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Rtn-Sale" />
+        <TextView
+            style="@style/report_textview_heading"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Total Stock" />
+        <TextView
+            style="@style/report_textview_heading"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Sold" />
+        <TextView
+            style="@style/report_textview_heading"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Cl-Bal" />
+       
+      
+    </TableRow> 
+    
+         <ListView
+                android:id="@+id/listView_ba_month_report"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+            </ListView>
+         
+         </LinearLayout>
+         </HorizontalScrollView>
+
+</LinearLayout>

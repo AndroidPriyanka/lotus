@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="menu_items">
+        <item >Home</item>
+        <item >Attendance</item>
+        <item >Visibility</item>
+        <item >Stock </item>
+        <item>Tester</item>
+        <item>Notification</item>
+        <!-- <item>Promotion</item> -->
+        <item>Reports</item>
+        <item>Data-Sync</item>
+        <item>Logout</item>
+    </string-array>
+</resources>

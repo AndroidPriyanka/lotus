@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Lotus_PRO_v2.7</string>
+    <string name="app_name1">Lotus_UAT_v2.8</string>
+    <string name="app_name2">Lotus_UAT_v2.7</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="lightning">Natural Lightning</string>
+    <string name="color_baloons">Color Baloons</string>
+    <string name="natural_wall">Natural Wall</string>
+    <string name="select_category">Select Category</string>
+    <string name="select_type">Select type</string>
+    <string name="select_mode">Select Mode</string>
+    <string name="select_product">Select Product</string>
+    <string name="title_activity_v">VActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="titile_activity_visibility">VActivity</string>
+    <string name="title_activity_bayear_wise_report">BAYearWiseReport</string>
+    <string name="title_activity_bamonth_wise_report">BAMonthWiseReport</string>
+    <string name="title_activity_bamonth_report_page">BAMonthReportPage</string>
+    <string name="title_activity_new_dashboard">NewDashboardActivity</string>
+    <string name="title_activity_new_dashboard_activity2">NewDashboardActivity2</string>
+    <string name="sickleave">Seek Leave</string>
+    <string name="casualleave">Casual Leave</string>
+    <string name="weeklyoff">Weekly off</string>
+    <string name="title_activity_change_password">ChangePassword</string>
+    <string name="title_activity_user_manual">UserManualActivity</string>
+    <string name="title_activity_stock">StockActivity</string>
+    <string name="title_activity_sale">SaleActivity</string>
+    <string name="title_activity_boc_dash_board">BocDashBoardActivity</string>
+    <string name="title_activity_boc_grid_view">BocGridViewActivity</string>
+    <string name="title_activity_tester_submit">TesterSubmitActivity</string>
+    <string name="title_activity_report_new">ReportNewActivity</string>
+    <string name="title_activity_stock_activity_new">StockActivityNew</string>
+
+    <string name = "attendance">Attendance</string>
+    <string name = "visibility">Visibility</string>
+    <string name = "supattendance">Supervisors Attendance</string>
+    <string name = "stock">Stock</string>
+    <string name = "sale">Sale</string>
+    <string name = "ba_report_month_wise">BA Report Month wise</string>
+    <string name = "notification">Notification</string>
+    <string name = "tester">Tester</string>
+    <string name = "report">Report</string>
+    <string name = "ba_out_sales">BA Out Sales</string>
+    <string name = "master_sync">Master-Sync</string>
+    <string name = "dashboard">Dashboard</string>
+
+    <string-array name="arr">
+        <item>Stock recived</item>
+        <item>Return From Customer</item>
+        <item>Return to Compony</item>
+    </string-array>
+    
+    
+    <string-array name="choices">
+        <item>125</item>
+        <item>145</item>
+        <item>160</item>
+    </string-array>
+
+    <string name="title_activity_stock_entry">StockEntry</string>
+    <string name="title_activity_stock_all">StockAll</string>
+
+</resources>

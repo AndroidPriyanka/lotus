@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.prod.sudesi.lotusherbalsnew">
+
+    <supports-screens android:xlargeScreens="true" />
+    <supports-screens android:resizeable="true" />
+    <supports-screens android:largeScreens="true" />
+    <supports-screens android:anyDensity="true" />
+    <supports-screens
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <application
+        android:name=".TestApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name2"
+        android:largeHeap="true"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".LotusMainActivity"
+            android:label="@string/app_name2" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+       <!-- <service android:name="com.littlefluffytoys.littlefluffylocationlibrary.LocationBroadcastService" />
+
+        <receiver
+            android:name="com.littlefluffytoys.littlefluffylocationlibrary.StartupBroadcastReceiver"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.littlefluffytoys.littlefluffylocationlibrary.PassiveLocationChangedReceiver"
+            android:exported="true" />
+        <receiver android:name=".TestBroadcastReceiver" >
+            <intent-filter>
+                <action
+                    android:name="com.android.lotusherbal.littlefluffylocationlibrary.LOCATION_CHANGED"
+                    android:exported="false" />
+            </intent-filter>
+        </receiver>-->
+
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".DashboardNewActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ReportsForUser"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name=".TesterFragment"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".VisibilityFragment"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".VisibilityImageFragment"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".AttendanceFragment"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SyncMaster"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".NotificationFragment"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".BAYearWiseReport"
+            android:label="@string/title_activity_bayear_wise_report"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name=".BAMonthWiseReport"
+            android:label="@string/title_activity_bamonth_wise_report"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".BAMonthReportPage"
+            android:label="@string/title_activity_bamonth_report_page"
+            android:screenOrientation="landscape" >
+        </activity>
+
+       <!-- <receiver android:name="libs.AlarmManagerBroadcastReceiver" >
+        </receiver>-->
+
+        <activity
+            android:name=".ChangePassword"
+            android:label="@string/title_activity_change_password"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <activity
+            android:name=".SaleCalculation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".StockAllActivity"
+            android:label="@string/title_activity_stock_all"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".BocDashBoardActivity"
+            android:label="@string/title_activity_boc_dash_board"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <activity
+            android:name=".tester.TesterSubmitActivity"
+            android:label="@string/title_activity_tester_submit"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <activity android:name=".SupervisorAttendance" >
+        </activity>
+
+        <activity
+            android:name="BocCumulativeDashboardActivity"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity android:name="StockNewActivity"/>
+        <activity android:name="SaleNewActivity"/>
+
+
+
+        <receiver android:name=".UploadDataBrodcastReceiver"/>
+        <receiver android:name=".MyScheduledReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".BocBroadcastReceiver"/>
+        <service android:name=".BackgroundService"></service>
+        <service android:name=".BackgroundServiceBOC"></service>
+
+
+    </application>
+
+</manifest>

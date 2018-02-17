@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:padding="3dp"
+    android:weightSum="3" android:paddingBottom="30dp">
+
+    <CheckBox
+        android:id="@+id/chck_product"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:button="@drawable/checkbox_selection"
+        android:ems="7"
+        android:text="CheckBox"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp" android:paddingBottom="10dp"/>
+    
+
+    <Spinner
+        android:id="@+id/spin_mrp"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/dropdown1" />
+
+</TableRow>

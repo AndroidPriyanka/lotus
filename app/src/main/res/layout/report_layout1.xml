@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+     android:weightSum="100" >
+
+    
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:weightSum="100" >
+
+            <TextView
+                android:id="@+id/tv_category"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Category"
+                android:paddingLeft="5dp"
+                style="@style/report_textview"
+                
+               android:background="@layout/tableborder_for_fields"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/tv_type"
+                 style="@style/report_textview"
+                 android:layout_width="200dp"
+                android:layout_height="wrap_content"
+               android:paddingLeft="5dp"
+               
+                  android:singleLine="true"
+               android:maxLength="20"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:text="type"/>
+
+            <TextView
+                android:id="@+id/tv_product"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="@style/report_textview"
+                android:paddingLeft="5dp"
+                 android:singleLine="true"
+               android:maxLength="20"
+                android:text="Product"
+               android:background="@layout/tableborder_for_fields"
+                android:textStyle="italic" />
+            
+            <TextView
+                android:id="@+id/tv_product_size_tester"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="5dp"
+                style="@style/report_textview"
+                android:text="size"
+               android:background="@layout/tableborder_for_fields"
+                android:textStyle="italic" />
+            
+            <TextView
+                android:id="@+id/tv_product_status"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="5dp"
+                style="@style/report_textview"
+                android:text="Status"
+               android:background="@layout/tableborder_for_fields"
+                android:textStyle="italic" />
+        </TableRow>
+        
+         <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+           >
+
+            <TextView
+                android:id="@+id/tv_r_catid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="cat id"
+               android:background="@layout/tableborder_for_fields"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/tv_r_eanid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ean"
+               android:background="@layout/tableborder_for_fields"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/tv_r_db_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="dbid"
+               android:background="@layout/tableborder_for_fields"
+                android:textStyle="italic" />
+            
+            
+        </TableRow>
+        
+  
+
+     
+
+</LinearLayout>

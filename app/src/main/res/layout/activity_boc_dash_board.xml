@@ -1,0 +1,111 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+   android:background="#1C9B9D"
+    android:orientation="vertical" >
+
+    <include layout="@layout/headernew" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" 
+        android:layout_margin="7dp">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" >
+
+            <TextView
+                style="@style/report_textview_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="BA Report Daily Sale"
+                 android:textStyle="italic"
+                         android:textColor="#FFFFFF"
+                        android:typeface="serif"
+                android:textSize="25dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            >
+
+            <TextView
+                style="@style/report_textview_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="BOC:"
+                 android:textStyle="italic"
+                         android:textColor="#FFFFFF"
+                        android:typeface="serif"
+                android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Spinner
+                android:id="@+id/sp_bamr_month"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                
+                android:background="@drawable/dropdown" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+             >
+
+            <TextView
+                style="@style/report_textview_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Year:"
+                android:textStyle="italic"
+                         android:textColor="#FFFFFF"
+                        android:typeface="serif"
+                android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Spinner
+                android:id="@+id/sp_bamr_year"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+         
+                android:background="@drawable/dropdown" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_weight="100"
+            android:gravity="center" >
+
+            <Button
+                android:id="@+id/btn_barm_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/search_new" />
+        </TableRow>
+
+
+    </LinearLayout>
+
+</LinearLayout>

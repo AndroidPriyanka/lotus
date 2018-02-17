@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinnerItems">
+        <item>asdfg</item>
+        <item>dfdf</item>
+        <item>rf</item>
+        <item>item4</item>
+    </string-array>
+</resources>

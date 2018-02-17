@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <!--
+android:background="@layout/tableborder_for_fields"
+android:layout_weight="1"
+        -->
+
+        <TableRow
+            android:id="@+id/tr_stock_report"
+            android:layout_width="800dp"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/tv_barm_code_no"
+                style="@style/report_textview"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:layout_weight="1"
+                android:paddingLeft="7dp"
+                android:text="code no" />
+
+            <TextView
+                android:id="@+id/tv_barm_product"
+                style="@style/report_textview"
+                android:layout_width="158dp"
+                android:layout_height="wrap_content"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:layout_weight="1"
+                       android:singleLine="true"
+                android:maxLength="16"
+                android:paddingLeft="7dp"
+                android:text="product" />
+
+            <TextView
+                android:id="@+id/tv_barm_size"
+                style="@style/report_textview"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:layout_weight="1"
+                android:paddingLeft="7dp"
+                android:text="size" />
+
+            <TextView
+                android:id="@+id/tv_barm_mrp"
+                style="@style/report_textview"
+                android:layout_width="55dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="7dp"
+                android:text="mrp" />
+
+            <TextView
+                android:id="@+id/tv_barm_opening_stck"
+                style="@style/report_textview"
+                android:layout_weight="1"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="7dp"
+                android:text="opening stock" />
+
+            <TextView
+                android:id="@+id/tv_barm_receipt"
+                style="@style/report_textview"
+                android:layout_width="55dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="7dp"
+                android:text="receipt" />
+            
+             <TextView
+                android:id="@+id/tv_barm_rtn_stock"
+                style="@style/report_textview"
+                android:layout_width="55dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="7dp"
+                android:text="retn stock" />
+              <TextView
+                android:id="@+id/tv_barm_total_stock"
+                style="@style/report_textview"
+                android:layout_width="55dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="7dp"
+                android:text="total stock" />
+               <TextView
+                android:id="@+id/tv_barm_sales"
+                style="@style/report_textview"
+                android:layout_weight="1"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="7dp"
+                android:text="sales" />
+                <TextView
+                android:id="@+id/tv_barm_closing_stock"
+                style="@style/report_textview"
+                android:layout_width="55dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="7dp"
+                android:text="closing" />
+                
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>

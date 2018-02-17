@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="1450dp"
+    android:layout_height="wrap_content"
+
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:weightSum="100">
+
+
+    <TableRow
+        android:id="@+id/tableRow2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:weightSum="100">
+
+        <TextView
+            android:id="@+id/tv_category"
+            style="@style/report_textview"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@layout/tableborder_for_fields"
+            android:paddingLeft="5dp"
+            android:text="Category"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/tv_type"
+            style="@style/report_textview"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@layout/tableborder_for_fields"
+            android:paddingLeft="5dp"
+            android:singleLine="true"
+            android:text="Type"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/tv_product"
+            style="@style/report_textview"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@layout/tableborder_for_fields"
+            android:paddingLeft="5dp"
+            android:singleLine="true"
+            android:text="Product"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/tv_product_size_tester"
+            style="@style/report_textview"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@layout/tableborder_for_fields"
+            android:paddingLeft="5dp"
+            android:text="Size"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/tv_product_status"
+            style="@style/report_textview"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@layout/tableborder_for_fields"
+            android:paddingLeft="5dp"
+            android:text="Status"
+            android:textStyle="italic" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_r_catid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@layout/tableborder_for_fields"
+            android:text="Category"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/tv_r_eanid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@layout/tableborder_for_fields"
+            android:text="Type"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/tv_r_db_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@layout/tableborder_for_fields"
+            android:text="Product"
+            android:textStyle="italic" />
+
+
+    </TableRow>
+
+
+</LinearLayout>

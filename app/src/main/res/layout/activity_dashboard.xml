@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/headernew" />
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:weightSum="4">
+
+        <ImageSwitcher
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#C72C2C" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/btn_atten"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/attendance"
+                    android:padding="5dp" />
+
+
+            </LinearLayout>
+
+            <ImageSwitcher
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btn_notifi"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/noti"
+                    android:padding="5dp"
+                    />
+
+            </LinearLayout>
+
+            <ImageSwitcher
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btn_master_sync"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/master"
+                    android:padding="5dp"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageSwitcher
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#C72C2C" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btn_stock"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/stock"
+                    android:padding="5dp"
+                    />
+
+            </LinearLayout>
+
+            <ImageSwitcher
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btn_sale"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/sale"
+                    android:padding="5dp"
+                    />
+
+            </LinearLayout>
+
+            <ImageSwitcher
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btn_report"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/reports"
+                    android:padding="5dp"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageSwitcher
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#C72C2C" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btn_ba_sale_month_wise"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/ba_report"
+                    android:padding="5dp"
+                    />
+
+            </LinearLayout>
+
+            <ImageSwitcher
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btn_dashboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/dashboard"
+                    android:padding="5dp"
+                    />
+
+            </LinearLayout>
+
+            <ImageSwitcher
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btn_ba_sale_yr"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/ba_out_sale"
+                    android:padding="5dp"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageSwitcher
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#C72C2C" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btn_super_atten"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/supervisor"
+                    android:padding="5dp"
+                    />
+
+            </LinearLayout>
+
+            <ImageSwitcher
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btn_tester"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/test"
+                    android:padding="5dp"
+                    />
+
+            </LinearLayout>
+
+            <ImageSwitcher
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btn_visibility"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/visibility"
+                    android:padding="5dp"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageSwitcher
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#C72C2C" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

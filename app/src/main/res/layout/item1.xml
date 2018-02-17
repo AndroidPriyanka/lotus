@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp" >
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:scaleType="centerCrop"
+        android:src="@drawable/stub"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Small Text"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="text"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:visibility="visible" />
+
+    <CheckBox
+        android:id="@+id/checkBox2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.38"
+        android:button="@drawable/checkbox_selection"
+        android:text="CheckBox"
+        android:textColor="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/tv_sp_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Small Text"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_m_gr_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_shadeno_tester"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.25"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#FFFFFF"
+        android:visibility="visible" />
+
+  
+
+</LinearLayout>

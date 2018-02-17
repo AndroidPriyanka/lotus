@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <TableRow
+        android:id="@+id/tr_label_attend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:weightSum="100">
+
+        <TextView
+            android:id="@+id/txt_adate"
+
+            style="@style/report_textview"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@layout/tableborder_for_fields"
+
+            android:gravity="center"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/txt_attendance"
+
+            style="@style/report_textview"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+
+            android:background="@layout/tableborder_for_fields"
+
+            android:gravity="center"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/txt_atype"
+
+            style="@style/report_textview"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+
+            android:background="@layout/tableborder_for_fields"
+
+            android:gravity="center"
+            android:text="" />
+
+    </TableRow>
+
+</LinearLayout>

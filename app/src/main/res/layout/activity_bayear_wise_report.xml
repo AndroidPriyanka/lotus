@@ -1,0 +1,220 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <include layout="@layout/headernew" />
+
+    <HorizontalScrollView
+        android:id="@+id/horizantal_scrollview_ba_report"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        
+        
+        
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+            
+             <LinearLayout 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                
+                
+               
+               <View  
+                   android:layout_width="10dp" 
+                android:layout_height="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center"
+                android:background="#ebb0d0"/>
+                
+               <TextView  
+                   android:layout_width="wrap_content" 
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="COLOR"/>
+               
+               <View 
+                     android:layout_width="10dp" 
+                android:layout_height="10dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:background="#FFE4E1"/>
+                
+               <TextView  
+                   android:layout_width="wrap_content" 
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="SKIN"/>
+                 
+            </LinearLayout>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@layout/tableborder_stock"
+                    android:gravity="center"
+                    android:text="BA OutLet Sale" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" 
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/tv_bar_Previous_year_p1"
+                    style="@style/report_textview_heading"
+                    android:layout_width="185dp"
+                    android:layout_height="wrap_content"
+           
+                    android:background="#841F55"
+                    android:gravity="right"
+                    android:text="2012" />
+                
+                <TextView
+                    
+                    style="@style/report_textview_heading"
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content"
+                  
+                    android:background="#841F55"
+                    android:gravity="center"
+                    android:text="-" />
+                
+                 <TextView
+                    android:id="@+id/tv_bar_Previous_year_p2"
+                    style="@style/report_textview_heading"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                   
+                    android:background="#841F55"
+                    android:gravity="left"
+                    android:text="2013" />
+
+                <TextView
+                    android:id="@+id/tv_bar_Current_year_n1"
+                    style="@style/report_textview_heading"
+                    android:layout_width="185dp"
+                    android:layout_height="wrap_content"
+                 
+                   android:background="#841F55"
+                    android:gravity="right"
+                    android:text="2013" />
+                
+                <TextView
+                   
+                    style="@style/report_textview_heading"
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content"
+                    
+                   android:background="#841F55"
+                    android:gravity="center"
+                    android:text="-" />
+                
+                 <TextView
+                    android:id="@+id/tv_bar_Current_year_n2"
+                    style="@style/report_textview_heading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+              
+                   android:background="#841F55"
+                    android:gravity="left"
+                    android:text="2014" />
+            </TableRow>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TableRow
+                    android:id="@+id/tr_stock_report"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="100" >
+
+                    <TextView
+                        style="@style/report_textview_heading"
+                        android:layout_width="65dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                     
+                        android:background="@layout/tableborder_stock"
+                        android:gravity="center"
+                        android:text="Month" />
+
+                   
+
+                    <TextView
+                        style="@style/report_textview_heading"
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                        
+                        android:background="@layout/tableborder_stock"
+                        android:gravity="center"
+                        android:text="NetBalance" />
+
+                    <TextView
+                        style="@style/report_textview_heading"
+                        android:layout_width="65dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                       
+                        android:background="@layout/tableborder_stock"
+                        android:gravity="center"
+                        android:text="Growth" />
+                    
+                     <TextView
+                        style="@style/report_textview_heading"
+                        android:layout_width="65dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                       
+                        android:background="@layout/tableborder_stock"
+                        android:gravity="center"
+                        android:text="Month" />
+
+                    <TextView
+                        style="@style/report_textview_heading"
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                     
+                        android:background="@layout/tableborder_stock"
+                        android:gravity="center"
+                        android:text="NetBalance" />
+
+                    <TextView
+                        style="@style/report_textview_heading"
+                        android:layout_width="95dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                        
+                        android:background="@layout/tableborder_stock"
+                        android:gravity="center"
+                        android:text="Growth" />
+                </TableRow>
+            </TableLayout>
+
+            <ListView
+                android:id="@+id/listView_ba_year_report"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="20dp"
+                android:layout_height="wrap_content" >
+            </ListView>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</LinearLayout>

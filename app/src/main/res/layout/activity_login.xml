@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="80dp"
+            android:src="@drawable/logonew" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="30dp"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/edt_username"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:gravity="center"
+               	android:inputType="textCapCharacters"
+                android:background="@drawable/us"  
+                android:ems="10"
+                android:text="lhr-9999"
+                android:maxLength="12"
+                android:singleLine="true"                
+                android:paddingLeft="10dp" >
+            </EditText>
+
+            <EditText
+                android:id="@+id/edt_password"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/pass" 
+                android:ems="10"
+                 android:maxLength="12"
+                android:singleLine="true"
+                android:gravity="center"
+                android:text="password"
+                android:inputType="textPassword"
+                android:paddingLeft="10dp" />
+            <!-- android:background="@drawable/border_login_editext" -->
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="100dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="25dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/login2" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"
+            android:text="Copyright © Sudesi Infotech Pvt. Ltd,2015."
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#B6B6B4"
+            android:textStyle="italic" />
+         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            
+            android:text="(UAT_v2.7)"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#B6B6B4"
+            android:textStyle="italic" />
+    </LinearLayout>
+
+</ScrollView>
