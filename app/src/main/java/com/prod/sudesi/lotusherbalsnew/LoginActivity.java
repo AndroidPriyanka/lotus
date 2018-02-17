@@ -23,6 +23,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
@@ -159,6 +160,11 @@ public class LoginActivity extends Activity {
 
         //////////Crash Report
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
 
         requestStoragePermission();
 
@@ -300,10 +306,10 @@ public class LoginActivity extends Activity {
             Calendar calendar = Calendar.getInstance();
             Calendar setcalendar = Calendar.getInstance();
             setcalendar.setTimeInMillis(System.currentTimeMillis());
-            setcalendar.set(Calendar.HOUR_OF_DAY, 7);
-            setcalendar.set(Calendar.MINUTE, 0);
+            setcalendar.set(Calendar.HOUR_OF_DAY, 16);
+            setcalendar.set(Calendar.MINUTE, 30);
             setcalendar.set(Calendar.SECOND, 0);
-            setcalendar.set(Calendar.DAY_OF_MONTH, 26);
+            setcalendar.set(Calendar.DAY_OF_MONTH, 17);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(
                     "MM/dd/yyyy HH:mm:ss");
@@ -325,7 +331,7 @@ public class LoginActivity extends Activity {
             Date bocdate = format.parse(boc26date);
             Date current = format.parse(currentDate);*/
 
-            if (calendar.get(Calendar.DAY_OF_MONTH) == 26 && (sp.getBoolean("BOC26", false) || !currentDate.equals(syncDate))) {
+            if (calendar.get(Calendar.DAY_OF_MONTH) == 17 && (sp.getBoolean("BOC26", false) || !currentDate.equals(syncDate))) {
                 boolean boc26 = true;
 
                 spe.putBoolean("BOC26", boc26);
@@ -2149,7 +2155,7 @@ public class LoginActivity extends Activity {
 
             File file = new File(PATH);
             file.mkdirs();
-            File outputFile = new File(file, "Lotus_Pro.apk");
+            File outputFile = new File(file, "app1.apk");
             FileOutputStream fos = new FileOutputStream(outputFile);
 
             InputStream is = c.getInputStream();
@@ -2167,7 +2173,7 @@ public class LoginActivity extends Activity {
             intent.setDataAndType(Uri.fromFile(new File(Environment
                             .getExternalStorageDirectory()
                             + "/download/"
-                            + "Lotus_Pro.apk")),
+                            + "app1.apk")),
                     "application/vnd.android.package-archive");
             startActivity(intent);
 
@@ -2397,7 +2403,6 @@ public class LoginActivity extends Activity {
         } else {
 
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_PHONE_STATE},PERMISSION_REQUEST_CODE);
-            //requestPermission();
         }
     }
     @Override
@@ -2411,9 +2416,18 @@ public class LoginActivity extends Activity {
 
                 } else {
 
-                    //requestPermission();
                     Toast.makeText(this,"Permission Denied, You cannot check networkstatus.",Toast.LENGTH_LONG).show();
-
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("Permission is required, please Allow All Permission!")
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //do things
+                                    requestStoragePermission();
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
 
                 }
                 break;

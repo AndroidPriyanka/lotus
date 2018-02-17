@@ -119,8 +119,6 @@ public class DashboardNewActivity extends Activity {
 
         mContext = getApplicationContext();
         db = new Dbcon(mContext);
-        db.open();
-
 
         cd = new ConnectionDetector(mContext);
         mProgress = new ProgressDialog(DashboardNewActivity.this);
@@ -130,11 +128,6 @@ public class DashboardNewActivity extends Activity {
         spe = sp.edit();
 
         //enableBroadcastReceiver();
-
-
-       /* db.open();
-        String a = db.getdatepresentorabsent(sp.getString("todaydate", ""), username = sp.getString("username", ""));
-        db.close();*/
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -152,7 +145,7 @@ public class DashboardNewActivity extends Activity {
                             // set dialog message
                             alertDialogBuilder
                                     .setMessage(
-                                            "Welcome to New Boc Kindly do a Data Download!!")
+                                            "Welcome to New Boc!!")
                                     .setCancelable(false)
                                     .setPositiveButton("OK",
                                             new DialogInterface.OnClickListener() {
@@ -166,14 +159,12 @@ public class DashboardNewActivity extends Activity {
                                                     // ClearLocalAppData();
                                                     db.open();
                                                     Cursor c = db.fetchallOrder("product_master", null, null);
-
-
                                                     if (c.getCount() > 0) {
                                                         new InsertFirstTimeMaster().execute();
                                                     } else {
                                                         new InsertProductMaster().execute();
                                                     }
-                                                    db.close();
+                                                    //db.close();
 
                                                 }
                                             });
@@ -3844,29 +3835,100 @@ public class DashboardNewActivity extends Activity {
 
             } else if (Flag.equalsIgnoreCase("2")) {
 
-                DisplayDialogMessage("Data Download Incomplete!!");
+               // DisplayDialogMessage("Data Download Incomplete!!");
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setMessage("Data Download Incomplete!!")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                                dialog.dismiss();
+
+                                db.open();
+                                String a = db.getdatepresentorabsent(sp.getString("todaydate", ""), username = sp.getString("username", ""));
+                                db.close();
+
+                                if(!a.equalsIgnoreCase("")){
+                                    Intent i = new Intent(DashboardNewActivity.this, DashboardNewActivity.class);
+                                    //i.putExtra("Boc26",boolRecd);
+                                    startActivity(i);
+                                }else{
+                                    Intent i = new Intent(DashboardNewActivity.this, AttendanceFragment.class);
+                                    i.putExtra("FromLoginpage", "L");
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(i);
+                                }
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.getWindow().setType(WindowManager.LayoutParams.
+                        TYPE_SYSTEM_ALERT);
+                alert.show();
 
             } else if (Flag.equalsIgnoreCase("4")) {
 
-                DisplayDialogMessage("Data Download Incomplete!!,Please try again after some time");
+               // DisplayDialogMessage("Data Download Incomplete!!Please try again");
 
-                db.open();
-                String a = db.getdatepresentorabsent(sp.getString("todaydate", ""), username = sp.getString("username", ""));
-                db.close();
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setMessage("Data Download Incomplete!!Please try again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                                dialog.dismiss();
 
-                if(!a.equalsIgnoreCase("")){
-                    Intent i = new Intent(DashboardNewActivity.this, DashboardNewActivity.class);
-                    startActivity(i);
-                }else{
-                    Intent i = new Intent(DashboardNewActivity.this, AttendanceFragment.class);
-                    i.putExtra("FromLoginpage", "L");
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);
-                }
+                                db.open();
+                                String a = db.getdatepresentorabsent(sp.getString("todaydate", ""), username = sp.getString("username", ""));
+                                db.close();
+
+                                if(!a.equalsIgnoreCase("")){
+                                    Intent i = new Intent(DashboardNewActivity.this, DashboardNewActivity.class);
+                                    //i.putExtra("Boc26",boolRecd);
+                                    startActivity(i);
+                                }else{
+                                    Intent i = new Intent(DashboardNewActivity.this, AttendanceFragment.class);
+                                    i.putExtra("FromLoginpage", "L");
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(i);
+                                }
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.getWindow().setType(WindowManager.LayoutParams.
+                        TYPE_SYSTEM_ALERT);
+                alert.show();
+
 
             } else {
 
-                DisplayDialogMessage("Data Download Incomplete!!");
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setMessage("Data Download Incomplete!!")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                                dialog.dismiss();
+
+                                db.open();
+                                String a = db.getdatepresentorabsent(sp.getString("todaydate", ""), username = sp.getString("username", ""));
+                                db.close();
+
+                                if(!a.equalsIgnoreCase("")){
+                                    Intent i = new Intent(DashboardNewActivity.this, DashboardNewActivity.class);
+                                    //i.putExtra("Boc26",boolRecd);
+                                    startActivity(i);
+                                }else{
+                                    Intent i = new Intent(DashboardNewActivity.this, AttendanceFragment.class);
+                                    i.putExtra("FromLoginpage", "L");
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(i);
+                                }
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.getWindow().setType(WindowManager.LayoutParams.
+                        TYPE_SYSTEM_ALERT);
+                alert.show();
 
             }
 

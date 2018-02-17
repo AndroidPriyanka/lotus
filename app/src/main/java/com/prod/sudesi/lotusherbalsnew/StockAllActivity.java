@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
+import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
 
 import java.text.ParseException;
@@ -78,6 +79,7 @@ public class StockAllActivity extends Activity {
     String old_return_non_salable = "", old_return_salable = "";
     ScrollView scrv_sale;
     String rt_n_s_stk, rt_s_stk;
+    ConnectionDetector cd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +97,7 @@ public class StockAllActivity extends Activity {
         // scrv_sale = (ScrollView)findViewById(R.id.scrv_sale);
 
         context = getApplicationContext();
+        cd = new ConnectionDetector(context);
         titel = (TextView) findViewById(R.id.textView1);
         titel.setText("" + StockNewActivity.PMODE);
         edt_gross = (EditText) findViewById(R.id.edt_gross);
@@ -342,174 +345,179 @@ public class StockAllActivity extends Activity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                try {
+                if (cd.isCurrentDateMatchDeviceDate()) {
+                    try {
 
-                    int etcount = 0;
-                    int count = 0;
-                    boolean negative = false;
-                    if (tl_sale_calculation.getChildCount() != 1) {
-                        for (int i = 0; i < tl_sale_calculation.getChildCount() - 1; i++) {
+                        int etcount = 0;
+                        int count = 0;
+                        boolean negative = false;
+                        if (tl_sale_calculation.getChildCount() != 1) {
+                            for (int i = 0; i < tl_sale_calculation.getChildCount() - 1; i++) {
 
-                            TableRow t = (TableRow) tl_sale_calculation
-                                    .getChildAt(i + 1);
-                            EditText edt_qty = (EditText) t.getChildAt(1);
-                            TextView tv_dbID = (TextView) t.getChildAt(3);
+                                TableRow t = (TableRow) tl_sale_calculation
+                                        .getChildAt(i + 1);
+                                EditText edt_qty = (EditText) t.getChildAt(1);
+                                TextView tv_dbID = (TextView) t.getChildAt(3);
 
-                            if (edt_qty.getText().toString().trim()
-                                    .equalsIgnoreCase("0")
-                                    || edt_qty.getText().toString().trim()
-                                    .equalsIgnoreCase("")
-                                    || edt_qty.getText().toString().trim()
-                                    .equalsIgnoreCase(" ")) {
-                                Toast.makeText(getApplicationContext(),
-                                        "Please Enter in All Fields",
-                                        Toast.LENGTH_SHORT);
-                            } else {
+                                if (edt_qty.getText().toString().trim()
+                                        .equalsIgnoreCase("0")
+                                        || edt_qty.getText().toString().trim()
+                                        .equalsIgnoreCase("")
+                                        || edt_qty.getText().toString().trim()
+                                        .equalsIgnoreCase(" ")) {
+                                    Toast.makeText(getApplicationContext(),
+                                            "Please Enter in All Fields",
+                                            Toast.LENGTH_SHORT);
+                                } else {
 
-                                if (titel.getText().toString().equalsIgnoreCase("Return to Company")) {
-                                    int closBal, enteredQty, difference = 0;
+                                    if (titel.getText().toString().equalsIgnoreCase("Return to Company")) {
+                                        int closBal, enteredQty, difference = 0;
 //									int difference = 
-                                    db.open();
-                                    Cursor cur = db.getuniquedata1("", "", tv_dbID.getText().toString().trim(), "");
-                                    if (cur != null && cur.getCount() > 0) {
-                                        cur.moveToFirst();
-                                        if (isInteger(cur.getString(cur.getColumnIndex("close_bal"))))
-                                            closBal = Integer.parseInt(cur.getString(cur.getColumnIndex("close_bal")));
-                                        else
-                                            closBal = 0;
-                                        if (isInteger(edt_qty.getText().toString().trim())) {
-                                            enteredQty = Integer.parseInt(edt_qty.getText().toString().trim());
-                                        } else {
-                                            enteredQty = 0;
+                                        db.open();
+                                        Cursor cur = db.getuniquedata1("", "", tv_dbID.getText().toString().trim(), "");
+                                        if (cur != null && cur.getCount() > 0) {
+                                            cur.moveToFirst();
+                                            if (isInteger(cur.getString(cur.getColumnIndex("close_bal"))))
+                                                closBal = Integer.parseInt(cur.getString(cur.getColumnIndex("close_bal")));
+                                            else
+                                                closBal = 0;
+                                            if (isInteger(edt_qty.getText().toString().trim())) {
+                                                enteredQty = Integer.parseInt(edt_qty.getText().toString().trim());
+                                            } else {
+                                                enteredQty = 0;
+                                            }
+
+                                            difference = closBal - enteredQty;
+                                        }
+                                        if (edt_qty.getText().toString()
+                                                .matches("[a-zA-Z ]+")) {
+                                            Toast.makeText(getApplicationContext(),
+                                                    "Please Enter Only Numbers",
+                                                    Toast.LENGTH_SHORT);
                                         }
 
-                                        difference = closBal - enteredQty;
-                                    }
-                                    if (edt_qty.getText().toString()
-                                            .matches("[a-zA-Z ]+")) {
-                                        Toast.makeText(getApplicationContext(),
-                                                "Please Enter Only Numbers",
-                                                Toast.LENGTH_SHORT);
-                                    }
-
-                                    if (Integer.parseInt(edt_qty.getText()
-                                            .toString().trim()) <= 0) {
-                                        Toast.makeText(getApplicationContext(),
-                                                "Please Enter in All Fields",
-                                                Toast.LENGTH_SHORT);
-                                    } else if (difference <= 0) {
-                                        negative = true;
+                                        if (Integer.parseInt(edt_qty.getText()
+                                                .toString().trim()) <= 0) {
+                                            Toast.makeText(getApplicationContext(),
+                                                    "Please Enter in All Fields",
+                                                    Toast.LENGTH_SHORT);
+                                        } else if (difference <= 0) {
+                                            negative = true;
+                                        } else {
+                                            etcount++;
+                                        }
                                     } else {
-                                        etcount++;
-                                    }
-                                } else {
-                                    if (edt_qty.getText().toString()
-                                            .matches("[a-zA-Z ]+")) {
-                                        Toast.makeText(getApplicationContext(),
-                                                "Please Enter Only Numbers",
-                                                Toast.LENGTH_SHORT);
+                                        if (edt_qty.getText().toString()
+                                                .matches("[a-zA-Z ]+")) {
+                                            Toast.makeText(getApplicationContext(),
+                                                    "Please Enter Only Numbers",
+                                                    Toast.LENGTH_SHORT);
+                                        }
+
+                                        if (Integer.parseInt(edt_qty.getText()
+                                                .toString().trim()) <= 0) {
+                                            Toast.makeText(getApplicationContext(),
+                                                    "Please Enter in All Fields",
+                                                    Toast.LENGTH_SHORT);
+                                        } else
+
+                                            etcount++;
                                     }
 
-                                    if (Integer.parseInt(edt_qty.getText()
-                                            .toString().trim()) <= 0) {
-                                        Toast.makeText(getApplicationContext(),
-                                                "Please Enter in All Fields",
-                                                Toast.LENGTH_SHORT);
-                                    } else
 
-                                        etcount++;
+                                    Log.e("etcount", String.valueOf(etcount));
                                 }
 
-
-                                Log.e("etcount", String.valueOf(etcount));
                             }
-
                         }
-                    }
 
-                    int numberofproduct = (tl_sale_calculation.getChildCount() - 1);
+                        int numberofproduct = (tl_sale_calculation.getChildCount() - 1);
 
-                    if (numberofproduct == etcount) {
-                        if (tl_sale_calculation.getChildCount() != 1) {
+                        if (numberofproduct == etcount) {
+                            if (tl_sale_calculation.getChildCount() != 1) {
 
-                            count = saveData();
+                                count = saveData();
 
-                        }
-                        showAlertDialog(count);
+                            }
+                            showAlertDialog(count);
 
-                    } else {
-                        // mProgress.dismiss();
+                        } else {
+                            // mProgress.dismiss();
 
-                        if (titel.getText().toString().equalsIgnoreCase("Return to Company")) {
-                            if (negative == true) {
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                                        StockAllActivity.this);
+                            if (titel.getText().toString().equalsIgnoreCase("Return to Company")) {
+                                if (negative == true) {
+                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                            StockAllActivity.this);
 
-                                // set title
-                                alertDialogBuilder.setTitle("ERROR !!");
+                                    // set title
+                                    alertDialogBuilder.setTitle("ERROR !!");
 
-                                // set dialog message
-                                alertDialogBuilder
-                                        .setMessage("Closing Balance is going in negative. Do you want to continue ?")
-                                        .setCancelable(false)
+                                    // set dialog message
+                                    alertDialogBuilder
+                                            .setMessage("Closing Balance is going in negative. Do you want to continue ?")
+                                            .setCancelable(false)
 
-                                        .setNegativeButton(
-                                                "YES",
-                                                new DialogInterface.OnClickListener() {
+                                            .setNegativeButton(
+                                                    "YES",
+                                                    new DialogInterface.OnClickListener() {
 
-                                                    public void onClick(
+                                                        public void onClick(
 
-                                                            DialogInterface dialog,
-                                                            int id) {
+                                                                DialogInterface dialog,
+                                                                int id) {
 
-                                                        dialog.dismiss();
+                                                            dialog.dismiss();
 
-                                                        int count = saveData();
-                                                        showAlertDialog(count);
-                                                    }
-                                                })
+                                                            int count = saveData();
+                                                            showAlertDialog(count);
+                                                        }
+                                                    })
 
-                                        .setPositiveButton(
-                                                "NO",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(
-                                                            DialogInterface dialog,
-                                                            int id) {
+                                            .setPositiveButton(
+                                                    "NO",
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(
+                                                                DialogInterface dialog,
+                                                                int id) {
 
-                                                        dialog.dismiss();
+                                                            dialog.dismiss();
 
 
-                                                    }
-                                                });
+                                                        }
+                                                    });
 
-                                // create alert dialog
-                                AlertDialog alertDialog = alertDialogBuilder
-                                        .create();
+                                    // create alert dialog
+                                    AlertDialog alertDialog = alertDialogBuilder
+                                            .create();
 
-                                // show it
-                                alertDialog.show();
+                                    // show it
+                                    alertDialog.show();
+                                } else {
+                                    Toast.makeText(
+                                            StockAllActivity.this,
+                                            "Please fill up all valid value in quantity fields",
+                                            Toast.LENGTH_LONG).show();
+                                }
                             } else {
                                 Toast.makeText(
                                         StockAllActivity.this,
                                         "Please fill up all valid value in quantity fields",
                                         Toast.LENGTH_LONG).show();
                             }
-                        } else {
-                            Toast.makeText(
-                                    StockAllActivity.this,
-                                    "Please fill up all valid value in quantity fields",
-                                    Toast.LENGTH_LONG).show();
+
                         }
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(StockAllActivity.this,
+                                "Please enter Only numbers", Toast.LENGTH_LONG)
+                                .show();
 
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (NumberFormatException e) {
-                    Toast.makeText(StockAllActivity.this,
-                            "Please enter Only numbers", Toast.LENGTH_LONG)
-                            .show();
+                }else{
+                Toast.makeText(StockAllActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            }
             }
         });
 
@@ -586,7 +594,7 @@ public class StockAllActivity extends Activity {
 
             Calendar c = Calendar.getInstance();
 
-            @SuppressLint("WrongConstant") int dayofyear = c.get(Calendar.YEAR);
+            int dayofyear = c.get(Calendar.YEAR);
 
             // Toast.makeText(context, "year="+dayofyear,
             // Toast.LENGTH_LONG).show();
