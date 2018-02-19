@@ -99,8 +99,8 @@ public class SyncMaster extends Activity {
     ArrayList<HashMap<String, String>> listofsyncerrorlog = new ArrayList<HashMap<String, String>>();
     ArrayList<HashMap<String, String>> listofimages = new ArrayList<HashMap<String, String>>();
 
-    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
-    //public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock/";//Production Server
+    //public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
+    public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock/";//Production Server
     private JSONArray array = new JSONArray();
     String flag;
     String ErroFlag = "";
@@ -6337,8 +6337,9 @@ public class SyncMaster extends Activity {
                                 public void onClick(DialogInterface dialog, int id) {
                                     //do things
                                     dialog.dismiss();
+                                   // boolean bocflag = true;
                                     Intent i = new Intent(SyncMaster.this, DashboardNewActivity.class);
-                                    //i.putExtra("Boc26",boolRecd);
+                                 //   i.putExtra("Bocflag",bocflag);
                                     startActivity(i);
                                 }
                             });

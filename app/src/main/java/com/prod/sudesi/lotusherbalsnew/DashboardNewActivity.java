@@ -145,7 +145,7 @@ public class DashboardNewActivity extends Activity {
                             // set dialog message
                             alertDialogBuilder
                                     .setMessage(
-                                            "Welcome to New Boc!!")
+                                            "Welcome to New Boc Press 'OK' for Opening!!")
                                     .setCancelable(false)
                                     .setPositiveButton("OK",
                                             new DialogInterface.OnClickListener() {
@@ -284,10 +284,23 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (cd.isCurrentDateMatchDeviceDate()) {
+               /* Calendar calendar = Calendar.getInstance();
+                Calendar setcalendar = Calendar.getInstance();
+                setcalendar.setTimeInMillis(System.currentTimeMillis());
+                setcalendar.set(Calendar.HOUR_OF_DAY, 0);
+                setcalendar.set(Calendar.MINUTE, 0);
+                setcalendar.set(Calendar.SECOND, 0);
+                setcalendar.set(Calendar.DAY_OF_MONTH, 19);*/
 
-                    startActivity(new Intent(getApplicationContext(),
-                            StockNewActivity.class));
+                if (cd.isCurrentDateMatchDeviceDate()) {
+//                    if (calendar.get(Calendar.DAY_OF_MONTH) == 19 && bocflag == true) {
+                        startActivity(new Intent(getApplicationContext(),
+                                StockNewActivity.class));
+//                    }else{
+//                        Toast.makeText(DashboardNewActivity.this, "Please Data Download First", Toast.LENGTH_LONG).show();
+//
+//                    }
+
                 }else{
                     Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
 
@@ -393,11 +406,22 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
+ /*               Calendar calendar = Calendar.getInstance();
+                Calendar setcalendar = Calendar.getInstance();
+                setcalendar.setTimeInMillis(System.currentTimeMillis());
+                setcalendar.set(Calendar.HOUR_OF_DAY, 0);
+                setcalendar.set(Calendar.MINUTE, 0);
+                setcalendar.set(Calendar.SECOND, 0);
+                setcalendar.set(Calendar.DAY_OF_MONTH, 19);*/
 
                 if (cd.isCurrentDateMatchDeviceDate()) {
-
-                    startActivity(new Intent(getApplicationContext(),
-                            SaleNewActivity.class));
+//                    if (calendar.get(Calendar.DAY_OF_MONTH) == 19 && bocflag == true) {
+                        startActivity(new Intent(getApplicationContext(),
+                                SaleNewActivity.class));
+//                    }else{
+//                        Toast.makeText(DashboardNewActivity.this, "Please Data Download First", Toast.LENGTH_LONG).show();
+//
+//                    }
                 }else{
                     Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
 
@@ -3810,6 +3834,8 @@ public class DashboardNewActivity extends Activity {
                             public void onClick(DialogInterface dialog, int id) {
                                 //do things
                                 dialog.dismiss();
+
+                              //  bocflag = true;
 
                                 db.open();
                                 String a = db.getdatepresentorabsent(sp.getString("todaydate", ""), username = sp.getString("username", ""));

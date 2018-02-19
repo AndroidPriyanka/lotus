@@ -126,12 +126,12 @@ public class LoginActivity extends Activity {
     private static final int PERMISSION_REQUEST_CODE = 1;
 
     //Production
-   /* public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
-    public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production*/
+    public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
+    public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production
 
     //UAT
-    public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT
-    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT
+    /*public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT
+    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT*/
 
     private boolean checkPermission(){
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE);
@@ -213,7 +213,7 @@ public class LoginActivity extends Activity {
             requestPermission();
         }
 
-        exportDB();
+        //exportDB();
         AutologoutBroadcast();
         btn_login.setOnClickListener(new OnClickListener() {
 
@@ -306,10 +306,10 @@ public class LoginActivity extends Activity {
             Calendar calendar = Calendar.getInstance();
             Calendar setcalendar = Calendar.getInstance();
             setcalendar.setTimeInMillis(System.currentTimeMillis());
-            setcalendar.set(Calendar.HOUR_OF_DAY, 16);
-            setcalendar.set(Calendar.MINUTE, 30);
+            setcalendar.set(Calendar.HOUR_OF_DAY, 7);
+            setcalendar.set(Calendar.MINUTE, 0);
             setcalendar.set(Calendar.SECOND, 0);
-            setcalendar.set(Calendar.DAY_OF_MONTH, 17);
+            setcalendar.set(Calendar.DAY_OF_MONTH, 26);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(
                     "MM/dd/yyyy HH:mm:ss");
@@ -331,7 +331,7 @@ public class LoginActivity extends Activity {
             Date bocdate = format.parse(boc26date);
             Date current = format.parse(currentDate);*/
 
-            if (calendar.get(Calendar.DAY_OF_MONTH) == 17 && (sp.getBoolean("BOC26", false) || !currentDate.equals(syncDate))) {
+            if (calendar.get(Calendar.DAY_OF_MONTH) == 26 && (sp.getBoolean("BOC26", false) || !currentDate.equals(syncDate))) {
                 boolean boc26 = true;
 
                 spe.putBoolean("BOC26", boc26);

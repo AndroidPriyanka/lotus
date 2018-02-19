@@ -1546,9 +1546,10 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                     startActivity(i);
 
                 } else {
-
+                //    boolean bocflag = true;
                     Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
                     i.putExtra("FROM", "LOGIN");
+                //    i.putExtra("Bocflag",bocflag);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
                 }
