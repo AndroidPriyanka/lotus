@@ -7,7 +7,6 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -20,13 +19,12 @@ import android.database.Cursor;
 import android.net.ParseException;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.provider.Settings;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
@@ -74,6 +72,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 @SuppressLint("SimpleDateFormat")
 public class LoginActivity extends Activity {
 
@@ -81,20 +81,14 @@ public class LoginActivity extends Activity {
     Button btn_login;
     EditText edt_username;
     EditText edt_password;
-    int logCounter = 0;
-    int sizeCounter = 0;
-    int insertCounter = 0;
     SharedPreferences sp;
     SharedPreferences.Editor spe;
-
-    String alaram_flag = "false";
 
     LotusWebservice service;
     String username = "", pass = "", VERSION_NAME = "", OS_VERSION = "";
 
     private ProgressDialog pd;
     ConnectionDetector cd;
-    private double lon = 0.0, lat = 0.0;
     Dbcon db;
 
     Context context;
@@ -102,27 +96,16 @@ public class LoginActivity extends Activity {
     String month;
     String year;
 
-    //
-    Cursor attendance_array, image_array, image_array1, test_array,
-            stock_array;
     private ProgressDialog mProgress = null;
-    int soapresultforvisibilityid;
-    String producttype;
 
     //
-    String get_server_date = "";
     String server_date, todaydate1;
-
-    // WriteErroLogs we;
-
     String div;
     String status;
 
     String deviceId = "";
     String loginstaus = "";
-    String LogoutStatus = "";
-    private static final int LOCATION_PERMISSION_ID = 1001;
-    private static final int RECORD_REQUEST_CODE = 101;
+
     private static final int PERMISSION_REQUEST_CODE = 1;
 
     //Production
@@ -130,13 +113,13 @@ public class LoginActivity extends Activity {
     public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production
 
     //UAT
-    /*public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT
-    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT*/
+//    public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT
+//    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT
 
-    private boolean checkPermission(){
+    private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE);
 
-        if (result == PackageManager.PERMISSION_GRANTED){
+        if (result == PackageManager.PERMISSION_GRANTED) {
             return true;
         } else {
             return false;
@@ -189,27 +172,14 @@ public class LoginActivity extends Activity {
         month = String.valueOf(month1 + 1);
         year = String.valueOf(year1);
 
-       /* Intent intent = getIntent();
-        if (intent != null) {
-            if (intent.getStringExtra("LogoutFlag") != null) {
-                LogoutStatus = intent.getStringExtra("LogoutFlag");
-                if(LogoutStatus.equals("LOGOUTSERVICE")){
-                    disableBroadcastReceiver();
-                }
-            }
-        }*/
 
-
-        // we = new WriteErroLogs(getApplicationContext());
-
-
-
-        if(checkPermission()) {
-            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            assert telephonyManager != null;
-            deviceId = telephonyManager.getDeviceId();
-        }else{
-            Toast.makeText(this,"Please give access to read your phone state.", Toast.LENGTH_SHORT).show();
+        if (checkPermission()) {
+//            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+//            assert telephonyManager != null;
+//            deviceId = telephonyManager.getDeviceId();
+            deviceId =  Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        } else {
+            //Toast.makeText(this, "Please give access to read your phone state.", Toast.LENGTH_SHORT).show();
             requestPermission();
         }
 
@@ -224,45 +194,80 @@ public class LoginActivity extends Activity {
                 //LoginUser();
                 //if(isPermissionGranted()) {
 
-                    try {
-                        if (cd.isConnectingToInternet()) {
+                btn_login.setEnabled(false);
 
-                            username = edt_username.getText().toString()
-                                    .toUpperCase();
-                            pass = edt_password.getText().toString();
+                new Handler().postDelayed(new Runnable() {
 
-                            PackageInfo info = null;
-                            PackageManager manager = getPackageManager();
-                            info = manager.getPackageInfo(getPackageName(), 0);
+                    @Override
+                    public void run() {
+                        // This method will be executed once the timer is over
+                        btn_login.setEnabled(true);
+                        Log.d(TAG, "resend1");
 
-                            String packageName = info.packageName;
-                            int versionCode = info.versionCode;
-                            VERSION_NAME = info.versionName;
-                            OS_VERSION = String.valueOf(android.os.Build.VERSION.SDK_INT);
+                    }
+                }, 2000);// set time as per your requirement
 
-                            if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(pass) && !TextUtils.isEmpty(VERSION_NAME)) {
-                                // TODO check apk version
-                                new SyncApkCheck().execute();
+                try {
+                    if (cd.isConnectingToInternet()) {
 
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Fields Cannot be Empty", Toast.LENGTH_SHORT).show();
+                        username = edt_username.getText().toString()
+                                .toUpperCase();
+                        pass = edt_password.getText().toString();
 
-                            }
+                        PackageInfo info = null;
+                        PackageManager manager = getPackageManager();
+                        info = manager.getPackageInfo(getPackageName(), 0);
 
+                        String packageName = info.packageName;
+                        int versionCode = info.versionCode;
+                        VERSION_NAME = info.versionName;
+                        OS_VERSION = String.valueOf(android.os.Build.VERSION.SDK_INT);
+
+                       /* if(sp.getString("Boardcast", "Disable").toString().equalsIgnoreCase("Disable")){
+
+                            enableBroadcastReceiver();
+                        }*/
+
+                        if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(pass) && !TextUtils.isEmpty(VERSION_NAME)) {
+                            // TODO check apk version
+                            new SyncApkCheck().execute();
 
                         } else {
-                            Toast.makeText(getApplicationContext(), "Please Check Internet Connection.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Fields Cannot be Empty", Toast.LENGTH_SHORT).show();
+
                         }
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Please Check Internet Connection.", Toast.LENGTH_SHORT).show();
                     }
-              //  }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //  }
 
             }
 
         });
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (checkPermission()) {
+//            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+//            assert telephonyManager != null;
+//            deviceId = telephonyManager.getDeviceId();
+
+            deviceId =  Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        } else {
+           // Toast.makeText(this, "Please give access to read your phone state.", Toast.LENGTH_SHORT).show();
+            requestPermission();
+        }
     }
 
     private void DataUploadAlaramReceiver() {
@@ -322,20 +327,12 @@ public class LoginActivity extends Activity {
                 syncDate = "";
             }
 
-            /*Calendar now = Calendar.getInstance();
-            int currentMonth = now.get(calendar.MONTH);
-            int currentYear = now.get(Calendar.YEAR);
-
-            String boc26date = String.valueOf(currentMonth)+"/15/"+String.valueOf(currentYear);
-            SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
-            Date bocdate = format.parse(boc26date);
-            Date current = format.parse(currentDate);*/
-
             if (calendar.get(Calendar.DAY_OF_MONTH) == 26 && (sp.getBoolean("BOC26", false) || !currentDate.equals(syncDate))) {
-                boolean boc26 = true;
-
-                spe.putBoolean("BOC26", boc26);
-                spe.commit();
+                if(!sp.getBoolean("Bocflag",false)) {
+                    boolean boc26 = true;
+                    spe.putBoolean("BOC26", boc26);
+                    spe.commit();
+                }
             }
 
             AlarmManager mAlarmManger = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -400,13 +397,8 @@ public class LoginActivity extends Activity {
 
             Flag = "0";
             if (!cd.isConnectingToInternet()) {
-                // Internet Connection is not present
-                // Toast.makeText(getActivity(),"Check Your Internet Connection!!!",
-                // Toast.LENGTH_LONG).show();
 
                 Flag = "0";
-
-                // stop executing code by return
 
             } else {
 
@@ -420,9 +412,6 @@ public class LoginActivity extends Activity {
 
                     if (soap_result.equals("anyType{}")) {
 
-                        // Toast.makeText(LoginActivity.this,
-                        // "User not activated ,Please contact admin",
-                        // Toast.LENGTH_SHORT).show();
                         Flag = "5";
                     } else {
 
@@ -501,17 +490,6 @@ public class LoginActivity extends Activity {
 
                                         Flag = String.valueOf(getmessaage
                                                 .getProperty("username"));
-
-											/*
-                                             * final Calendar calendar =
-											 * Calendar .getInstance();
-											 * SimpleDateFormat formatter = new
-											 * SimpleDateFormat(
-											 * "MM/dd/yyyy HH:mm:ss"); String
-											 * Createddate =
-											 * formatter.format(calendar
-											 * .getTime());
-											 */
 
                                         contentvalues.put("username",
                                                 username);
@@ -699,8 +677,7 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(SoapObject result) {
             // TODO Auto-generated method stub
 
-            if (pd  != null && pd .isShowing() && !LoginActivity.this.isFinishing())
-            {
+            if (pd != null && pd.isShowing() && !LoginActivity.this.isFinishing()) {
                 pd.dismiss();
             }
 
@@ -739,23 +716,56 @@ public class LoginActivity extends Activity {
                                         .equalsIgnoreCase("true3")) {
 
                                     db.open();
-                                    String userid = db.getUserId();
+                                    String userid = db.getUserId(username);
                                     db.close();
 
                                     if (userid.equalsIgnoreCase("no")) {
 
                                         Toast.makeText(
                                                 LoginActivity.this,
-                                                "This device is already assigned to another user.Please contact your system administrator!",
+                                                "This device is already assigned to another user.Please contact your system administrator!.",
                                                 Toast.LENGTH_LONG).show();
 
                                     } else {
 
-                                        Toast.makeText(
-                                                LoginActivity.this,
-                                                "This device is already assigned to another user.Please contact your system administrator!. Already Login Id = "
-                                                        + userid,
-                                                Toast.LENGTH_LONG).show();
+                                        String[] serverdatearray = serverdate
+                                                .split(" ");
+
+                                        server_date = serverdatearray[0];
+
+                                        String[] serverdate1 = server_date
+                                                .split("/");
+
+
+                                        spe.putString("currentdate", serverdate);
+                                        spe.commit();
+
+                                        SimpleDateFormat sdf = new SimpleDateFormat(
+                                                "MM/dd/yyyy");
+
+                                        Date curntdte = null;
+                                        try {
+                                            curntdte = sdf.parse(server_date);
+                                        } catch (ParseException e) {
+                                            // TODO Auto-generated catch block
+                                            e.printStackTrace();
+                                        }
+
+                                        sdf.applyPattern("yyyy-MM-dd");
+                                        todaydate1 = sdf.format(curntdte);
+
+                                        spe.putString("todaydate", todaydate1);
+                                        spe.commit();
+
+                                        //SetClosingISOpeningOnlyOnce();
+                                        // checkAndSaveMonthly();
+                                        checkpresentornot(todaydate1);
+
+//                                        Toast.makeText(
+//                                                LoginActivity.this,
+//                                                "This device is already assigned to another user.Please contact your system administrator!. Already Login Id = "
+//                                                        + userid,
+//                                                Toast.LENGTH_LONG).show();
                                     }
                                 } else if (loginstaus
                                         .equalsIgnoreCase("true2")) {
@@ -1183,36 +1193,6 @@ public class LoginActivity extends Activity {
 
     }
 
-   /* private final BroadcastReceiver lftBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // extract the location info in the broadcast
-            locationInfo = (LocationInfo) intent
-                    .getSerializableExtra(LocationLibraryConstants.LOCATION_BROADCAST_EXTRA_LOCATIONINFO);
-            // refresh the display with it
-            refreshDisplay(locationInfo);
-        }
-    };
-
-    private void refreshDisplay() {
-        refreshDisplay(new LocationInfo(context));
-    }
-
-    private void refreshDisplay(final LocationInfo locationInfo) {
-        if (locationInfo.anyLocationDataReceived()) {
-            lat = locationInfo.lastLat;
-            lon = locationInfo.lastLong;
-            // Toast.makeText(context, "Location Updated",
-            // Toast.LENGTH_LONG).show();
-            logCounter = 1;
-        } else {
-
-            Toast.makeText(context,
-                    "Unable to get GPS location! Try again later!!",
-                    Toast.LENGTH_LONG).show();
-        }
-
-    }*/
 
     @Override
     public void onBackPressed() {
@@ -1833,79 +1813,6 @@ public class LoginActivity extends Activity {
         }
     }
 
-//	public void setOpeningClosingOn26()
-//	{
-//
-//	}
-
-//	public String[] getStartEnd(String BOC,String year,String year1)
-//	{
-//		String startend[] = new String[2];
-//
-//		if(BOC.equalsIgnoreCase("BOC1"))
-//		{
-//			startend[0] = year +"-03-26" ;
-//			startend[1] = year +"-04-25" ;
-//		}
-//		else if(BOC.equalsIgnoreCase("BOC2"))
-//		{
-//			startend[0] = year +"-04-26" ;
-//			startend[1] = year +"-05-25" ;
-//		}
-//		else if(BOC.equalsIgnoreCase("BOC3"))
-//		{
-//			startend[0] = year +"-05-26" ;
-//			startend[1] = year +"-06-25" ;
-//		}
-//		else if(BOC.equalsIgnoreCase("BOC4"))
-//		{
-//			startend[0] = year +"-06-26" ;
-//			startend[1] = year +"-07-25" ;
-//		}
-//		else if(BOC.equalsIgnoreCase("BOC5"))
-//		{
-//			startend[0] = year +"-07-26" ;
-//			startend[1] = year +"-08-25" ;
-//		}
-//		else if(BOC.equalsIgnoreCase("BOC6"))
-//		{
-//			startend[0] = year +"-08-26" ;
-//			startend[1] = year +"-09-25" ;
-//		}
-//		else if(BOC.equalsIgnoreCase("BOC7"))
-//		{
-//			startend[0] = year +"-09-26" ;
-//			startend[1] = year +"-10-25" ;
-//		}
-//		else if(BOC.equalsIgnoreCase("BOC8"))
-//		{
-//			startend[0] = year +"-10-26" ;
-//			startend[1] = year +"-11-25" ;
-//		}
-//		else if(BOC.equalsIgnoreCase("BOC9"))
-//		{
-//			startend[0] = year +"-11-26" ;
-//			startend[1] = year +"-12-25" ;
-//		}
-//		else if(BOC.equalsIgnoreCase("BOC10"))
-//		{
-//			startend[0] = year +"-12-26" ;
-//			startend[1] = year1 +"-01-25" ;
-//		}
-//		else if(BOC.equalsIgnoreCase("BOC11"))
-//		{
-//			startend[0] = year1 +"-01-26" ;
-//			startend[1] = year1 +"-02-25" ;
-//		}
-//		else if(BOC.equalsIgnoreCase("BOC12"))
-//		{
-//			startend[0] = year1 +"-02-26" ;
-//			startend[1] = year1 +"-03-25" ;
-//		}
-//
-//		return startend;
-//	}
-
     public String getBOC(String year, String yearPlus) {
         String str_BOC = null;
 
@@ -1964,8 +1871,7 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(Boolean result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-            if (mprogress  != null && mprogress .isShowing() && !LoginActivity.this.isFinishing())
-            {
+            if (mprogress != null && mprogress.isShowing() && !LoginActivity.this.isFinishing()) {
                 mprogress.dismiss();
             }
 
@@ -1975,7 +1881,7 @@ public class LoginActivity extends Activity {
                 } else {
 //                    Toast.makeText(MainActivity.this, "No New Version !", Toast.LENGTH_SHORT).show();
                     //LoginUser();
-                     new GetServerDate().execute();
+                    new GetServerDate().execute();
                 }
             } else {
 //                Toast.makeText(MainActivity.this, "No New Version !", Toast.LENGTH_SHORT).show();
@@ -2012,7 +1918,15 @@ public class LoginActivity extends Activity {
                     .toUpperCase();
             pass = edt_password.getText().toString();
 
-            db.open();
+            try{
+
+                new Check_Login().execute();
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+/*            db.open();
 
             int count = db.checkcount(username, pass);
 
@@ -2073,7 +1987,7 @@ public class LoginActivity extends Activity {
                     new Check_Login().execute();
                 }
 
-            }
+            }*/
 
 
         }
@@ -2195,14 +2109,14 @@ public class LoginActivity extends Activity {
     /**
      * This method disables the Broadcast receiver registered in the AndroidManifest file.
      */
-    public void disableBroadcastReceiver() {
-        ComponentName receiver = new ComponentName(this, MyScheduledReceiver.class);
+    public void enableBroadcastReceiver() {
+        ComponentName receiver = new ComponentName(this, BocBroadcastReceiver.class);
         PackageManager pm = this.getPackageManager();
 
         pm.setComponentEnabledSetting(receiver,
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
-        Toast.makeText(this, "Disabled broadcst receiver", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Enabled broadcast receiver", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -2216,8 +2130,8 @@ public class LoginActivity extends Activity {
             super.onPreExecute();
 
             mProgress.setMessage("Please Wait");
-            mProgress.show();
             mProgress.setCancelable(false);
+            mProgress.show();
         }
 
         @Override
@@ -2239,8 +2153,7 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(SoapPrimitive result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-            if (mProgress  != null && mProgress .isShowing() && !LoginActivity.this.isFinishing())
-            {
+            if (mProgress != null && mProgress.isShowing() && !LoginActivity.this.isFinishing()) {
                 mProgress.dismiss();
             }
 
@@ -2333,8 +2246,6 @@ public class LoginActivity extends Activity {
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.READ_PHONE_STATE,
-                        Manifest.permission.CAMERA,
                         Manifest.permission.INTERNET)
                 .withListener(new MultiplePermissionsListener() {
                     @Override
@@ -2359,7 +2270,7 @@ public class LoginActivity extends Activity {
                 withErrorListener(new PermissionRequestErrorListener() {
                     @Override
                     public void onError(DexterError error) {
-                        Toast.makeText(getApplicationContext(), "Error occurred! " + error.toString(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "Error occurred! " + error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 })
                 .onSameThread()
@@ -2396,27 +2307,28 @@ public class LoginActivity extends Activity {
     }
 
     private void requestPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
 
-            Toast.makeText(this,"Give permission to check whether internet is of or on.",Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "Give permission to check whether internet is of or on.", Toast.LENGTH_LONG).show();
 
         } else {
 
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_PHONE_STATE},PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_CODE);
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    Toast.makeText(this,"Permission Granted, Now you can check network status.",Toast.LENGTH_LONG).show();
+                   // Toast.makeText(this, "Permission Granted, Now you can check network status.", Toast.LENGTH_LONG).show();
 
 
                 } else {
 
-                    Toast.makeText(this,"Permission Denied, You cannot check networkstatus.",Toast.LENGTH_LONG).show();
+                  //  Toast.makeText(this, "Permission Denied, You cannot check networkstatus.", Toast.LENGTH_LONG).show();
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setMessage("Permission is required, please Allow All Permission!")
                             .setCancelable(false)

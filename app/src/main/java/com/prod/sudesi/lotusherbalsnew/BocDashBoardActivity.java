@@ -162,21 +162,17 @@ public class BocDashBoardActivity extends Activity {
 		
     		
 		if(!current_year_n2.equalsIgnoreCase("") && date1.compareTo(date2)>0){
-			
+
 			int int_current_year_n22 =  int_current_year_n2 + 1 ;
 			
 			String current_year_n2 = String.valueOf(int_current_year_n22);
-			
-			
-			
-			
-			
+
+
 			int_current_year_n1 = int_current_year_n22 - 1;
 			
 			current_year_n1 = String.valueOf(int_current_year_n1);
-			
-			
-			
+
+
 			int_previous_year_p1 = int_current_year_n1 - 1;
 			
 			previous_year_p1 = String.valueOf(int_previous_year_p1);
@@ -187,24 +183,17 @@ public class BocDashBoardActivity extends Activity {
 			
 			
 		}else{
-			
-			//tv_current_year_n2.setText(current_year_n2);
-			
+
 			int_current_year_n1 = int_current_year_n2 - 1;
 			
 			current_year_n1 = String.valueOf(int_current_year_n1);
-			
-			//tv_current_year_n1.setText(current_year_n1);
-			
-			
-			//tv_previous_year_p2.setText(current_year_n1);
-			
+
+
 			int_previous_year_p1 = int_current_year_n1 - 1;
 			
 			previous_year_p1 = String.valueOf(int_previous_year_p1);
 			
-			//tv_previous_year_p1.setText(previous_year_p1);
-			
+
 			firstyear = current_year_n1 +"-"+ current_year_n2;//---------
 			
 			sencondyear = previous_year_p1 +"-"+ current_year_n1;

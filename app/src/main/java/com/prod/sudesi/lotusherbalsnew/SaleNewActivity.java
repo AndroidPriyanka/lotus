@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,6 +27,8 @@ import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static android.content.ContentValues.TAG;
 
 
 public class SaleNewActivity extends Activity implements OnClickListener {
@@ -255,6 +258,19 @@ public class SaleNewActivity extends Activity implements OnClickListener {
 			break;
 
 		case R.id.btn_proceed:
+
+			btn_proceed.setEnabled(false);
+
+			new Handler().postDelayed(new Runnable() {
+
+				@Override
+				public void run() {
+					// This method will be executed once the timer is over
+					btn_proceed.setEnabled(true);
+					Log.d(TAG, "resend1");
+
+				}
+			}, 2000);// set time as per your requirement
 
 			String check = "";
 			int chckCount = 0;

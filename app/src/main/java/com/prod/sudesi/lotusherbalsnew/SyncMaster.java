@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,6 +28,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -56,6 +58,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+
+import static android.content.ContentValues.TAG;
 
 @SuppressLint("SimpleDateFormat")
 public class SyncMaster extends Activity {
@@ -99,7 +103,7 @@ public class SyncMaster extends Activity {
     ArrayList<HashMap<String, String>> listofsyncerrorlog = new ArrayList<HashMap<String, String>>();
     ArrayList<HashMap<String, String>> listofimages = new ArrayList<HashMap<String, String>>();
 
-    //public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
+//    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
     public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock/";//Production Server
     private JSONArray array = new JSONArray();
     String flag;
@@ -195,6 +199,19 @@ public class SyncMaster extends Activity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
+                btn_first_time_sycn.setEnabled(false);
+
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        // This method will be executed once the timer is over
+                        btn_first_time_sycn.setEnabled(true);
+                        Log.d(TAG, "resend1");
+
+                    }
+                }, 2000);// set time as per your requirement
+
                 if(cd.isCurrentDateMatchDeviceDate()) {
                     new InsertFirstTimeMaster().execute();
                 }else{
@@ -240,6 +257,20 @@ public class SyncMaster extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
+
+                data_sync.setEnabled(false);
+
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        // This method will be executed once the timer is over
+                        data_sync.setEnabled(true);
+                        Log.d(TAG, "resend1");
+
+                    }
+                }, 2000);// set time as per your requirement
+
                 if(cd.isCurrentDateMatchDeviceDate()) {
                     uploaddata();
                 }else{
@@ -256,6 +287,19 @@ public class SyncMaster extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
+
+                master_sync.setEnabled(false);
+
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        // This method will be executed once the timer is over
+                        master_sync.setEnabled(true);
+                        Log.d(TAG, "resend1");
+
+                    }
+                }, 2000);// set time as per your requirement
 
                 if(cd.isCurrentDateMatchDeviceDate()) {
                     new InsertProductMaster().execute();
@@ -6327,6 +6371,7 @@ public class SyncMaster extends Activity {
 
                     boolean boc26 = false;
                     spe.putBoolean("BOC26", boc26);
+                    spe.putBoolean("DialogDismiss", true);
                     spe.commit();
                     //final boolean boolRecd = false;
 
@@ -6556,7 +6601,8 @@ public class SyncMaster extends Activity {
             if (cd.isConnectingToInternet()) {
 
                 showProgreesDialog();
-                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, URL, array, new Response.Listener<JSONArray>() {
+//                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, URL, array, new Response.Listener<JSONArray>() {
+                    JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST,URL, array, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray jsonResponse) {
 
@@ -6571,7 +6617,7 @@ public class SyncMaster extends Activity {
                                 JSONObject jsonObj = new JSONObject(jsonStr);
 
                                 // Getting JSON Array node
-                                flag = jsonObj.getString("Flag");
+                                String flag = jsonObj.getString("Flag");
                                 String message = jsonObj.getString("errormsg");
                                 JSONArray id = jsonObj.getJSONArray("IdInserted");
 
@@ -6589,6 +6635,7 @@ public class SyncMaster extends Activity {
 
                                     }
 
+                                    Log.e("JSON_TRUE",flag+"_MSG_"+message);
                                     new syncAllData(flag).execute();
 
                                 } else {
@@ -6616,7 +6663,7 @@ public class SyncMaster extends Activity {
                                     db.insertSyncLog(message, String.valueOf(n), "SaveStock()", Createddate,
                                             Createddate, sp.getString("username", ""),
                                             "SaveStock()", "Fail");
-
+                                    Log.e("JSON_TRUE",flag+"_MSG_"+message);
                                     new syncAllData(ErroFlag).execute();
                                 }
                                 dissmissDialog();
@@ -6648,8 +6695,8 @@ public class SyncMaster extends Activity {
                                         "username", ""),
                                 "SaveStock()", "Fail");
 
-                        Toast.makeText(context,"Stock Data not upload", Toast.LENGTH_SHORT).show();
-
+//                        Toast.makeText(context,"Stock Data not upload", Toast.LENGTH_SHORT).show();
+                        Log.e("JSON_ERROR","ERROR");
                         new syncAllData(ErroFlag).execute();
 
                     }
@@ -6665,15 +6712,18 @@ public class SyncMaster extends Activity {
                     }
                 };
                 jsonArrayRequest.setShouldCache(false);
+                jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        300000,
+                        0,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                 TestApplication.getInstance().addToRequestQueue(jsonArrayRequest);
 
             }else{
                 DisplayDialogMessage("Connectivity Error Please check internet");
             }
 
-        }else if (stock_array == null) {
-
         } else {
+            Toast.makeText(this,"No Stock For Data Upload", Toast.LENGTH_SHORT).show();
             Log.e("NoStock dataupload",
                     String.valueOf(stock_array.getCount()));
         }

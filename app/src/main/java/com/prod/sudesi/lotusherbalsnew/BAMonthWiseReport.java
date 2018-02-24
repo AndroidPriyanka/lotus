@@ -164,19 +164,16 @@ public class BAMonthWiseReport extends Activity {
 			
 			String current_year_n2 = String.valueOf(int_current_year_n22);
 			
-			
-			
-			
-			
+
 			int_current_year_n1 = int_current_year_n22 - 1;
 			
 			current_year_n1 = String.valueOf(int_current_year_n1);
 			
-			
-			
+
 			int_previous_year_p1 = int_current_year_n1 - 1;
 			
 			previous_year_p1 = String.valueOf(int_previous_year_p1);
+
 			
 			firstyear = current_year_n1 + "-"+current_year_n2;//---------
 			
@@ -184,24 +181,17 @@ public class BAMonthWiseReport extends Activity {
 			
 			
 		}else{
-			
-			//tv_current_year_n2.setText(current_year_n2);
-			
+
 			int_current_year_n1 = int_current_year_n2 - 1;
 			
 			current_year_n1 = String.valueOf(int_current_year_n1);
 			
-			//tv_current_year_n1.setText(current_year_n1);
-			
-			
-			//tv_previous_year_p2.setText(current_year_n1);
-			
+
 			int_previous_year_p1 = int_current_year_n1 - 1;
 			
 			previous_year_p1 = String.valueOf(int_previous_year_p1);
 			
-			//tv_previous_year_p1.setText(previous_year_p1);
-			
+
 			firstyear = current_year_n1 +"-"+ current_year_n2;//---------
 			
 			sencondyear = previous_year_p1 +"-"+ current_year_n1;

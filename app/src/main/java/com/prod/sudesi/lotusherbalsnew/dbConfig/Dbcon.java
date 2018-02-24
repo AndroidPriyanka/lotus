@@ -1735,13 +1735,13 @@ public class Dbcon {
 
     }
 
-    public String getUserId() {
+    public String getUserId(String user) {
         // TODO Auto-generated method stub
 
         Cursor c;
         String username = "no";
 
-        String sql = "select username from login";
+        String sql = "select username from login where username = '"+user+"'";
         c = database.rawQuery(sql, null);
         if (c != null)
             Log.e("", "getCount=" + c.getCount());

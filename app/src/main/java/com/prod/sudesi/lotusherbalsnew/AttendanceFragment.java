@@ -80,6 +80,8 @@ import io.nlopez.smartlocation.SmartLocation;
 import io.nlopez.smartlocation.geofencing.model.GeofenceModel;
 import io.nlopez.smartlocation.geofencing.utils.TransitionGeofence;
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
+
+import static android.content.ContentValues.TAG;
 /*import com.littlefluffytoys.littlefluffylocationlibrary.LocationInfo;
 import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibrary;
 import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibraryConstants;*/
@@ -722,9 +724,9 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                 } else {
                     db.close();
 
-                    Button present;
-                    Button absent;
-                    Button out;
+                    final Button present;
+                    final Button absent;
+                    final Button out;
                     Button cancel;
                     try {
 
@@ -769,6 +771,19 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                                         @Override
                                         public void onClick(View v) {
                                             // TODO Auto-generated method stub
+                                            out.setEnabled(false);
+
+                                            new Handler().postDelayed(new Runnable() {
+
+                                                @Override
+                                                public void run() {
+                                                    // This method will be executed once the timer is over
+                                                    out.setEnabled(true);
+                                                    Log.d(TAG, "resend1");
+
+                                                }
+                                            }, 2000);// set time as per your requirement
+
                                             db.updateAttendance(sld1, username, sld1);
                                             savelogout = new SaveLogoutTime();
                                             savelogout.execute();
@@ -805,6 +820,19 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                                     @Override
                                     public void onClick(View v) {
                                         // TODO Auto-generated method stub
+                                        out.setEnabled(false);
+
+                                        new Handler().postDelayed(new Runnable() {
+
+                                            @Override
+                                            public void run() {
+                                                // This method will be executed once the timer is over
+                                                out.setEnabled(true);
+                                                Log.d(TAG, "resend1");
+
+                                            }
+                                        }, 2000);// set time as per your requirement
+
                                         db.updateAttendance(sld1, username, sld1);
                                         dialog.cancel();
                                         savelogout = new SaveLogoutTime();
@@ -849,6 +877,20 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                                 @Override
                                 public void onClick(View v) {
                                     // TODO Auto-generated method stub
+
+                                    present.setEnabled(false);
+
+                                    new Handler().postDelayed(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                            // This method will be executed once the timer is over
+                                            present.setEnabled(true);
+                                            Log.d(TAG, "resend1");
+
+                                        }
+                                    }, 2000);// set time as per your requirement
+
                                     attendance_flag = "P";
                                     leavetype_flag = "";
                                     if (cd.isConnectingToInternet()) {
@@ -872,6 +914,19 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
 
                                 @Override
                                 public void onClick(View v) {
+
+                                    absent.setEnabled(false);
+
+                                    new Handler().postDelayed(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                            // This method will be executed once the timer is over
+                                            absent.setEnabled(true);
+                                            Log.d(TAG, "resend1");
+
+                                        }
+                                    }, 2000);// set time as per your requirement
 
                                     if (cd.isConnectingToInternet()) {
 
@@ -1546,10 +1601,9 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                     startActivity(i);
 
                 } else {
-                //    boolean bocflag = true;
+
                     Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
                     i.putExtra("FROM", "LOGIN");
-                //    i.putExtra("Bocflag",bocflag);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
                 }
@@ -1686,7 +1740,7 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                     case LocationSettingsStatusCodes.SUCCESS:
                         // All location settings are satisfied. The client can initialize location
                         // requests here.
-                        updateGPSStatus("GPS is Enabled in your device");
+                        //updateGPSStatus("GPS is Enabled in your device");
                         // startLocation();
 
 
@@ -1740,14 +1794,14 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                 switch (resultCode) {
                     case RESULT_OK:
                         Log.e("Settings", "Result OK");
-                        updateGPSStatus("GPS is Enabled in your device");
+                       // updateGPSStatus("GPS is Enabled in your device");
                         //startLocationUpdates();
                         startLocation();
 
                         break;
                     case RESULT_CANCELED:
                         Log.e("Settings", "Result Cancel");
-                        updateGPSStatus("GPS is Disabled in your device");
+                        //updateGPSStatus("GPS is Disabled in your device");
                         break;
                 }
                 break;
@@ -1787,13 +1841,13 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                 //Check if GPS is turned ON or OFF
                 if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     Log.e("About GPS", "GPS is Enabled in your device");
-                    updateGPSStatus("GPS is Enabled in your device");
+                    //updateGPSStatus("GPS is Enabled in your device");
                     //  startLocation();
 
                 } else {
                     //If GPS turned OFF show Location Dialog
                     new Handler().postDelayed(sendUpdatesToUI, 10);
-                    updateGPSStatus("GPS is Disabled in your device");
+                    //updateGPSStatus("GPS is Disabled in your device");
                     Log.e("About GPS", "GPS is Disabled in your device");
                 }
 
@@ -1817,8 +1871,8 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                     }
 
                 } else {
-                    updateGPSStatus("Location Permission denied.");
-                    Toast.makeText(AttendanceFragment.this, "Location Permission denied.", Toast.LENGTH_SHORT).show();
+                    //updateGPSStatus("Location Permission denied.");
+                    //Toast.makeText(AttendanceFragment.this, "Location Permission denied.", Toast.LENGTH_SHORT).show();
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }

@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -39,6 +40,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import static android.content.ContentValues.TAG;
 
 
 public class StockAllActivity extends Activity {
@@ -344,6 +347,19 @@ public class StockAllActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
+
+                btn_save.setEnabled(false);
+
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        // This method will be executed once the timer is over
+                        btn_save.setEnabled(true);
+                        Log.d(TAG, "resend1");
+
+                    }
+                }, 2000);// set time as per your requirement
 
                 if (cd.isCurrentDateMatchDeviceDate()) {
                     try {

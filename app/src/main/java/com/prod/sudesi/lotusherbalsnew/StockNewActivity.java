@@ -2,10 +2,13 @@ package com.prod.sudesi.lotusherbalsnew;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +31,8 @@ import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 
 public class StockNewActivity extends Activity implements OnClickListener {
@@ -61,7 +66,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
     int modecounter = 0;
     public static String PMODE;
 
-    String username,bdename;
+    String username, bdename;
 
     String sclo = "";
 
@@ -75,7 +80,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_new_stock);
         //////////Crash Report
-       Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
         sp_product_category = (Spinner) findViewById(R.id.sp_product_category);
         sp_product_type = (Spinner) findViewById(R.id.sp_product_type);
@@ -98,7 +103,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
         db.open();
 
         username = shp.getString("username", "");
-        bdename = shp.getString("BDEusername","");
+        bdename = shp.getString("BDEusername", "");
         tv_h_username.setText(bdename);
 
         String div = shp.getString("div", "");
@@ -279,113 +284,69 @@ public class StockNewActivity extends Activity implements OnClickListener {
         switch (v.getId()) {
             case R.id.btn_proceed:
 
+                btn_proceed.setEnabled(false);
 
-                String check = "";
-                int chckCount = 0;
+                new Handler().postDelayed(new Runnable() {
 
-                if (sp_product_category.getSelectedItemPosition() != 0) {
+                    @Override
+                    public void run() {
+                        // This method will be executed once the timer is over
+                        btn_proceed.setEnabled(true);
+                        Log.d(TAG, "resend1");
 
-                    if (sp_product_type.getSelectedItemPosition() != 0) {
-
-
-                        if (modecounter == 1) {
-                            if (PMODE != null) {
-                                check = PMODE.trim();
-                            } else {
-                                Toast.makeText(getApplicationContext(),
-                                        "Please select Mode",
-                                        Toast.LENGTH_LONG).show();
-
-                            }
-
-                            if (check.contentEquals("Select Mode") || check.equals("")) {
-                                Toast.makeText(getApplicationContext(),
-                                        "Please select Mode",
-                                        Toast.LENGTH_LONG).show();
-
-                            } else {
-                                for (int i = 1; i < tl_productList.getChildCount(); i++) {
-                                    TableRow tr = (TableRow) tl_productList.getChildAt(i);
-                                    CheckBox cb = (CheckBox) tr.getChildAt(0);
-                                    if (cb.isChecked()) {
-                                        chckCount++;
-                                        break;
-                                    }
-                                }
-
-                                if (chckCount == 0) {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Please select atleast 1 product",
-                                            Toast.LENGTH_LONG).show();
-                                } else {
-                                    for (int i = 1; i < tl_productList.getChildCount(); i++) {
-                                        TableRow tr = (TableRow) tl_productList.getChildAt(i);
-                                        CheckBox cb = (CheckBox) tr.getChildAt(0);
-                                        Spinner spin = (Spinner) tr.getChildAt(1);
-                                        /*String stramt = spin.getSelectedItem().toString();
-                                        String mrpArray[] = stramt.split(" ");
-                                        String finalMRP = mrpArray[0];*/
-                                        if (cb.isChecked()) {
-                                            arr_selectedDBids.add(db.fetchStockDbID(cb.getText().toString(), spin.getSelectedItem().toString(), sp_product_category
-                                                    .getSelectedItem().toString()));
-                                        }
-                                    }
-
-                                    String pro_name[] = new String[arr_selectedDBids.size()];
-                                    String chck_db_id[] = new String[arr_selectedDBids.size()];
-                                    String chck_mrp[] = new String[arr_selectedDBids.size()];
-                                    String chck_size[] = new String[arr_selectedDBids.size()];
-                                    String chck_cat_id[] = new String[arr_selectedDBids.size()];
-                                    String enacode[] = new String[arr_selectedDBids.size()];
-                                    String chck_shade[] = new String[arr_selectedDBids.size()];
-
-                                    for (int i = 0; i < arr_selectedDBids.size(); i++) {
-                                        Cursor cur = db.fetchallSpecifyMSelect("product_master", null, "db_id = ? ", new String[]{arr_selectedDBids.get(i)}, null);
-                                        if (cur != null && cur.getCount() > 0) {
-                                            cur.moveToFirst();
-
-                                            pro_name[i] = cur.getString(cur.getColumnIndex("ProductName"));
-                                            chck_db_id[i] = arr_selectedDBids.get(i);
-                                            chck_mrp[i] = cur.getString(cur.getColumnIndex("MRP"));
-                                            chck_size[i] = cur.getString(cur.getColumnIndex("Size"));
-                                            chck_cat_id[i] = cur.getString(cur.getColumnIndex("CategoryId"));
-                                            enacode[i] = cur.getString(cur.getColumnIndex("EANCode"));
-                                            chck_shade[i] = cur.getString(cur.getColumnIndex("ShadeNo"));
-
-                                        }
-                                    }
-
-
-                                    startActivity(new Intent(StockNewActivity.this,
-                                            StockAllActivity.class)
-                                            .putExtra("db_id", chck_db_id)
-                                            .putExtra("pro_name", pro_name)
-                                            .putExtra("mrp", chck_mrp).putExtra("encode", enacode).putExtra("catid", chck_cat_id)
-                                            .putExtra("shadeNo", chck_shade).putExtra("CAT", chck_cat_id).putExtra("Size", chck_size));
-
-
-                                }
-
-
-                            }
-
-                        } else {
-                            Toast.makeText(getApplicationContext(),
-                                    "Please select Mode",
-                                    Toast.LENGTH_LONG).show();
-                        }
-
-                    } else {
-                        Toast.makeText(getApplicationContext(),
-                                "Please select Type",
-                                Toast.LENGTH_LONG).show();
                     }
+                }, 2000);// set time as per your requirement
 
+                if (sp_product_mode.getSelectedItem().toString().equalsIgnoreCase("Return From Customer")) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Selected Mode");
+                    builder.setMessage("You select Return From Customer Do you want to proceed!!!")
+                            .setCancelable(false)
+                            .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //do things
+                                    stockProceedData();
+                                }
+                            })
+                            .setNegativeButton("NO",new DialogInterface.OnClickListener() {
 
+                                        public void onClick(
+
+                                                DialogInterface dialog,
+                                                int id) {
+
+                                            dialog.dismiss();
+                                        }
+                                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                } else if (sp_product_mode.getSelectedItem().toString().equalsIgnoreCase("Return to Company")) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Selected Mode");
+                    builder.setMessage("You select Return to Company Do you want to proceed!!!")
+                            .setCancelable(false)
+                            .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //do things
+                                    stockProceedData();
+                                }
+                            })
+                            .setNegativeButton("NO",new DialogInterface.OnClickListener() {
+
+                                public void onClick(
+
+                                        DialogInterface dialog,
+                                        int id) {
+
+                                    dialog.dismiss();
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
                 } else {
-                    Toast.makeText(getApplicationContext(),
-                            "Please select Category",
-                            Toast.LENGTH_LONG).show();
+
+                    stockProceedData();
+
                 }
 
 
@@ -439,8 +400,8 @@ public class StockNewActivity extends Activity implements OnClickListener {
                         comma_eancode[] = new String[c.getCount()],
                         comma_product[] = new String[c.getCount()],
                         comma_shade[] = new String[c.getCount()];
-                        //changes
-                        //stropening[] = new String[c.getCount()];
+                //changes
+                //stropening[] = new String[c.getCount()];
 
                 if (c != null && c.getCount() > 0) {
                     c.moveToFirst();
@@ -521,7 +482,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
 
     // New Changes
     @SuppressLint("SimpleDateFormat")
-    public String getopening(String dbid,String PRICE) {
+    public String getopening(String dbid, String PRICE) {
 
         String closebal = "", retn = "";
         Cursor mCursor;
@@ -560,6 +521,117 @@ public class StockNewActivity extends Activity implements OnClickListener {
     public void onBackPressed() {
         // TODO Auto-generated method stub
 
+    }
+
+    public void stockProceedData() {
+
+        String check = "";
+        int chckCount = 0;
+
+        if (sp_product_category.getSelectedItemPosition() != 0) {
+
+            if (sp_product_type.getSelectedItemPosition() != 0) {
+
+
+                if (modecounter == 1) {
+                    if (PMODE != null) {
+                        check = PMODE.trim();
+                    } else {
+                        Toast.makeText(getApplicationContext(),
+                                "Please select Mode",
+                                Toast.LENGTH_LONG).show();
+
+                    }
+
+                    if (check.contentEquals("Select Mode") || check.equals("")) {
+                        Toast.makeText(getApplicationContext(),
+                                "Please select Mode",
+                                Toast.LENGTH_LONG).show();
+
+                    } else {
+                        for (int i = 1; i < tl_productList.getChildCount(); i++) {
+                            TableRow tr = (TableRow) tl_productList.getChildAt(i);
+                            CheckBox cb = (CheckBox) tr.getChildAt(0);
+                            if (cb.isChecked()) {
+                                chckCount++;
+                                break;
+                            }
+                        }
+
+                        if (chckCount == 0) {
+                            Toast.makeText(getApplicationContext(),
+                                    "Please select atleast 1 product",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            for (int i = 1; i < tl_productList.getChildCount(); i++) {
+                                TableRow tr = (TableRow) tl_productList.getChildAt(i);
+                                CheckBox cb = (CheckBox) tr.getChildAt(0);
+                                Spinner spin = (Spinner) tr.getChildAt(1);
+                                        /*String stramt = spin.getSelectedItem().toString();
+                                        String mrpArray[] = stramt.split(" ");
+                                        String finalMRP = mrpArray[0];*/
+                                if (cb.isChecked()) {
+                                    arr_selectedDBids.add(db.fetchStockDbID(cb.getText().toString(), spin.getSelectedItem().toString(), sp_product_category
+                                            .getSelectedItem().toString()));
+                                }
+                            }
+
+                            String pro_name[] = new String[arr_selectedDBids.size()];
+                            String chck_db_id[] = new String[arr_selectedDBids.size()];
+                            String chck_mrp[] = new String[arr_selectedDBids.size()];
+                            String chck_size[] = new String[arr_selectedDBids.size()];
+                            String chck_cat_id[] = new String[arr_selectedDBids.size()];
+                            String enacode[] = new String[arr_selectedDBids.size()];
+                            String chck_shade[] = new String[arr_selectedDBids.size()];
+
+                            for (int i = 0; i < arr_selectedDBids.size(); i++) {
+                                Cursor cur = db.fetchallSpecifyMSelect("product_master", null, "db_id = ? ", new String[]{arr_selectedDBids.get(i)}, null);
+                                if (cur != null && cur.getCount() > 0) {
+                                    cur.moveToFirst();
+
+                                    pro_name[i] = cur.getString(cur.getColumnIndex("ProductName"));
+                                    chck_db_id[i] = arr_selectedDBids.get(i);
+                                    chck_mrp[i] = cur.getString(cur.getColumnIndex("MRP"));
+                                    chck_size[i] = cur.getString(cur.getColumnIndex("Size"));
+                                    chck_cat_id[i] = cur.getString(cur.getColumnIndex("CategoryId"));
+                                    enacode[i] = cur.getString(cur.getColumnIndex("EANCode"));
+                                    chck_shade[i] = cur.getString(cur.getColumnIndex("ShadeNo"));
+
+                                }
+                            }
+
+
+                            startActivity(new Intent(StockNewActivity.this,
+                                    StockAllActivity.class)
+                                    .putExtra("db_id", chck_db_id)
+                                    .putExtra("pro_name", pro_name)
+                                    .putExtra("mrp", chck_mrp).putExtra("encode", enacode).putExtra("catid", chck_cat_id)
+                                    .putExtra("shadeNo", chck_shade).putExtra("CAT", chck_cat_id).putExtra("Size", chck_size));
+
+
+                        }
+
+
+                    }
+
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "Please select Mode",
+                            Toast.LENGTH_LONG).show();
+                }
+
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        "Please select Type",
+                        Toast.LENGTH_LONG).show();
+            }
+
+
+        } else {
+            Toast.makeText(getApplicationContext(),
+                    "Please select Category",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
 }
