@@ -270,7 +270,7 @@ public class SaleNewActivity extends Activity implements OnClickListener {
 					Log.d(TAG, "resend1");
 
 				}
-			}, 2000);// set time as per your requirement
+			}, 5000);// set time as per your requirement
 
 			String check = "";
 			int chckCount = 0;

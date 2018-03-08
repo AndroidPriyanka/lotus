@@ -295,7 +295,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
                         Log.d(TAG, "resend1");
 
                     }
-                }, 2000);// set time as per your requirement
+                }, 5000);// set time as per your requirement
 
                 if (sp_product_mode.getSelectedItem().toString().equalsIgnoreCase("Return From Customer")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);

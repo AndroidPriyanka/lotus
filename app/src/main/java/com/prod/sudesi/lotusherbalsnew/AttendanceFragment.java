@@ -651,7 +651,7 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
 
             if (cd.isConnectingToInternet()) {
 
-                String serverddate = sp.getString("currentdate","");
+                String serverddate = sp.getString("currentdate", "");
                 String[] parts = serverddate.split(" ");
                 String serverdd = parts[0];
 
@@ -761,6 +761,7 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                                 } else {
                                     final Dialog dialog = new Dialog(AttendanceFragment.this);
                                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                    dialog.setCancelable(false);
                                     dialog.setContentView(R.layout.layout_out_attendance);
 
                                     out = (Button) dialog.findViewById(R.id.btn_out);
@@ -782,7 +783,7 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                                                     Log.d(TAG, "resend1");
 
                                                 }
-                                            }, 2000);// set time as per your requirement
+                                            }, 5000);// set time as per your requirement
 
                                             db.updateAttendance(sld1, username, sld1);
                                             savelogout = new SaveLogoutTime();
@@ -810,6 +811,7 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                             } else {
                                 final Dialog dialog = new Dialog(AttendanceFragment.this);
                                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                dialog.setCancelable(false);
                                 dialog.setContentView(R.layout.layout_out_attendance);
 
                                 out = (Button) dialog.findViewById(R.id.btn_out);
@@ -831,7 +833,7 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                                                 Log.d(TAG, "resend1");
 
                                             }
-                                        }, 2000);// set time as per your requirement
+                                        }, 5000);// set time as per your requirement
 
                                         db.updateAttendance(sld1, username, sld1);
                                         dialog.cancel();
@@ -889,7 +891,7 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                                             Log.d(TAG, "resend1");
 
                                         }
-                                    }, 2000);// set time as per your requirement
+                                    }, 5000);// set time as per your requirement
 
                                     attendance_flag = "P";
                                     leavetype_flag = "";
@@ -926,7 +928,7 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                                             Log.d(TAG, "resend1");
 
                                         }
-                                    }, 2000);// set time as per your requirement
+                                    }, 5000);// set time as per your requirement
 
                                     if (cd.isConnectingToInternet()) {
 
@@ -1794,7 +1796,7 @@ public class AttendanceFragment extends Activity implements OnClickListener, OnL
                 switch (resultCode) {
                     case RESULT_OK:
                         Log.e("Settings", "Result OK");
-                       // updateGPSStatus("GPS is Enabled in your device");
+                        // updateGPSStatus("GPS is Enabled in your device");
                         //startLocationUpdates();
                         startLocation();
 

@@ -148,7 +148,7 @@ public class SaleCalculation extends Activity {
                         Log.d(TAG, "resend1");
 
                     }
-                }, 2000);// set time as per your requirement
+                }, 5000);// set time as per your requirement
 
                 if (cd.isCurrentDateMatchDeviceDate()) {
                     try {

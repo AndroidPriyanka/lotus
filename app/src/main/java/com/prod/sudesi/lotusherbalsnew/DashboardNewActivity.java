@@ -86,7 +86,7 @@ public class DashboardNewActivity extends Activity {
 
     private AlarmManagerBroadcastReceiver alarm;
 
-    @SuppressLint("InflateParams")
+    @SuppressLint({"InflateParams", "WrongConstant"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub

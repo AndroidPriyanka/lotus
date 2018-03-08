@@ -113,8 +113,8 @@ public class LoginActivity extends Activity {
     public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production
 
     //UAT
-//    public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT
-//    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT
+    /*public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT
+    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT*/
 
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE);
@@ -126,6 +126,11 @@ public class LoginActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AutologoutBroadcast();
+    }
 
     @SuppressLint("HardwareIds")
     @Override
@@ -166,25 +171,25 @@ public class LoginActivity extends Activity {
         service = new LotusWebservice(LoginActivity.this);
 
         Calendar c = Calendar.getInstance();
-        int year1 = c.get(Calendar.YEAR);
-        int month1 = c.get(Calendar.MONTH);
+        @SuppressLint("WrongConstant") int year1 = c.get(Calendar.YEAR);
+        @SuppressLint("WrongConstant") int month1 = c.get(Calendar.MONTH);
 
         month = String.valueOf(month1 + 1);
         year = String.valueOf(year1);
 
 
-        if (checkPermission()) {
+        //if (checkPermission()) {
 //            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 //            assert telephonyManager != null;
 //            deviceId = telephonyManager.getDeviceId();
             deviceId =  Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        } else {
+       /* } else {
             //Toast.makeText(this, "Please give access to read your phone state.", Toast.LENGTH_SHORT).show();
             requestPermission();
-        }
+        }*/
 
         //exportDB();
-        AutologoutBroadcast();
+
         btn_login.setOnClickListener(new OnClickListener() {
 
             @SuppressLint("DefaultLocale")
@@ -205,7 +210,7 @@ public class LoginActivity extends Activity {
                         Log.d(TAG, "resend1");
 
                     }
-                }, 2000);// set time as per your requirement
+                }, 5000);// set time as per your requirement
 
                 try {
                     if (cd.isConnectingToInternet()) {
@@ -257,17 +262,17 @@ public class LoginActivity extends Activity {
     public void onResume() {
         super.onResume();
 
-        if (checkPermission()) {
+        //if (checkPermission()) {
 //            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 //            assert telephonyManager != null;
 //            deviceId = telephonyManager.getDeviceId();
 
             deviceId =  Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        } else {
+        /*} else {
            // Toast.makeText(this, "Please give access to read your phone state.", Toast.LENGTH_SHORT).show();
             requestPermission();
-        }
+        }*/
     }
 
     private void DataUploadAlaramReceiver() {
@@ -569,7 +574,7 @@ public class LoginActivity extends Activity {
 
                                                 }
                                                 loginstaus = "true1";
-                                                checkAndSaveMonthly();
+                                                //checkAndSaveMonthly();
 
                                             } else if (soap_result2
                                                     .toString()
@@ -826,7 +831,6 @@ public class LoginActivity extends Activity {
                                     //SetClosingISOpeningOnlyOnce();
                                     // checkAndSaveMonthly();
                                     checkpresentornot(todaydate1);
-                                    // checkAndSaveMonthly();
 
                                 } else {
 
@@ -865,7 +869,6 @@ public class LoginActivity extends Activity {
                                     //SetClosingISOpeningOnlyOnce();
                                     // checkAndSaveMonthly();
                                     checkpresentornot(todaydate1);
-                                    // checkAndSaveMonthly();
 
                                 }
 
@@ -1092,7 +1095,6 @@ public class LoginActivity extends Activity {
             Boc26AlaramReceiver();
             Intent i = new Intent(getApplicationContext(),
                     DashboardNewActivity.class);
-
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.putExtra("FROM", "LOGIN");
             startActivity(i);
@@ -2227,8 +2229,8 @@ public class LoginActivity extends Activity {
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, broadCastIntent, 0);
                 //set timer you want alarm to work (here I have set it to 7.00)
                 Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY, 5);  //24
-                calendar.set(Calendar.MINUTE, 0);   //0
+                calendar.set(Calendar.HOUR_OF_DAY, 15);  //24
+                calendar.set(Calendar.MINUTE, 10);   //0
                 calendar.set(Calendar.SECOND, 0);
 
                 //set that timer as a RTC Wakeup to alarm manager object
@@ -2346,6 +2348,5 @@ public class LoginActivity extends Activity {
 
         }
     }
-
 
 }
