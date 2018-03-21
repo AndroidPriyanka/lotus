@@ -4,25 +4,53 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="5dp"
     android:padding="3dp"
-    android:weightSum="3" android:paddingBottom="30dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:weightSum="3"
+    android:paddingBottom="30dp">
 
     <CheckBox
         android:id="@+id/chck_product"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_weight="2.3"
         android:button="@drawable/checkbox_selection"
         android:ems="7"
         android:text="CheckBox"
         android:textColor="#FFFFFF"
-        android:textSize="12sp" android:paddingBottom="10dp"/>
-    
+        android:textSize="12sp"
+        android:paddingBottom="10dp"/>
 
-    <Spinner
-        android:id="@+id/spin_mrp"
+
+    <TextView
+        android:id="@+id/txt_mrp"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@drawable/dropdown1" />
+        android:layout_weight="0.7"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        />
+
+            <AutoCompleteTextView
+                android:id="@+id/spin_mrp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:background="@color/white"
+                android:clickable="false"
+                android:dropDownWidth="match_parent"
+                android:dropDownHeight="wrap_content"
+                android:focusable="false"
+                android:gravity="center"
+                android:hint="Select"
+                android:imeOptions="actionNext"
+                android:inputType="none"
+                android:maxLength="50"
+                android:singleLine="true"
+                android:textIsSelectable="true"
+                android:textSize="@dimen/_12sdp"
+                android:windowSoftInputMode="stateHidden" />
+
 
 </TableRow>

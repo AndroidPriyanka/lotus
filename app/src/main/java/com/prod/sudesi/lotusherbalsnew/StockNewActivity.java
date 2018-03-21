@@ -10,13 +10,16 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
@@ -56,7 +59,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
     ArrayList<String> producttypeArray = new ArrayList<String>();
     ArrayList<HashMap<String, String[]>> productDetailsArray = new ArrayList<HashMap<String, String[]>>();
 
-    ArrayList<String> arr_selectedDBids = new ArrayList<String>();
+    ArrayList<String> arr_selectedDBids;
 
     public static String selected_product_category, selected_product_type,
             selected_product_name, selected_product_id1;
@@ -68,7 +71,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
 
     String username, bdename;
 
-    String sclo = "";
+    String sclo = "", mrpstring;
 
 
     @Override
@@ -308,16 +311,16 @@ public class StockNewActivity extends Activity implements OnClickListener {
                                     stockProceedData();
                                 }
                             })
-                            .setNegativeButton("NO",new DialogInterface.OnClickListener() {
+                            .setNegativeButton("NO", new DialogInterface.OnClickListener() {
 
-                                        public void onClick(
+                                public void onClick(
 
-                                                DialogInterface dialog,
-                                                int id) {
+                                        DialogInterface dialog,
+                                        int id) {
 
-                                            dialog.dismiss();
-                                        }
-                                    });
+                                    dialog.dismiss();
+                                }
+                            });
                     AlertDialog alert = builder.create();
                     alert.show();
                 } else if (sp_product_mode.getSelectedItem().toString().equalsIgnoreCase("Return to Company")) {
@@ -331,7 +334,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
                                     stockProceedData();
                                 }
                             })
-                            .setNegativeButton("NO",new DialogInterface.OnClickListener() {
+                            .setNegativeButton("NO", new DialogInterface.OnClickListener() {
 
                                 public void onClick(
 
@@ -400,8 +403,6 @@ public class StockNewActivity extends Activity implements OnClickListener {
                         comma_eancode[] = new String[c.getCount()],
                         comma_product[] = new String[c.getCount()],
                         comma_shade[] = new String[c.getCount()];
-                //changes
-                //stropening[] = new String[c.getCount()];
 
                 if (c != null && c.getCount() > 0) {
                     c.moveToFirst();
@@ -415,9 +416,6 @@ public class StockNewActivity extends Activity implements OnClickListener {
                         comma_eancode[i] = c.getString(c.getColumnIndex("EANCode"));
                         comma_product[i] = c.getString(c.getColumnIndex("ProductName"));
                         comma_shade[i] = c.getString(c.getColumnIndex("ShadeNo"));
-                        // New changes
-//                        String opening = getopening(String.valueOf(comma_dbids[i]),String.valueOf(comma_mrps[i]));
-//                        stropening[i] = opening;
 
                         c.moveToNext();
 
@@ -432,8 +430,6 @@ public class StockNewActivity extends Activity implements OnClickListener {
                 map.put("EANCODE", comma_eancode);
                 map.put("PRODUCT", comma_product);
                 map.put("SHADENO", comma_shade);
-                // New changes
-                //map.put("OPENING", stropening);
 
                 productDetailsArray.add(map);
 
@@ -441,28 +437,60 @@ public class StockNewActivity extends Activity implements OnClickListener {
             } while (cursor.moveToNext());
 
             for (int i = 0; i < productDetailsArray.size(); i++) {
-                List<String> prodMrpOpeningList = new ArrayList<String>();
 
                 View tr = (TableRow) View.inflate(StockNewActivity.this, R.layout.inflate_stocksale_row, null);
 
                 CheckBox cb = (CheckBox) tr.findViewById(R.id.chck_product);
 
-                Spinner spin = (Spinner) tr.findViewById(R.id.spin_mrp);
+                final AutoCompleteTextView spin = (AutoCompleteTextView) tr.findViewById(R.id.spin_mrp);
+
+                TextView txtmrp = (TextView) tr.findViewById(R.id.txt_mrp);
 
                 cb.setText(productDetailsArray.get(i).get("PRODUCT")[0]);
 
-                String mrps[] = productDetailsArray.get(i).get("MRPS");
-                // New changes
-                /*String openingvalue[] = productDetailsArray.get(i).get("OPENING");
-                List<String> prodMrpList = new ArrayList<String>(Arrays.asList(mrps));
+                final String mrps[] = productDetailsArray.get(i).get("MRPS");
 
-                for (int j=0, k = 0; j < prodMrpList.size(); j++, k++){
-                    prodMrpOpeningList.add(mrps[j]+" "+openingvalue[k]);
-                }*/
-                //prodMrpOpeningList.toArray(new String[prodMrpOpeningList.size()])
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(StockNewActivity.this, android.R.layout.simple_spinner_item, mrps);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mrps) {
+                    @Override
+                    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                        View v = null;
+                        // If this is the initial dummy entry, make it hidden
+                        if (position == 0) {
+                            TextView tv = new TextView(getContext());
+                            tv.setHeight(0);
+                            tv.setVisibility(View.GONE);
+                            v = tv;
+                        } else {
+                            // Pass convertView as null to prevent reuse of special case views
+                            v = super.getDropDownView(position, null, parent);
+                        }
+                        // Hide scroll bar because it appears sometimes unnecessarily, this does not prevent scrolling
+                        parent.setVerticalScrollBarEnabled(false);
+                        return v;
+                    }
+                };
 
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spin.setAdapter(adapter);
+
+                spin.setOnTouchListener(new View.OnTouchListener() {
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        spin.showDropDown();
+                        return false;
+                    }
+                });
+
+                spin.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        if (mrps != null && mrps.length > 0) {
+
+                            mrpstring = parent.getItemAtPosition(position).toString();
+                        }
+                    }
+                });
 
                 tl_productList.addView(tr);
 
@@ -471,7 +499,9 @@ public class StockNewActivity extends Activity implements OnClickListener {
             View tr1 = (TableRow) View.inflate(StockNewActivity.this, R.layout.inflate_stocksale_row, null);
             CheckBox cb = (CheckBox) tr1.findViewById(R.id.chck_product);
 
-            Spinner spin = (Spinner) tr1.findViewById(R.id.spin_mrp);
+            AutoCompleteTextView spin = (AutoCompleteTextView) tr1.findViewById(R.id.spin_mrp);
+
+            TextView txtmrp = (TextView) tr1.findViewById(R.id.txt_mrp);
 
             tr1.setVisibility(View.INVISIBLE);
 
@@ -526,6 +556,8 @@ public class StockNewActivity extends Activity implements OnClickListener {
     public void stockProceedData() {
 
         String check = "";
+
+        arr_selectedDBids = new ArrayList<String>();
         int chckCount = 0;
 
         if (sp_product_category.getSelectedItemPosition() != 0) {
@@ -554,7 +586,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
                             CheckBox cb = (CheckBox) tr.getChildAt(0);
                             if (cb.isChecked()) {
                                 chckCount++;
-                                break;
+                                // break;
                             }
                         }
 
@@ -563,51 +595,59 @@ public class StockNewActivity extends Activity implements OnClickListener {
                                     "Please select atleast 1 product",
                                     Toast.LENGTH_LONG).show();
                         } else {
+                            boolean spinvalue = true;
+
                             for (int i = 1; i < tl_productList.getChildCount(); i++) {
                                 TableRow tr = (TableRow) tl_productList.getChildAt(i);
                                 CheckBox cb = (CheckBox) tr.getChildAt(0);
-                                Spinner spin = (Spinner) tr.getChildAt(1);
-                                        /*String stramt = spin.getSelectedItem().toString();
-                                        String mrpArray[] = stramt.split(" ");
-                                        String finalMRP = mrpArray[0];*/
+                                TextView txtmrp = (TextView) tr.getChildAt(1);
+                                AutoCompleteTextView spin = (AutoCompleteTextView) tr.getChildAt(2);
+
                                 if (cb.isChecked()) {
-                                    arr_selectedDBids.add(db.fetchStockDbID(cb.getText().toString(), spin.getSelectedItem().toString(), sp_product_category
-                                            .getSelectedItem().toString()));
+                                    if (!spin.getText().toString().equals("")) {
+                                        arr_selectedDBids.add(db.fetchStockDbID(cb.getText().toString(), spin.getText().toString(),
+                                                sp_product_category
+                                                        .getSelectedItem().toString()));
+                                    } else {
+                                        spinvalue = false;
+                                    }
                                 }
                             }
 
-                            String pro_name[] = new String[arr_selectedDBids.size()];
-                            String chck_db_id[] = new String[arr_selectedDBids.size()];
-                            String chck_mrp[] = new String[arr_selectedDBids.size()];
-                            String chck_size[] = new String[arr_selectedDBids.size()];
-                            String chck_cat_id[] = new String[arr_selectedDBids.size()];
-                            String enacode[] = new String[arr_selectedDBids.size()];
-                            String chck_shade[] = new String[arr_selectedDBids.size()];
+                            if (spinvalue == false) {
+                                Toast.makeText(getApplicationContext(), "Please select MRP", Toast.LENGTH_SHORT).show();
+                            } else {
+                                String pro_name[] = new String[arr_selectedDBids.size()];
+                                String chck_db_id[] = new String[arr_selectedDBids.size()];
+                                String chck_mrp[] = new String[arr_selectedDBids.size()];
+                                String chck_size[] = new String[arr_selectedDBids.size()];
+                                String chck_cat_id[] = new String[arr_selectedDBids.size()];
+                                String enacode[] = new String[arr_selectedDBids.size()];
+                                String chck_shade[] = new String[arr_selectedDBids.size()];
 
-                            for (int i = 0; i < arr_selectedDBids.size(); i++) {
-                                Cursor cur = db.fetchallSpecifyMSelect("product_master", null, "db_id = ? ", new String[]{arr_selectedDBids.get(i)}, null);
-                                if (cur != null && cur.getCount() > 0) {
-                                    cur.moveToFirst();
+                                for (int i = 0; i < arr_selectedDBids.size(); i++) {
+                                    Cursor cur = db.fetchallSpecifyMSelect("product_master", null, "db_id = ? ", new String[]{arr_selectedDBids.get(i)}, null);
+                                    if (cur != null && cur.getCount() > 0) {
+                                        cur.moveToFirst();
 
-                                    pro_name[i] = cur.getString(cur.getColumnIndex("ProductName"));
-                                    chck_db_id[i] = arr_selectedDBids.get(i);
-                                    chck_mrp[i] = cur.getString(cur.getColumnIndex("MRP"));
-                                    chck_size[i] = cur.getString(cur.getColumnIndex("Size"));
-                                    chck_cat_id[i] = cur.getString(cur.getColumnIndex("CategoryId"));
-                                    enacode[i] = cur.getString(cur.getColumnIndex("EANCode"));
-                                    chck_shade[i] = cur.getString(cur.getColumnIndex("ShadeNo"));
+                                        pro_name[i] = cur.getString(cur.getColumnIndex("ProductName"));
+                                        chck_db_id[i] = arr_selectedDBids.get(i);
+                                        chck_mrp[i] = cur.getString(cur.getColumnIndex("MRP"));
+                                        chck_size[i] = cur.getString(cur.getColumnIndex("Size"));
+                                        chck_cat_id[i] = cur.getString(cur.getColumnIndex("CategoryId"));
+                                        enacode[i] = cur.getString(cur.getColumnIndex("EANCode"));
+                                        chck_shade[i] = cur.getString(cur.getColumnIndex("ShadeNo"));
 
+                                    }
                                 }
+                                startActivity(new Intent(StockNewActivity.this,
+                                        StockAllActivity.class)
+                                        .putExtra("db_id", chck_db_id)
+                                        .putExtra("pro_name", pro_name)
+                                        .putExtra("mrp", chck_mrp).putExtra("encode", enacode).putExtra("catid", chck_cat_id)
+                                        .putExtra("shadeNo", chck_shade).putExtra("CAT", chck_cat_id).putExtra("Size", chck_size));
+
                             }
-
-
-                            startActivity(new Intent(StockNewActivity.this,
-                                    StockAllActivity.class)
-                                    .putExtra("db_id", chck_db_id)
-                                    .putExtra("pro_name", pro_name)
-                                    .putExtra("mrp", chck_mrp).putExtra("encode", enacode).putExtra("catid", chck_cat_id)
-                                    .putExtra("shadeNo", chck_shade).putExtra("CAT", chck_cat_id).putExtra("Size", chck_size));
-
 
                         }
 

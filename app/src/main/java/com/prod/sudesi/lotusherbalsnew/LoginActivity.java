@@ -126,11 +126,6 @@ public class LoginActivity extends Activity {
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        AutologoutBroadcast();
-    }
 
     @SuppressLint("HardwareIds")
     @Override
@@ -189,7 +184,7 @@ public class LoginActivity extends Activity {
         }*/
 
         //exportDB();
-
+        AutologoutBroadcast();
         btn_login.setOnClickListener(new OnClickListener() {
 
             @SuppressLint("DefaultLocale")
@@ -2216,6 +2211,7 @@ public class LoginActivity extends Activity {
         }
     }
 
+    @SuppressLint("WrongConstant")
     public void AutologoutBroadcast() {
         try {
 
@@ -2229,8 +2225,8 @@ public class LoginActivity extends Activity {
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, broadCastIntent, 0);
                 //set timer you want alarm to work (here I have set it to 7.00)
                 Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY, 15);  //24
-                calendar.set(Calendar.MINUTE, 10);   //0
+                calendar.set(Calendar.HOUR_OF_DAY, 5);  //24
+                calendar.set(Calendar.MINUTE, 0);   //0
                 calendar.set(Calendar.SECOND, 0);
 
                 //set that timer as a RTC Wakeup to alarm manager object

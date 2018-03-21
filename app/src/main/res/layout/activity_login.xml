@@ -31,7 +31,7 @@
                	android:inputType="textCapCharacters"
                 android:background="@drawable/us"  
                 android:ems="10"
-                android:text=""
+                android:text="LHR-9999"
                 android:maxLength="12"
                 android:singleLine="true"                
                 android:paddingLeft="10dp" >
@@ -47,7 +47,7 @@
                  android:maxLength="12"
                 android:singleLine="true"
                 android:gravity="center"
-                android:text=""
+                android:text="password"
                 android:inputType="textPassword"
                 android:paddingLeft="10dp" />
             <!-- android:background="@drawable/border_login_editext" -->
