@@ -48,9 +48,7 @@ public class BAYearWiseReport extends Activity {
 	LotusWebservice service;
 	
 	ListView lv_ba_report;
-	
-	HorizontalScrollView horizantalscrollviewforbareport;
-	
+
 	static public ArrayList<HashMap<String, String>> todaymessagelist = new ArrayList<HashMap<String, String>>();
 	
 	TextView tv_h_username;
@@ -130,25 +128,7 @@ public class BAYearWiseReport extends Activity {
 				// TODO: handle exception
 				e.printStackTrace();
 			}
-		
-		
-		horizantalscrollviewforbareport =(HorizontalScrollView)findViewById(R.id.horizantal_scrollview_ba_report);
-		
-		horizantalscrollviewforbareport.setOnTouchListener(new OnTouchListener() {
-			
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				// TODO Auto-generated method stub
-				
-				int scrollX = v.getScrollX();
-				int scrollY = v.getScrollY();
 
-				horizantalscrollviewforbareport.scrollTo(scrollX, scrollY);
-				return false;
-			}
-		});
-		
-		
 		tv_current_year_n1 = (TextView)findViewById(R.id.tv_bar_Current_year_n1);
 		tv_current_year_n2 = (TextView)findViewById(R.id.tv_bar_Current_year_n2);
 		tv_previous_year_p1 = (TextView)findViewById(R.id.tv_bar_Previous_year_p1);

@@ -6,8 +6,6 @@
 
     <include layout="@layout/headernew" />
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,7 +15,7 @@
 
         <ImageSwitcher
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/_1sdp"
             android:background="#C72C2C" />
 
         <LinearLayout
@@ -42,13 +40,13 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/attendance"
-                    android:padding="5dp" />
+                    android:padding="@dimen/_1sdp" />
 
 
             </LinearLayout>
 
             <ImageSwitcher
-                android:layout_width="1dp"
+                android:layout_width="@dimen/_1sdp"
                 android:layout_height="match_parent"
                 android:background="#C72C2C" />
 
@@ -64,13 +62,13 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/noti"
-                    android:padding="5dp"
+                    android:padding="@dimen/_5sdp"
                     />
 
             </LinearLayout>
 
             <ImageSwitcher
-                android:layout_width="1dp"
+                android:layout_width="@dimen/_1sdp"
                 android:layout_height="match_parent"
                 android:background="#C72C2C" />
 
@@ -86,7 +84,7 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/master"
-                    android:padding="5dp"
+                    android:padding="@dimen/_5sdp"
                     />
 
             </LinearLayout>
@@ -95,7 +93,7 @@
 
         <ImageSwitcher
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/_1sdp"
             android:background="#C72C2C" />
 
         <LinearLayout
@@ -119,13 +117,13 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/stock"
-                    android:padding="5dp"
+                    android:padding="@dimen/_5sdp"
                     />
 
             </LinearLayout>
 
             <ImageSwitcher
-                android:layout_width="1dp"
+                android:layout_width="@dimen/_1sdp"
                 android:layout_height="match_parent"
                 android:background="#C72C2C" />
 
@@ -141,13 +139,13 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/sale"
-                    android:padding="5dp"
+                    android:padding="@dimen/_5sdp"
                     />
 
             </LinearLayout>
 
             <ImageSwitcher
-                android:layout_width="1dp"
+                android:layout_width="@dimen/_1sdp"
                 android:layout_height="match_parent"
                 android:background="#C72C2C" />
 
@@ -163,7 +161,7 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/reports"
-                    android:padding="5dp"
+                    android:padding="@dimen/_5sdp"
                     />
 
             </LinearLayout>
@@ -172,7 +170,7 @@
 
         <ImageSwitcher
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/_1sdp"
             android:background="#C72C2C" />
 
         <LinearLayout
@@ -196,13 +194,13 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/ba_report"
-                    android:padding="5dp"
+                    android:padding="@dimen/_5sdp"
                     />
 
             </LinearLayout>
 
             <ImageSwitcher
-                android:layout_width="1dp"
+                android:layout_width="@dimen/_1sdp"
                 android:layout_height="match_parent"
                 android:background="#C72C2C" />
 
@@ -218,13 +216,13 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/dashboard"
-                    android:padding="5dp"
+                    android:padding="@dimen/_5sdp"
                     />
 
             </LinearLayout>
 
             <ImageSwitcher
-                android:layout_width="1dp"
+                android:layout_width="@dimen/_1sdp"
                 android:layout_height="match_parent"
                 android:background="#C72C2C" />
 
@@ -240,7 +238,7 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/ba_out_sale"
-                    android:padding="5dp"
+                    android:padding="@dimen/_5sdp"
                     />
 
             </LinearLayout>
@@ -249,7 +247,7 @@
 
         <ImageSwitcher
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/_1sdp"
             android:background="#C72C2C" />
 
         <LinearLayout
@@ -273,13 +271,13 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/supervisor"
-                    android:padding="5dp"
+                    android:padding="@dimen/_5sdp"
                     />
 
             </LinearLayout>
 
             <ImageSwitcher
-                android:layout_width="1dp"
+                android:layout_width="@dimen/_1sdp"
                 android:layout_height="match_parent"
                 android:background="#C72C2C" />
 
@@ -295,13 +293,13 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/test"
-                    android:padding="5dp"
+                    android:padding="@dimen/_5sdp"
                     />
 
             </LinearLayout>
 
             <ImageSwitcher
-                android:layout_width="1dp"
+                android:layout_width="@dimen/_1sdp"
                 android:layout_height="match_parent"
                 android:background="#C72C2C" />
 
@@ -317,7 +315,7 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/visibility"
-                    android:padding="5dp"
+                    android:padding="@dimen/_5sdp"
                     />
 
             </LinearLayout>
@@ -326,7 +324,7 @@
 
         <ImageSwitcher
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/_1sdp"
             android:background="#C72C2C" />
 
     </LinearLayout>

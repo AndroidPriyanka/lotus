@@ -90,7 +90,7 @@ public class NotificationAdapter extends BaseAdapter {
 			viewHolder.message = (TextView)convertView.findViewById(R.id.message); 
 			viewHolder.date=(TextView)convertView.findViewById(R.id.date);
 			viewHolder.receiver=(TextView)convertView.findViewById(R.id.btnReceiver);
-			viewHolder.btnreceiver=(Button)convertView.findViewById(R.id.button1);
+			//viewHolder.btnreceiver=(Button)convertView.findViewById(R.id.button1);
 			
 			viewHolder.message.setTypeface(tf);
 			 

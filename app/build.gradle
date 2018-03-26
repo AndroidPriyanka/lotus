@@ -45,10 +45,11 @@ dependencies {
     compile 'com.intuit.sdp:sdp-android:1.0.3'
     compile 'com.android.volley:volley:1.1.0'
     compile files('libs/ksoap2-android-assembly-3.0.0-RC.4-jar-with-dependencies.jar')
-    compile 'com.google.android.gms:play-services:8.4.0'
-    compile 'com.google.android.gms:play-services-location:8.4.0'
+   // compile 'com.google.android.gms:play-services:8.4.0'
+    //compile 'com.google.android.gms:play-services-location:8.4.0'
+    compile 'com.google.android.gms:play-services-location:11.0.0'
     compile 'com.karumi:dexter:4.2.0'
-    compile('io.nlopez.smartlocation:library:3.3.1') {
+    /*compile('io.nlopez.smartlocation:library:3.3.1') {
         transitive = false
-    }
+    }*/
 }

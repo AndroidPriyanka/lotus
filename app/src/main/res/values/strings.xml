@@ -48,6 +48,10 @@
     <string name = "master_sync">Master-Sync</string>
     <string name = "dashboard">Dashboard</string>
 
+    <string name="notDeted">Unable to Get Location</string>
+    <string name="settings">Settings</string>
+    <string name="textwarn">Permission Mandatory for this App</string>
+
     <string-array name="arr">
         <item>Stock recived</item>
         <item>Return From Customer</item>

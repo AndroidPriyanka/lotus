@@ -7,16 +7,16 @@
 
     <include layout="@layout/headernew" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" 
-        android:layout_margin="7dp">
+        android:layout_margin="@dimen/_7sdp">
 
         <TableRow
+            android:id="@+id/trtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" >
+            android:layout_marginTop="@dimen/_20sdp" >
 
             <TextView
                 style="@style/report_textview_heading"
@@ -28,14 +28,15 @@
                 android:typeface="serif"
                 android:textStyle="italic"
                 android:textColor="#FFFFFF"
-                android:textSize="25dp" />
+                android:textSize="25sp" />
         </TableRow>
 
         <TableRow
+            android:id="@+id/trboc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            >
+            android:layout_marginTop="@dimen/_50sdp"
+            android:layout_below="@+id/trtitle">
 
             <TextView
                 style="@style/report_textview_heading"
@@ -46,26 +47,28 @@
                  android:typeface="serif"
                 android:textStyle="italic"
                 android:textColor="#FFFFFF"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow
+            android:id="@+id/trbocspin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/trboc">
 
             <Spinner
                 android:id="@+id/sp_bamr_month"
                 android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                
+                android:layout_height="@dimen/_28sdp"
                 android:background="@drawable/dropdown" />
         </TableRow>
 
         <TableRow
+            android:id="@+id/tryear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-             >
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_below="@+id/trbocspin" >
 
             <TextView
                 style="@style/report_textview_heading"
@@ -76,26 +79,27 @@
                  android:typeface="serif"
                 android:textStyle="italic"
                 android:textColor="#FFFFFF"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow
+            android:id="@+id/tryearspin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tryear">
 
             <Spinner
                 android:id="@+id/sp_bamr_year"
                 android:layout_width="wrap_content"
-                android:layout_height="35dp"
-         
+                android:layout_height="@dimen/_28sdp"
                 android:background="@drawable/dropdown" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:layout_weight="100"
+            android:layout_marginBottom="@dimen/_50sdp"
+            android:layout_alignParentBottom="true"
             android:gravity="center" >
 
             <Button
@@ -105,110 +109,6 @@
                 android:background="@drawable/search_new" />
         </TableRow>
 
-        <!--
-          <HorizontalScrollView 
-         android:id="@+id/horizantalview_for_bamonth_report"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:visibility="gone"
-         >
-     
-    <LinearLayout 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:orientation="vertical">
-    
-        <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        
-        android:background="@layout/tableborder_stock" >
-
-        <TextView
-            style="@style/report_textview_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            
-            android:gravity="center"
-            android:text="Code NO." />
-        
-        <TextView
-            style="@style/report_textview_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            
-            android:gravity="center"
-            android:text="Products" />
-        <TextView
-            style="@style/report_textview_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            
-            android:gravity="center"
-            android:text="Size" />
-        <TextView
-            style="@style/report_textview_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            
-            android:gravity="center"
-            android:text="Mrp" />
-        <TextView
-            style="@style/report_textview_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            
-            android:gravity="center"
-            android:text="Opening Stock" />
-        <TextView
-            style="@style/report_textview_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            
-            android:gravity="center"
-            android:text="Receipt" />
-        <TextView
-            style="@style/report_textview_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            
-            android:gravity="center"
-            android:text="Return Stock" />
-        <TextView
-            style="@style/report_textview_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            
-            android:gravity="center"
-            android:text="Total Stock" />
-        <TextView
-            style="@style/report_textview_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            
-            android:gravity="center"
-            android:text="Sales" />
-        <TextView
-            style="@style/report_textview_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            
-            android:gravity="center"
-            android:text="Closing Stock" />
-       
-      
-    </TableRow> 
-    
-         <ListView
-                android:id="@+id/listView_ba_month_report"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-            </ListView>
-         
-         </LinearLayout>
-         </HorizontalScrollView>
-        -->
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

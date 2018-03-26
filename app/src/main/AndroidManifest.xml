@@ -85,7 +85,8 @@
         </activity>
         <activity
             android:name=".AttendanceFragment"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppFullScreenTheme" />
         <activity
             android:name=".SyncMaster"
             android:screenOrientation="portrait" >

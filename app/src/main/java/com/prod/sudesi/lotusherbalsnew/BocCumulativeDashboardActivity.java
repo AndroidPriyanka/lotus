@@ -47,7 +47,7 @@ public class BocCumulativeDashboardActivity extends Activity {
     Dbcon dbcon;
     Button btn_home;
     TextView tv_h_username;
-    String username;
+    String username,bdename;
     ArrayList<String> dates_array;
     ListView listView;
     private Context context;
@@ -98,8 +98,9 @@ public class BocCumulativeDashboardActivity extends Activity {
         txt_boc.setText(str_BOC);
         txt_year.setText(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
         username = shp.getString("username", "");
+        bdename = shp.getString("BDEusername","");
         tv_h_username = (TextView) findViewById(R.id.tv_h_username);
-        tv_h_username.setText(username);
+        tv_h_username.setText(bdename);
 
         btn_home = (Button) findViewById(R.id.btn_home);
 
