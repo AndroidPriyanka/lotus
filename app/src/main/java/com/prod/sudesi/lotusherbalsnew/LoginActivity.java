@@ -183,7 +183,7 @@ public class LoginActivity extends Activity {
             requestPermission();
         }*/
 
-        //exportDB();
+        exportDB();
         AutologoutBroadcast();
         btn_login.setOnClickListener(new OnClickListener() {
 
@@ -1106,7 +1106,7 @@ public class LoginActivity extends Activity {
 
     }
 
-    @SuppressLint("SimpleDateFormat")
+   /* @SuppressLint("SimpleDateFormat")
     public void checkAndSaveMonthly() {
 
         final Calendar c1 = Calendar.getInstance();
@@ -1153,10 +1153,10 @@ public class LoginActivity extends Activity {
             //	 startActivity(i);
         }
 
-    }
+    }*/
 
 
-    public void SetClosingISOpeningOnlyOnce() {
+    /*public void SetClosingISOpeningOnlyOnce() {
 
         Cursor c = null;
         db.open();
@@ -1188,7 +1188,7 @@ public class LoginActivity extends Activity {
 
         db.close();
 
-    }
+    }*/
 
 
     @Override
@@ -1198,12 +1198,12 @@ public class LoginActivity extends Activity {
         finish();
     }
 
-    public void UploadDownload26() {
+   /* public void UploadDownload26() {
 
         String RESULT;
         int updateCount = 0;
 
-        /*try {
+        *//*try {
             db.open();
             stock_array = db.getStockdetails();
             // db.close();
@@ -1368,10 +1368,10 @@ public class LoginActivity extends Activity {
                     Createddate, Createddate, sp.getString("username", ""),
                     "SaveStock()", "Fail");
 
-        }*/
-    }
+        }*//*
+    }*/
 
-    public void getBOCOpening() {
+   /* public void getBOCOpening() {
         SoapObject soap_result = service.GetBOCOpening(sp.getString("username", ""));
         String db_stock_id_array = null;
         String EmpId = null;
@@ -1808,9 +1808,9 @@ public class LoginActivity extends Activity {
                     "Fail");
 
         }
-    }
+    }*/
 
-    public String getBOC(String year, String yearPlus) {
+  /*  public String getBOC(String year, String yearPlus) {
         String str_BOC = null;
 
         String BOCDates[] = new String[2];
@@ -1821,7 +1821,7 @@ public class LoginActivity extends Activity {
 
 
         return str_BOC;
-    }
+    }*/
 
     public class SyncApkCheck extends AsyncTask<Void, Void, Boolean> {
 

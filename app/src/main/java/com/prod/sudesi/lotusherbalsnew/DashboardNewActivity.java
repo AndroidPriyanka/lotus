@@ -185,7 +185,7 @@ public class DashboardNewActivity extends Activity {
 
         if (db.checkStockUploaded()) {
 
-            alertDialogBuilder1 = new AlertDialog.Builder(mContext);
+            alertDialogBuilder1 = new AlertDialog.Builder(DashboardNewActivity.this);
             // set title
             alertDialogBuilder1.setTitle("SYNC DATA ALERT");
             // set dialog message
@@ -205,8 +205,6 @@ public class DashboardNewActivity extends Activity {
 
             // create alert dialog
             AlertDialog alertDialog = alertDialogBuilder1.create();
-            alertDialog.getWindow().setType(WindowManager.LayoutParams.
-                    TYPE_SYSTEM_ALERT);
             // show it
             alertDialog.show();
 
@@ -3759,7 +3757,7 @@ public class DashboardNewActivity extends Activity {
                 spe.commit();
                 //final boolean boolRecd = false;
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
                 builder.setMessage("Data Download Completed Successfully!!")
                         .setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -3786,8 +3784,6 @@ public class DashboardNewActivity extends Activity {
                             }
                         });
                 AlertDialog alert = builder.create();
-                alert.getWindow().setType(WindowManager.LayoutParams.
-                        TYPE_SYSTEM_ALERT);
                 alert.show();
 
 
@@ -3799,7 +3795,7 @@ public class DashboardNewActivity extends Activity {
                 spe.commit();*/
 
                 // DisplayDialogMessage("Data Download Incomplete!!");
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
                 builder.setMessage("Data Download Incomplete!!")
                         .setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -3825,8 +3821,6 @@ public class DashboardNewActivity extends Activity {
                             }
                         });
                 AlertDialog alert = builder.create();
-                alert.getWindow().setType(WindowManager.LayoutParams.
-                        TYPE_SYSTEM_ALERT);
                 alert.show();
 
             } else if (Flag.equalsIgnoreCase("4")) {
@@ -3838,7 +3832,7 @@ public class DashboardNewActivity extends Activity {
 
                 // DisplayDialogMessage("Data Download Incomplete!!Please try again");
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
                 builder.setMessage("Data Download Incomplete!!Please try again")
                         .setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -3864,8 +3858,6 @@ public class DashboardNewActivity extends Activity {
                             }
                         });
                 AlertDialog alert = builder.create();
-                alert.getWindow().setType(WindowManager.LayoutParams.
-                        TYPE_SYSTEM_ALERT);
                 alert.show();
 
 
@@ -3876,7 +3868,7 @@ public class DashboardNewActivity extends Activity {
                 spe.putBoolean("DialogDismiss", true);
                 spe.commit();*/
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
                 builder.setMessage("Data Download Incomplete!!")
                         .setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -3902,8 +3894,6 @@ public class DashboardNewActivity extends Activity {
                             }
                         });
                 AlertDialog alert = builder.create();
-                alert.getWindow().setType(WindowManager.LayoutParams.
-                        TYPE_SYSTEM_ALERT);
                 alert.show();
 
             }
@@ -3911,7 +3901,7 @@ public class DashboardNewActivity extends Activity {
         }
 
         private void DisplayDialogMessage(String msg) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
             builder.setMessage(msg)
                     .setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -3921,8 +3911,6 @@ public class DashboardNewActivity extends Activity {
                         }
                     });
             AlertDialog alert = builder.create();
-            alert.getWindow().setType(WindowManager.LayoutParams.
-                    TYPE_SYSTEM_ALERT);
             alert.show();
         }
 
@@ -4801,7 +4789,7 @@ public class DashboardNewActivity extends Activity {
 
     private void BocOpeningDialog(){
         try {
-            alertDialogBuilder = new AlertDialog.Builder(mContext);
+            alertDialogBuilder = new AlertDialog.Builder(DashboardNewActivity.this);
             // set title
             alertDialogBuilder.setTitle("SYNC DATA ALERT");
             // set dialog message
@@ -4833,8 +4821,6 @@ public class DashboardNewActivity extends Activity {
 
             // create alert dialog
             AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.getWindow().setType(WindowManager.LayoutParams.
-                    TYPE_SYSTEM_ALERT);
             // show it
             alertDialog.show();
 
