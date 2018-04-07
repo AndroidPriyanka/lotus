@@ -6,30 +6,31 @@
     android:padding="3dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:weightSum="3"
-    android:paddingBottom="30dp">
+    android:paddingBottom="@dimen/_10sdp">
 
     <CheckBox
         android:id="@+id/chck_product"
         android:layout_width="0dip"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="2.3"
         android:button="@drawable/checkbox_selection"
         android:ems="7"
         android:text="CheckBox"
         android:textColor="#FFFFFF"
-        android:textSize="12sp"
-        android:paddingBottom="10dp"/>
+        android:textSize="10dp"
+        />
 
 
     <TextView
         android:id="@+id/txt_mrp"
         android:layout_width="0dip"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="0.7"
         android:visibility="gone"
+        android:padding="@dimen/_6sdp"
         android:gravity="center"
         android:textColor="#FFFFFF"
-        android:textSize="14sp"
+        android:textSize="@dimen/_10sdp"
         />
 
             <AutoCompleteTextView
@@ -37,19 +38,21 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
-                android:background="@color/white"
                 android:clickable="false"
-                android:dropDownWidth="match_parent"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:dropDownWidth="wrap_content"
                 android:dropDownHeight="wrap_content"
                 android:focusable="false"
                 android:gravity="center"
                 android:hint="Select"
+                android:textColor="#fff"
+                android:textColorHint="#fff"
                 android:imeOptions="actionNext"
                 android:inputType="none"
-                android:maxLength="50"
+                android:maxLength="10"
                 android:singleLine="true"
                 android:textIsSelectable="true"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_10sdp"
                 android:windowSoftInputMode="stateHidden" />
 
 
