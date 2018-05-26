@@ -85,7 +85,7 @@ public class LoginActivity extends Activity {
     SharedPreferences.Editor spe;
 
     LotusWebservice service;
-    String username = "", pass = "", VERSION_NAME = "", OS_VERSION = "";
+    String username = "", pass = "", VERSION_NAME = "", OS_VERSION = "",role = "";
 
     private ProgressDialog pd;
     ConnectionDetector cd;
@@ -109,12 +109,12 @@ public class LoginActivity extends Activity {
     private static final int PERMISSION_REQUEST_CODE = 1;
 
     //Production
-    public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
-    public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production
+    /*public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
+    public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production*/
 
     //UAT
-    /*public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT
-    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT*/
+    public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT
+    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT
 
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE);
@@ -211,7 +211,7 @@ public class LoginActivity extends Activity {
                     if (cd.isConnectingToInternet()) {
 
                         username = edt_username.getText().toString()
-                                .toUpperCase();
+                                .toUpperCase().trim();
                         pass = edt_password.getText().toString();
 
                         PackageInfo info = null;
@@ -486,10 +486,17 @@ public class LoginActivity extends Activity {
                                                 "BDE_Code",
                                                 String.valueOf(getmessaage
                                                         .getProperty("bdecode")));
+                                        spe.putString(
+                                                "Role",
+                                                String.valueOf(getmessaage
+                                                        .getProperty("Role")));
                                         spe.commit();
 
                                         Flag = String.valueOf(getmessaage
                                                 .getProperty("username"));
+
+                                        role = String.valueOf(getmessaage
+                                                .getProperty("Role"));
 
                                         contentvalues.put("username",
                                                 username);
@@ -499,11 +506,8 @@ public class LoginActivity extends Activity {
                                                 getmessaage.getProperty(
                                                         "bdename")
                                                         .toString());
-                                        contentvalues.put(
-                                                "bde_Code",
-                                                getmessaage.getProperty(
-                                                        "bdecode")
-                                                        .toString());
+                                        contentvalues.put("bde_Code",getmessaage.getProperty("bdecode").toString());
+                                        contentvalues.put("Role",role);
 
                                         contentvalues
                                                 .put("status",
@@ -557,14 +561,9 @@ public class LoginActivity extends Activity {
                                                             "f",
                                                             div,
                                                             status,
-                                                            getmessaage
-                                                                    .getProperty(
-                                                                            "bdename")
-                                                                    .toString(),
-                                                            getmessaage
-                                                                    .getProperty(
-                                                                            "bdecode")
-                                                                    .toString());
+                                                            getmessaage.getProperty("bdename").toString(),
+                                                            getmessaage.getProperty("bdecode").toString(),
+                                                            getmessaage.getProperty("Role").toString());
                                                     db.close();
 
                                                 }
@@ -825,6 +824,7 @@ public class LoginActivity extends Activity {
 
                                     //SetClosingISOpeningOnlyOnce();
                                     // checkAndSaveMonthly();
+
                                     checkpresentornot(todaydate1);
 
                                 } else {
@@ -1063,7 +1063,31 @@ public class LoginActivity extends Activity {
         String a = db.getdatepresentorabsent(givendate, username);
         db.close();
         // String a="P";
-        if (a.equalsIgnoreCase("")) {
+        if(role.equalsIgnoreCase("FLR")){
+
+            if (a.equalsIgnoreCase("")) {
+
+                Intent i = new Intent(getApplicationContext(), AttendanceFragment.class);
+                i.putExtra("FromLoginpage", "L");
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+
+            }
+            if (a.equalsIgnoreCase("P")) {
+
+                Intent i = new Intent(getApplicationContext(),
+                        OutletActivity.class);
+                i.putExtra("FromAttendancefloter", "LF");
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+
+            }
+            if (a.equalsIgnoreCase("A")) {
+                Toast.makeText(context, "U r absent today", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }else {
+            if (a.equalsIgnoreCase("")) {
 
 
            /* if (sp.getBoolean("Upload_data_flag", false) == false) {
@@ -1075,31 +1099,32 @@ public class LoginActivity extends Activity {
             } else {
 
             }*/
-            Boc26AlaramReceiver();
-            Intent i = new Intent(getApplicationContext(), AttendanceFragment.class);
-            i.putExtra("FromLoginpage", "L");
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
+                Boc26AlaramReceiver();
+                Intent i = new Intent(getApplicationContext(), AttendanceFragment.class);
+                i.putExtra("FromLoginpage", "L");
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
 
-        }
-        if (a.equalsIgnoreCase("P")) {
+            }
+            if (a.equalsIgnoreCase("P")) {
 
 
-            result = true;
+                result = true;
 
-            Boc26AlaramReceiver();
-            Intent i = new Intent(getApplicationContext(),
-                    DashboardNewActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            i.putExtra("FROM", "LOGIN");
-            startActivity(i);
+                Boc26AlaramReceiver();
+                Intent i = new Intent(getApplicationContext(),
+                        DashboardNewActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.putExtra("FROM", "LOGIN");
+                startActivity(i);
 
-        }
-        if (a.equalsIgnoreCase("A")) {
+            }
+            if (a.equalsIgnoreCase("A")) {
 
-            result = false;
-            Toast.makeText(context, "U r absent today", Toast.LENGTH_SHORT)
-                    .show();
+                result = false;
+                Toast.makeText(context, "U r absent today", Toast.LENGTH_SHORT)
+                        .show();
+            }
         }
 
         return result;
@@ -1912,7 +1937,7 @@ public class LoginActivity extends Activity {
         } else {
 
             username = edt_username.getText().toString()
-                    .toUpperCase();
+                    .toUpperCase().trim();
             pass = edt_password.getText().toString();
 
             try{

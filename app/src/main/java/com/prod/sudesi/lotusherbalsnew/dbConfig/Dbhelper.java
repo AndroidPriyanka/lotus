@@ -16,7 +16,7 @@ public class Dbhelper extends SQLiteOpenHelper {
 
 	public static final String DATABASE_NAME = "sudesi.sqlite";
 
-	private static final int DATABASE_VERSION = 6;
+	private static final int DATABASE_VERSION = 7;
 
 	public static final String KEY_PRODUCT_TYPE = "ProductType";
 	public static final String KEY_PRODUCTS = "ProductName";
@@ -67,9 +67,13 @@ public class Dbhelper extends SQLiteOpenHelper {
 	
 	private static final String TABLE_ALTER_LOGIN1 = "alter table login add column bde_Code text";
 	private static final String TABLE_ALTER_LOGIN2 = "alter table login add column bde_Name text";
+	private static final String TABLE_ALTER_LOGIN3 = "alter table login add column Role text";
 	
 	private static final String TABLE_ALTER_ATTENDANCE1="alter table attendance add column logout_status text;";
 	private static final String TABLE_ALTER_ATTENDANCE2="alter table attendance add column logout_date text;";
+
+	private static final String TABLE_CREATE_FLOTEROUTLET ="create table floteroutlet(id integer primary key autoincrement,baCodeOutlet text,banameOutlet text,outletname text,flotername text);" ;
+
 
 
 
@@ -168,6 +172,17 @@ public class Dbhelper extends SQLiteOpenHelper {
 			database.execSQL(TABLE_ALTER_LOGIN2);
 			database.execSQL(TABLE_ALTER_ATTENDANCE1);
 			database.execSQL(TABLE_ALTER_ATTENDANCE2);
+		}
+		else if(newVersion == 7)
+		{
+			database.execSQL("ALTER TABLE stock ADD flag varchar(50);");
+			database.execSQL(TABLE_CREATE_SUPERVISOR);
+			database.execSQL(TABLE_ALTER_LOGIN1);
+			database.execSQL(TABLE_ALTER_LOGIN2);
+			database.execSQL(TABLE_ALTER_ATTENDANCE1);
+			database.execSQL(TABLE_ALTER_ATTENDANCE2);
+			database.execSQL(TABLE_ALTER_LOGIN3);
+			database.execSQL(TABLE_CREATE_FLOTEROUTLET);
 		}
 
 	}

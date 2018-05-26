@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0b5571"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <include
+        android:id="@+id/include_header"
+        layout="@layout/headernew"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:id="@+id/mainrelativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btn_proceed"
+        android:layout_below="@+id/include_header">
+
+        <TextView
+            android:id="@+id/txt_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center_horizontal"
+            android:text="Outlets"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="italic"
+            android:typeface="serif" />
+
+          <android.support.v7.widget.CardView
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/_30sdp"
+              android:layout_gravity="center_horizontal"
+              android:layout_marginBottom="@dimen/_2sdp"
+              android:layout_marginTop="@dimen/_15sdp"
+              android:layout_marginLeft="@dimen/_10sdp"
+              android:layout_marginRight="@dimen/_10sdp"
+              android:background="@android:color/white"
+              android:visibility="visible"
+              android:layout_below="@+id/txt_header"
+              app:cardCornerRadius="@dimen/_3sdp"
+              app:cardElevation="@dimen/_2sdp">
+
+             <!-- <android.support.design.widget.TextInputLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@color/white">-->
+
+
+                  <AutoCompleteTextView
+                      android:id="@+id/spin_outlet"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:background="@color/white"
+                      android:clickable="false"
+                      android:completionThreshold="1"
+                      android:focusable="false"
+                      android:gravity="center_vertical"
+                      android:hint="Outlet"
+                      android:imeOptions="actionNext"
+                      android:inputType="none"
+                      android:maxLength="50"
+                      android:nextFocusDown="@+id/spin_category"
+                      android:paddingLeft="@dimen/_10sdp"
+                      android:paddingRight="@dimen/_5sdp"
+                      android:singleLine="true"
+                      android:textIsSelectable="true"
+                      android:textSize="@dimen/_7sdp"
+                      android:windowSoftInputMode="stateHidden" />
+
+            <!--  </android.support.design.widget.TextInputLayout>-->
+
+          </android.support.v7.widget.CardView>
+
+        <!--<RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/txt_header"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <TextView
+                style="@style/label_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Outlet"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+
+            <Spinner
+                android:id="@+id/spin_outlet"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_25sdp"
+                android:background="@drawable/dropdown"
+                android:prompt="@string/select_category"
+                android:layout_marginTop="@dimen/_45sdp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_alignParentStart="true" />
+
+        </RelativeLayout>-->
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_proceed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="right"
+        android:layout_marginBottom="7dp"
+        android:background="@drawable/proceed"
+        android:visibility="visible" />
+
+</RelativeLayout>

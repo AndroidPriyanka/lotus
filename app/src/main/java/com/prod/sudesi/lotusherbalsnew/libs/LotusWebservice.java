@@ -15,20 +15,20 @@ public class LotusWebservice {
 
 	// -----------------Mahi
 
-	String url = "http://lotusws.lotussmartforce.com/Service1.svc";// production lotus server
-//	String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
+//	String url = "http://lotusws.lotussmartforce.com/Service1.svc";// production lotus server
+	String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
 
 
 	public LotusWebservice(Context con) {
 		context = con;
 	}
 
-	public SoapPrimitive SaveAttendance(String empid, String date,
+	public SoapObject SaveAttendance(String empid, String date,
 			String attend, String absent_type, String lat, String lon) {
-		SoapPrimitive result = null;
+        SoapObject result = null;
 		try {
 			Log.v("", "attendace service called");
-			SoapObject request = new SoapObject("http://tempuri.org/",
+            SoapObject request = new SoapObject("http://tempuri.org/",
 					"SaveAttendance");
 
 			request.addProperty("emp_id", empid);
@@ -52,7 +52,7 @@ public class LotusWebservice {
 			androidHttpTransport.call(
 					"http://tempuri.org/IService1/SaveAttendance", envelope);
 
-			result = (SoapPrimitive) envelope.getResponse();
+			result = (SoapObject) envelope.getResponse();
 			Log.e("SaveAttendance", result.toString());
 
 		} catch (Exception e) {
@@ -1459,6 +1459,65 @@ public class LotusWebservice {
 
 			result = (SoapObject) envelope.getResponse();
 			Log.e("DataDownloadForSale=", result.toString());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+
+	public SoapObject GetFLROutlet(String empid) {
+		SoapObject result = null;
+		try {
+			Log.v("", "sync stock service called");
+			SoapObject request = new SoapObject("http://tempuri.org/",
+					"GetFLROutlet");
+			// /// send link
+			Log.v("", "empid==" + empid);
+			request.addProperty("EmpId", empid);
+			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+					SoapEnvelope.VER11);// soap envelop with version
+			envelope.setOutputSoapObject(request); // set request object
+			envelope.dotNet = true;
+
+			HttpTransportSE androidHttpTransport = new HttpTransportSE(url,60000);// http
+			// transport
+			// call
+			androidHttpTransport.call(
+					"http://tempuri.org/IService1/GetFLROutlet", envelope);
+
+			result = (SoapObject) envelope.getResponse();
+			Log.e("GetFLROutlet=", result.toString());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public SoapPrimitive FLROutletAttendance(String aid, String outletcode) {
+		SoapPrimitive result = null;
+		try {
+			Log.v("", "sync stock service called");
+			SoapObject request = new SoapObject("http://tempuri.org/",
+					"FLROutletAttendance");
+			// /// send link
+			request.addProperty("ID", aid);
+			request.addProperty("Outletcode", outletcode);
+			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+					SoapEnvelope.VER11);// soap envelop with version
+			envelope.setOutputSoapObject(request); // set request object
+			envelope.dotNet = true;
+
+			HttpTransportSE androidHttpTransport = new HttpTransportSE(url,60000);// http
+			// transport
+			// call
+			androidHttpTransport.call(
+					"http://tempuri.org/IService1/FLROutletAttendance", envelope);
+
+			result = (SoapPrimitive) envelope.getResponse();
+			Log.e("FLROutletAttendance=", result.toString());
 
 		} catch (Exception e) {
 			e.printStackTrace();

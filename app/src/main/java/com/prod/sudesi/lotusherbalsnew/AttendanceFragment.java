@@ -71,6 +71,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.prod.sudesi.lotusherbalsnew.Models.AttendanceModel;
 import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
 import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
@@ -121,7 +122,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
     SharedPreferences sp;
     SharedPreferences.Editor spe;
     int day1, year1, month1;
-    String username, bdename;
+    String username, bdename,role;
     ConnectionDetector cd;
     LotusWebservice service;
     private ProgressDialog pd;
@@ -153,6 +154,11 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+
+    String status, ADate, AttendanceValue, Aid,savedate,autoid;
+    private Button gridcell;
+    private ArrayList<AttendanceModel> presentList;
+    AttendanceModel attendanceModel;
 
 
     @SuppressLint("WrongConstant")
@@ -208,6 +214,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         }
         username = sp.getString("username", "");
         bdename = sp.getString("BDEusername", "");
+        role = sp.getString("Role","");
 
         selectedDayMonthYearButton = (Button) findViewById(R.id.selectedDayMonthYear);
         selectedDayMonthYearButton.setText("Selected: ");
@@ -299,7 +306,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         private int daysInMonth;
         private int currentDayOfMonth;
         private int currentWeekDay;
-        private Button gridcell;
+
         private TextView num_events_per_day;
         private ArrayList<HashMap<String, String>> eventsPerMonthMap = new ArrayList<HashMap<String, String>>();
         private final ArrayList<String> attendance = new ArrayList<String>();
@@ -1257,7 +1264,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
     private class SaveAttendance extends AsyncTask<String, Void, SoapObject> {
 
 
-        SoapPrimitive soap_result_attendance = null;
+        SoapObject soap_result_attendance = null;
 
         //SoapPrimitive soap_result_tester = null;
 
@@ -1293,9 +1300,6 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                     "holiday_desc", "year"};
 
             if (!cd.isConnectingToInternet()) {
-                // Internet Connection is not present
-                // Toast.makeText(getActivity(),"Check Your Internet Connection!!!",
-                // Toast.LENGTH_LONG).show();
 
                 Flag = "3";
                 // stop executing code by return
@@ -1316,20 +1320,119 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                     }
 
                     if (soap_result_attendance != null) {
-                        String t = soap_result_attendance.toString();
-                        Log.v("", "soap_result_attendance=" + t);
-                        if (t.equalsIgnoreCase("TRUE")) {
+                        presentList = new ArrayList<AttendanceModel>();
+                        for (int i = 0; i < soap_result_attendance.getPropertyCount(); i++) {
+
+                            SoapObject soapObject = (SoapObject) soap_result_attendance.getProperty(i);
+
+                            ADate = soapObject.getProperty("ADate").toString();
+
+
+                            if (ADate == null) {
+                                ADate = "";
+                            }
+
+                            status = soapObject.getProperty("status").toString();
+                            if (status == null) {
+                                status = "";
+                            }
+
+                            Aid = soapObject.getProperty("ID").toString();
+                            if (Aid == null) {
+                                Aid = "";
+                            }
+                            spe.putString("AttendAid", Aid);
+                            spe.commit();
+
+                            AttendanceValue = soapObject.getProperty("AttendanceValue").toString();
+                            if (AttendanceValue == null) {
+                                AttendanceValue = "";
+                            }
+
+                            attendanceModel = new AttendanceModel();
+                            attendanceModel.setADate(ADate);
+                            attendanceModel.setAttendanceValue(AttendanceValue);
+                            attendanceModel.setAid(Aid);
+
+                            presentList.add(attendanceModel);
+                        }
+
+                        for(int j = 0; j < presentList.size(); j++){
+                            attendanceModel = presentList.get(j);
+
+                            SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
+                            Date date = df.parse(attendanceModel.getADate());
+
+                            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            savedate = form.format(date);
+
+                            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+                            String adate =sdf.format(date.getTime());
+
+                           /* Date date1 = new Date();
+                            SimpleDateFormat form1 = new SimpleDateFormat("yyyy-MM-dd");
+                            String currentdate = form1.format(date1);
+
+                            if (adate.equalsIgnoreCase(currentdate)) {
+
+                                autoid = attendanceModel.getAid();
+
+                                spe.putString("AttendAid", autoid);
+                                spe.commit();
+                            }*/
+
+                            String sld[] = attendanceModel.getADate().split(" ");
+                            final String sld1 = sld[0];
+
+                            String ddd[] = sld1.split("/");
+                            final String year = ddd[2];
+
+                            String attendmonth1 = getmonthNo1(attendmonth);
+
+                            db.open();
+                            Cursor c = db.getuniquedataAttendance(username, adate);
+
+                            int count = c.getCount();
+                            Log.v("", "" + count);
+                            db.close();
+                            if (count > 0) {
+
+                            } else {
+                                db.open();
+
+                                values = new String[]{username,
+                                        savedate,
+                                        attendanceModel.getAttendanceValue(),
+                                        "",
+                                        String.valueOf(lat),
+                                        String.valueOf(lon),
+                                        "1",
+                                        attendmonth1,
+                                        "",
+                                        year};
+
+                                db.insert(values, columns, "attendance");
+
+                                db.close();
+
+                            }
+
+                        }
+
+
+                        Log.v("", "soap_result_attendance=" + status);
+                        if (status.equalsIgnoreCase("TRUE")) {
                             ErroFlag = "1";
                                        /* db.update_Attendance_data(attendance_array.getString(0));
                                         db.close();*/
 
-                            String sld[] = attendanceDate1.split(" ");
-                            final String sld1 = sld[0];
+                            String sld2[] = attendanceDate1.split(" ");
+                            final String sld3 = sld2[0];
 
-                            String ddd[] = sld1.split("-");
-                            final String year = ddd[0];
+                            String ddd1[] = sld3.split("-");
+                            final String year1 = ddd1[0];
 
-                            String attendmonth1 = getmonthNo1(attendmonth);
+                            String attendmonth2 = getmonthNo1(attendmonth);
 
                             if (attendance_flag.equalsIgnoreCase("P") &&
                                     attendance_flag.length() > 0 && attendance_flag != null) {
@@ -1342,9 +1445,9 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                         String.valueOf(lat),
                                         String.valueOf(lon),
                                         "1",
-                                        attendmonth1,
+                                        attendmonth2,
                                         "",
-                                        year};
+                                        year1};
 
                                 db.insert(values, columns, "attendance");
 
@@ -1359,8 +1462,8 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                         leavetype_flag,
                                         String.valueOf(lat),
                                         String.valueOf(lon),
-                                        "1", attendmonth1,
-                                        "", year};
+                                        "1", attendmonth2,
+                                        "", year1};
 
                                 db.insert(values, columns,
                                         "attendance");
@@ -1369,7 +1472,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                             }
 
 
-                        } else if (t.equalsIgnoreCase("FAIL")) {
+                        } else if (status.equalsIgnoreCase("FAIL")) {
                             ErroFlag = "0";
                             final Calendar calendar1 = Calendar
                                     .getInstance();
@@ -1397,112 +1500,6 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                         db.insertSyncLog("Internet Connection Lost, Soap in giving null while 'SaveAttendace'", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
 
                     }
-                    // db.open();
-                    // attendance_array = db.getAttendanceData();
-//                    if (attendance_array.getCount() > 0) {
-//
-//                        if (attendance_array != null && attendance_array.moveToFirst()) {
-//                            attendance_array.moveToFirst();
-//
-//                            do {
-//
-//                                String empid = attendance_array.getString(1);
-//                                Log.e("", "empid=" + empid);
-//                                String date = attendance_array.getString(2);
-//                                Log.e("", "date=" + date);
-//
-//                                String attendance = attendance_array.getString(3);
-//                                Log.e("", "attendance=" + attendance);
-//
-//                                String absent_type = attendance_array.getString(4);
-//                                Log.e("", "absent_type=" + absent_type);
-//
-//                                String lat = attendance_array.getString(5);
-//                                Log.e("", "lat=" + lat);
-//
-//                                String lon = attendance_array.getString(5);
-//                                Log.e("", "lon=" + lon);
-//
-//                                soap_result_attendance = service.SaveAttendance(
-//                                        attendance_array.getString(1), date,
-//                                        attendance_array.getString(3),
-//                                        attendance_array.getString(4),
-//                                        attendance_array.getString(5),
-//                                        attendance_array.getString(6));
-//
-//                                if (soap_result_attendance != null) {
-//                                    String t = soap_result_attendance.toString();
-//                                    Log.v("", "soap_result_attendance=" + t);
-//                                    if (t.equalsIgnoreCase("TRUE")) {
-//                                        ErroFlag = "1";
-//                                       /* db.update_Attendance_data(attendance_array.getString(0));
-//                                        db.close();*/
-//
-//                                        String sld[] = attendanceDate1.split(" ");
-//                                        final String sld1 = sld[0];
-//
-//                                        String ddd[] = sld1.split("-");
-//                                        final String year = ddd[0];
-//
-//                                        db.close();
-//
-//                                        String attendmonth1 = getmonthNo1(attendmonth);
-//                                        db.open();
-//
-//                                        values = new String[]{username,
-//                                                attendanceDate1,
-//                                                "P",
-//                                                "",
-//                                                String.valueOf(lat),
-//                                                String.valueOf(lon),
-//                                                "0",
-//                                                attendmonth1,
-//                                                "",
-//                                                year};
-//
-//                                        db.insert(values, columns, "attendance");
-//
-//                                        db.close();
-//
-//                                    } else if (t.equalsIgnoreCase("FAIL")) {
-//                                        ErroFlag = "0";
-//                                        final Calendar calendar1 = Calendar
-//                                                .getInstance();
-//                                        SimpleDateFormat formatter1 = new SimpleDateFormat(
-//                                                "MM/dd/yyyy HH:mm:ss");
-//                                        String Createddate = formatter1.format(calendar1
-//                                                .getTime());
-//
-//                                        int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
-//                                        db.insertSyncLog("SaveAttendace_SE", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
-//
-//                                    }
-//                                } else {
-//                                    ErroFlag = "0";
-//                                    //String errors = "Soap in giving null while 'Attendance' and 'checkSyncFlag = 2' in  data Sync";
-//                                    //we.writeToSD(errors.toString());
-//                                    final Calendar calendar1 = Calendar
-//                                            .getInstance();
-//                                    SimpleDateFormat formatter1 = new SimpleDateFormat(
-//                                            "MM/dd/yyyy HH:mm:ss");
-//                                    String Createddate = formatter1.format(calendar1
-//                                            .getTime());
-//
-//                                    int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
-//                                    db.insertSyncLog("Internet Connection Lost, Soap in giving null while 'SaveAttendace'", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
-//
-//                                }
-//
-//                            } while (attendance_array.moveToNext());
-//
-//
-//                        }
-//                    } else if (attendance_array == null) {
-//
-//                    } else {
-//                        Log.e("NoAttendance dataupload",
-//                                String.valueOf(attendance_array.getCount()));
-//                    }
 
 
                 } catch (Exception e) {
@@ -1548,19 +1545,28 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
                 Toast.makeText(getApplicationContext(), "Attendance Successfully Sync", Toast.LENGTH_SHORT).show();
 
-                if (attendance_flag.equalsIgnoreCase("A")) {
+                if(role.equalsIgnoreCase("FLR")){
+                    if (attendance_flag.equalsIgnoreCase("A")) {
+                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
 
+                    } else {
+                        Intent i = new Intent(getApplicationContext(), OutletActivity.class);
+                        i.putExtra("FromAttendancefloter", "AF");
+                        startActivity(i);
+                    }
+                }else {
+                    if (attendance_flag.equalsIgnoreCase("A")) {
+                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
 
-                    Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);
-
-                } else {
-
-                    Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
-                    i.putExtra("FROM", "LOGIN");
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);
+                    } else {
+                        Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                    }
                 }
 
             }
@@ -1624,217 +1630,6 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
     }
 
-    /*// Getting lat and lon value using location liabarary and showing gps dialog
-
-    private void showLocation(final Location location) {
-        if (location != null) {
-            lat = location.getLatitude();
-            lon = location.getLongitude();
-            //  Toast.makeText(mContext, "latitude:"+lat+"longitude"+lang, Toast.LENGTH_SHORT).show();
-            SmartLocation.with(AttendanceFragment.this).location().stop();
-
-        }
-    }
-
-    *//* Initiate Google API Client  *//*
-    private void initGoogleAPIClient() {
-        //Without Google API Client Auto Location Dialog will not work
-        mGoogleApiClient = new GoogleApiClient.Builder(AttendanceFragment.this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
-
-    }
-
-    *//* Check Location Permission for Marshmallow Devices *//*
-    private void checkPermissions() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (ContextCompat.checkSelfPermission(AttendanceFragment.this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED)
-                requestLocationPermission();
-            else
-                showSettingDialogbox();
-        } else
-            showSettingDialogbox();
-
-    }
-
-    *//*  Show Popup to access User Permission  *//*
-    private void requestLocationPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(AttendanceFragment.this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-            ActivityCompat.requestPermissions(AttendanceFragment.this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    ACCESS_FINE_LOCATION_INTENT_ID);
-
-        } else {
-            ActivityCompat.requestPermissions(AttendanceFragment.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    ACCESS_FINE_LOCATION_INTENT_ID);
-        }
-    }
-
-    *//* Show Location Access Dialog *//*
-    private void showSettingDialogbox() {
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);//Setting priotity of Location request to high
-        locationRequest.setInterval(30 * 1000);
-        locationRequest.setFastestInterval(5 * 1000);//5 sec Time interval for location update
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest);
-        builder.setAlwaysShow(true); //this is the key ingredient to show dialog always when GPS is off
-
-        PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
-        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-            @Override
-            public void onResult(LocationSettingsResult result) {
-                final Status status = result.getStatus();
-                final LocationSettingsStates state = result.getLocationSettingsStates();
-                switch (status.getStatusCode()) {
-                    case LocationSettingsStatusCodes.SUCCESS:
-                        // All location settings are satisfied. The client can initialize location
-                        // requests here.
-                        //updateGPSStatus("GPS is Enabled in your device");
-                        // startLocation();
-
-
-                        break;
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        // Location settings are not satisfied. But could be fixed by showing the user
-                        // a dialog.
-                        try {
-                            // Show the dialog by calling startResolutionForResult(),
-                            // and check the result in onActivityResult().
-                            status.startResolutionForResult(AttendanceFragment.this, REQUEST_CHECK_SETTINGS);
-                        } catch (IntentSender.SendIntentException e) {
-                            e.printStackTrace();
-                            // Ignore the error.
-                        }
-                        break;
-                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        // Location settings are not satisfied. However, we have no way to fix the
-                        // settings so we won't show the dialog.
-                        break;
-                }
-            }
-        });
-    }
-
-    private void startLocation() {
-
-        provider = new LocationGooglePlayServicesProvider();
-        provider.setCheckLocationSettings(true);
-
-        SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
-
-        smartLocation.location(provider).start(this);
-        smartLocation.activity().start(this);
-
-        // Create some geofences
-        GeofenceModel mestalla = new GeofenceModel.Builder("1").setTransition(Geofence.GEOFENCE_TRANSITION_ENTER).setLatitude(39.47453120000001).setLongitude(-0.358065799999963).setRadius(500).build();
-        smartLocation.geofencing().add(mestalla).start(this);
-    }
-
-    //Method to update GPS status text
-    private void updateGPSStatus(String status) {
-        //   gps_status.setText(status);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            // Check for the integer request code originally supplied to startResolutionForResult().
-            case REQUEST_CHECK_SETTINGS:
-                switch (resultCode) {
-                    case RESULT_OK:
-                        Log.e("Settings", "Result OK");
-                        // updateGPSStatus("GPS is Enabled in your device");
-                        //startLocationUpdates();
-                        startLocation();
-
-                        break;
-                    case RESULT_CANCELED:
-                        Log.e("Settings", "Result Cancel");
-                        //updateGPSStatus("GPS is Disabled in your device");
-                        break;
-                }
-                break;
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        registerReceiver(gpsLocationReceiver, new IntentFilter(BROADCAST_ACTION));//Register broadcast receiver to check the status of GPS
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //Unregister receiver on destroy
-        if (gpsLocationReceiver != null)
-            unregisterReceiver(gpsLocationReceiver);
-    }
-
-    //Run on UI
-    private Runnable sendUpdatesToUI = new Runnable() {
-        public void run() {
-            //   showSettingDialogbox();
-        }
-    };
-
-    *//* Broadcast receiver to check status of GPS *//*
-    private BroadcastReceiver gpsLocationReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            //If Action is Location
-            if (intent.getAction().matches(BROADCAST_ACTION)) {
-                LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-                //Check if GPS is turned ON or OFF
-                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    Log.e("About GPS", "GPS is Enabled in your device");
-                    //updateGPSStatus("GPS is Enabled in your device");
-                    //  startLocation();
-
-                } else {
-                    //If GPS turned OFF show Location Dialog
-                    new Handler().postDelayed(sendUpdatesToUI, 10);
-                    //updateGPSStatus("GPS is Disabled in your device");
-                    Log.e("About GPS", "GPS is Disabled in your device");
-                }
-
-            }
-        }
-    };
-
-    *//* On Request permission method to check the permisison is granted or not for Marshmallow+ Devices  *//*
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case ACCESS_FINE_LOCATION_INTENT_ID: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    //If permission granted show location dialog if APIClient is not null
-                    if (mGoogleApiClient == null) {
-                        initGoogleAPIClient();
-                    }
-
-                } else {
-                    //updateGPSStatus("Location Permission denied.");
-                    //Toast.makeText(AttendanceFragment.this, "Location Permission denied.", Toast.LENGTH_SHORT).show();
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-        }
-    }*/
 
     @Override
     public void onStart() {

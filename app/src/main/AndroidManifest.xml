@@ -30,7 +30,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".LotusMainActivity"
+            android:name="com.prod.sudesi.lotusherbalsnew.LotusMainActivity"
             android:label="@string/app_name_pro_curr" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,53 +40,53 @@
         </activity>
 
         <activity
-            android:name=".LoginActivity"
+            android:name="com.prod.sudesi.lotusherbalsnew.LoginActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".DashboardNewActivity"
+            android:name="com.prod.sudesi.lotusherbalsnew.DashboardNewActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ReportsForUser"
+            android:name="com.prod.sudesi.lotusherbalsnew.ReportsForUser"
             android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name=".TesterFragment"
+            android:name="com.prod.sudesi.lotusherbalsnew.TesterFragment"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".VisibilityFragment"
+            android:name="com.prod.sudesi.lotusherbalsnew.VisibilityFragment"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".VisibilityImageFragment"
+            android:name="com.prod.sudesi.lotusherbalsnew.VisibilityImageFragment"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".AttendanceFragment"
+            android:name="com.prod.sudesi.lotusherbalsnew.AttendanceFragment"
             android:screenOrientation="portrait"
             android:theme="@style/AppFullScreenTheme" />
         <activity
-            android:name=".SyncMaster"
+            android:name="com.prod.sudesi.lotusherbalsnew.SyncMaster"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".NotificationFragment"
+            android:name="com.prod.sudesi.lotusherbalsnew.NotificationFragment"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".BAYearWiseReport"
+            android:name="com.prod.sudesi.lotusherbalsnew.BAYearWiseReport"
             android:label="@string/title_activity_bayear_wise_report"
             android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name=".BAMonthWiseReport"
+            android:name="com.prod.sudesi.lotusherbalsnew.BAMonthWiseReport"
             android:label="@string/title_activity_bamonth_wise_report"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".BAMonthReportPage"
+            android:name="com.prod.sudesi.lotusherbalsnew.BAMonthReportPage"
             android:label="@string/title_activity_bamonth_report_page"
             android:screenOrientation="landscape" >
         </activity>
@@ -95,52 +95,56 @@
         </receiver>-->
 
         <activity
-            android:name=".ChangePassword"
+            android:name="com.prod.sudesi.lotusherbalsnew.ChangePassword"
             android:label="@string/title_activity_change_password"
             android:screenOrientation="portrait" >
         </activity>
 
         <activity
-            android:name=".SaleCalculation"
+            android:name="com.prod.sudesi.lotusherbalsnew.SaleCalculation"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".StockAllActivity"
+            android:name="com.prod.sudesi.lotusherbalsnew.StockAllActivity"
             android:label="@string/title_activity_stock_all"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".BocDashBoardActivity"
+            android:name="com.prod.sudesi.lotusherbalsnew.BocDashBoardActivity"
             android:label="@string/title_activity_boc_dash_board"
             android:screenOrientation="portrait" >
         </activity>
 
         <activity
-            android:name=".tester.TesterSubmitActivity"
+            android:name="com.prod.sudesi.lotusherbalsnew.tester.TesterSubmitActivity"
             android:label="@string/title_activity_tester_submit"
             android:screenOrientation="portrait" >
         </activity>
 
-        <activity android:name=".SupervisorAttendance" >
+        <activity android:name="com.prod.sudesi.lotusherbalsnew.SupervisorAttendance" >
         </activity>
 
         <activity
-            android:name=".BocCumulativeDashboardActivity"
+            android:name="com.prod.sudesi.lotusherbalsnew.BocCumulativeDashboardActivity"
             android:screenOrientation="landscape" >
         </activity>
-        <activity android:name=".StockNewActivity"/>
+        <activity android:name="com.prod.sudesi.lotusherbalsnew.StockNewActivity"/>
 
-        <activity android:name=".SaleNewActivity"/>
+        <activity android:name="com.prod.sudesi.lotusherbalsnew.SaleNewActivity"/>
 
-        <receiver android:name=".UploadDataBrodcastReceiver"/>
-        <receiver android:name=".MyScheduledReceiver">
+        <activity android:name="com.prod.sudesi.lotusherbalsnew.SaleActivityForFloter"/>
+
+        <activity android:name="com.prod.sudesi.lotusherbalsnew.OutletActivity"/>
+
+        <receiver android:name="com.prod.sudesi.lotusherbalsnew.UploadDataBrodcastReceiver"/>
+        <receiver android:name="com.prod.sudesi.lotusherbalsnew.MyScheduledReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".BocBroadcastReceiver"/>
-        <service android:name=".BackgroundService"></service>
-        <service android:name=".BackgroundServiceBOC"></service>
+        <receiver android:name="com.prod.sudesi.lotusherbalsnew.BocBroadcastReceiver"/>
+        <service android:name="com.prod.sudesi.lotusherbalsnew.BackgroundService"></service>
+        <service android:name="com.prod.sudesi.lotusherbalsnew.BackgroundServiceBOC"></service>
 
 
     </application>

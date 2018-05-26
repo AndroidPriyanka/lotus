@@ -248,43 +248,48 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                Calendar calendar = Calendar.getInstance();
-                Calendar setcalendar = Calendar.getInstance();
-                setcalendar.setTimeInMillis(System.currentTimeMillis());
-                setcalendar.set(Calendar.HOUR_OF_DAY, 7);
-                setcalendar.set(Calendar.MINUTE, 0);
-                setcalendar.set(Calendar.SECOND, 0);
-                setcalendar.set(Calendar.DAY_OF_MONTH, 26);
 
-                Date bocdate = setcalendar.getTime();
-                Date currentdate = calendar.getTime();
+                if (sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                    Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
+                } else {
+                    Calendar calendar = Calendar.getInstance();
+                    Calendar setcalendar = Calendar.getInstance();
+                    setcalendar.setTimeInMillis(System.currentTimeMillis());
+                    setcalendar.set(Calendar.HOUR_OF_DAY, 7);
+                    setcalendar.set(Calendar.MINUTE, 0);
+                    setcalendar.set(Calendar.SECOND, 0);
+                    setcalendar.set(Calendar.DAY_OF_MONTH, 26);
+
+                    Date bocdate = setcalendar.getTime();
+                    Date currentdate = calendar.getTime();
 
 
-                if (cd.isCurrentDateMatchDeviceDate()) {
-                    if (calendar.get(Calendar.DAY_OF_MONTH) == 26) {
-                        if(currentdate.after(bocdate)) {
-                            if (sp.getBoolean("DialogDismiss", false) == false) {
+                    if (cd.isCurrentDateMatchDeviceDate()) {
+                        if (calendar.get(Calendar.DAY_OF_MONTH) == 26) {
+                            if (currentdate.after(bocdate)) {
+                                if (sp.getBoolean("DialogDismiss", false) == false) {
 
-                                Toast.makeText(DashboardNewActivity.this, "Please Data Download First", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(DashboardNewActivity.this, "Please Data Download First", Toast.LENGTH_LONG).show();
 
+                                } else {
+                                    startActivity(new Intent(getApplicationContext(),
+                                            StockNewActivity.class));
+                                }
                             } else {
                                 startActivity(new Intent(getApplicationContext(),
                                         StockNewActivity.class));
                             }
-                        }else {
+
+                        } else {
                             startActivity(new Intent(getApplicationContext(),
                                     StockNewActivity.class));
                         }
-
                     } else {
-                        startActivity(new Intent(getApplicationContext(),
-                                StockNewActivity.class));
+                        Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+
                     }
-                } else {
-                    Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
 
                 }
-
             }
         });
 
@@ -361,9 +366,13 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                Intent i = new Intent(getApplicationContext(),
-                        BAYearWiseReport.class);
-                startActivity(i);
+                if (sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                    Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent i = new Intent(getApplicationContext(),
+                            BAYearWiseReport.class);
+                    startActivity(i);
+                }
 
             }
         });
@@ -373,9 +382,13 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                Intent i = new Intent(getApplicationContext(),
-                        BAMonthWiseReport.class);
-                startActivity(i);
+                if (sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                    Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent i = new Intent(getApplicationContext(),
+                            BAMonthWiseReport.class);
+                    startActivity(i);
+                }
 
             }
         });
@@ -398,24 +411,30 @@ public class DashboardNewActivity extends Activity {
 
 
                 if (cd.isCurrentDateMatchDeviceDate()) {
-                    if (calendar.get(Calendar.DAY_OF_MONTH) == 26) {
-                        if(currentdate.after(bocdate)) {
-                            if (sp.getBoolean("DialogDismiss", false) == false) {
+                    if (sp.getString("Role", "").equalsIgnoreCase("FLR")) {
 
-                                Toast.makeText(DashboardNewActivity.this, "Please Data Download First", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(getApplicationContext(),
+                                SaleActivityForFloter.class));
+                    } else {
+                        if (calendar.get(Calendar.DAY_OF_MONTH) == 26) {
+                            if (currentdate.after(bocdate)) {
+                                if (sp.getBoolean("DialogDismiss", false) == false) {
 
+                                    Toast.makeText(DashboardNewActivity.this, "Please Data Download First", Toast.LENGTH_LONG).show();
+
+                                } else {
+                                    startActivity(new Intent(getApplicationContext(),
+                                            SaleNewActivity.class));
+                                }
                             } else {
                                 startActivity(new Intent(getApplicationContext(),
                                         SaleNewActivity.class));
                             }
-                        }else {
+
+                        } else {
                             startActivity(new Intent(getApplicationContext(),
                                     SaleNewActivity.class));
                         }
-
-                    } else {
-                        startActivity(new Intent(getApplicationContext(),
-                                SaleNewActivity.class));
                     }
                 } else {
                     Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
@@ -430,9 +449,12 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-
-                startActivity(new Intent(getApplicationContext(),
-                        BocDashBoardActivity.class));
+                if (sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                    Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
+                } else {
+                    startActivity(new Intent(getApplicationContext(),
+                            BocDashBoardActivity.class));
+                }
 
             }
         });
@@ -811,29 +833,29 @@ public class DashboardNewActivity extends Activity {
                                             );
 
 									*//*
-                                     * soap_result_stock = service.SaveStock(
-									 * stock_array.getString(2),
-									 * stock_array.getString(1), eancode_string,
-									 * username, stock_array.getString(4),
-									 * stock_array.getString(5),
-									 * stock_array.getString(6), shad,
-									 *
-									 * opening_stock_string,
-									 * stock_receive_string,
-									 * stock_in_hand_string,
-									 *
-									 * sold_string, return_salable_string,
-									 * return_non_salable_string,
-									 *
-									 * close_bal_string, gross_amount_string,
-									 *
-									 * discount_string, net_amount_string,
-									 * size_string, price_string,
-									 * stock_array.getString(21)
-									 *
-									 *
-									 * );
-									 *//*
+                     * soap_result_stock = service.SaveStock(
+                     * stock_array.getString(2),
+                     * stock_array.getString(1), eancode_string,
+                     * username, stock_array.getString(4),
+                     * stock_array.getString(5),
+                     * stock_array.getString(6), shad,
+                     *
+                     * opening_stock_string,
+                     * stock_receive_string,
+                     * stock_in_hand_string,
+                     *
+                     * sold_string, return_salable_string,
+                     * return_non_salable_string,
+                     *
+                     * close_bal_string, gross_amount_string,
+                     *
+                     * discount_string, net_amount_string,
+                     * size_string, price_string,
+                     * stock_array.getString(21)
+                     *
+                     *
+                     * );
+                     *//*
 
                                     if (soap_result_stock != null) {
                                         String result_stock = soap_result_stock
@@ -2334,23 +2356,23 @@ public class DashboardNewActivity extends Activity {
 
 								// }
 								*//*
-                                 * } catch (Exception e) { // TODO: handle
-								 * exception e.printStackTrace(); String Error =
-								 * e.toString(); Log.v("","se2 error"); final
-								 * Calendar calendar = Calendar .getInstance();
-								 * SimpleDateFormat formatter = new
-								 * SimpleDateFormat( "MM/dd/yyyy HH:mm:ss");
-								 * String Createddate =
-								 * formatter.format(calendar .getTime()); Flag =
-								 * "4"; int n =
-								 * Thread.currentThread().getStackTrace
-								 * ()[2].getLineNumber(); db.open();
-								 * db.insertSyncLog(Error,String.valueOf(n),
-								 * "SyncStockData()"
-								 * ,Createddate,Createddate,sp.getString
-								 * ("username", ""),"SyncStockData()","Fail");
-								 * db.close(); }
-								 *//*
+                     * } catch (Exception e) { // TODO: handle
+                     * exception e.printStackTrace(); String Error =
+                     * e.toString(); Log.v("","se2 error"); final
+                     * Calendar calendar = Calendar .getInstance();
+                     * SimpleDateFormat formatter = new
+                     * SimpleDateFormat( "MM/dd/yyyy HH:mm:ss");
+                     * String Createddate =
+                     * formatter.format(calendar .getTime()); Flag =
+                     * "4"; int n =
+                     * Thread.currentThread().getStackTrace
+                     * ()[2].getLineNumber(); db.open();
+                     * db.insertSyncLog(Error,String.valueOf(n),
+                     * "SyncStockData()"
+                     * ,Createddate,Createddate,sp.getString
+                     * ("username", ""),"SyncStockData()","Fail");
+                     * db.close(); }
+                     *//*
 
 							} else if (soap_result1.getProperty("status")
 									.toString().equalsIgnoreCase("E")) {
@@ -2363,12 +2385,12 @@ public class DashboardNewActivity extends Activity {
 										.UpdateTableData(db_stock_id_array,
 												"S", EmpId);
 								*//*
-                                 * Log.e("",
-								 * "soap_update_stock_row= "+soap_update_stock_row
-								 * .toString());
-								 *
-								 * Log.e("", "string ids== "+db_stock_id_array);
-								 *//*
+                     * Log.e("",
+                     * "soap_update_stock_row= "+soap_update_stock_row
+                     * .toString());
+                     *
+                     * Log.e("", "string ids== "+db_stock_id_array);
+                     *//*
                                 SimpleDateFormat dateFormat = new SimpleDateFormat(
 										"MM/dd/yyyy HH:mm:ss");
 								// get current date time with Date()
@@ -4169,10 +4191,10 @@ public class DashboardNewActivity extends Activity {
                                     }
                                     /*
                                      * if (order_flag!=null ||
-									 * order_flag.equalsIgnoreCase("NULL")) {
-									 * Log.e("", "anytype for sku_h");
-									 * order_flag = " "; }
-									 */
+                                     * order_flag.equalsIgnoreCase("NULL")) {
+                                     * Log.e("", "anytype for sku_h");
+                                     * order_flag = " "; }
+                                     */
 
                                     Log.v("", "flag=" + flag);
                                     // if (flag.equalsIgnoreCase("E")) {
@@ -4787,7 +4809,7 @@ public class DashboardNewActivity extends Activity {
         Toast.makeText(this, "Disabled broadcst receiver", Toast.LENGTH_SHORT).show();
     }
 
-    private void BocOpeningDialog(){
+    private void BocOpeningDialog() {
         try {
             alertDialogBuilder = new AlertDialog.Builder(DashboardNewActivity.this);
             // set title

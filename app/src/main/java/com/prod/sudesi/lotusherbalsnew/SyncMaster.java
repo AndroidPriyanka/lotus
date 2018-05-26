@@ -103,8 +103,8 @@ public class SyncMaster extends Activity {
     ArrayList<HashMap<String, String>> listofsyncerrorlog = new ArrayList<HashMap<String, String>>();
     ArrayList<HashMap<String, String>> listofimages = new ArrayList<HashMap<String, String>>();
 
-//    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
-    public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock/";//Production Server
+    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
+//    public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock/";//Production Server
     private JSONArray array = new JSONArray();
     String flag;
     String ErroFlag = "";
@@ -212,11 +212,15 @@ public class SyncMaster extends Activity {
                     }
                 }, 5000);// set time as per your requirement
 
-                if(cd.isCurrentDateMatchDeviceDate()) {
-                    new InsertFirstTimeMaster().execute();
-                }else{
-                    Toast.makeText(SyncMaster.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+                if (sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                    Toast.makeText(context, "Data Download not use for Floter", Toast.LENGTH_LONG).show();
+                } else {
+                    if (cd.isCurrentDateMatchDeviceDate()) {
+                        new InsertFirstTimeMaster().execute();
+                    } else {
+                        Toast.makeText(SyncMaster.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
 
+                    }
                 }
             }
         });

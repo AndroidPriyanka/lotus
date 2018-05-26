@@ -1034,6 +1034,19 @@ public class Dbcon {
         return database.rawQuery(sql, null);
     }
 
+    public Cursor getuniquedataAttendance(String empid, String adate) {
+        // TODO Auto-generated method stub
+
+        String sql = null;
+        try {
+            sql = "select * from attendance where emp_id = " + "'" + empid + "'" + " AND Adate like " + "'%" + adate + "%'";
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return database.rawQuery(sql, null);
+    }
+
     public Cursor getuniquedata_tester(String categoryid, String eancode, String d_id) {
         // TODO Auto-generated method stub
         Log.v("", "check id available or not frm stock");
@@ -1310,7 +1323,8 @@ public class Dbcon {
     }
 
     public void insertLogin(String username, String password,
-                            String android_uid, String last_modified_date, String flag, String div, String status, String bdename, String bdecode) {
+                            String android_uid, String last_modified_date, String flag, String div,
+                            String status, String bdename, String bdecode,String role) {
         // TODO Auto-generated method stub
 
         ContentValues values = new ContentValues();
@@ -1342,11 +1356,30 @@ public class Dbcon {
             values.put("div", div);
             values.put("bde_Name", bdename);
             values.put("bde_Code", bdecode);
+            values.put("Role", role);
 
             database.insert("login", null, values);
             Log.e("", "values==" + values);
         }
 
+
+        database.close();
+
+    }
+
+    public void insertOutlet(String baCodeOutlet,String banameOutlet,String outletname,String flotername) {
+        // TODO Auto-generated method stub
+
+        ContentValues values = new ContentValues();
+
+            values.put("baCodeOutlet", baCodeOutlet);
+            values.put("banameOutlet", banameOutlet);
+            values.put("outletname", outletname);
+            values.put("flotername", flotername);
+
+
+            database.insert("floteroutlet", null, values);
+            Log.e("", "values==" + values);
 
         database.close();
 
@@ -1397,6 +1430,37 @@ public class Dbcon {
             }
 
         return count;
+    }
+
+   /* public String check_bacode_outlet(String username, String baCodeOutlet) {
+        // TODO Auto-generated method stub
+
+        Cursor c;
+        String count = "0";
+
+        String sql = "select * from floteroutlet where flotername = '" + username + "' and  baCodeOutlet= '" + baCodeOutlet + "'";
+        c = database.rawQuery(sql, null);
+        if (c != null)
+            if (c.getCount() > 0 && c.moveToFirst()) {
+
+
+                count = "1";
+
+            }
+
+        return count;
+    }*/
+
+    public Cursor check_exist_bacode_outlet(String username, String baCodeOutlet) {
+        // TODO Auto-generated method stub
+        Log.v("", "check id available or not frm product_master");
+        String sql = "select * from floteroutlet where flotername = '" + username + "' and  baCodeOutlet= '" + baCodeOutlet + "'";
+
+        Log.v("", "sql==" + sql);
+
+        Cursor c = database.rawQuery(sql, null);
+
+        return c;
     }
 
     public void insertProductMasterFirsttime(String db_stock_id, String id, String productId,
@@ -2327,6 +2391,17 @@ public class Dbcon {
         String sql = "select  *  from stock where db_id =" + "'" + d_id + "'";
 
         Log.v("", " getdata_Boc_wise sql==" + sql);
+
+        Cursor c = database.rawQuery(sql, null);
+
+
+        return c;
+    }
+
+    public Cursor getdata_outlet(String flotername) {
+        // TODO Auto-generated method stub
+
+        String sql = "select  *  from floteroutlet where flotername =" + "'" + flotername + "'";
 
         Cursor c = database.rawQuery(sql, null);
 
