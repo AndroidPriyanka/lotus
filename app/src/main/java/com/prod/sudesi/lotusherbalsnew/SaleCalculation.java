@@ -62,6 +62,7 @@ public class SaleCalculation extends Activity {
     String str_stockinhand;
     String sclo = "";
     String old_return;
+    String str_price,str_grossamt,str_discount,str_soldstock;
 
     EditText edt_gross, edt_discount, edt_net;
 
@@ -82,6 +83,11 @@ public class SaleCalculation extends Activity {
 
     ScrollView scrv_sale;
     ConnectionDetector cd;
+
+    String pro_name[];
+    String size[];
+    String enacod[];
+    String catid[];
 
     // private ProgressDialog mProgress = null;
 
@@ -118,10 +124,12 @@ public class SaleCalculation extends Activity {
         Intent intent = getIntent();
 
         String db_id[] = intent.getStringArrayExtra("db_id");
-        String pro_name[] = intent.getStringArrayExtra("pro_name");
+        pro_name = intent.getStringArrayExtra("pro_name");
         String mrp[] = intent.getStringArrayExtra("mrp");
         String shadeno[] = intent.getStringArrayExtra("shadeNo");
-        String enacode[] = intent.getStringArrayExtra("enacode");
+        enacod = intent.getStringArrayExtra("enacode");
+        size = intent.getStringArrayExtra("size");
+        catid = intent.getStringArrayExtra("catid");
         //String closing[] = intent.getStringArrayExtra("closing");
         // ---------------------
 
@@ -150,686 +158,10 @@ public class SaleCalculation extends Activity {
                     }
                 }, 5000);// set time as per your requirement
 
-                if (cd.isCurrentDateMatchDeviceDate()) {
-                    try {
-
-                        int count = 0;
-
-                        int etcount = 0;
-                        if (tl_sale_calculation.getChildCount() != 1) {
-                            for (int i = 0; i < tl_sale_calculation.getChildCount() - 1; i++) {
-
-                                TableRow t = (TableRow) tl_sale_calculation
-                                        .getChildAt(i + 1);
-                                EditText edt_qty = (EditText) t.getChildAt(1);
-
-                                if (edt_qty.getText().toString().trim()
-                                        .equalsIgnoreCase("0")
-                                        || edt_qty.getText().toString().trim()
-                                        .equalsIgnoreCase("")
-                                        || edt_qty.getText().toString().trim()
-                                        .equalsIgnoreCase(" ")
-                                        || Integer.parseInt(edt_qty.getText()
-                                        .toString().trim()) <= 0) {
-
-                                } else {
-
-                                    etcount++;
-                                }
-
-                            }
-                        }
-
-                        Log.e("etcount", String.valueOf(etcount));
-                        int numberofproduct = (tl_sale_calculation.getChildCount() - 1);
-
-                        if (numberofproduct == etcount) {
-
-                            if (!edt_gross.getText().toString().equals("")
-                                    && !edt_net.getText().toString().equals("")) {
-                                float dis;
-                                if (!edt_discount.getText().toString()
-                                        .equalsIgnoreCase(" ")
-                                        || !edt_discount.getText().toString()
-                                        .equalsIgnoreCase("")) {
-                                    dis = Integer.parseInt(edt_discount.getText()
-                                            .toString());
-                                } else {
-                                    dis = 0;
-                                }
-
-                                String tt = String.valueOf(tl_sale_calculation
-                                        .getChildCount());
-
-                                float ttt = Float.parseFloat(tt);
-
-                                float a1 = dis / (ttt - 1);
-
-                                String adis = String.format("%.02f", a1);
-                                float a = Float.parseFloat(adis);
-                                float disss = 0;
-                                float net1;
-
-                                if (tl_sale_calculation.getChildCount() != 1) {
-                                    for (int i = 0; i < tl_sale_calculation
-                                            .getChildCount() - 1; i++) {
-
-                                        TableRow t = (TableRow) tl_sale_calculation
-                                                .getChildAt(i + 1);
-                                        EditText edt_qty = (EditText) t
-                                                .getChildAt(1);
-                                        TextView tv_mrp = (TextView) t
-                                                .getChildAt(2);
-                                        TextView tv_dbID = (TextView) t
-                                                .getChildAt(3);
-                                        TextView tv_shadeno = (TextView) t
-                                                .getChildAt(4);
-
-                                        // ---------
-                                        String shaddd = tv_shadeno.getText()
-                                                .toString().trim();
-
-                                        if (shaddd != null) {
-
-                                            if (shaddd.equalsIgnoreCase(" ")
-                                                    || shaddd.equalsIgnoreCase("")) {
-                                                shaddd = "0";
-                                            }
-
-                                        } else {
-                                            shaddd = "0";
-
-                                        }
-                                        // ---------
-
-                                        int calc_gross = Integer.parseInt(tv_mrp
-                                                .getText().toString())
-                                                * Integer.parseInt(edt_qty
-                                                .getText().toString());
-
-                                        float boc_date_net = calc_gross - a;
-
-                                        int gross = 0, net = 0, closing = 0, sold_stock = 0, discount = 0;
-                                        int stkinhand = 0;
-                                        int i_sold = 0;
-                                        db.open();
-                                        Cursor c = db.fetchallSpecifyMSelect(
-                                                "stock", new String[]{
-                                                        "total_gross_amount",
-                                                        "total_net_amount",
-                                                        "discount", "close_bal",
-                                                        "sold_stock",
-                                                        "opening_stock",
-                                                        "stock_received",
-                                                        "return_saleable",
-                                                        "stock_in_hand",
-                                                        "return_non_saleable", "price"},
-                                                "db_id = '"
-                                                        + tv_dbID.getText()
-                                                        .toString() + "'",
-                                                null, null);
-                                        if (c != null && c.getCount() > 0) {
-                                            c.moveToFirst();
-
-                                            // opening stock
-                                            Log.e("opening stock", c.getString(3));
-                                            boolean boo = validateEdit(
-                                                    edt_qty,
-                                                    "Quantity is greater than available stock",
-                                                    c.getString(3));
-
-                                            if (boo == true) {
-
-                                                if (c.getString(4) != null) {
-                                                    if (c.getString(4).trim()
-                                                            .equalsIgnoreCase("0")
-                                                            || c.getString(4)
-                                                            .trim()
-                                                            .equalsIgnoreCase(
-                                                                    "")) {
-
-                                                        i_sold = 0;
-
-                                                    } else {
-
-                                                        i_sold = Integer.parseInt(c
-                                                                .getString(4)
-                                                                .trim());
-                                                    }
-                                                }
-
-                                                Log.e("old sold", String.valueOf(i_sold));
-
-                                                i_sold = i_sold
-                                                        + Integer.parseInt(edt_qty
-                                                        .getText()
-                                                        .toString());
-
-                                                Log.e("new sold", String.valueOf(i_sold));
-
-                                                int i_stokinhand = 0;
-
-                                                if (c.getString(8) != null) {
-                                                    if (c.getString(8).trim()
-                                                            .equalsIgnoreCase("0")
-                                                            || c.getString(8)
-                                                            .trim()
-                                                            .equalsIgnoreCase(
-                                                                    "")) {
-
-                                                        i_stokinhand = 0;
-
-                                                    } else {
-
-                                                        i_stokinhand = Integer
-                                                                .parseInt(c
-                                                                        .getString(
-                                                                                8)
-                                                                        .trim());
-                                                    }
-                                                }
-
-
-                                                Log.e("i_stokinhand", String.valueOf(i_stokinhand));
-
-                                            /* ..............  New changes ...........................*/
-                                                int i_return_customer = 0;
-
-                                                if (c.getString(7) != null) {
-                                                    if (c.getString(7).trim()
-                                                            .equalsIgnoreCase("0")
-                                                            || c.getString(7).trim().equalsIgnoreCase("")) {
-
-                                                        i_return_customer = 0;
-
-                                                    } else {
-
-                                                        i_return_customer = Integer.parseInt(c.getString(7).trim());
-                                                    }
-                                                }
-
-
-                                                Log.e("i_return_customer", String.valueOf(i_return_customer));
-
-                                                int i_return_company = 0;
-
-                                                if (c.getString(9) != null) {
-                                                    if (c.getString(9).trim()
-                                                            .equalsIgnoreCase("0")
-                                                            || c.getString(9).trim().equalsIgnoreCase("")) {
-
-                                                        i_return_company = 0;
-
-                                                    } else {
-
-                                                        i_return_company = Integer.parseInt(c.getString(9).trim());
-                                                    }
-                                                }
-
-
-                                                Log.e("i_return_company", String.valueOf(i_return_company));
-
-                                            /*...................End...................*/
-
-                                                //New changes
-                                                int i_clstk = i_stokinhand - i_sold + i_return_customer - i_return_company;
-
-                                                //old apk 2.7
-                                                // int i_clstk = i_stokinhand - i_sold;
-
-                                                Log.e("i_clstk", String.valueOf(i_clstk));
-
-                                                if (c.getString(0) != null) {
-                                                    if (!c.getString(0)
-                                                            .equalsIgnoreCase("")) {
-
-                                                        if (!c.getString(0)
-                                                                .equalsIgnoreCase(
-                                                                        " ")) {
-                                                            int total_gross = Integer.parseInt(c
-                                                                    .getString(0));
-
-                                                            gross = total_gross + calc_gross;
-
-                                                        } else {
-                                                            gross = calc_gross;
-
-                                                        }
-
-                                                    } else {
-                                                        gross = calc_gross;
-
-                                                    }
-                                                } else {
-                                                    gross = calc_gross;
-
-                                                }
-
-                                                if (c.getString(2) != null) {
-                                                    if (!c.getString(2)
-                                                            .equalsIgnoreCase("")) {
-
-                                                        if (!c.getString(2)
-                                                                .contains(" ")) {
-
-                                                            disss = (Float.parseFloat(c
-                                                                    .getString(2)) + a);
-
-                                                        } else {
-                                                            if (edt_discount
-                                                                    .getText()
-                                                                    .toString()
-                                                                    .equals("")) {
-                                                                // discount = 0;//
-                                                                disss = 0;
-                                                            } else {
-
-                                                                disss = a;
-
-                                                            }
-
-                                                        }
-
-                                                    } else {
-                                                        if (edt_discount.getText()
-                                                                .toString()
-                                                                .equals("")) {
-
-                                                            disss = 0;
-                                                        } else {
-
-                                                            disss = 0;
-
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (edt_discount.getText()
-                                                            .toString().equals("")) {
-                                                        // discount = 0;//
-                                                        disss = 0;
-                                                    } else {
-
-                                                        disss = a;
-                                                    }
-                                                }
-
-                                                if (c.getString(1) != null) {
-                                                    if (!c.getString(1)
-                                                            .equalsIgnoreCase("")) {
-
-                                                        if (!c.getString(1)
-                                                                .contains(" ")) {
-
-                                                            String cal_gross = String
-                                                                    .valueOf(calc_gross);
-
-                                                            net1 = Float.parseFloat(c
-                                                                    .getString(1))
-                                                                    + Float.parseFloat(cal_gross)
-                                                                    - a;
-
-                                                        } else {
-                                                            String cal_gross = String
-                                                                    .valueOf(calc_gross);
-
-                                                            net1 = (Float
-                                                                    .parseFloat(cal_gross) - a);
-
-                                                        }
-
-                                                    } else {
-                                                        String cal_gross = String
-                                                                .valueOf(calc_gross);
-
-                                                        net1 = (Float
-                                                                .parseFloat(cal_gross) - a);
-                                                    }
-
-                                                } else {
-                                                    String cal_gross = String
-                                                            .valueOf(calc_gross);
-
-                                                    net1 = (Float
-                                                            .parseFloat(cal_gross) - a);
-                                                }
-
-                                                Calendar cal = Calendar
-                                                        .getInstance();
-                                                SimpleDateFormat month_date = new SimpleDateFormat(
-                                                        "MMMM");
-                                                String month_name = month_date
-                                                        .format(cal.getTime());
-
-                                                Calendar cal1 = Calendar
-                                                        .getInstance();
-                                                SimpleDateFormat year_format = new SimpleDateFormat(
-                                                        "yyyy");
-                                                String year_name = year_format
-                                                        .format(cal1.getTime());
-
-                                                Calendar cal2 = Calendar
-                                                        .getInstance();
-                                                SimpleDateFormat sdf = new SimpleDateFormat(
-                                                        "yyyy-MM-dd HH:mm:ss");
-                                                String insert_timestamp = sdf
-                                                        .format(cal2.getTime());
-
-                                                String[] insert_timestamps = insert_timestamp
-                                                        .split(" ");
-
-                                                String check_timestamp = insert_timestamps[0];
-
-                                                boolean bool = db
-                                                        .update(tv_dbID.getText()
-                                                                        .toString(),
-                                                                new String[]{
-                                                                        shaddd,
-                                                                        String.valueOf(i_clstk),
-                                                                        String.valueOf(gross),
-                                                                        String.valueOf(disss),
-                                                                        String.valueOf(net1),
-                                                                        String.valueOf(i_sold),
-                                                                        "0",
-                                                                        month_name,
-                                                                        year_name,
-                                                                        insert_timestamp,
-                                                                        insert_timestamp,
-                                                                        "s"},
-                                                                new String[]{
-                                                                        "shadeNo",
-                                                                        "close_bal",
-                                                                        "total_gross_amount",
-                                                                        "discount",
-                                                                        "total_net_amount",
-                                                                        "sold_stock",
-                                                                        "savedServer",
-                                                                        "month",
-                                                                        "year",
-                                                                        "updateDate",
-                                                                        "insert_date",
-                                                                        "flag"},
-                                                                "stock", "db_id");
-
-                                                Cursor mCursor1;
-                                                // db.open();
-                                                mCursor1 = db.fetchone_Boc_wise(
-                                                        tv_dbID.getText()
-                                                                .toString(),
-                                                        check_timestamp);
-
-                                                // db.close();
-                                                SimpleDateFormat sdf123 = new SimpleDateFormat(
-                                                        "dd/MM/yyyy");
-                                                String currentDateandTime = sdf123
-                                                        .format(new Date())
-                                                        .toString();
-
-                                                Date cur = null;
-                                                try {
-                                                    cur = sdf123
-                                                            .parse(currentDateandTime
-                                                                    .trim());
-                                                } catch (ParseException e) {
-                                                    // TODO Auto-generated catch
-                                                    // block
-                                                    e.printStackTrace();
-                                                }
-                                                String boc = between(cur);
-                                                if (mCursor1.getCount() == 0) {
-                                                    try {
-                                                        Cursor mCursor12;
-                                                        // db.open();
-                                                        mCursor12 = db
-                                                                .getdata_StockForBoc(tv_dbID
-                                                                        .getText()
-                                                                        .toString());
-
-                                                        // db.close();
-
-                                                        if (mCursor12 != null) {
-                                                            if (mCursor12
-                                                                    .getCount() > 0) {
-
-                                                                mCursor12
-                                                                        .moveToFirst();
-
-                                                                String product_id = mCursor12
-                                                                        .getString(mCursor12
-                                                                                .getColumnIndex("product_id"));
-                                                                String db_id = mCursor12
-                                                                        .getString(mCursor12
-                                                                                .getColumnIndex("db_id"));
-                                                                String eancode = mCursor12
-                                                                        .getString(mCursor12
-                                                                                .getColumnIndex("eancode"));
-                                                                String product_category = mCursor12
-                                                                        .getString(mCursor12
-                                                                                .getColumnIndex("product_category"));
-                                                                String product_type = mCursor12
-                                                                        .getString(mCursor12
-                                                                                .getColumnIndex("product_type"));
-                                                                String product_name = mCursor12
-                                                                        .getString(mCursor12
-                                                                                .getColumnIndex("product_name"));
-                                                                String size = mCursor12
-                                                                        .getString(mCursor12
-                                                                                .getColumnIndex("size"));
-                                                                String price = mCursor12
-                                                                        .getString(mCursor12
-                                                                                .getColumnIndex("price"));
-                                                                String emp_id = mCursor12
-                                                                        .getString(mCursor12
-                                                                                .getColumnIndex("emp_id"));
-                                                                String opening_stock = mCursor12
-                                                                        .getString(mCursor12
-                                                                                .getColumnIndex("opening_stock"));
-                                                                String stock_received = mCursor12
-                                                                        .getString(mCursor12
-                                                                                .getColumnIndex("stock_received"));
-                                                                String stock_in_hand = mCursor12
-                                                                        .getString(mCursor12
-                                                                                .getColumnIndex("stock_in_hand"));
-
-                                                                String return_saleable = mCursor12
-                                                                        .getString(mCursor12
-                                                                                .getColumnIndex("return_saleable"));
-                                                                String return_non_saleable = mCursor12
-                                                                        .getString(mCursor12
-                                                                                .getColumnIndex("return_non_saleable"));
-
-                                                                String shadeNo = mCursor12
-                                                                        .getString(mCursor12
-                                                                                .getColumnIndex("shadeNo"));
-                                                                db.insertSaleCalcuationForDashboard(
-                                                                        product_id,
-                                                                        db_id,
-                                                                        eancode,
-                                                                        product_category,
-                                                                        product_type,
-                                                                        product_name,
-                                                                        size,
-                                                                        price,
-                                                                        emp_id,
-                                                                        opening_stock,
-                                                                        stock_received,
-                                                                        stock_in_hand,
-                                                                        return_saleable,
-                                                                        return_non_saleable,
-                                                                        String.valueOf(closing),
-                                                                        String.valueOf(gross),
-                                                                        String.valueOf(disss),
-                                                                        String.valueOf(boc_date_net),
-                                                                        String.valueOf(sold_stock),
-                                                                        month_name,
-                                                                        year_name,
-                                                                        insert_timestamp,
-                                                                        insert_timestamp,
-                                                                        check_timestamp,
-                                                                        boc,
-                                                                        shadeNo);
-
-                                                            }
-
-                                                        }
-
-                                                    } catch (Exception e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                } else {
-
-                                                    db.updateSaleCalcuationForDashboard(
-                                                            tv_dbID.getText()
-                                                                    .toString(),
-                                                            check_timestamp,
-                                                            new String[]{
-                                                                    String.valueOf(closing),
-                                                                    String.valueOf(gross),
-                                                                    String.valueOf(disss),
-                                                                    String.valueOf(net1),
-                                                                    String.valueOf(sold_stock),
-                                                                    String.valueOf(closing),
-                                                                    String.valueOf(closing),
-                                                                    "0",
-                                                                    "0",
-                                                                    month_name,
-                                                                    year_name,
-                                                                    insert_timestamp,
-                                                                    insert_timestamp,
-                                                                    check_timestamp,
-                                                                    boc});
-
-                                                }
-                                                if (bool == true) {
-                                                    count++;
-                                                }
-                                            }
-                                        } else {
-                                            Toast.makeText(SaleCalculation.this,
-                                                    "Stock not available",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-
-                                    }
-
-                                    if (count == tl_sale_calculation.getChildCount() - 1) {
-
-                                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                                                SaleCalculation.this);
-
-                                        // set title
-                                        alertDialogBuilder
-                                                .setTitle("Saved Successfully!!");
-
-                                        // set dialog message
-                                        alertDialogBuilder
-                                                .setMessage("Go  TO  :")
-                                                .setCancelable(false)
-
-                                                .setNegativeButton(
-                                                        "Sale Page",
-                                                        new DialogInterface.OnClickListener() {
-                                                            public void onClick(
-                                                                    DialogInterface dialog,
-                                                                    int id) {
-
-                                                                dialog.cancel();
-                                                                finish();
-                                                                startActivity(new Intent(
-                                                                        SaleCalculation.this,
-                                                                        SaleNewActivity.class));
-
-                                                            }
-                                                        })
-
-                                                .setPositiveButton(
-                                                        "Home",
-                                                        new DialogInterface.OnClickListener() {
-                                                            public void onClick(
-                                                                    DialogInterface dialog,
-                                                                    int id) {
-
-                                                                dialog.cancel();
-                                                                finish();
-                                                                startActivity(new Intent(
-                                                                        SaleCalculation.this,
-                                                                        DashboardNewActivity.class));
-
-                                                            }
-                                                        });
-
-                                        // create alert dialog
-                                        AlertDialog alertDialog = alertDialogBuilder
-                                                .create();
-
-                                        // show it
-                                        alertDialog.show();
-                                    } else {
-                                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                                                SaleCalculation.this);
-
-                                        // set title
-                                        alertDialogBuilder
-                                                .setTitle("Data Not Saved!!!");
-
-                                        // set dialog message
-                                        alertDialogBuilder
-                                                .setMessage(
-                                                        "Please check the available stock for specified products")
-                                                .setCancelable(false)
-
-                                                .setNegativeButton(
-                                                        "OK",
-                                                        new DialogInterface.OnClickListener() {
-                                                            public void onClick(
-                                                                    DialogInterface dialog,
-                                                                    int id) {
-
-                                                                dialog.cancel();
-                                                                finish();
-                                                                startActivity(new Intent(
-                                                                        SaleCalculation.this,
-                                                                        SaleNewActivity.class));
-
-                                                            }
-                                                        });
-
-                                        // create alert dialog
-                                        AlertDialog alertDialog = alertDialogBuilder
-                                                .create();
-
-                                        // show it
-                                        alertDialog.show();
-                                    }
-
-                                    //
-
-                                }
-
-                            }
-
-                        } else {
-                            // mProgress.dismiss();
-                            Toast.makeText(
-                                    SaleCalculation.this,
-                                    "Please enter valid value in quantity fields",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    } catch (NumberFormatException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-
-                        Toast.makeText(
-                                SaleCalculation.this,
-                                "Please fill up all valid value in quantity fields",
-                                Toast.LENGTH_LONG).show();
-
-                    } catch (SQLException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                } else {
-                    Toast.makeText(SaleCalculation.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
-
+                if(shp.getString("Role", "").equalsIgnoreCase("FLR")){
+                    saveMethodForFLR();
+                }else {
+                    saveMethodForLHR();
                 }
 
             }
@@ -1569,6 +901,1596 @@ public class SaleCalculation extends Activity {
 
         // ll.setVisibility(View.GONE);
         return closebal;
+    }
+
+    private void saveMethodForLHR(){
+        if (cd.isCurrentDateMatchDeviceDate()) {
+            try {
+
+                int count = 0;
+
+                int etcount = 0;
+                if (tl_sale_calculation.getChildCount() != 1) {
+                    for (int i = 0; i < tl_sale_calculation.getChildCount() - 1; i++) {
+
+                        TableRow t = (TableRow) tl_sale_calculation
+                                .getChildAt(i + 1);
+                        EditText edt_qty = (EditText) t.getChildAt(1);
+
+                        if (edt_qty.getText().toString().trim()
+                                .equalsIgnoreCase("0")
+                                || edt_qty.getText().toString().trim()
+                                .equalsIgnoreCase("")
+                                || edt_qty.getText().toString().trim()
+                                .equalsIgnoreCase(" ")
+                                || Integer.parseInt(edt_qty.getText()
+                                .toString().trim()) <= 0) {
+
+                        } else {
+
+                            etcount++;
+                        }
+
+                    }
+                }
+
+                Log.e("etcount", String.valueOf(etcount));
+                int numberofproduct = (tl_sale_calculation.getChildCount() - 1);
+
+                if (numberofproduct == etcount) {
+
+                    if (!edt_gross.getText().toString().equals("")
+                            && !edt_net.getText().toString().equals("")) {
+                        float dis;
+                        if (!edt_discount.getText().toString()
+                                .equalsIgnoreCase(" ")
+                                || !edt_discount.getText().toString()
+                                .equalsIgnoreCase("")) {
+                            dis = Integer.parseInt(edt_discount.getText()
+                                    .toString());
+                        } else {
+                            dis = 0;
+                        }
+
+                        String tt = String.valueOf(tl_sale_calculation
+                                .getChildCount());
+
+                        float ttt = Float.parseFloat(tt);
+
+                        float a1 = dis / (ttt - 1);
+
+                        String adis = String.format("%.02f", a1);
+                        float a = Float.parseFloat(adis);
+                        float disss = 0;
+                        float net1;
+
+                        if (tl_sale_calculation.getChildCount() != 1) {
+                            for (int i = 0; i < tl_sale_calculation
+                                    .getChildCount() - 1; i++) {
+
+                                TableRow t = (TableRow) tl_sale_calculation
+                                        .getChildAt(i + 1);
+                                EditText edt_qty = (EditText) t
+                                        .getChildAt(1);
+                                TextView tv_mrp = (TextView) t
+                                        .getChildAt(2);
+                                TextView tv_dbID = (TextView) t
+                                        .getChildAt(3);
+                                TextView tv_shadeno = (TextView) t
+                                        .getChildAt(4);
+
+                                // ---------
+                                String shaddd = tv_shadeno.getText()
+                                        .toString().trim();
+
+                                if (shaddd != null) {
+
+                                    if (shaddd.equalsIgnoreCase(" ")
+                                            || shaddd.equalsIgnoreCase("")) {
+                                        shaddd = "0";
+                                    }
+
+                                } else {
+                                    shaddd = "0";
+
+                                }
+                                // ---------
+
+                                int calc_gross = Integer.parseInt(tv_mrp
+                                        .getText().toString())
+                                        * Integer.parseInt(edt_qty
+                                        .getText().toString());
+
+                                float boc_date_net = calc_gross - a;
+
+                                int gross = 0, net = 0, closing = 0, sold_stock = 0, discount = 0;
+                                int stkinhand = 0;
+                                int i_sold = 0;
+                                db.open();
+                                Cursor c = db.fetchallSpecifyMSelect(
+                                        "stock", new String[]{
+                                                "total_gross_amount",
+                                                "total_net_amount",
+                                                "discount", "close_bal",
+                                                "sold_stock",
+                                                "opening_stock",
+                                                "stock_received",
+                                                "return_saleable",
+                                                "stock_in_hand",
+                                                "return_non_saleable", "price"},
+                                        "db_id = '"
+                                                + tv_dbID.getText()
+                                                .toString() + "'",
+                                        null, null);
+                                if (c != null && c.getCount() > 0) {
+                                    c.moveToFirst();
+
+                                    // opening stock
+                                    Log.e("opening stock", c.getString(3));
+                                    boolean boo = validateEdit(
+                                            edt_qty,
+                                            "Quantity is greater than available stock",
+                                            c.getString(3));
+
+                                    if (boo == true) {
+
+                                        if (c.getString(4) != null) {
+                                            if (c.getString(4).trim()
+                                                    .equalsIgnoreCase("0")
+                                                    || c.getString(4)
+                                                    .trim()
+                                                    .equalsIgnoreCase(
+                                                            "")) {
+
+                                                i_sold = 0;
+
+                                            } else {
+
+                                                i_sold = Integer.parseInt(c
+                                                        .getString(4)
+                                                        .trim());
+                                            }
+                                        }
+
+                                        Log.e("old sold", String.valueOf(i_sold));
+
+                                        i_sold = i_sold
+                                                + Integer.parseInt(edt_qty
+                                                .getText()
+                                                .toString());
+
+                                        Log.e("new sold", String.valueOf(i_sold));
+
+                                        int i_stokinhand = 0;
+
+                                        if (c.getString(8) != null) {
+                                            if (c.getString(8).trim()
+                                                    .equalsIgnoreCase("0")
+                                                    || c.getString(8)
+                                                    .trim()
+                                                    .equalsIgnoreCase(
+                                                            "")) {
+
+                                                i_stokinhand = 0;
+
+                                            } else {
+
+                                                i_stokinhand = Integer
+                                                        .parseInt(c
+                                                                .getString(
+                                                                        8)
+                                                                .trim());
+                                            }
+                                        }
+
+
+                                        Log.e("i_stokinhand", String.valueOf(i_stokinhand));
+
+                                        /* ..............  New changes ...........................*/
+                                        int i_return_customer = 0;
+
+                                        if (c.getString(7) != null) {
+                                            if (c.getString(7).trim()
+                                                    .equalsIgnoreCase("0")
+                                                    || c.getString(7).trim().equalsIgnoreCase("")) {
+
+                                                i_return_customer = 0;
+
+                                            } else {
+
+                                                i_return_customer = Integer.parseInt(c.getString(7).trim());
+                                            }
+                                        }
+
+
+                                        Log.e("i_return_customer", String.valueOf(i_return_customer));
+
+                                        int i_return_company = 0;
+
+                                        if (c.getString(9) != null) {
+                                            if (c.getString(9).trim()
+                                                    .equalsIgnoreCase("0")
+                                                    || c.getString(9).trim().equalsIgnoreCase("")) {
+
+                                                i_return_company = 0;
+
+                                            } else {
+
+                                                i_return_company = Integer.parseInt(c.getString(9).trim());
+                                            }
+                                        }
+
+
+                                        Log.e("i_return_company", String.valueOf(i_return_company));
+
+                                        /*...................End...................*/
+
+                                        //New changes
+                                        int i_clstk = i_stokinhand - i_sold + i_return_customer - i_return_company;
+
+                                        //old apk 2.7
+                                        // int i_clstk = i_stokinhand - i_sold;
+
+                                        Log.e("i_clstk", String.valueOf(i_clstk));
+
+                                        if (c.getString(0) != null) {
+                                            if (!c.getString(0)
+                                                    .equalsIgnoreCase("")) {
+
+                                                if (!c.getString(0)
+                                                        .equalsIgnoreCase(
+                                                                " ")) {
+                                                    int total_gross = Integer.parseInt(c
+                                                            .getString(0));
+
+                                                    gross = total_gross + calc_gross;
+
+                                                } else {
+                                                    gross = calc_gross;
+
+                                                }
+
+                                            } else {
+                                                gross = calc_gross;
+
+                                            }
+                                        } else {
+                                            gross = calc_gross;
+
+                                        }
+
+                                        if (c.getString(2) != null) {
+                                            if (!c.getString(2)
+                                                    .equalsIgnoreCase("")) {
+
+                                                if (!c.getString(2)
+                                                        .contains(" ")) {
+
+                                                    disss = (Float.parseFloat(c
+                                                            .getString(2)) + a);
+
+                                                } else {
+                                                    if (edt_discount
+                                                            .getText()
+                                                            .toString()
+                                                            .equals("")) {
+                                                        // discount = 0;//
+                                                        disss = 0;
+                                                    } else {
+
+                                                        disss = a;
+
+                                                    }
+
+                                                }
+
+                                            } else {
+                                                if (edt_discount.getText()
+                                                        .toString()
+                                                        .equals("")) {
+
+                                                    disss = 0;
+                                                } else {
+
+                                                    disss = 0;
+
+                                                }
+                                            }
+                                        } else {
+                                            if (edt_discount.getText()
+                                                    .toString().equals("")) {
+                                                // discount = 0;//
+                                                disss = 0;
+                                            } else {
+
+                                                disss = a;
+                                            }
+                                        }
+
+                                        if (c.getString(1) != null) {
+                                            if (!c.getString(1)
+                                                    .equalsIgnoreCase("")) {
+
+                                                if (!c.getString(1)
+                                                        .contains(" ")) {
+
+                                                    String cal_gross = String
+                                                            .valueOf(calc_gross);
+
+                                                    net1 = Float.parseFloat(c
+                                                            .getString(1))
+                                                            + Float.parseFloat(cal_gross)
+                                                            - a;
+
+                                                } else {
+                                                    String cal_gross = String
+                                                            .valueOf(calc_gross);
+
+                                                    net1 = (Float
+                                                            .parseFloat(cal_gross) - a);
+
+                                                }
+
+                                            } else {
+                                                String cal_gross = String
+                                                        .valueOf(calc_gross);
+
+                                                net1 = (Float
+                                                        .parseFloat(cal_gross) - a);
+                                            }
+
+                                        } else {
+                                            String cal_gross = String
+                                                    .valueOf(calc_gross);
+
+                                            net1 = (Float
+                                                    .parseFloat(cal_gross) - a);
+                                        }
+
+                                        Calendar cal = Calendar
+                                                .getInstance();
+                                        SimpleDateFormat month_date = new SimpleDateFormat(
+                                                "MMMM");
+                                        String month_name = month_date
+                                                .format(cal.getTime());
+
+                                        Calendar cal1 = Calendar
+                                                .getInstance();
+                                        SimpleDateFormat year_format = new SimpleDateFormat(
+                                                "yyyy");
+                                        String year_name = year_format
+                                                .format(cal1.getTime());
+
+                                        Calendar cal2 = Calendar
+                                                .getInstance();
+                                        SimpleDateFormat sdf = new SimpleDateFormat(
+                                                "yyyy-MM-dd HH:mm:ss");
+                                        String insert_timestamp = sdf
+                                                .format(cal2.getTime());
+
+                                        String[] insert_timestamps = insert_timestamp
+                                                .split(" ");
+
+                                        String check_timestamp = insert_timestamps[0];
+
+                                        boolean bool = db
+                                                .update(tv_dbID.getText()
+                                                                .toString(),
+                                                        new String[]{
+                                                                shaddd,
+                                                                String.valueOf(i_clstk),
+                                                                String.valueOf(gross),
+                                                                String.valueOf(disss),
+                                                                String.valueOf(net1),
+                                                                String.valueOf(i_sold),
+                                                                "0",
+                                                                month_name,
+                                                                year_name,
+                                                                insert_timestamp,
+                                                                insert_timestamp,
+                                                                "s"},
+                                                        new String[]{
+                                                                "shadeNo",
+                                                                "close_bal",
+                                                                "total_gross_amount",
+                                                                "discount",
+                                                                "total_net_amount",
+                                                                "sold_stock",
+                                                                "savedServer",
+                                                                "month",
+                                                                "year",
+                                                                "updateDate",
+                                                                "insert_date",
+                                                                "flag"},
+                                                        "stock", "db_id");
+
+                                        Cursor mCursor1;
+                                        // db.open();
+                                        mCursor1 = db.fetchone_Boc_wise(
+                                                tv_dbID.getText()
+                                                        .toString(),
+                                                check_timestamp);
+
+                                        // db.close();
+                                        SimpleDateFormat sdf123 = new SimpleDateFormat(
+                                                "dd/MM/yyyy");
+                                        String currentDateandTime = sdf123
+                                                .format(new Date())
+                                                .toString();
+
+                                        Date cur = null;
+                                        try {
+                                            cur = sdf123
+                                                    .parse(currentDateandTime
+                                                            .trim());
+                                        } catch (ParseException e) {
+                                            // TODO Auto-generated catch
+                                            // block
+                                            e.printStackTrace();
+                                        }
+                                        String boc = between(cur);
+                                        if (mCursor1.getCount() == 0) {
+                                            try {
+                                                Cursor mCursor12;
+                                                // db.open();
+                                                mCursor12 = db
+                                                        .getdata_StockForBoc(tv_dbID
+                                                                .getText()
+                                                                .toString());
+
+                                                // db.close();
+
+                                                if (mCursor12 != null) {
+                                                    if (mCursor12
+                                                            .getCount() > 0) {
+
+                                                        mCursor12
+                                                                .moveToFirst();
+
+                                                        String product_id = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("product_id"));
+                                                        String db_id = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("db_id"));
+                                                        String eancode = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("eancode"));
+                                                        String product_category = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("product_category"));
+                                                        String product_type = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("product_type"));
+                                                        String product_name = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("product_name"));
+                                                        String size = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("size"));
+                                                        String price = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("price"));
+                                                        String emp_id = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("emp_id"));
+                                                        String opening_stock = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("opening_stock"));
+                                                        String stock_received = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("stock_received"));
+                                                        String stock_in_hand = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("stock_in_hand"));
+
+                                                        String return_saleable = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("return_saleable"));
+                                                        String return_non_saleable = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("return_non_saleable"));
+
+                                                        String shadeNo = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("shadeNo"));
+                                                        db.insertSaleCalcuationForDashboard(
+                                                                product_id,
+                                                                db_id,
+                                                                eancode,
+                                                                product_category,
+                                                                product_type,
+                                                                product_name,
+                                                                size,
+                                                                price,
+                                                                emp_id,
+                                                                opening_stock,
+                                                                stock_received,
+                                                                stock_in_hand,
+                                                                return_saleable,
+                                                                return_non_saleable,
+                                                                String.valueOf(closing),
+                                                                String.valueOf(gross),
+                                                                String.valueOf(disss),
+                                                                String.valueOf(boc_date_net),
+                                                                String.valueOf(sold_stock),
+                                                                month_name,
+                                                                year_name,
+                                                                insert_timestamp,
+                                                                insert_timestamp,
+                                                                check_timestamp,
+                                                                boc,
+                                                                shadeNo);
+
+                                                    }
+
+                                                }
+
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        } else {
+
+                                            db.updateSaleCalcuationForDashboard(
+                                                    tv_dbID.getText()
+                                                            .toString(),
+                                                    check_timestamp,
+                                                    new String[]{
+                                                            String.valueOf(closing),
+                                                            String.valueOf(gross),
+                                                            String.valueOf(disss),
+                                                            String.valueOf(net1),
+                                                            String.valueOf(sold_stock),
+                                                            String.valueOf(closing),
+                                                            String.valueOf(closing),
+                                                            "0",
+                                                            "0",
+                                                            month_name,
+                                                            year_name,
+                                                            insert_timestamp,
+                                                            insert_timestamp,
+                                                            check_timestamp,
+                                                            boc});
+
+                                        }
+                                        if (bool == true) {
+                                            count++;
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(SaleCalculation.this,
+                                            "Stock not available",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+
+                            if (count == tl_sale_calculation.getChildCount() - 1) {
+
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                        SaleCalculation.this);
+
+                                // set title
+                                alertDialogBuilder
+                                        .setTitle("Saved Successfully!!");
+
+                                // set dialog message
+                                alertDialogBuilder
+                                        .setMessage("Go  TO  :")
+                                        .setCancelable(false)
+
+                                        .setNegativeButton(
+                                                "Sale Page",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(
+                                                            DialogInterface dialog,
+                                                            int id) {
+
+                                                        dialog.cancel();
+                                                        finish();
+                                                        startActivity(new Intent(
+                                                                SaleCalculation.this,
+                                                                SaleNewActivity.class));
+
+                                                    }
+                                                })
+
+                                        .setPositiveButton(
+                                                "Home",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(
+                                                            DialogInterface dialog,
+                                                            int id) {
+
+                                                        dialog.cancel();
+                                                        finish();
+                                                        startActivity(new Intent(
+                                                                SaleCalculation.this,
+                                                                DashboardNewActivity.class));
+
+                                                    }
+                                                });
+
+                                // create alert dialog
+                                AlertDialog alertDialog = alertDialogBuilder
+                                        .create();
+
+                                // show it
+                                alertDialog.show();
+                            } else {
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                        SaleCalculation.this);
+
+                                // set title
+                                alertDialogBuilder
+                                        .setTitle("Data Not Saved!!!");
+
+                                // set dialog message
+                                alertDialogBuilder
+                                        .setMessage(
+                                                "Please check the available stock for specified products")
+                                        .setCancelable(false)
+
+                                        .setNegativeButton(
+                                                "OK",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(
+                                                            DialogInterface dialog,
+                                                            int id) {
+
+                                                        dialog.cancel();
+                                                        finish();
+                                                        startActivity(new Intent(
+                                                                SaleCalculation.this,
+                                                                SaleNewActivity.class));
+
+                                                    }
+                                                });
+
+                                // create alert dialog
+                                AlertDialog alertDialog = alertDialogBuilder
+                                        .create();
+
+                                // show it
+                                alertDialog.show();
+                            }
+
+                            //
+
+                        }
+
+                    }
+
+                } else {
+                    // mProgress.dismiss();
+                    Toast.makeText(
+                            SaleCalculation.this,
+                            "Please enter valid value in quantity fields",
+                            Toast.LENGTH_LONG).show();
+                }
+            } catch (NumberFormatException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+
+                Toast.makeText(
+                        SaleCalculation.this,
+                        "Please fill up all valid value in quantity fields",
+                        Toast.LENGTH_LONG).show();
+
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(SaleCalculation.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+
+        }
+
+    }
+
+    private void saveMethodForFLR(){
+
+        if (cd.isCurrentDateMatchDeviceDate()) {
+            try {
+
+                int count = 0;
+
+                int etcount = 0;
+                if (tl_sale_calculation.getChildCount() != 1) {
+                    for (int i = 0; i < tl_sale_calculation.getChildCount() - 1; i++) {
+
+                        TableRow t = (TableRow) tl_sale_calculation
+                                .getChildAt(i + 1);
+                        EditText edt_qty = (EditText) t.getChildAt(1);
+
+                        if (edt_qty.getText().toString().trim()
+                                .equalsIgnoreCase("0")
+                                || edt_qty.getText().toString().trim()
+                                .equalsIgnoreCase("")
+                                || edt_qty.getText().toString().trim()
+                                .equalsIgnoreCase(" ")) {
+
+                        } else {
+
+                            etcount++;
+                        }
+
+                    }
+                }
+
+                Log.e("etcount", String.valueOf(etcount));
+                int numberofproduct = (tl_sale_calculation.getChildCount() - 1);
+
+                if (numberofproduct == etcount) {
+
+                    if (!edt_gross.getText().toString().equals("")
+                            && !edt_net.getText().toString().equals("")) {
+                        float dis;
+                        if (!edt_discount.getText().toString()
+                                .equalsIgnoreCase(" ")
+                                || !edt_discount.getText().toString()
+                                .equalsIgnoreCase("")) {
+                            dis = Integer.parseInt(edt_discount.getText()
+                                    .toString());
+                        } else {
+                            dis = 0;
+                        }
+
+                        String tt = String.valueOf(tl_sale_calculation
+                                .getChildCount());
+
+                        float ttt = Float.parseFloat(tt);
+
+                        float a1 = dis / (ttt - 1);
+
+                        String adis = String.format("%.02f", a1);
+                        float a = Float.parseFloat(adis);
+                        float disss = 0;
+                        float net1;
+
+                        if (tl_sale_calculation.getChildCount() != 1) {
+                            for (int i = 0; i < tl_sale_calculation
+                                    .getChildCount() - 1; i++) {
+
+                                TableRow t = (TableRow) tl_sale_calculation
+                                        .getChildAt(i + 1);
+                                EditText edt_qty = (EditText) t
+                                        .getChildAt(1);
+                                TextView tv_mrp = (TextView) t
+                                        .getChildAt(2);
+                                TextView tv_dbID = (TextView) t
+                                        .getChildAt(3);
+                                TextView tv_shadeno = (TextView) t
+                                        .getChildAt(4);
+
+                                // ---------
+                                String shaddd = tv_shadeno.getText().toString().trim();
+
+                                String product_category = SaleActivityForFloter.selected_product_category;
+                                String product_type = SaleActivityForFloter.selected_product_type;
+                                String product_name = pro_name[i];
+                                String emp_id = shp.getString("username", "");
+                                String price = tv_mrp.getText().toString().trim();
+                                String size1 = "" + size[i];
+                                String eancode;
+                                if(enacod !=null){
+                                     eancode = "" + enacod[i];
+                                }else{
+                                     eancode = "0";
+                                }
+                                String db_id1 = tv_dbID.getText().toString().trim();
+                                String cat_id = catid[i];
+
+
+                                Calendar c = Calendar.getInstance();
+                                SimpleDateFormat sdf = new SimpleDateFormat(
+                                        "yyyy-MM-dd HH:mm:ss");
+                                String insert_timestamp = sdf.format(c
+                                        .getTime());
+
+                                Calendar cal = Calendar.getInstance();
+                                SimpleDateFormat month_date = new SimpleDateFormat(
+                                        "MMMM");
+                                String month_name = month_date.format(cal
+                                        .getTime());
+
+                                Calendar cal1 = Calendar.getInstance();
+                                SimpleDateFormat year_format = new SimpleDateFormat(
+                                        "yyyy");
+                                String year_name = year_format.format(cal1
+                                        .getTime());
+
+                                if (shaddd != null) {
+
+                                    if (shaddd.equalsIgnoreCase(" ")
+                                            || shaddd.equalsIgnoreCase("")) {
+                                        shaddd = "0";
+                                    }
+
+                                } else {
+                                    shaddd = "0";
+
+                                }
+                                // ---------
+
+                                int calc_gross = Integer.parseInt(tv_mrp.getText().toString())
+                                        * Integer.parseInt(edt_qty.getText().toString());
+
+                                float boc_date_net = calc_gross - a;
+
+                                int gross = 0, net = 0, closing = 0, sold_stock = 0, discount = 0;
+                                int stkinhand = 0;
+                                int i_sold = 0;
+
+
+                                Cursor mCursor;
+                                db.open();
+                                mCursor = db.getuniquedata1("", "", tv_dbID
+                                        .getText().toString(), "");
+
+
+                                if (mCursor != null && mCursor.getCount() > 0) {
+                                    mCursor.moveToFirst();
+                                    str_openingstock = mCursor.getString(mCursor
+                                            .getColumnIndex("opening_stock"));
+                                    if (str_openingstock != null) {
+                                        if (str_openingstock.equals("")) {
+
+                                            str_openingstock = "0";
+                                        }
+
+                                    } else {
+                                        str_openingstock = "0";
+                                    }
+
+                                } else {
+                                    str_openingstock = "0";
+                                }
+
+                                Log.e("str_openingstock", str_openingstock);
+
+                                if (mCursor != null && mCursor.getCount() > 0) {
+                                    mCursor.moveToFirst();
+                                    str_price = mCursor.getString(mCursor
+                                            .getColumnIndex("price"));
+                                    if (str_price != null) {
+
+                                        if (str_price.equals("")) {
+
+                                            str_price = "0";
+                                        }
+
+                                    } else {
+                                        str_price = "0";
+                                    }
+
+                                } else {
+                                    str_price = "0";
+                                }
+
+                                Log.e("str_price", str_price);
+
+                                if (mCursor != null && mCursor.getCount() > 0) {
+                                    mCursor.moveToFirst();
+                                    str_grossamt = mCursor.getString(mCursor
+                                            .getColumnIndex("total_gross_amount"));
+                                    if (str_grossamt != null) {
+
+                                        if (str_grossamt.equals("")) {
+
+                                            str_grossamt = "0";
+                                        }
+
+                                    } else {
+                                        str_grossamt = "0";
+                                    }
+
+                                } else {
+                                    str_grossamt = "0";
+                                }
+
+                                Log.e("str_price", str_grossamt);
+
+                                if (mCursor != null && mCursor.getCount() > 0) {
+                                    mCursor.moveToFirst();
+                                    str_discount = mCursor.getString(mCursor
+                                            .getColumnIndex("discount"));
+                                    if (str_discount != null) {
+
+                                        if (str_discount.equals("")) {
+
+                                            str_discount = "0.0";
+                                        }
+
+                                    } else {
+                                        str_discount = "0.0";
+                                    }
+
+                                } else {
+                                    str_discount = "0.0";
+                                }
+
+                                Log.e("str_discount", str_discount);
+
+                                if (mCursor != null && mCursor.getCount() > 0) {
+                                    mCursor.moveToFirst();
+                                    str_soldstock = mCursor.getString(mCursor
+                                            .getColumnIndex("sold_stock"));
+                                    if (str_soldstock != null) {
+
+                                        if (str_soldstock.equals("")) {
+
+                                            str_soldstock = "0";
+                                        }
+
+                                    } else {
+                                        str_soldstock = "0";
+                                    }
+
+                                } else {
+                                    str_soldstock = "0";
+                                }
+
+                                Log.e("str_soldstock", str_soldstock);
+
+                                int soldstock = Integer.parseInt(str_soldstock) + Integer.parseInt(edt_qty.getText().toString());
+
+                                //int soldstock = Integer.parseInt(str_soldstock) - new_retrn_sale;
+
+                                //int pricecustomer = Integer.parseInt(str_price) * new_retrn_sale;
+                                int i_net_amt = 0;
+                                if(str_price.equalsIgnoreCase("0")
+                                        && str_soldstock.equalsIgnoreCase("0")){
+                                    i_net_amt = calc_gross;
+                                }else {
+                                    i_net_amt = Integer.parseInt(str_price) * soldstock;
+                                }
+
+                                float net_amt = Float.parseFloat(String.valueOf(i_net_amt))- Float.parseFloat(str_discount);
+
+
+                                if (mCursor.getCount() == 0) {
+
+                                    db.open();
+                                    db.InsertstockForFLR(
+                                            cat_id,
+                                            db_id1,
+                                            eancode,
+                                            product_category,
+                                            product_type,
+                                            product_name,
+                                            size1,
+                                            price,
+                                            emp_id,
+                                            "0",
+                                            "0",
+                                            "0",
+                                            "0",
+                                            "0",
+                                            "0",
+                                            String.valueOf(soldstock),
+                                            String.valueOf(i_net_amt),
+                                            String.valueOf(net_amt),
+                                            str_discount,
+                                            insert_timestamp,
+                                            shaddd,
+                                            month_name,
+                                            year_name,
+                                            insert_timestamp);
+                                    db.close();
+
+                                    Toast.makeText(SaleCalculation.this,
+                                            "Data save successfully",
+                                            Toast.LENGTH_SHORT).show();
+
+                                    count++;
+
+                                } else {
+                                    db.open();
+                                    db.UpdateStockForFLR(
+                                            "0",
+                                            "0",
+                                            "0",
+                                            db_id1,
+                                            insert_timestamp,
+                                            String.valueOf(soldstock),
+                                            "0",
+                                            "0",
+                                            String.valueOf(i_net_amt),
+                                            String.valueOf(net_amt),
+                                            str_discount,
+                                            shaddd,
+                                            insert_timestamp,
+                                            month_name,
+                                            year_name);
+                                    db.close();
+
+                                    // Toast.makeText(StockAllActivity.this,
+                                    // "Data save successfully",
+                                    // Toast.LENGTH_SHORT).show();
+                                    count++;
+                                }
+
+                               /* db.open();
+                                Cursor c = db.fetchallSpecifyMSelect(
+                                        "stock", new String[]{
+                                                "total_gross_amount",
+                                                "total_net_amount",
+                                                "discount", "close_bal",
+                                                "sold_stock",
+                                                "opening_stock",
+                                                "stock_received",
+                                                "return_saleable",
+                                                "stock_in_hand",
+                                                "return_non_saleable", "price"},
+                                        "db_id = '"
+                                                + tv_dbID.getText()
+                                                .toString() + "'",
+                                        null, null);
+                                if (c != null && c.getCount() > 0) {
+                                    c.moveToFirst();
+
+                                    // opening stock
+                                    Log.e("opening stock", c.getString(3));
+                                    boolean boo = validateEdit(
+                                            edt_qty,
+                                            "Quantity is greater than available stock",
+                                            c.getString(3));
+
+                                    if (boo == true) {
+
+                                        if (c.getString(4) != null) {
+                                            if (c.getString(4).trim()
+                                                    .equalsIgnoreCase("0")
+                                                    || c.getString(4)
+                                                    .trim()
+                                                    .equalsIgnoreCase(
+                                                            "")) {
+
+                                                i_sold = 0;
+
+                                            } else {
+
+                                                i_sold = Integer.parseInt(c
+                                                        .getString(4)
+                                                        .trim());
+                                            }
+                                        }
+
+                                        Log.e("old sold", String.valueOf(i_sold));
+
+                                        i_sold = i_sold
+                                                + Integer.parseInt(edt_qty
+                                                .getText()
+                                                .toString());
+
+                                        Log.e("new sold", String.valueOf(i_sold));
+
+                                        int i_stokinhand = 0;
+
+                                        if (c.getString(8) != null) {
+                                            if (c.getString(8).trim()
+                                                    .equalsIgnoreCase("0")
+                                                    || c.getString(8)
+                                                    .trim()
+                                                    .equalsIgnoreCase(
+                                                            "")) {
+
+                                                i_stokinhand = 0;
+
+                                            } else {
+
+                                                i_stokinhand = Integer
+                                                        .parseInt(c
+                                                                .getString(
+                                                                        8)
+                                                                .trim());
+                                            }
+                                        }
+
+
+                                        Log.e("i_stokinhand", String.valueOf(i_stokinhand));
+
+                                         /////////////////////// New changes ...........................
+                                        int i_return_customer = 0;
+
+                                        if (c.getString(7) != null) {
+                                            if (c.getString(7).trim()
+                                                    .equalsIgnoreCase("0")
+                                                    || c.getString(7).trim().equalsIgnoreCase("")) {
+
+                                                i_return_customer = 0;
+
+                                            } else {
+
+                                                i_return_customer = Integer.parseInt(c.getString(7).trim());
+                                            }
+                                        }
+
+
+                                        Log.e("i_return_customer", String.valueOf(i_return_customer));
+
+                                        int i_return_company = 0;
+
+                                        if (c.getString(9) != null) {
+                                            if (c.getString(9).trim()
+                                                    .equalsIgnoreCase("0")
+                                                    || c.getString(9).trim().equalsIgnoreCase("")) {
+
+                                                i_return_company = 0;
+
+                                            } else {
+
+                                                i_return_company = Integer.parseInt(c.getString(9).trim());
+                                            }
+                                        }
+
+
+                                        Log.e("i_return_company", String.valueOf(i_return_company));
+
+                                        ///////////////////End/////////////////////////
+
+                                        //New changes
+                                        int i_clstk = i_stokinhand - i_sold + i_return_customer - i_return_company;
+
+                                        //old apk 2.7
+                                        // int i_clstk = i_stokinhand - i_sold;
+
+                                        Log.e("i_clstk", String.valueOf(i_clstk));
+
+                                        if (c.getString(0) != null) {
+                                            if (!c.getString(0)
+                                                    .equalsIgnoreCase("")) {
+
+                                                if (!c.getString(0)
+                                                        .equalsIgnoreCase(
+                                                                " ")) {
+                                                    int total_gross = Integer.parseInt(c
+                                                            .getString(0));
+
+                                                    gross = total_gross + calc_gross;
+
+                                                } else {
+                                                    gross = calc_gross;
+
+                                                }
+
+                                            } else {
+                                                gross = calc_gross;
+
+                                            }
+                                        } else {
+                                            gross = calc_gross;
+
+                                        }
+
+                                        if (c.getString(2) != null) {
+                                            if (!c.getString(2)
+                                                    .equalsIgnoreCase("")) {
+
+                                                if (!c.getString(2)
+                                                        .contains(" ")) {
+
+                                                    disss = (Float.parseFloat(c
+                                                            .getString(2)) + a);
+
+                                                } else {
+                                                    if (edt_discount
+                                                            .getText()
+                                                            .toString()
+                                                            .equals("")) {
+                                                        // discount = 0;//
+                                                        disss = 0;
+                                                    } else {
+
+                                                        disss = a;
+
+                                                    }
+
+                                                }
+
+                                            } else {
+                                                if (edt_discount.getText()
+                                                        .toString()
+                                                        .equals("")) {
+
+                                                    disss = 0;
+                                                } else {
+
+                                                    disss = 0;
+
+                                                }
+                                            }
+                                        } else {
+                                            if (edt_discount.getText()
+                                                    .toString().equals("")) {
+                                                // discount = 0;//
+                                                disss = 0;
+                                            } else {
+
+                                                disss = a;
+                                            }
+                                        }
+
+                                        if (c.getString(1) != null) {
+                                            if (!c.getString(1)
+                                                    .equalsIgnoreCase("")) {
+
+                                                if (!c.getString(1)
+                                                        .contains(" ")) {
+
+                                                    String cal_gross = String
+                                                            .valueOf(calc_gross);
+
+                                                    net1 = Float.parseFloat(c
+                                                            .getString(1))
+                                                            + Float.parseFloat(cal_gross)
+                                                            - a;
+
+                                                } else {
+                                                    String cal_gross = String
+                                                            .valueOf(calc_gross);
+
+                                                    net1 = (Float
+                                                            .parseFloat(cal_gross) - a);
+
+                                                }
+
+                                            } else {
+                                                String cal_gross = String
+                                                        .valueOf(calc_gross);
+
+                                                net1 = (Float
+                                                        .parseFloat(cal_gross) - a);
+                                            }
+
+                                        } else {
+                                            String cal_gross = String
+                                                    .valueOf(calc_gross);
+
+                                            net1 = (Float
+                                                    .parseFloat(cal_gross) - a);
+                                        }
+
+                                        Calendar cal = Calendar
+                                                .getInstance();
+                                        SimpleDateFormat month_date = new SimpleDateFormat(
+                                                "MMMM");
+                                        String month_name = month_date
+                                                .format(cal.getTime());
+
+                                        Calendar cal1 = Calendar
+                                                .getInstance();
+                                        SimpleDateFormat year_format = new SimpleDateFormat(
+                                                "yyyy");
+                                        String year_name = year_format
+                                                .format(cal1.getTime());
+
+                                        Calendar cal2 = Calendar
+                                                .getInstance();
+                                        SimpleDateFormat sdf = new SimpleDateFormat(
+                                                "yyyy-MM-dd HH:mm:ss");
+                                        String insert_timestamp = sdf
+                                                .format(cal2.getTime());
+
+                                        String[] insert_timestamps = insert_timestamp
+                                                .split(" ");
+
+                                        String check_timestamp = insert_timestamps[0];
+
+                                        boolean bool = db
+                                                .update(tv_dbID.getText()
+                                                                .toString(),
+                                                        new String[]{
+                                                                shaddd,
+                                                                String.valueOf(i_clstk),
+                                                                String.valueOf(gross),
+                                                                String.valueOf(disss),
+                                                                String.valueOf(net1),
+                                                                String.valueOf(i_sold),
+                                                                "0",
+                                                                month_name,
+                                                                year_name,
+                                                                insert_timestamp,
+                                                                insert_timestamp,
+                                                                "s"},
+                                                        new String[]{
+                                                                "shadeNo",
+                                                                "close_bal",
+                                                                "total_gross_amount",
+                                                                "discount",
+                                                                "total_net_amount",
+                                                                "sold_stock",
+                                                                "savedServer",
+                                                                "month",
+                                                                "year",
+                                                                "updateDate",
+                                                                "insert_date",
+                                                                "flag"},
+                                                        "stock", "db_id");
+
+                                        Cursor mCursor1;
+                                        // db.open();
+                                        mCursor1 = db.fetchone_Boc_wise(
+                                                tv_dbID.getText()
+                                                        .toString(),
+                                                check_timestamp);
+
+                                        // db.close();
+                                        SimpleDateFormat sdf123 = new SimpleDateFormat(
+                                                "dd/MM/yyyy");
+                                        String currentDateandTime = sdf123
+                                                .format(new Date())
+                                                .toString();
+
+                                        Date cur = null;
+                                        try {
+                                            cur = sdf123
+                                                    .parse(currentDateandTime
+                                                            .trim());
+                                        } catch (ParseException e) {
+                                            // TODO Auto-generated catch
+                                            // block
+                                            e.printStackTrace();
+                                        }
+                                        String boc = between(cur);
+                                        if (mCursor1.getCount() == 0) {
+                                            try {
+                                                Cursor mCursor12;
+                                                // db.open();
+                                                mCursor12 = db
+                                                        .getdata_StockForBoc(tv_dbID
+                                                                .getText()
+                                                                .toString());
+
+                                                // db.close();
+
+                                                if (mCursor12 != null) {
+                                                    if (mCursor12
+                                                            .getCount() > 0) {
+
+                                                        mCursor12
+                                                                .moveToFirst();
+
+                                                        String product_id = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("product_id"));
+                                                        String db_id = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("db_id"));
+                                                        String eancode = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("eancode"));
+                                                        String product_category = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("product_category"));
+                                                        String product_type = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("product_type"));
+                                                        String product_name = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("product_name"));
+                                                        String size = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("size"));
+                                                        String price = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("price"));
+                                                        String emp_id = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("emp_id"));
+                                                        String opening_stock = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("opening_stock"));
+                                                        String stock_received = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("stock_received"));
+                                                        String stock_in_hand = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("stock_in_hand"));
+
+                                                        String return_saleable = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("return_saleable"));
+                                                        String return_non_saleable = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("return_non_saleable"));
+
+                                                        String shadeNo = mCursor12
+                                                                .getString(mCursor12
+                                                                        .getColumnIndex("shadeNo"));
+                                                        db.insertSaleCalcuationForDashboard(
+                                                                product_id,
+                                                                db_id,
+                                                                eancode,
+                                                                product_category,
+                                                                product_type,
+                                                                product_name,
+                                                                size,
+                                                                price,
+                                                                emp_id,
+                                                                opening_stock,
+                                                                stock_received,
+                                                                stock_in_hand,
+                                                                return_saleable,
+                                                                return_non_saleable,
+                                                                String.valueOf(closing),
+                                                                String.valueOf(gross),
+                                                                String.valueOf(disss),
+                                                                String.valueOf(boc_date_net),
+                                                                String.valueOf(sold_stock),
+                                                                month_name,
+                                                                year_name,
+                                                                insert_timestamp,
+                                                                insert_timestamp,
+                                                                check_timestamp,
+                                                                boc,
+                                                                shadeNo);
+
+                                                    }
+
+                                                }
+
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        } else {
+
+                                            db.updateSaleCalcuationForDashboard(
+                                                    tv_dbID.getText()
+                                                            .toString(),
+                                                    check_timestamp,
+                                                    new String[]{
+                                                            String.valueOf(closing),
+                                                            String.valueOf(gross),
+                                                            String.valueOf(disss),
+                                                            String.valueOf(net1),
+                                                            String.valueOf(sold_stock),
+                                                            String.valueOf(closing),
+                                                            String.valueOf(closing),
+                                                            "0",
+                                                            "0",
+                                                            month_name,
+                                                            year_name,
+                                                            insert_timestamp,
+                                                            insert_timestamp,
+                                                            check_timestamp,
+                                                            boc});
+
+                                        }
+                                        if (bool == true) {
+                                            count++;
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(SaleCalculation.this,
+                                            "Stock not available",
+                                            Toast.LENGTH_SHORT).show();
+                                }*/
+
+                            }
+
+                            if (count == tl_sale_calculation.getChildCount() - 1) {
+
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                        SaleCalculation.this);
+
+                                // set title
+                                alertDialogBuilder
+                                        .setTitle("Saved Successfully!!");
+
+                                // set dialog message
+                                alertDialogBuilder
+                                        .setMessage("Go  TO  :")
+                                        .setCancelable(false)
+
+                                        .setNegativeButton(
+                                                "Sale Page",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(
+                                                            DialogInterface dialog,
+                                                            int id) {
+
+                                                        dialog.cancel();
+                                                        finish();
+                                                        startActivity(new Intent(
+                                                                SaleCalculation.this,
+                                                                SaleNewActivity.class));
+
+                                                    }
+                                                })
+
+                                        .setPositiveButton(
+                                                "Home",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(
+                                                            DialogInterface dialog,
+                                                            int id) {
+
+                                                        dialog.cancel();
+                                                        finish();
+                                                        startActivity(new Intent(
+                                                                SaleCalculation.this,
+                                                                DashboardNewActivity.class));
+
+                                                    }
+                                                });
+
+                                // create alert dialog
+                                AlertDialog alertDialog = alertDialogBuilder
+                                        .create();
+
+                                // show it
+                                alertDialog.show();
+                            } else {
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                        SaleCalculation.this);
+
+                                // set title
+                                alertDialogBuilder
+                                        .setTitle("Data Not Saved!!!");
+
+                                // set dialog message
+                                alertDialogBuilder
+                                        .setMessage(
+                                                "Data Not Saved")
+                                        .setCancelable(false)
+
+                                        .setNegativeButton(
+                                                "OK",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(
+                                                            DialogInterface dialog,
+                                                            int id) {
+
+                                                        dialog.cancel();
+                                                        finish();
+                                                        startActivity(new Intent(
+                                                                SaleCalculation.this,
+                                                                SaleNewActivity.class));
+
+                                                    }
+                                                });
+
+                                // create alert dialog
+                                AlertDialog alertDialog = alertDialogBuilder
+                                        .create();
+
+                                // show it
+                                alertDialog.show();
+                            }
+
+                            //
+
+                        }
+
+                    }
+
+                } else {
+                    // mProgress.dismiss();
+                    Toast.makeText(
+                            SaleCalculation.this,
+                            "Please enter valid value in quantity fields",
+                            Toast.LENGTH_LONG).show();
+                }
+            } catch (NumberFormatException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+
+                Toast.makeText(
+                        SaleCalculation.this,
+                        "Please fill up all valid value in quantity fields",
+                        Toast.LENGTH_LONG).show();
+
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(SaleCalculation.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+
+        }
+
     }
 
 }

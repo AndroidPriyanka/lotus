@@ -485,6 +485,8 @@ public class OutletActivity extends Activity {
                     Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
+                    shpeditor.putString("FLROutletSelect","True");
+                    shpeditor.commit();
 
                 } catch (Exception e) {
                     e.printStackTrace();

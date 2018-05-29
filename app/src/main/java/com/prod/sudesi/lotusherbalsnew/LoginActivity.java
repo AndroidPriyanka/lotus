@@ -1074,12 +1074,19 @@ public class LoginActivity extends Activity {
 
             }
             if (a.equalsIgnoreCase("P")) {
-
-                Intent i = new Intent(getApplicationContext(),
-                        OutletActivity.class);
-                i.putExtra("FromAttendancefloter", "LF");
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(i);
+                if(sp.getString("FLROutletSelect","").equalsIgnoreCase("True")) {
+                    Intent i = new Intent(getApplicationContext(),
+                            OutletActivity.class);
+                    i.putExtra("FromAttendancefloter", "LF");
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                }else{
+                    Intent i = new Intent(getApplicationContext(),
+                            DashboardNewActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    i.putExtra("FROM", "LOGIN");
+                    startActivity(i);
+                }
 
             }
             if (a.equalsIgnoreCase("A")) {
@@ -1099,7 +1106,9 @@ public class LoginActivity extends Activity {
             } else {
 
             }*/
-                Boc26AlaramReceiver();
+           if(!sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+               Boc26AlaramReceiver();
+           }
                 Intent i = new Intent(getApplicationContext(), AttendanceFragment.class);
                 i.putExtra("FromLoginpage", "L");
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -1111,7 +1120,9 @@ public class LoginActivity extends Activity {
 
                 result = true;
 
-                Boc26AlaramReceiver();
+                if(!sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                    Boc26AlaramReceiver();
+                }
                 Intent i = new Intent(getApplicationContext(),
                         DashboardNewActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

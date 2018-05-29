@@ -488,7 +488,9 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
                                 .putExtra("pro_name", pro_name)
                                 .putExtra("mrp", chck_mrp)
                                 .putExtra("encode", enacode)
-                                .putExtra("shadeNo", chck_shade));
+                                .putExtra("shadeNo", chck_shade)
+                                .putExtra("size", chck_size)
+                                .putExtra("catid", chck_cat_id));
                     }
 
                 }
