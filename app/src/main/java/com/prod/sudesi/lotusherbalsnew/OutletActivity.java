@@ -142,6 +142,9 @@ public class OutletActivity extends Activity {
                             flrid = floterid;
                             lhrid = baid;
 
+                            shpeditor.putString("FLRCode",lhrid);
+                            shpeditor.commit();
+
                         }
                     }
 

@@ -79,7 +79,7 @@ public class SyncMaster extends Activity {
     int soapresultforvisibilityid;
 
     private double lon = 0.0, lat = 0.0;
-    String username, bdename, imgpth, producttype;
+    String username, FLRCode, bdename, imgpth, producttype;
 
     // shredpreference
     private SharedPreferences sharedpre = null;
@@ -152,6 +152,8 @@ public class SyncMaster extends Activity {
 
         username = sp.getString("username", "");
         Log.e("", "username==" + username);
+
+        FLRCode = sp.getString("FLRCode","");
 
         bdename = sp.getString("BDEusername", "");
 
@@ -6591,6 +6593,7 @@ public class SyncMaster extends Activity {
                         obj.put("Size", stock_array.getString(7));
                         obj.put("Price", stock_array.getString(8));
                         obj.put("AndroidCreatedDate", stock_array.getString(21));
+                        obj.put("FLRCode", FLRCode);
 
 
                     } catch (JSONException e) {

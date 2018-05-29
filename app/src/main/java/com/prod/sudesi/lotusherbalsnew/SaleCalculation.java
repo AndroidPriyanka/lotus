@@ -76,7 +76,7 @@ public class SaleCalculation extends Activity {
     private static SpannableStringBuilder ssbuilder;
 
     TextView tv_h_username;// -------
-    String username;
+    String username,FLRCode;
     SharedPreferences shp;
     SharedPreferences.Editor shpeditor;
     static Context context;
@@ -136,6 +136,7 @@ public class SaleCalculation extends Activity {
         tv_h_username = (TextView) findViewById(R.id.tv_h_username);
 
         username = shp.getString("username", "");
+        FLRCode = shp.getString("FLRCode","");
         tv_h_username.setText(username);
 
         // ----------------------------
@@ -1882,7 +1883,8 @@ public class SaleCalculation extends Activity {
                                             shaddd,
                                             month_name,
                                             year_name,
-                                            insert_timestamp);
+                                            insert_timestamp,
+                                            FLRCode);
                                     db.close();
 
                                     Toast.makeText(SaleCalculation.this,

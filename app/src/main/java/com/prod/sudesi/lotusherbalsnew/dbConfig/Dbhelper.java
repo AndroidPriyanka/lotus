@@ -68,6 +68,8 @@ public class Dbhelper extends SQLiteOpenHelper {
 	private static final String TABLE_ALTER_LOGIN1 = "alter table login add column bde_Code text";
 	private static final String TABLE_ALTER_LOGIN2 = "alter table login add column bde_Name text";
 	private static final String TABLE_ALTER_LOGIN3 = "alter table login add column Role text";
+
+	private static final String TABLE_CREATE_STOCK1 = "alter table stock add column FLRCode text";
 	
 	private static final String TABLE_ALTER_ATTENDANCE1="alter table attendance add column logout_status text;";
 	private static final String TABLE_ALTER_ATTENDANCE2="alter table attendance add column logout_date text;";
@@ -183,6 +185,7 @@ public class Dbhelper extends SQLiteOpenHelper {
 			database.execSQL(TABLE_ALTER_ATTENDANCE2);
 			database.execSQL(TABLE_ALTER_LOGIN3);
 			database.execSQL(TABLE_CREATE_FLOTEROUTLET);
+			database.execSQL(TABLE_CREATE_STOCK1);
 		}
 
 	}

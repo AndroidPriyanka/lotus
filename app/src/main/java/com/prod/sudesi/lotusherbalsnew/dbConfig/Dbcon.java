@@ -3423,7 +3423,7 @@ public class Dbcon {
             String return_saleable, String return_non_saleable,String soldstock,
             String i_netamt, String netamt,String discount,
             String date,String shadno,String month_name, String year_name,
-            String updateDate) {
+            String updateDate, String FLRCode) {
         // TODO Auto-generated method stub
 
         ContentValues values = new ContentValues();
@@ -3454,6 +3454,7 @@ public class Dbcon {
         values.put("year", year_name);
         values.put("updateDate", updateDate);
         values.put("flag", "s");
+        values.put("FLRCode",FLRCode);
         Log.e("InsertStock", values.toString());
 
         database.insert("stock", null, values);
