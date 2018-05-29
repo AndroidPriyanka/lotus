@@ -449,12 +449,8 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (sp.getString("Role", "").equalsIgnoreCase("FLR")) {
-                    Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
-                } else {
-                    startActivity(new Intent(getApplicationContext(),
-                            BocDashBoardActivity.class));
-                }
+                startActivity(new Intent(getApplicationContext(),
+                        BocDashBoardActivity.class));
 
             }
         });

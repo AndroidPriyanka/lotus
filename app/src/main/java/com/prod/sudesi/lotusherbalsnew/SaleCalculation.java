@@ -127,7 +127,7 @@ public class SaleCalculation extends Activity {
         pro_name = intent.getStringArrayExtra("pro_name");
         String mrp[] = intent.getStringArrayExtra("mrp");
         String shadeno[] = intent.getStringArrayExtra("shadeNo");
-        enacod = intent.getStringArrayExtra("enacode");
+        enacod = intent.getStringArrayExtra("encode");
         size = intent.getStringArrayExtra("size");
         catid = intent.getStringArrayExtra("catid");
         //String closing[] = intent.getStringArrayExtra("closing");
@@ -1686,7 +1686,12 @@ public class SaleCalculation extends Activity {
                                      eancode = "0";
                                 }
                                 String db_id1 = tv_dbID.getText().toString().trim();
-                                String cat_id = catid[i];
+                                String cat_id;
+                                if(catid !=null){
+                                    cat_id = "" + catid[i];
+                                }else{
+                                    cat_id = "0";
+                                }
 
 
                                 Calendar c = Calendar.getInstance();
