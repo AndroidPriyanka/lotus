@@ -71,7 +71,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
 
     String username, bdename;
 
-    String sclo = "", mrpstring;
+    String sclo = "", mrpstring, columnname;
 
 
     @Override
@@ -167,6 +167,16 @@ public class StockNewActivity extends Activity implements OnClickListener {
                                 sp_product_type.setAdapter(adapter);
 
                             } else {
+
+                                if (selected_product_category.equalsIgnoreCase("SKIN")
+                                        || selected_product_category.equalsIgnoreCase("")) {
+
+                                    columnname = "CategoryId";
+
+                                }else{
+                                    columnname = "ShadeNo";
+                                }
+
                                 db.open();
                                 producttypeArray = db
                                         .getproductype1(selected_product_category); // -------------
@@ -224,7 +234,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
                     productDetailsArray.clear();
                     tl_productList.removeAllViews();
                     tl_productList.addView(tr_header);
-                    getallproducts(selected_category, selected_type, "N");
+                    getallproducts(selected_category, selected_type, "N",columnname);
 
                 }
 
@@ -378,11 +388,11 @@ public class StockNewActivity extends Activity implements OnClickListener {
     }
 
     public void getallproducts(String selected_category, String selected_type,
-                               String flag) {
+                               String flag, String columnname) {
         productDetailsArray.clear();
         db.open();
         Cursor cursor = db.fetchAllproductslistforstock(selected_category,
-                selected_type, flag);
+                selected_type, flag,columnname);
         if (cursor != null && cursor.getCount() > 0) {
 
             cursor.moveToFirst();

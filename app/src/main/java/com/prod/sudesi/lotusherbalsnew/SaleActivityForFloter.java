@@ -62,7 +62,7 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
     int modecounter = 0;
     public static String PMODE;
 
-    String username, bdename, mrpstring = "";
+    String username, bdename, mrpstring = "",columnname;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -161,6 +161,14 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
                                 sp_product_type.setAdapter(adapter);
 
                             } else {
+                                if (selected_product_category.equalsIgnoreCase("SKIN")
+                                        || selected_product_category.equalsIgnoreCase("")) {
+
+                                    columnname = "CategoryId";
+
+                                }else{
+                                    columnname = "ShadeNo";
+                                }
                                 db.open();
                                 producttypeArray = db
                                         .getproductype1(selected_product_category); // -------------
@@ -219,7 +227,7 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
                     productDetailsArray.clear();
                     tl_productList.removeAllViews();
                     tl_productList.addView(tr_header);
-                    getallproducts(selected_category, selected_type, "N");
+                    getallproducts(selected_category, selected_type, "N", columnname);
 
                 }
 
@@ -282,11 +290,11 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
 
 
     public void getallproducts(String selected_category, String selected_type,
-                               String flag) {
+                               String flag, String columnname) {
         productDetailsArray.clear();
         db.open();
         Cursor cursor = db.fetchAllproductslistforstock(selected_category,
-                selected_type, flag);
+                selected_type, flag, columnname);
         if (cursor != null && cursor.getCount() > 0) {
 
             cursor.moveToFirst();
