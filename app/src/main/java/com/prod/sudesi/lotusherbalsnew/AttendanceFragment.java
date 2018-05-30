@@ -1552,6 +1552,8 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                         startActivity(i);
 
                     } else {
+                        spe.putString("FLROutletSelect","False");
+                        spe.commit();
                         Intent i = new Intent(getApplicationContext(), OutletActivity.class);
                         i.putExtra("FromAttendancefloter", "AF");
                         startActivity(i);
