@@ -2407,7 +2407,7 @@ public class Dbcon {
     public Cursor getdata_outlet(String flotername) {
         // TODO Auto-generated method stub
 
-        String sql = "select  *  from floteroutlet where flotername =" + "'" + flotername + "'";
+        String sql = "select Distinct(banameOutlet), * from floteroutlet where flotername =" + "'" + flotername + "'";
 
         Cursor c = database.rawQuery(sql, null);
 
