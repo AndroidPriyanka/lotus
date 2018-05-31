@@ -61,6 +61,7 @@ public class OutletActivity extends Activity {
     OutletModel outletModel;
     private ArrayList<OutletModel> outletDetailsArraylist;
     String[] strOutletArray = null;
+    String outletstring;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +133,7 @@ public class OutletActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (strOutletArray != null && strOutletArray.length > 0) {
 
-                    String outletstring = parent.getItemAtPosition(position).toString();
+                    outletstring = parent.getItemAtPosition(position).toString();
                     for (int i = 0; i < outletDetailsArraylist.size(); i++) {
                         String text = outletDetailsArraylist.get(i).getOutletname() + "(" +
                                 outletDetailsArraylist.get(i).getBAnameOutlet() + ")";
@@ -158,10 +159,14 @@ public class OutletActivity extends Activity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                try {
-                    new FLROutletAttendance().execute();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if(outletstring != null) {
+                    try {
+                        new FLROutletAttendance().execute();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    Toast.makeText(getApplicationContext(),"Please Select Outlet",Toast.LENGTH_SHORT).show();
                 }
             }
         });
