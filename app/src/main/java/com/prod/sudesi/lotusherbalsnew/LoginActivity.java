@@ -16,6 +16,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.LocationManager;
 import android.net.ParseException;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -105,6 +106,7 @@ public class LoginActivity extends Activity {
 
     String deviceId = "";
     String loginstaus = "";
+    boolean GPSenabled;
 
     private static final int PERMISSION_REQUEST_CODE = 1;
 
@@ -151,6 +153,9 @@ public class LoginActivity extends Activity {
 
         requestStoragePermission();
 
+        // Check if enabled and if not send user to the GPS settings
+
+
         btn_login = (Button) findViewById(R.id.btn_login);
         edt_username = (EditText) findViewById(R.id.edt_username);
         edt_password = (EditText) findViewById(R.id.edt_password);
@@ -194,6 +199,9 @@ public class LoginActivity extends Activity {
                 //LoginUser();
                 //if(isPermissionGranted()) {
 
+                LocationManager service1 = (LocationManager) getSystemService(LOCATION_SERVICE);
+                GPSenabled = service1.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
                 btn_login.setEnabled(false);
 
                 new Handler().postDelayed(new Runnable() {
@@ -207,43 +215,87 @@ public class LoginActivity extends Activity {
                     }
                 }, 5000);// set time as per your requirement
 
-                try {
-                    if (cd.isConnectingToInternet()) {
+                if(GPSenabled== true) {
+                    try {
+                        if (cd.isConnectingToInternet()) {
 
-                        username = edt_username.getText().toString()
-                                .toUpperCase().trim();
-                        pass = edt_password.getText().toString();
+                            username = edt_username.getText().toString()
+                                    .toUpperCase().trim();
+                            pass = edt_password.getText().toString();
 
-                        PackageInfo info = null;
-                        PackageManager manager = getPackageManager();
-                        info = manager.getPackageInfo(getPackageName(), 0);
+                            PackageInfo info = null;
+                            PackageManager manager = getPackageManager();
+                            info = manager.getPackageInfo(getPackageName(), 0);
 
-                        String packageName = info.packageName;
-                        int versionCode = info.versionCode;
-                        VERSION_NAME = info.versionName;
-                        OS_VERSION = String.valueOf(android.os.Build.VERSION.SDK_INT);
+                            String packageName = info.packageName;
+                            int versionCode = info.versionCode;
+                            VERSION_NAME = info.versionName;
+                            OS_VERSION = String.valueOf(android.os.Build.VERSION.SDK_INT);
 
                        /* if(sp.getString("Boardcast", "Disable").toString().equalsIgnoreCase("Disable")){
 
                             enableBroadcastReceiver();
                         }*/
 
-                        if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(pass) && !TextUtils.isEmpty(VERSION_NAME)) {
-                            // TODO check apk version
-                            new SyncApkCheck().execute();
+                            if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(pass) && !TextUtils.isEmpty(VERSION_NAME)) {
+                                // TODO check apk version
+                                new SyncApkCheck().execute();
+
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Fields Cannot be Empty", Toast.LENGTH_SHORT).show();
+
+                            }
+
 
                         } else {
-                            Toast.makeText(getApplicationContext(), "Fields Cannot be Empty", Toast.LENGTH_SHORT).show();
-
+                            Toast.makeText(getApplicationContext(), "Please Check Internet Connection.", Toast.LENGTH_SHORT).show();
                         }
 
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Please Check Internet Connection.", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                }else{
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    /*AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+                    alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+                            .setCancelable(false)
+                            .setPositiveButton("Goto Settings Page To Enable GPS",
+                                    new DialogInterface.OnClickListener(){
+                                        public void onClick(DialogInterface dialog, int id){
+                                            Intent intent = new Intent(
+                                                    android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                            startActivity(intent);
+                                        }
+                                    });
+                    alertDialogBuilder.setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener(){
+                                public void onClick(DialogInterface dialog, int id){
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog alert = alertDialogBuilder.create();
+                    alert.show();*/
+
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                    builder.setTitle("GPS Enable");
+                    builder.setMessage("GPS is disabled in your device. Please GPS enable it?");
+                    builder.setPositiveButton("Goto Settings", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(intent);
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.show();
+
                 }
                 //  }
 
