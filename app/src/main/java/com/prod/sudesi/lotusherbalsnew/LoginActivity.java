@@ -1129,7 +1129,7 @@ public class LoginActivity extends Activity {
                 if(!sp.getString("FLROutletSelect","").equalsIgnoreCase("True")) {
                     Intent i = new Intent(getApplicationContext(),
                             OutletActivity.class);
-                    i.putExtra("FromAttendancefloter", "LF");
+                    //i.putExtra("FromAttendancefloter", "LF");
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
                 }else{

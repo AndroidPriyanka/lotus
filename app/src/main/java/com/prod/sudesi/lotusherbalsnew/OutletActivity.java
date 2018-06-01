@@ -101,22 +101,22 @@ public class OutletActivity extends Activity {
             }
         });
 
-        try {
+       /* try {
             Intent i = getIntent();
             check = i.getStringExtra("FromAttendancefloter");
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
-        if (check.equalsIgnoreCase("AF")) {
+//        if (check.equalsIgnoreCase("AF")) {
             try {
                 new Check_outlet().execute();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else {
-            fetchoutletdetails();
-        }
+//        } else {
+//            fetchoutletdetails();
+//        }
 
         outlet.setOnTouchListener(new View.OnTouchListener() {
 
