@@ -416,6 +416,7 @@ public class ReportsForUser extends Activity {
                         map.put("discount", cursor_stock.getString(19));
                         map.put("savedServer", cursor_stock.getString(20));
                         map.put("insert_date", cursor_stock.getString(21));
+                        map.put("FLRCode", cursor_stock.getString(23));
 
                         Log.e("savedServer", cursor_stock.getString(20));
 

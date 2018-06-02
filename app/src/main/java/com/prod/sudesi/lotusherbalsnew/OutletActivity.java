@@ -246,7 +246,13 @@ public class OutletActivity extends Activity {
                             int count = c1.getCount();
                             db.close();
 
-                            if (count > 0) {
+                            if(count == 0){
+                                db.open();
+                                db.insertOutlet(BACode, Baname, outletname, flotername);
+                                db.close();
+                            }
+
+                            /*if (count > 0) {
                                 db.open();
                                 db.updatevalues("floteroutlet", contentvalues, "flotername", flotername);
                                 db.close();
@@ -257,7 +263,7 @@ public class OutletActivity extends Activity {
                                 db.insertOutlet(BACode, Baname, outletname, flotername);
                                 db.close();
 
-                            }
+                            }*/
 
                         }
                     } else {

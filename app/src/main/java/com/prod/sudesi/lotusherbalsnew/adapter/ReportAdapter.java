@@ -71,6 +71,7 @@ public class ReportAdapter extends BaseAdapter {
 		
 		TextView discount;
 		TextView tv_status;
+		TextView tv_outlet;
 	
 		
 		
@@ -107,6 +108,7 @@ public class ReportAdapter extends BaseAdapter {
 			viewHolder.discount = (TextView)convertView.findViewById(R.id.tv_report_discount);
 			viewHolder.tv_productid=(TextView)convertView.findViewById(R.id.tv_productid);
 			viewHolder.tv_status = (TextView)convertView.findViewById(R.id.tv_status);
+			viewHolder.tv_outlet = (TextView)convertView.findViewById(R.id.tv_outlet);
 			
 			
 			
@@ -148,6 +150,7 @@ public class ReportAdapter extends BaseAdapter {
 		viewHolder.totalamount.setText(map.get("total_gross_amount"));
 		viewHolder.totalnetamount.setText(map.get("total_net_amount"));
 		viewHolder.discount.setText(map.get("discount"));
+		viewHolder.tv_outlet.setText(map.get("FLRCode"));
 		
 		if(map.get("savedServer").equalsIgnoreCase("0"))
 		{

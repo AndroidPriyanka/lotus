@@ -158,7 +158,7 @@
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="150dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
                     android:layout_weight="1"
@@ -178,7 +178,7 @@
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="150dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
                     android:layout_weight="1"
@@ -188,13 +188,22 @@
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="100dp"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
                     android:layout_weight="1"
 
                     android:gravity="center"
                     android:text="Status" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Outlet" />
 
             </TableRow>
 
