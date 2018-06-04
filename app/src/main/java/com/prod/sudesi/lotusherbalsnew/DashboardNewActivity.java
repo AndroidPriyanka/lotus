@@ -2,35 +2,26 @@ package com.prod.sudesi.lotusherbalsnew;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation.AnimationListener;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
 import com.prod.sudesi.lotusherbalsnew.libs.AlarmManagerBroadcastReceiver;
@@ -284,16 +275,16 @@ public class DashboardNewActivity extends Activity {
 
                                 } else {
                                     startActivity(new Intent(getApplicationContext(),
-                                            StockNewActivity.class));
+                                            OutletWiseSaleActivity.class));
                                 }
                             } else {
                                 startActivity(new Intent(getApplicationContext(),
-                                        StockNewActivity.class));
+                                        OutletWiseSaleActivity.class));
                             }
 
                         } else {
                             startActivity(new Intent(getApplicationContext(),
-                                    StockNewActivity.class));
+                                    OutletWiseSaleActivity.class));
                         }
                     } else {
                         Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
