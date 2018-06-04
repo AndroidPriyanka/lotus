@@ -71,7 +71,7 @@ public class DashboardNewActivity extends Activity {
 
     Button btn_attendance, btn_stock, btn_tester, btn_visibility,
             btn_notification, btn_reports, btn_datasync, btn_BAreport,
-            btn_BAMonthreport, btn_sale, btn_dashboard, btn_super_atten;
+            btn_BAMonthreport, btn_sale, btn_dashboard, btn_super_atten,btn_stock_sale,btn_outletwise;
 
     TextView tv_h_username;
     Button btn_home, btn_logout;
@@ -170,6 +170,9 @@ public class DashboardNewActivity extends Activity {
         btn_sale = (Button) findViewById(R.id.btn_sale);
         btn_super_atten = (Button) findViewById(R.id.btn_super_atten);
 
+        btn_outletwise = (Button) findViewById(R.id.btn_outletwise);
+        btn_stock_sale = (Button) findViewById(R.id.btn_stock_sale);
+
         btn_BAMonthreport = (Button) findViewById(R.id.btn_ba_sale_month_wise);
 
         btn_dashboard = (Button) findViewById(R.id.btn_dashboard);
@@ -182,6 +185,14 @@ public class DashboardNewActivity extends Activity {
 
         btn_home.setVisibility(View.INVISIBLE);
         Log.e("db.checkStockUploaded()", String.valueOf(db.checkStockUploaded()));
+
+        if(sp.getString("Role","").equalsIgnoreCase("DUB")){
+            btn_stock.setVisibility(View.GONE);
+            btn_sale.setVisibility(View.GONE);
+            btn_outletwise.setVisibility(View.VISIBLE);
+            btn_stock_sale.setVisibility(View.VISIBLE);
+        }
+
 
         if (db.checkStockUploaded()) {
 
@@ -467,6 +478,28 @@ public class DashboardNewActivity extends Activity {
                         "Coming Soon...!",
                         Toast.LENGTH_LONG).show();
 
+
+            }
+        });
+
+        btn_outletwise.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                startActivity(new Intent(getApplicationContext(),
+                        OutletWiseSaleActivity.class));
+
+            }
+        });
+
+        btn_stock_sale.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                startActivity(new Intent(getApplicationContext(),
+                        StockSaleActivityForDubai.class));
 
             }
         });
@@ -4037,6 +4070,9 @@ public class DashboardNewActivity extends Activity {
                                     String order_flag = soap_result1
                                             .getPropertyAsString("order_flag")
                                             .toString();
+                                    String SingleOffer = soap_result1
+                                            .getPropertyAsString("SingleOffer")
+                                            .toString();
                                     // String lmd =
                                     // soap_result1.getProperty("LMD").toString();
                                     String flag = soap_result1.getProperty(
@@ -4115,6 +4151,10 @@ public class DashboardNewActivity extends Activity {
                                         Log.e("", "anytype for sku_h");
                                         sku_h = " ";
                                     }
+                                    if (SingleOffer.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for sku_h");
+                                        SingleOffer = " ";
+                                    }
 
                                     if (d_id.equalsIgnoreCase("NULL")) {
                                         Log.e("", "anytype for d_id");
@@ -4185,6 +4225,10 @@ public class DashboardNewActivity extends Activity {
                                         Log.e("", "anytype for sku_h");
                                         sku_h = " ";
                                     }
+                                    if (SingleOffer.equalsIgnoreCase("NULL")) {
+                                        Log.e("", "anytype for sku_h");
+                                        SingleOffer = " ";
+                                    }
                                     /*
                                      * if (order_flag!=null ||
                                      * order_flag.equalsIgnoreCase("NULL")) {
@@ -4215,7 +4259,7 @@ public class DashboardNewActivity extends Activity {
                                                 shadeno, eancode, size, mrp,
                                                 masterpackqty, monopackqty,
                                                 innerqty, sku_l, sku_b, sku_h,
-                                                price_type, order_flag);
+                                                price_type, order_flag, SingleOffer);
                                         db.close();
 
                                     } else {
@@ -4230,7 +4274,7 @@ public class DashboardNewActivity extends Activity {
                                                 shadeno, eancode, size, mrp,
                                                 masterpackqty, monopackqty,
                                                 innerqty, sku_l, sku_b, sku_h,
-                                                price_type, order_flag);
+                                                price_type, order_flag, SingleOffer);
                                         db.close();
 
                                     }

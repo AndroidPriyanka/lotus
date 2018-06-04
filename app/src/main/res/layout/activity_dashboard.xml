@@ -120,7 +120,20 @@
                     android:padding="@dimen/_5sdp"
                     />
 
+                <Button
+                    android:id="@+id/btn_outletwise"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:visibility="gone"
+                    android:background="@drawable/outlet_wise_sales"
+                    android:padding="@dimen/_5sdp"
+                    />
+
             </LinearLayout>
+
+
 
             <ImageSwitcher
                 android:layout_width="@dimen/_1sdp"
@@ -142,7 +155,19 @@
                     android:padding="@dimen/_5sdp"
                     />
 
+                <Button
+                    android:id="@+id/btn_stock_sale"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:visibility="gone"
+                    android:background="@drawable/stock_sale"
+                    android:padding="@dimen/_5sdp"
+                    />
+
             </LinearLayout>
+
 
             <ImageSwitcher
                 android:layout_width="@dimen/_1sdp"

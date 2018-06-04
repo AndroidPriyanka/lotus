@@ -136,6 +136,10 @@
 
         <activity android:name="com.prod.sudesi.lotusherbalsnew.OutletActivity"/>
 
+        <activity android:name="com.prod.sudesi.lotusherbalsnew.StockSaleActivityForDubai"/>
+
+        <activity android:name="com.prod.sudesi.lotusherbalsnew.OutletWiseSaleActivity"/>
+
         <receiver android:name="com.prod.sudesi.lotusherbalsnew.UploadDataBrodcastReceiver"/>
         <receiver android:name="com.prod.sudesi.lotusherbalsnew.MyScheduledReceiver">
             <intent-filter>

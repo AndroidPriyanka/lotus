@@ -800,7 +800,7 @@ public class Dbcon {
     public void insertProductMaster(String product_category,
                                     String product_type, String product, String d_id, String categoryid, String category, String shadeno, String eancode,
                                     String size, String mrp, String masterpackqty, String monopackqty, String innerqty, String sku_l, String sku_b,
-                                    String sku_h, String price_type, String order_flag) {
+                                    String sku_h, String price_type, String order_flag, String SingleOffer) {
         // TODO Auto-generated method stub
 
         ContentValues values = new ContentValues();
@@ -826,6 +826,7 @@ public class Dbcon {
         values.put("SKU_H", sku_h);
         values.put("price_type", price_type);
         values.put("order_flag", order_flag);
+        values.put("SingleOffer", SingleOffer);
         //values.put("LMD", lmd);
         Log.e("", "values==" + values);
 
@@ -3174,11 +3175,11 @@ public class Dbcon {
                                     String category, String shadeno, String eancode, String size,
                                     String mrp, String masterpackqty, String monopackqty,
                                     String innerqty, String sku_l, String sku_b, String sku_h,
-                                    String price_type, String order_flag) {
+                                    String price_type, String order_flag, String SingleOffer) {
 
         String sql = " update product_master set  ProductCategory = '" + product_category + "', ProductType = '" + product_type + "', ProductName = '" + product + "', CategoryId = '" + categoryid + "' ," +
                 "Category = '" + category + "' , ShadeNo = '" + shadeno + "' , EANCode = '" + eancode + "' , Size = '" + size + "', MRP ='" + mrp + "', MasterPackQty = '" + masterpackqty + "', " +
-                "MonoPackQty = '" + monopackqty + "' , InnerQty = '" + innerqty + "' , SKU_L = '" + sku_l + "' , SKU_B ='" + sku_b + "', SKU_H ='" + sku_h + "' , price_type = '" + price_type + "' ,order_flag = '" + order_flag + "'" +
+                "MonoPackQty = '" + monopackqty + "' , InnerQty = '" + innerqty + "' , SKU_L = '" + sku_l + "' , SKU_B ='" + sku_b + "', SKU_H ='" + sku_h + "' , price_type = '" + price_type + "' ,order_flag = '" + order_flag + "' ,SingleOffer = '" + SingleOffer + "'" +
                 " Where db_id = '" + d_id + "'";
 
         Log.v("", "sql=" + sql);

@@ -471,6 +471,9 @@ public class SyncMaster extends Activity {
                                     String order_flag = soap_result1
                                             .getPropertyAsString("order_flag")
                                             .toString();
+                                    String SingleOffer = soap_result1
+                                            .getPropertyAsString("SingleOffer")
+                                            .toString();
                                     // String lmd =
                                     // soap_result1.getProperty("LMD").toString();
                                     String flag = soap_result1.getProperty(
@@ -549,6 +552,10 @@ public class SyncMaster extends Activity {
                                         Log.e("", "anytype for sku_h");
                                         sku_h = " ";
                                     }
+                                    if (SingleOffer.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for sku_h");
+                                        SingleOffer = " ";
+                                    }
 
                                     if (d_id.equalsIgnoreCase("NULL")) {
                                         Log.e("", "anytype for d_id");
@@ -619,6 +626,10 @@ public class SyncMaster extends Activity {
                                         Log.e("", "anytype for sku_h");
                                         sku_h = " ";
                                     }
+                                    if (SingleOffer.equalsIgnoreCase("NULL")) {
+                                        Log.e("", "anytype for sku_h");
+                                        SingleOffer = " ";
+                                    }
                                     /*
                                      * if (order_flag!=null ||
 									 * order_flag.equalsIgnoreCase("NULL")) {
@@ -649,7 +660,7 @@ public class SyncMaster extends Activity {
                                                 shadeno, eancode, size, mrp,
                                                 masterpackqty, monopackqty,
                                                 innerqty, sku_l, sku_b, sku_h,
-                                                price_type, order_flag);
+                                                price_type, order_flag, SingleOffer);
                                         db.close();
 
                                     } else {
@@ -664,7 +675,7 @@ public class SyncMaster extends Activity {
                                                 shadeno, eancode, size, mrp,
                                                 masterpackqty, monopackqty,
                                                 innerqty, sku_l, sku_b, sku_h,
-                                                price_type, order_flag);
+                                                price_type, order_flag, SingleOffer);
                                         db.close();
 
                                     }

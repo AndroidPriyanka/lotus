@@ -57,7 +57,7 @@ public class OutletActivity extends Activity {
     private ProgressDialog pd;
     ConnectionDetector cd;
     Dbcon db;
-    String flotername, bdename, check, flrid, lhrid, currentdate;
+    String flotername, bdename, role, check, flrid, lhrid, currentdate;
     OutletModel outletModel;
     private ArrayList<OutletModel> outletDetailsArraylist;
     String[] strOutletArray = null;
@@ -86,6 +86,7 @@ public class OutletActivity extends Activity {
 
         flotername = shp.getString("username", "");
         bdename = shp.getString("BDEusername", "");
+        role = shp.getString("Role", "");
         tv_h_username.setText(bdename);
 
         btn_home.setVisibility(View.GONE);
@@ -101,19 +102,19 @@ public class OutletActivity extends Activity {
             }
         });
 
-       /* try {
+      /*  try {
             Intent i = getIntent();
-            check = i.getStringExtra("FromAttendancefloter");
+            check = i.getStringExtra("FromAttendanceDubai");
         } catch (Exception e) {
             e.printStackTrace();
         }*/
 
 //        if (check.equalsIgnoreCase("AF")) {
-            try {
-                new Check_outlet().execute();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            new Check_outlet().execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 //        } else {
 //            fetchoutletdetails();
 //        }
@@ -135,15 +136,20 @@ public class OutletActivity extends Activity {
 
                     outletstring = parent.getItemAtPosition(position).toString();
                     for (int i = 0; i < outletDetailsArraylist.size(); i++) {
-                        String text = outletDetailsArraylist.get(i).getOutletname() + "(" +
-                                outletDetailsArraylist.get(i).getBAnameOutlet() + ")";
+                        String text;
+                        if(role.equalsIgnoreCase("FLR")) {
+                             text = outletDetailsArraylist.get(i).getOutletname() + "(" +
+                                    outletDetailsArraylist.get(i).getBAnameOutlet() + ")";
+                        }else{
+                             text = outletDetailsArraylist.get(i).getOutletname();
+                        }
                         String floterid = outletDetailsArraylist.get(i).getFlotername();
                         String baid = outletDetailsArraylist.get(i).getBACodeOutlet();
                         if (text.equalsIgnoreCase(outletstring)) {
                             flrid = floterid;
                             lhrid = baid;
 
-                            shpeditor.putString("FLRCode",lhrid);
+                            shpeditor.putString("FLRCode", lhrid);
                             shpeditor.commit();
 
                         }
@@ -159,14 +165,14 @@ public class OutletActivity extends Activity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                if(outletstring != null) {
+                if (outletstring != null) {
                     try {
                         new FLROutletAttendance().execute();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else{
-                    Toast.makeText(getApplicationContext(),"Please Select Outlet",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please Select Outlet", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -217,23 +223,32 @@ public class OutletActivity extends Activity {
 
                             String BACode = soapObject.getProperty("BACode").toString();
 
-                            if (BACode == null) {
+                            if (BACode != null) {
+                                if (BACode.contains("anyType{}")) {
+                                    BACode = "";
+                                }
+                            } else {
                                 BACode = "";
-
                             }
 
                             String Baname = soapObject.getProperty("Baname").toString();
 
-                            if (Baname == null) {
+                            if (Baname != null) {
+                                if (Baname.contains("anyType{}")) {
+                                    Baname = "";
+                                }
+                            } else {
                                 Baname = "";
-
                             }
 
                             String outletname = soapObject.getProperty("outletname").toString();
 
-                            if (outletname == null) {
+                            if (outletname != null) {
+                                if (outletname.contains("anyType{}")) {
+                                    outletname = "";
+                                }
+                            } else {
                                 outletname = "";
-
                             }
 
                             contentvalues.put("baCodeOutlet", BACode);
@@ -246,25 +261,11 @@ public class OutletActivity extends Activity {
                             int count = c1.getCount();
                             db.close();
 
-                            if(count == 0){
+                            if (count == 0) {
                                 db.open();
                                 db.insertOutlet(BACode, Baname, outletname, flotername);
                                 db.close();
                             }
-
-                            /*if (count > 0) {
-                                db.open();
-                                db.updatevalues("floteroutlet", contentvalues, "flotername", flotername);
-                                db.close();
-
-                            } else {
-
-                                db.open();
-                                db.insertOutlet(BACode, Baname, outletname, flotername);
-                                db.close();
-
-                            }*/
-
                         }
                     } else {
 
@@ -323,12 +324,25 @@ public class OutletActivity extends Activity {
                     e.printStackTrace();
                 }
 
-                if (outletDetailsArraylist.size() > 0) {
-                    strOutletArray = new String[outletDetailsArraylist.size() + 1];
-                    strOutletArray[0] = "Office";
-                    for (int i = 0; i < outletDetailsArraylist.size(); i++) {
-                        strOutletArray[i + 1] = outletDetailsArraylist.get(i).getOutletname() + "(" +
-                                outletDetailsArraylist.get(i).getBAnameOutlet() + ")";
+                if (role.equalsIgnoreCase("FLR")) {
+                    if (outletDetailsArraylist.size() > 0) {
+                        strOutletArray = new String[outletDetailsArraylist.size() + 1];
+                        strOutletArray[0] = "Office";
+                        for (int i = 0; i < outletDetailsArraylist.size(); i++) {
+
+                            strOutletArray[i + 1] = outletDetailsArraylist.get(i).getOutletname() + "(" +
+                                    outletDetailsArraylist.get(i).getBAnameOutlet() + ")";
+                        }
+                    }
+                } else {
+                    if (outletDetailsArraylist.size() > 0) {
+                        strOutletArray = new String[outletDetailsArraylist.size()];
+
+                        for (int i = 0; i < outletDetailsArraylist.size(); i++) {
+
+                            strOutletArray[i] = outletDetailsArraylist.get(i).getOutletname();
+
+                        }
                     }
                 }
                 if (outletDetailsArraylist != null && outletDetailsArraylist.size() > 0) {
@@ -458,7 +472,7 @@ public class OutletActivity extends Activity {
             } else {
                 try {
 
-                    soap_result = service.FLROutletAttendance(shp.getString("AttendAid",""), lhrid);
+                    soap_result = service.FLROutletAttendance(shp.getString("AttendAid", ""), lhrid);
 
                     if (soap_result != null) {
 
@@ -499,7 +513,7 @@ public class OutletActivity extends Activity {
                     Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
-                    shpeditor.putString("FLROutletSelect","True");
+                    shpeditor.putString("FLROutletSelect", "True");
                     shpeditor.commit();
 
                 } catch (Exception e) {

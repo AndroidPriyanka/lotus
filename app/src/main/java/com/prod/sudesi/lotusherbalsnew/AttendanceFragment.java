@@ -86,6 +86,7 @@ import io.nlopez.smartlocation.geofencing.utils.TransitionGeofence;
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;*/
 
 import static android.content.ContentValues.TAG;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -96,7 +97,7 @@ import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibraryConstants
 
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class AttendanceFragment extends AppCompatActivity implements OnClickListener{
+public class AttendanceFragment extends AppCompatActivity implements OnClickListener {
 
     String attendance_flag;
     String leavetype_flag;
@@ -122,7 +123,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
     SharedPreferences sp;
     SharedPreferences.Editor spe;
     int day1, year1, month1;
-    String username, bdename,role;
+    String username, bdename, role;
     ConnectionDetector cd;
     LotusWebservice service;
     private ProgressDialog pd;
@@ -155,7 +156,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
-    String status, ADate, AttendanceValue, Aid,savedate,autoid;
+    String status, ADate, AttendanceValue, Aid, savedate, autoid;
     private Button gridcell;
     private ArrayList<AttendanceModel> presentList;
     AttendanceModel attendanceModel;
@@ -214,7 +215,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         }
         username = sp.getString("username", "");
         bdename = sp.getString("BDEusername", "");
-        role = sp.getString("Role","");
+        role = sp.getString("Role", "");
 
         selectedDayMonthYearButton = (Button) findViewById(R.id.selectedDayMonthYear);
         selectedDayMonthYearButton.setText("Selected: ");
@@ -1357,7 +1358,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                             presentList.add(attendanceModel);
                         }
 
-                        for(int j = 0; j < presentList.size(); j++){
+                        for (int j = 0; j < presentList.size(); j++) {
                             attendanceModel = presentList.get(j);
 
                             SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
@@ -1366,8 +1367,8 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                             SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             savedate = form.format(date);
 
-                            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-                            String adate =sdf.format(date.getTime());
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                            String adate = sdf.format(date.getTime());
 
                            /* Date date1 = new Date();
                             SimpleDateFormat form1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -1545,20 +1546,31 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
                 Toast.makeText(getApplicationContext(), "Attendance Successfully Sync", Toast.LENGTH_SHORT).show();
 
-                if(role.equalsIgnoreCase("FLR")){
+
+                if (role.equalsIgnoreCase("FLR")) {
                     if (attendance_flag.equalsIgnoreCase("A")) {
                         Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(i);
 
                     } else {
-                        spe.putString("FLROutletSelect","False");
+                        spe.putString("FLROutletSelect", "False");
                         spe.commit();
                         Intent i = new Intent(getApplicationContext(), OutletActivity.class);
                         //i.putExtra("FromAttendancefloter", "AF");
                         startActivity(i);
                     }
-                }else {
+                } else if (role.equalsIgnoreCase("DUB")) {
+                    if (attendance_flag.equalsIgnoreCase("A")) {
+                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+
+                    } else {
+                        Intent i = new Intent(getApplicationContext(), OutletActivity.class);
+                        startActivity(i);
+                    }
+                } else {
                     if (attendance_flag.equalsIgnoreCase("A")) {
                         Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -1570,181 +1582,179 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                         startActivity(i);
                     }
                 }
-
             }
 
         }
 
     }
-
 
     private class SaveLogoutTime extends AsyncTask<Void, Void, SoapPrimitive> {
 
-        ProgressDialog progress;
+            ProgressDialog progress;
 
-        SoapPrimitive soap_result;
+            SoapPrimitive soap_result;
 
-        @Override
-        protected SoapPrimitive doInBackground(Void... params) {
-            // TODO Auto-generated method stub
+            @Override
+            protected SoapPrimitive doInBackground(Void... params) {
+                // TODO Auto-generated method stub
 
-            Date date = new Date();
-            SimpleDateFormat form = new SimpleDateFormat(
-                    "yyyy-MM-dd HH:mm:ss");
+                Date date = new Date();
+                SimpleDateFormat form = new SimpleDateFormat(
+                        "yyyy-MM-dd HH:mm:ss");
 
-            attendanceDate1 = form.format(date);
-            soap_result = service.SaveLogoutTime(username, attendanceDate1);
+                attendanceDate1 = form.format(date);
+                soap_result = service.SaveLogoutTime(username, attendanceDate1);
 
-            return soap_result;
-        }
+                return soap_result;
+            }
 
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-            progress = new ProgressDialog(AttendanceFragment.this);
-            progress.setTitle("Uploading");
-            progress.setMessage("Please Wait.......");
-            progress.setCancelable(false);
-            progress.show();
-        }
+            @Override
+            protected void onPreExecute() {
+                // TODO Auto-generated method stub
+                super.onPreExecute();
+                progress = new ProgressDialog(AttendanceFragment.this);
+                progress.setTitle("Uploading");
+                progress.setMessage("Please Wait.......");
+                progress.setCancelable(false);
+                progress.show();
+            }
 
-        @Override
-        protected void onPostExecute(SoapPrimitive result) {
-            // TODO Auto-generated method stub
-            super.onPostExecute(result);
-            progress.dismiss();
-            if (result != null) {
-                if (result.toString().equalsIgnoreCase("true")) {
-                    Toast.makeText(AttendanceFragment.this, "Uploaded Succesfully", Toast.LENGTH_LONG).show();
+            @Override
+            protected void onPostExecute(SoapPrimitive result) {
+                // TODO Auto-generated method stub
+                super.onPostExecute(result);
+                progress.dismiss();
+                if (result != null) {
+                    if (result.toString().equalsIgnoreCase("true")) {
+                        Toast.makeText(AttendanceFragment.this, "Uploaded Succesfully", Toast.LENGTH_LONG).show();
 
-                    Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);
+                        Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                    } else {
+                        Toast.makeText(AttendanceFragment.this, "Data Not uploaded", Toast.LENGTH_LONG).show();
+                    }
                 } else {
-                    Toast.makeText(AttendanceFragment.this, "Data Not uploaded", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AttendanceFragment.this, "Please check internet Connectivity", Toast.LENGTH_LONG).show();
                 }
+            }
+
+
+        }
+
+
+        @Override
+        public void onStart() {
+            super.onStart();
+
+            if (!checkPermissions()) {
+                requestPermissions();
             } else {
-                Toast.makeText(AttendanceFragment.this, "Please check internet Connectivity", Toast.LENGTH_LONG).show();
+                getLastLocation();
             }
         }
 
+        @Override
+        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                               @NonNull int[] grantResults) {
+            Log.i(TAG, "onRequestPermissionResult");
+            if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+                if (grantResults.length <= 0) {
+                    // If user interaction was interrupted, the permission request is cancelled and you
+                    // receive empty arrays.
+                    Log.i(TAG, "User interaction was cancelled.");
+                } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission granted.
+                    getLastLocation();
+                } else {
+                    // Permission denied.
 
-    }
+                    // Notify the user via a SnackBar that they have rejected a core permission for the
+                    // app, which makes the Activity useless. In a real app, core permissions would
+                    // typically be best requested during a welcome-screen flow.
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        if (!checkPermissions()) {
-            requestPermissions();
-        } else {
-            getLastLocation();
+                    // Additionally, it is important to remember that a permission might have been
+                    // rejected without asking the user for permission (device policy or "Never ask
+                    // again" prompts). Therefore, a user interface affordance is typically implemented
+                    // when permissions are denied. Otherwise, your app could appear unresponsive to
+                    // touches or interactions which have required permissions.
+                    showSnackbar(R.string.textwarn, R.string.settings,
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    // Build intent that displays the App settings screen.
+                                    Intent intent = new Intent();
+                                    intent.setAction(
+                                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    Uri uri = Uri.fromParts("package",
+                                            BuildConfig.APPLICATION_ID, null);
+                                    intent.setData(uri);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                }
+                            });
+                }
+            }
         }
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        Log.i(TAG, "onRequestPermissionResult");
-        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
-            if (grantResults.length <= 0) {
-                // If user interaction was interrupted, the permission request is cancelled and you
-                // receive empty arrays.
-                Log.i(TAG, "User interaction was cancelled.");
-            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted.
-                getLastLocation();
-            } else {
-                // Permission denied.
+        private void showSnackbar(final int mainTextStringId, final int actionStringId,
+                                  View.OnClickListener listener) {
+            Snackbar.make(findViewById(android.R.id.content),
+                    getString(mainTextStringId),
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(getString(actionStringId), listener).show();
+        }
 
-                // Notify the user via a SnackBar that they have rejected a core permission for the
-                // app, which makes the Activity useless. In a real app, core permissions would
-                // typically be best requested during a welcome-screen flow.
+        private boolean checkPermissions() {
+            int permissionState = ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION);
+            return permissionState == PackageManager.PERMISSION_GRANTED;
+        }
 
-                // Additionally, it is important to remember that a permission might have been
-                // rejected without asking the user for permission (device policy or "Never ask
-                // again" prompts). Therefore, a user interface affordance is typically implemented
-                // when permissions are denied. Otherwise, your app could appear unresponsive to
-                // touches or interactions which have required permissions.
-                showSnackbar(R.string.textwarn, R.string.settings,
+        private void startLocationPermissionRequest() {
+            ActivityCompat.requestPermissions(AttendanceFragment.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+
+        private void requestPermissions() {
+            boolean shouldProvideRationale =
+                    ActivityCompat.shouldShowRequestPermissionRationale(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION);
+
+            // Provide an additional rationale to the user. This would happen if the user denied the
+            // request previously, but didn't check the "Don't ask again" checkbox.
+            if (shouldProvideRationale) {
+                Log.i(TAG, "Displaying permission rationale to provide additional context.");
+
+                showSnackbar(R.string.textwarn, android.R.string.ok,
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                // Build intent that displays the App settings screen.
-                                Intent intent = new Intent();
-                                intent.setAction(
-                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package",
-                                        BuildConfig.APPLICATION_ID, null);
-                                intent.setData(uri);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
+                                // Request permission
+                                startLocationPermissionRequest();
                             }
                         });
+
+            } else {
+                Log.i(TAG, "Requesting permission");
+                // Request permission. It's possible this can be auto answered if device policy
+                // sets the permission in a given state or the user denied the permission
+                // previously and checked "Never ask again".
+                startLocationPermissionRequest();
             }
         }
-    }
 
-    private void showSnackbar(final int mainTextStringId, final int actionStringId,
-                              View.OnClickListener listener) {
-        Snackbar.make(findViewById(android.R.id.content),
-                getString(mainTextStringId),
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction(getString(actionStringId), listener).show();
-    }
-
-    private boolean checkPermissions() {
-        int permissionState = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-        return permissionState == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void startLocationPermissionRequest() {
-        ActivityCompat.requestPermissions(AttendanceFragment.this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                REQUEST_PERMISSIONS_REQUEST_CODE);
-    }
-
-    private void requestPermissions() {
-        boolean shouldProvideRationale =
-                ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION);
-
-        // Provide an additional rationale to the user. This would happen if the user denied the
-        // request previously, but didn't check the "Don't ask again" checkbox.
-        if (shouldProvideRationale) {
-            Log.i(TAG, "Displaying permission rationale to provide additional context.");
-
-            showSnackbar(R.string.textwarn, android.R.string.ok,
-                    new View.OnClickListener() {
+        private void getLastLocation() {
+            mFusedLocationClient.getLastLocation()
+                    .addOnCompleteListener(this, new OnCompleteListener<Location>() {
                         @Override
-                        public void onClick(View view) {
-                            // Request permission
-                            startLocationPermissionRequest();
-                        }
-                    });
+                        public void onComplete(@NonNull Task<Location> task) {
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                mLastLocation = task.getResult();
 
-        } else {
-            Log.i(TAG, "Requesting permission");
-            // Request permission. It's possible this can be auto answered if device policy
-            // sets the permission in a given state or the user denied the permission
-            // previously and checked "Never ask again".
-            startLocationPermissionRequest();
-        }
-    }
-
-    private void getLastLocation() {
-        mFusedLocationClient.getLastLocation()
-                .addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            mLastLocation = task.getResult();
-
-                            lat = mLastLocation.getLatitude();
-                            lon = mLastLocation.getLongitude();
+                                lat = mLastLocation.getLatitude();
+                                lon = mLastLocation.getLongitude();
 
                            /* mLatitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
                                     mLatitudeLabel,
@@ -1752,12 +1762,12 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                             mLongitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
                                     mLongitudeLabel,
                                     mLastLocation.getLongitude()));*/
-                        } else {
-                            Log.w(TAG, "getLastLocation:exception", task.getException());
+                            } else {
+                                Log.w(TAG, "getLastLocation:exception", task.getException());
 
+                            }
                         }
-                    }
-                });
-    }
+                    });
+        }
 
-}
+    }

@@ -1145,7 +1145,28 @@ public class LoginActivity extends Activity {
                 Toast.makeText(context, "U r absent today", Toast.LENGTH_SHORT)
                         .show();
             }
-        }else {
+        }else if(role.equalsIgnoreCase("DUB")){
+
+            if (a.equalsIgnoreCase("")) {
+
+                Intent i = new Intent(getApplicationContext(), AttendanceFragment.class);
+                i.putExtra("FromLoginpage", "L");
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+
+            }
+            if (a.equalsIgnoreCase("P")) {
+                    Intent i = new Intent(getApplicationContext(),
+                            OutletActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+
+            }
+            if (a.equalsIgnoreCase("A")) {
+                Toast.makeText(context, "U r absent today", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }else{
             if (a.equalsIgnoreCase("")) {
 
 
@@ -1158,9 +1179,9 @@ public class LoginActivity extends Activity {
             } else {
 
             }*/
-           if(!sp.getString("Role", "").equalsIgnoreCase("FLR")) {
-               Boc26AlaramReceiver();
-           }
+                if(!sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                    Boc26AlaramReceiver();
+                }
                 Intent i = new Intent(getApplicationContext(), AttendanceFragment.class);
                 i.putExtra("FromLoginpage", "L");
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
