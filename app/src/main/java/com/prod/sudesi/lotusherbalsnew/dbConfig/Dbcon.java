@@ -744,6 +744,59 @@ public class Dbcon {
         return product_type_data;
     }
 
+    public ArrayList<String> fetchselectbrand() {
+        // TODO Auto-generated method stub
+        ArrayList<String> product_brand = new ArrayList<String>();
+
+        String selectquery = " select DISTINCT ProductCategory from product_master ";
+
+        Cursor cursor = database.rawQuery(selectquery, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    product_brand.add(cursor.getString(cursor
+                            .getColumnIndex(Dbhelper.KEY_PRODUCT_Category)));
+
+                    Log.e("", "data product_type=" + product_brand);
+
+                } while (cursor.moveToNext());
+
+            }
+        } else {
+
+            //Toast.makeText(context, "No data available", Toast.LENGTH_LONG);
+        }
+        database.close();
+        return product_brand;
+    }
+
+    public ArrayList<String> fetchselectoffer(String productBrand) {
+        // TODO Auto-generated method stub
+        ArrayList<String> product_offer = new ArrayList<String>();
+
+        String selectquery = " select DISTINCT SingleOffer from product_master where ProductCategory = "
+                + "'" + productBrand + "'";
+
+        Cursor cursor = database.rawQuery(selectquery, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    product_offer.add(cursor.getString(cursor
+                            .getColumnIndex(Dbhelper.KEY_PRODUCT_OFFER)));
+
+                    Log.e("", "data product_type=" + product_offer);
+
+                } while (cursor.moveToNext());
+
+            }
+        } else {
+
+            //Toast.makeText(context, "No data available", Toast.LENGTH_LONG);
+        }
+        database.close();
+        return product_offer;
+    }
+
     @SuppressLint("ShowToast")
     public ArrayList<String> getproducts1(String selected_product_type1) {
         // TODO Auto-generated method stub
@@ -1022,12 +1075,33 @@ public class Dbcon {
         return c;
     }
 
+    public Cursor getuniquedatadubai(String d_id, String flrcode) {
+        // TODO Auto-generated method stub
+
+        String sql = "select * from stock where db_id =" + "'" + d_id + "'" + " AND FLRCode =" + "'" + flrcode + "'";
+
+
+        Cursor c = database.rawQuery(sql, null);
+
+        return c;
+    }
+
+    public Cursor fetchonestock(CharSequence db_id, String outletcode) {
+
+        String sql = "SELECT DISTINCT opening_stock, sold_stock, total_gross_amount, total_net_amount FROM stock WHERE db_id = '" + db_id + "' and FLRCode ='" + outletcode + "'";
+
+        Cursor c = database.rawQuery(sql,null);
+
+        return c;
+
+    }
+
     public Cursor getuniquedata2(String d_id) {
         // TODO Auto-generated method stub
 
         String sql = null;
         try {
-            sql = "select * from stock where " + " db_id =" + "'" + d_id + "'";
+            sql = "select * from stock where db_id =" + "'" + d_id + "'" ;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1262,6 +1336,21 @@ public class Dbcon {
 
     }
 
+    public Cursor fetchAllproductslistforstockforsale1(String selected_brand,String selected_offer,String product_name) {
+        // TODO Auto-generated method stub
+
+//	String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"' AND ProductName = '"+product_name+"'  AND db_id in (select db_id  from stock where close_bal > 0 and product_name = '"+product_name+"') ORDER BY order_flag ";
+
+        String selectquery = "select * from stock where product_category = " + "'" + selected_brand + "'" + " AND SingleOffer = " + "'" + selected_offer + "' AND product_name = '" + product_name + "'  AND  close_bal > 0";
+
+        Log.e("selectquery", "==" + selectquery);
+        Cursor cursort = database.rawQuery(selectquery, null);
+
+
+        return cursort;
+
+    }
+
     public Cursor fetchAllproductslistforstock(String selected_category,
                                                String selected_type, String flag,String columnname) {
         // TODO Auto-generated method stub
@@ -1285,12 +1374,47 @@ public class Dbcon {
 
     }
 
+
+
     public Cursor fetchAllproductslistforstock1(String selected_category,
                                                 String selected_type, String flag) {
         // TODO Auto-generated method stub
 //		String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"' ORDER BY order_flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
 
         String selectquery = "select distinct(product_name) ProductName from stock where product_category = " + "'" + selected_category + "'" + " AND product_type = " + "'" + selected_type + "' ORDER BY flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
+
+
+        //String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"'"+" AND price_type = "+"'"+flag+"'  AND db_id in (select db_id  from stock where close_bal > 0)";
+//		Log.e("selectquery distinct","=="+selectquery);
+        Cursor cursort = database.rawQuery(selectquery, null);
+
+
+        return cursort;
+
+    }
+
+    public Cursor fetchAllproductslistforstocktable(String selected_brand,String selected_offer) {
+        // TODO Auto-generated method stub
+//		String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"' ORDER BY order_flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
+
+        String selectquery = "select distinct(product_name) ProductName from stock where product_category = " + "'" + selected_brand + "'" + " AND SingleOffer = " + "'" + selected_offer + "' ORDER BY flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
+
+
+        //String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"'"+" AND price_type = "+"'"+flag+"'  AND db_id in (select db_id  from stock where close_bal > 0)";
+//		Log.e("selectquery distinct","=="+selectquery);
+        Cursor cursort = database.rawQuery(selectquery, null);
+
+
+        return cursort;
+
+    }
+
+    public Cursor fetchproductslistforproductMaster(String selected_brand,
+                                                String selected_offer) {
+        // TODO Auto-generated method stub
+//		String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"' ORDER BY order_flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
+
+        String selectquery = "select distinct(ProductName) ProductName from product_master where ProductCategory = " + "'" + selected_brand + "'" + " AND SingleOffer = " + "'" + selected_offer + "' ORDER BY order_flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
 
 
         //String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"'"+" AND price_type = "+"'"+flag+"'  AND db_id in (select db_id  from stock where close_bal > 0)";
@@ -2066,6 +2190,54 @@ public class Dbcon {
         database.close();
     }
 
+    public void Insertstock_newforDubai(
+            String product_cat,
+            String product_type, String product_name, String emp_id,
+            String stockinhand, String cl_stk, String fresher_stock,
+            String price, String size, String eancode, String db_id1, String cat_id,
+            String date,String soldstock,
+            String return_saleable, String return_non_saleable, String i_netamt, String netamt,String discount,
+            String shadno,String updateDate, String month_name, String year_name, String flrcode, String singleoffer) {
+        // TODO Auto-generated method stub
+
+        ContentValues values = new ContentValues();
+
+        values.put("product_category", product_cat);
+        values.put("product_type", product_type);
+        values.put("product_name", product_name);
+        values.put("emp_id", emp_id);
+        values.put("stock_in_hand", stockinhand);
+        values.put("close_bal", cl_stk);
+        values.put("savedServer", "0");
+        values.put("price", price);
+        values.put("size", size);
+        values.put("db_id", db_id1);
+        values.put("product_id", cat_id);
+        values.put("eancode", eancode);
+        values.put("stock_received", fresher_stock);
+        values.put("sold_stock", soldstock);
+        values.put("return_non_saleable", return_non_saleable);
+        values.put("return_saleable", return_saleable);
+        values.put("total_gross_amount", i_netamt);
+        values.put("total_net_amount", netamt);
+        values.put("discount", discount);
+        values.put("insert_date", date);
+        values.put("shadeNo", shadno);
+        values.put("updateDate", updateDate);
+        values.put("month", month_name);
+        values.put("year", year_name);
+        values.put("flag", "s");
+        values.put("FLRCode", flrcode);
+        values.put("SingleOffer", singleoffer);
+        Log.e("InsertStock", values.toString());
+
+        database.insert("stock", null, values);
+
+        //}
+        // getStockdetails();
+        database.close();
+    }
+
     public void UpdateStock_new(String product_cat,
                                 String product_type, String product_name,
                                 String emp_id,
@@ -2100,6 +2272,42 @@ public class Dbcon {
         database.execSQL(sql);
 
     }
+
+    public void UpdateStock_newforDubai(String product_cat,
+                                String product_type, String product_name,
+                                String emp_id,
+                                String stockinhand,
+                                String cl_stk,
+                                String fresher_stock,
+                                String price, String size, String eancode, String db_id1, String cat_id,
+                                String date,String soldstock,
+                                String return_saleable, String return_non_saleable, String i_netamt,String netamt,
+                                String discount,String shadno, String updateDate, String month_name, String year_name,String flrcode, String singleoffer) {
+
+        // TODO Auto-generated method stub
+
+
+        Log.e("", "inside update stock");
+
+
+        String sql = "update stock set  stock_in_hand = " + "'" + stockinhand + "'" +
+                " ,sold_stock = " + "'" + soldstock + "'" +
+                " ,return_saleable = " + "'" + return_saleable + "'" +
+                " ,return_non_saleable = " + "'" + return_non_saleable + "'" +
+                " ,total_gross_amount = " + "'" + i_netamt + "'" +
+                " ,total_net_amount = " + "'" + netamt + "'" +
+                " ,discount = " + "'" + discount + "'" +
+                ",stock_received = " + "'" + fresher_stock + "'" + "," +
+                "close_bal = " + "'" + cl_stk + "'" + "," +
+                "shadeNo = " + "'" + shadno + "'" + "," +
+                "insert_date = " + "'" + date + "'" +
+                ", flag = " + "'s'" +
+                ", savedServer='0',updateDate ='" + updateDate + "' ,month='" + month_name + "', year='" + year_name + "', FLRCode='" + flrcode + "', SingleOffer='" + singleoffer + "' where db_id = " + "'" + db_id1 + "'" + "";
+        Log.e("", "update stock sql==" + sql);
+        database.execSQL(sql);
+
+    }
+
 
     public String getproductname123(String ppid) {
         // TODO Auto-generated method stub
@@ -3413,6 +3621,38 @@ public class Dbcon {
 
     }
 
+    public String fetchStockDbIDfordubai(String productName, String mrp, String type) {
+//			String sql = "select db_id from stock where product_name like '%"+productName+"%' and price = '"+mrp+"'";
+
+        //String sql = "select db_id from product_master where ProductName like '%"+productName+"%' and MRP = '"+mrp+"'";
+
+        String result = null;
+        try {
+            Cursor c = null;
+            String sql = "select db_id from product_master where ProductName like '%" + productName + "%' and MRP = '" + mrp + "' and SingleOffer ='" + type + "'";
+
+            Log.e("sql", sql);
+
+            //result = "";
+            database = dbHelper.getReadableDatabase();
+            c = database.rawQuery(sql, null);
+            if (c != null && !c.isClosed()) {
+                c.moveToFirst();
+
+                result = c.getString(0);
+
+                c.moveToNext();
+            }
+            c.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+
+
+    }
+
     public Cursor getDashboardData(String boc) {
         // TODO Auto-generated method stub
 
@@ -3501,6 +3741,5 @@ public class Dbcon {
         database.execSQL(sql);
 
     }
-
 
 }

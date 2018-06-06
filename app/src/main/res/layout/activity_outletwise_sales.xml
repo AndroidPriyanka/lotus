@@ -1,45 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0b5571">
+    android:background="#0b5571"
+    android:orientation="vertical">
 
-    <include
-        android:id="@+id/include_header"
-        layout="@layout/headernew"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+    <include layout="@layout/headernew" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/include_header">
-
-        <TableLayout
-            android:id="@+id/tl_spinerlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_marginRight="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_5sdp">
+        android:orientation="vertical"
+        android:layout_margin="7dp">
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
 
                 <TextView
-                    android:id="@+id/txt_header"
+                    style="@style/report_textview_heading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center"
                     android:text="@string/outlet_report_total_sale"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
                     android:textStyle="italic"
-                    android:typeface="serif" />
+                    android:textColor="#FFFFFF"
+                    android:typeface="serif"
+                    android:textSize="25dp" />
+
+
             </TableRow>
 
-            <TableRow
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            >
+
+            <TextView
+                style="@style/report_textview_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="BOC:"
+                android:textStyle="italic"
+                android:textColor="#FFFFFF"
+                android:typeface="serif"
+                android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Spinner
+                android:id="@+id/spin_month"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:background="@drawable/dropdown" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            >
+
+            <TextView
+                style="@style/report_textview_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Year:"
+                android:textStyle="italic"
+                android:textColor="#FFFFFF"
+                android:typeface="serif"
+                android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Spinner
+                android:id="@+id/spin_year"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:background="@drawable/dropdown" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_weight="100"
+            android:gravity="center" >
+
+            <Button
+                android:id="@+id/btn_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/search_new" />
+        </TableRow>
+
+           <!-- <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -48,7 +114,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_20sdp"
-                    android:text="@string/month" />
+                    android:text="BOC:" />
             </TableRow>
 
             <TableRow
@@ -85,11 +151,10 @@
                     android:layout_height="@dimen/_25sdp"
                     android:background="@drawable/dropdown"
                     android:prompt="@string/select_type" />
-            </TableRow>
+            </TableRow>-->
 
-        </TableLayout>
 
-        <Button
+       <!-- <Button
             android:id="@+id/btn_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -97,10 +162,9 @@
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/_140sdp"
-            android:background="@drawable/search_new" />
+            android:background="@drawable/search_new" />-->
 
 
-    </RelativeLayout>
+    </LinearLayout>
 
-
-</RelativeLayout>
+</LinearLayout>

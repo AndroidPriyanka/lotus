@@ -184,7 +184,6 @@ public class DashboardNewActivity extends Activity {
             btn_stock_sale.setVisibility(View.VISIBLE);
         }
 
-
         if (db.checkStockUploaded()) {
 
             alertDialogBuilder1 = new AlertDialog.Builder(DashboardNewActivity.this);

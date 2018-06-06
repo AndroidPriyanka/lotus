@@ -76,7 +76,7 @@ public class SaleCalculation extends Activity {
     private static SpannableStringBuilder ssbuilder;
 
     TextView tv_h_username;// -------
-    String username,FLRCode;
+    String username,FLRCode,role;
     SharedPreferences shp;
     SharedPreferences.Editor shpeditor;
     static Context context;
@@ -84,10 +84,8 @@ public class SaleCalculation extends Activity {
     ScrollView scrv_sale;
     ConnectionDetector cd;
 
-    String pro_name[];
-    String size[];
-    String enacod[];
-    String catid[];
+    String enacod[], catid[], pro_name[], size[], db_id[], mrp[], shadeno[], singleoffer[];
+
 
     // private ProgressDialog mProgress = null;
 
@@ -121,22 +119,33 @@ public class SaleCalculation extends Activity {
         shp = context.getSharedPreferences("Lotus", context.MODE_PRIVATE);
         shpeditor = shp.edit();
 
+        username = shp.getString("username", "");
+        FLRCode = shp.getString("FLRCode","");
+        role = shp.getString("Role","");
+
         Intent intent = getIntent();
 
-        String db_id[] = intent.getStringArrayExtra("db_id");
-        pro_name = intent.getStringArrayExtra("pro_name");
-        String mrp[] = intent.getStringArrayExtra("mrp");
-        String shadeno[] = intent.getStringArrayExtra("shadeNo");
-        enacod = intent.getStringArrayExtra("encode");
-        size = intent.getStringArrayExtra("size");
-        catid = intent.getStringArrayExtra("catid");
+        if (role.equalsIgnoreCase("DUB")) {
+            pro_name = intent.getStringArrayExtra("pro_name");
+            db_id = intent.getStringArrayExtra("db_id");
+            mrp = intent.getStringArrayExtra("mrp");
+            size = intent.getStringArrayExtra("Size");
+            enacod = intent.getStringArrayExtra("encode");
+            singleoffer = intent.getStringArrayExtra("singleoffer");
+        } else {
+             db_id = intent.getStringArrayExtra("db_id");
+            pro_name = intent.getStringArrayExtra("pro_name");
+             mrp = intent.getStringArrayExtra("mrp");
+             shadeno = intent.getStringArrayExtra("shadeNo");
+            enacod = intent.getStringArrayExtra("encode");
+            size = intent.getStringArrayExtra("size");
+            catid = intent.getStringArrayExtra("catid");
+        }
         //String closing[] = intent.getStringArrayExtra("closing");
         // ---------------------
 
         tv_h_username = (TextView) findViewById(R.id.tv_h_username);
 
-        username = shp.getString("username", "");
-        FLRCode = shp.getString("FLRCode","");
         tv_h_username.setText(username);
 
         // ----------------------------
@@ -159,9 +168,11 @@ public class SaleCalculation extends Activity {
                     }
                 }, 5000);// set time as per your requirement
 
-                if(shp.getString("Role", "").equalsIgnoreCase("FLR")){
+                if(role.equalsIgnoreCase("FLR")){
                     saveMethodForFLR();
-                }else {
+                }else if(role.equalsIgnoreCase("DUB")){
+                    saveMethodForDubai();
+                }else{
                     saveMethodForLHR();
                 }
 
@@ -212,202 +223,218 @@ public class SaleCalculation extends Activity {
 
         Log.e("db_id.length", String.valueOf(db_id.length));
 
-        for (int i = 0; i < db_id.length; i++) {
+        if (role.equalsIgnoreCase("DUB")) {
+            for (int i = 0; i < db_id.length; i++) {
 
-            String s = ""
-                    + getLastInsertIDofStock1("", db_id[i], "", mrp[i]);
+                String s = getLastInsertIDofStockdubai(db_id[i], FLRCode);
 
-//			if (db_id[i].equalsIgnoreCase("0")) {
-//
-//			} else {
+                if (db_id[i].equalsIgnoreCase("0")) {
 
-            tr = new TableRow(this);
-            tr.setLayoutParams(new TableLayout.LayoutParams(
-                    TableLayout.LayoutParams.FILL_PARENT,
-                    TableLayout.LayoutParams.WRAP_CONTENT));
-            tr.setWeightSum(6f);
+                } else {
 
-            TableRow.LayoutParams lp;
-            lp = new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 3f);
-            TextView productname = new TextView(this);
-            productname.setText(pro_name[i]);
-            productname.setTextColor(Color.WHITE);
-            productname.setMaxEms(12);
-            productname.setTextSize(11);
-            productname.setMaxLines(3);
-            productname.setLayoutParams(lp);
-            tr.addView(productname);// add the column to the table row here
+                    tr = new TableRow(this);
+                    tr.setLayoutParams(new TableLayout.LayoutParams(
+                            TableLayout.LayoutParams.FILL_PARENT,
+                            TableLayout.LayoutParams.WRAP_CONTENT));
+                    tr.setWeightSum(6f);
 
-            lp = new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f);
-            EditText qty = new EditText(this);
-            qty.setTextColor(Color.WHITE);
-            qty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-            qty.setSingleLine(true);
-            qty.setTextSize(15);
-            qty.setMaxEms(5);
-            qty.setLayoutParams(lp);
-            qty.setGravity(Gravity.CENTER);
-            qty.setInputType(InputType.TYPE_CLASS_NUMBER);
-            tr.addView(qty);
+                    TableRow.LayoutParams lp;
+                    lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 3f);
+                    TextView productname = new TextView(this);
+                    productname.setText(pro_name[i]);
+                    productname.setTextColor(Color.WHITE);
+                    productname.setMaxEms(12);
+                    productname.setTextSize(11);
+                    productname.setMaxLines(3);
+                    productname.setLayoutParams(lp);
+                    tr.addView(productname);// add the column to the table row here
 
-            qty.addTextChangedListener(new TextWatcher() {
+                    lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+                    EditText qty = new EditText(this);
+                    qty.setTextColor(Color.WHITE);
+                    qty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+                    qty.setSingleLine(true);
+                    qty.setTextSize(15);
+                    qty.setMaxEms(5);
+                    qty.setLayoutParams(lp);
+                    qty.setGravity(Gravity.CENTER);
+                    qty.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    tr.addView(qty);
 
-                @Override
-                public void onTextChanged(CharSequence s, int start,
-                                          int before, int count) {
-                    // TODO Auto-generated method stub
+                    qty.addTextChangedListener(new TextWatcher() {
 
-                }
+                        @Override
+                        public void onTextChanged(CharSequence s, int start,
+                                                  int before, int count) {
+                            // TODO Auto-generated method stub
 
-                @Override
-                public void beforeTextChanged(CharSequence s, int start,
-                                              int count, int after) {
-                    // TODO Auto-generated method stub
+                        }
 
-                }
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start,
+                                                      int count, int after) {
+                            // TODO Auto-generated method stub
 
-                @Override
-                public void afterTextChanged(Editable s) {
-                    // TODO Auto-generated method stub
+                        }
 
-                }
-            });
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            // TODO Auto-generated method stub
 
-            lp = new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f);
-            TextView price = new TextView(this);
-            price.setText(mrp[i]);
-            price.setTextSize(15);
-            price.setLayoutParams(lp);
-            price.setGravity(Gravity.CENTER);
-            price.setTextColor(Color.WHITE);
-            tr.addView(price);
+                        }
+                    });
 
-            TextView tv2 = new TextView(this);
-            tv2.setText(db_id[i]);
-            tv2.setVisibility(View.GONE);
-            tr.addView(tv2);
+                    lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+                    TextView price = new TextView(this);
+                    price.setText(mrp[i]);
+                    price.setTextSize(15);
+                    price.setLayoutParams(lp);
+                    price.setGravity(Gravity.CENTER);
+                    price.setTextColor(Color.WHITE);
+                    tr.addView(price);
 
-            TextView tv3 = new TextView(this);
-            tv3.setText(shadeno[i]);
-            tv3.setVisibility(View.GONE);
-            tr.addView(tv3);
+                    TextView tv2 = new TextView(this);
+                    tv2.setText(db_id[i]);
+                    tv2.setGravity(Gravity.CENTER);
+                    tv2.setVisibility(View.GONE);
+                    tr.addView(tv2);
 
-            lp = new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f);
-            edti = new TextView(this);
-            edti.setText(s);
-            edti.setTextSize(15);
-            edti.setLayoutParams(lp);
-            edti.setGravity(Gravity.CENTER);
-            edti.setTextColor(Color.WHITE);
-            tr.addView(edti);
+                    lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+                    edti = new TextView(this);
+                    edti.setText(s);
+                    edti.setTextSize(15);
+                    edti.setLayoutParams(lp);
+                    edti.setGravity(Gravity.CENTER);
+                    edti.setTextColor(Color.WHITE);
+                    tr.addView(edti);
 
-            tl_sale_calculation.addView(tr, new TableLayout.LayoutParams(
-                    TableLayout.LayoutParams.FILL_PARENT,
-                    TableLayout.LayoutParams.WRAP_CONTENT));
-            tl_sale_calculation.setShrinkAllColumns(true);
-
-            /*tr = new TableRow(this);
-            tr.setLayoutParams(new TableLayout.LayoutParams(
-                    TableLayout.LayoutParams.MATCH_PARENT,
-                    TableLayout.LayoutParams.WRAP_CONTENT));
-
-            LayoutParams params = new LayoutParams(
-                    LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT
-            );
-
-
-//				params.setMargins(0, 0, 0, 10);
-
-
-            TextView tv = new TextView(this);
-
-            tv.setText(pro_name[i]);
-            tv.setTextColor(Color.WHITE);
-            tv.setMaxEms(10);
-            tv.setTextSize(11);
-            tr.addView(tv);
-
-            EditText edt = new EditText(this);
-            edt.setTextColor(Color.WHITE);
-            edt.setMaxEms(10);
-            edt.setSingleLine(true);
-//            edt.setInputType(android.text.InputType.TYPE_CLASS_TEXT
-//                    | android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_SUBJECT);
-            edt.setInputType(InputType.TYPE_CLASS_NUMBER);
-            edt.setTextColor(Color.WHITE);
-            tr.addView(edt);
-
-            edt.addTextChangedListener(new TextWatcher() {
-
-                @Override
-                public void onTextChanged(CharSequence s, int start,
-                                          int before, int count) {
-                    // TODO Auto-generated method stub
-                    edt_gross.setText("");
-                    edt_discount.setText("0");
-                    edt_net.setText("");
+                    tl_sale_calculation.addView(tr, new TableLayout.LayoutParams(
+                            TableLayout.LayoutParams.FILL_PARENT,
+                            TableLayout.LayoutParams.WRAP_CONTENT));
+                    tl_sale_calculation.setShrinkAllColumns(true);
 
                 }
 
-                @Override
-                public void beforeTextChanged(CharSequence s, int start,
-                                              int count, int after) {
-                    // TODO Auto-generated method stub
+            }
+        } else {
+            for (int i = 0; i < db_id.length; i++) {
 
-                }
+                String s = "" + getLastInsertIDofStock1("", db_id[i], "", mrp[i]);
 
-                @Override
-                public void afterTextChanged(Editable s) {
-                    // TODO Auto-generated method stub
 
-                }
-            });
+                tr = new TableRow(this);
+                tr.setLayoutParams(new TableLayout.LayoutParams(
+                        TableLayout.LayoutParams.FILL_PARENT,
+                        TableLayout.LayoutParams.WRAP_CONTENT));
+                tr.setWeightSum(6f);
 
-            TextView tv1 = new TextView(this);
-            tv1.setText(mrp[i]);
-            tv1.setTextColor(Color.WHITE);
-            tr.addView(tv1);
+                TableRow.LayoutParams lp;
+                lp = new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 3f);
+                TextView productname = new TextView(this);
+                productname.setText(pro_name[i]);
+                productname.setTextColor(Color.WHITE);
+                productname.setMaxEms(12);
+                productname.setTextSize(11);
+                productname.setMaxLines(3);
+                productname.setLayoutParams(lp);
+                tr.addView(productname);// add the column to the table row here
 
-            TextView tv2 = new TextView(this);
-            tv2.setText(db_id[i]);
-            tv2.setVisibility(View.GONE);
-            tr.addView(tv2);
+                lp = new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f);
+                EditText qty = new EditText(this);
+                qty.setTextColor(Color.WHITE);
+                qty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+                qty.setSingleLine(true);
+                qty.setTextSize(15);
+                qty.setMaxEms(5);
+                qty.setLayoutParams(lp);
+                qty.setGravity(Gravity.CENTER);
+                qty.setInputType(InputType.TYPE_CLASS_NUMBER);
+                tr.addView(qty);
 
-            TextView tv3 = new TextView(this);
-            tv3.setText(shadeno[i]);
-            tv3.setVisibility(View.GONE);
-            tr.addView(tv3);
+                qty.addTextChangedListener(new TextWatcher() {
 
-            edti = new TextView(this);
-            edti.setText(s);
-            edti.setTextColor(Color.WHITE);
-            edti.setMaxEms(10);
-            tr.addView(edti);
+                    @Override
+                    public void onTextChanged(CharSequence s, int start,
+                                              int before, int count) {
+                        // TODO Auto-generated method stub
 
-            //
-            tl_sale_calculation.addView(tr);
-            tl_sale_calculation.setShrinkAllColumns(true);
-//			}*/
+                    }
 
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start,
+                                                  int count, int after) {
+                        // TODO Auto-generated method stub
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        // TODO Auto-generated method stub
+
+                    }
+                });
+
+                lp = new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f);
+                TextView price = new TextView(this);
+                price.setText(mrp[i]);
+                price.setTextSize(15);
+                price.setLayoutParams(lp);
+                price.setGravity(Gravity.CENTER);
+                price.setTextColor(Color.WHITE);
+                tr.addView(price);
+
+                TextView tv2 = new TextView(this);
+                tv2.setText(db_id[i]);
+                tv2.setVisibility(View.GONE);
+                tr.addView(tv2);
+
+                TextView tv3 = new TextView(this);
+                tv3.setText(shadeno[i]);
+                tv3.setVisibility(View.GONE);
+                tr.addView(tv3);
+
+                lp = new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f);
+                edti = new TextView(this);
+                edti.setText(s);
+                edti.setTextSize(15);
+                edti.setLayoutParams(lp);
+                edti.setGravity(Gravity.CENTER);
+                edti.setTextColor(Color.WHITE);
+                tr.addView(edti);
+
+                tl_sale_calculation.addView(tr, new TableLayout.LayoutParams(
+                        TableLayout.LayoutParams.FILL_PARENT,
+                        TableLayout.LayoutParams.WRAP_CONTENT));
+                tl_sale_calculation.setShrinkAllColumns(true);
+
+            }
         }
 
         edt_gross.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    try {
-                        int total = 0;
-                        for (int i = 0; i < tl_sale_calculation.getChildCount(); i++) {
+                if (hasFocus) try {
+                    int total = 0;
+                    for (int i = 0; i < tl_sale_calculation.getChildCount(); i++) {
 
-                            TableRow t = (TableRow) tl_sale_calculation
-                                    .getChildAt(i + 1);
+                        TableRow t = (TableRow) tl_sale_calculation
+                                .getChildAt(i + 1);
 
-                            EditText edt_qty = (EditText) t.getChildAt(1);
-                            TextView tv_mrp = (TextView) t.getChildAt(2);
-                            int int_quantity, int_mrp;
+                        EditText edt_qty = (EditText) t.getChildAt(1);
+                        TextView tv_mrp = (TextView) t.getChildAt(2);
+                        int int_quantity, int_mrp;
+                        Float fl_mrp;
+                        Float Total = 0.0f;
 
-                            if (!edt_qty.getText().toString().equals("")) {
+                        if (!edt_qty.getText().toString().equals("")) {
+                            if (role.equalsIgnoreCase("DUB")) {
+                                int_quantity = Integer.parseInt(edt_qty
+                                        .getText().toString().trim());
+                                fl_mrp = Float.parseFloat(tv_mrp.getText().toString());
+                                Float multiply = Float.parseFloat(String.valueOf(int_quantity)) * fl_mrp;
+                                Total = Total + multiply;
+                                edt_gross.setText(String.valueOf(Total));
+                            } else {
                                 int_quantity = Integer.parseInt(edt_qty
                                         .getText().toString().trim());
                                 int_mrp = Integer.parseInt(tv_mrp.getText()
@@ -416,14 +443,14 @@ public class SaleCalculation extends Activity {
                                 total = total + multiply;
                                 edt_gross.setText(String.valueOf(total));
                             }
-
                         }
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
 
-                } else {
+                    }
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                else {
                 }
             }
         });
@@ -440,14 +467,19 @@ public class SaleCalculation extends Activity {
                         } else if (!edt_gross.getText().toString().equals("")
                                 && !edt_discount.getText().toString()
                                 .equals("")) {
-                            int gross = Integer.parseInt(edt_gross.getText()
-                                    .toString());
-                            int discount = Integer.parseInt(edt_discount
-                                    .getText().toString());
+                            if(role.equalsIgnoreCase("DUB")){
 
-                            String str_net = String.valueOf(gross - discount);
+                                Float gross = Float.parseFloat(edt_gross.getText().toString());
+                                int discount = Integer.parseInt(edt_discount.getText().toString());
+                                Float str_net = gross - Float.parseFloat(String.valueOf(discount));
+                                edt_net.setText(String.valueOf(str_net));
 
-                            edt_net.setText(str_net);
+                            }else {
+                                int gross = Integer.parseInt(edt_gross.getText().toString());
+                                int discount = Integer.parseInt(edt_discount.getText().toString());
+                                String str_net = String.valueOf(gross - discount);
+                                edt_net.setText(str_net);
+                            }
 
                         }
                     } else {
@@ -907,6 +939,46 @@ public class SaleCalculation extends Activity {
         db.close();
 
         // ll.setVisibility(View.GONE);
+        return closebal;
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public String getLastInsertIDofStockdubai(String dbid, String outletcode) {
+
+        String closebal = "", retn = "";
+        db.open();
+        mCursor = db.getuniquedatadubai(dbid, outletcode);
+
+        if (mCursor != null) {
+
+            if (mCursor.moveToFirst()) {
+
+                do {
+
+                    closebal = mCursor.getString(mCursor
+                            .getColumnIndex("close_bal"));
+
+                    old_stock_recive = mCursor.getString(mCursor
+                            .getColumnIndex("stock_received"));
+
+
+                    str_stockinhand = mCursor.getString(mCursor
+                            .getColumnIndex("stock_in_hand"));
+
+                    str_openingstock = mCursor.getString(mCursor
+                            .getColumnIndex("opening_stock"));
+
+                } while (mCursor.moveToNext());
+
+                sclo = "" + closebal;
+
+            } else {
+                sclo = "0";
+            }
+
+        }
+        db.close();
+
         return closebal;
     }
 
@@ -2004,6 +2076,520 @@ public class SaleCalculation extends Activity {
                                                         startActivity(new Intent(
                                                                 SaleCalculation.this,
                                                                 SaleActivityForFloter.class));
+
+                                                    }
+                                                });
+
+                                // create alert dialog
+                                AlertDialog alertDialog = alertDialogBuilder
+                                        .create();
+
+                                // show it
+                                alertDialog.show();
+                            }
+
+                            //
+
+                        }
+
+                    }
+
+                } else {
+                    // mProgress.dismiss();
+                    Toast.makeText(
+                            SaleCalculation.this,
+                            "Please enter valid value in quantity fields",
+                            Toast.LENGTH_LONG).show();
+                }
+            } catch (NumberFormatException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+
+                Toast.makeText(
+                        SaleCalculation.this,
+                        "Please fill up all valid value in quantity fields",
+                        Toast.LENGTH_LONG).show();
+
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(SaleCalculation.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+
+        }
+
+    }
+
+    private void saveMethodForDubai(){
+        if (cd.isCurrentDateMatchDeviceDate()) {
+            try {
+
+                int count = 0;
+
+                int etcount = 0;
+                if (tl_sale_calculation.getChildCount() != 1) {
+                    for (int i = 0; i < tl_sale_calculation.getChildCount() - 1; i++) {
+
+                        TableRow t = (TableRow) tl_sale_calculation
+                                .getChildAt(i + 1);
+                        EditText edt_qty = (EditText) t.getChildAt(1);
+
+                        if (edt_qty.getText().toString().trim()
+                                .equalsIgnoreCase("0")
+                                || edt_qty.getText().toString().trim()
+                                .equalsIgnoreCase("")
+                                || edt_qty.getText().toString().trim()
+                                .equalsIgnoreCase(" ")
+                                || Integer.parseInt(edt_qty.getText()
+                                .toString().trim()) <= 0) {
+
+                        } else {
+
+                            etcount++;
+                        }
+
+                    }
+                }
+
+                Log.e("etcount", String.valueOf(etcount));
+                int numberofproduct = (tl_sale_calculation.getChildCount() - 1);
+
+                if (numberofproduct == etcount) {
+
+                    if (!edt_gross.getText().toString().equals("")
+                            && !edt_net.getText().toString().equals("")) {
+                        float dis;
+                        if (!edt_discount.getText().toString()
+                                .equalsIgnoreCase(" ")
+                                || !edt_discount.getText().toString()
+                                .equalsIgnoreCase("")) {
+                            dis = Integer.parseInt(edt_discount.getText()
+                                    .toString());
+                        } else {
+                            dis = 0;
+                        }
+
+                        String tt = String.valueOf(tl_sale_calculation
+                                .getChildCount());
+
+                        float ttt = Float.parseFloat(tt);
+
+                        float a1 = dis / (ttt - 1);
+
+                        String adis = String.format("%.02f", a1);
+                        float a = Float.parseFloat(adis);
+                        float disss = 0;
+                        float net1;
+
+                        if (tl_sale_calculation.getChildCount() != 1) {
+                            for (int i = 0; i < tl_sale_calculation
+                                    .getChildCount() - 1; i++) {
+
+                                TableRow t = (TableRow) tl_sale_calculation.getChildAt(i + 1);
+                                EditText edt_qty = (EditText) t.getChildAt(1);
+                                TextView tv_mrp = (TextView) t.getChildAt(2);
+                                TextView tv_dbID = (TextView) t.getChildAt(3);
+                                TextView tv_shadeno = (TextView) t.getChildAt(4);
+
+                                String shaddd = "0";
+
+                                Float calc_gross = Float.parseFloat(tv_mrp.getText().toString())
+                                        * Integer.parseInt(edt_qty.getText().toString());
+
+                                float boc_date_net = calc_gross - a;
+                                Float gross;
+                                int net = 0, closing = 0, sold_stock = 0, discount = 0;
+                                int stkinhand = 0;
+                                int i_sold = 0;
+                                db.open();
+                                Cursor c = db.fetchallSpecifyMSelect(
+                                        "stock", new String[]{
+                                                "total_gross_amount",
+                                                "total_net_amount",
+                                                "discount", "close_bal",
+                                                "sold_stock",
+                                                "opening_stock",
+                                                "stock_received",
+                                                "return_saleable",
+                                                "stock_in_hand",
+                                                "return_non_saleable", "price"},
+                                        "db_id = '"
+                                                + tv_dbID.getText()
+                                                .toString() + "'",
+                                        null, null);
+                                if (c != null && c.getCount() > 0) {
+                                    c.moveToFirst();
+
+                                    // opening stock
+                                    Log.e("opening stock", c.getString(3));
+                                    boolean boo = validateEdit(
+                                            edt_qty,
+                                            "Quantity is greater than available stock",
+                                            c.getString(3));
+
+                                    if (boo == true) {
+
+                                        if (c.getString(4) != null) {
+                                            if (c.getString(4).trim()
+                                                    .equalsIgnoreCase("0")
+                                                    || c.getString(4)
+                                                    .trim()
+                                                    .equalsIgnoreCase(
+                                                            "")) {
+
+                                                i_sold = 0;
+
+                                            } else {
+
+                                                i_sold = Integer.parseInt(c
+                                                        .getString(4)
+                                                        .trim());
+                                            }
+                                        }
+
+                                        Log.e("old sold", String.valueOf(i_sold));
+
+                                        i_sold = i_sold
+                                                + Integer.parseInt(edt_qty
+                                                .getText()
+                                                .toString());
+
+                                        Log.e("new sold", String.valueOf(i_sold));
+
+                                        int i_stokinhand = 0;
+
+                                        if (c.getString(8) != null) {
+                                            if (c.getString(8).trim()
+                                                    .equalsIgnoreCase("0")
+                                                    || c.getString(8)
+                                                    .trim()
+                                                    .equalsIgnoreCase(
+                                                            "")) {
+
+                                                i_stokinhand = 0;
+
+                                            } else {
+
+                                                i_stokinhand = Integer
+                                                        .parseInt(c
+                                                                .getString(
+                                                                        8)
+                                                                .trim());
+                                            }
+                                        }
+
+
+                                        Log.e("i_stokinhand", String.valueOf(i_stokinhand));
+
+                                        /* ..............  New changes ...........................*/
+                                        int i_return_customer = 0;
+
+                                        if (c.getString(7) != null) {
+                                            if (c.getString(7).trim()
+                                                    .equalsIgnoreCase("0")
+                                                    || c.getString(7).trim().equalsIgnoreCase("")) {
+
+                                                i_return_customer = 0;
+
+                                            } else {
+
+                                                i_return_customer = Integer.parseInt(c.getString(7).trim());
+                                            }
+                                        }
+
+
+                                        Log.e("i_return_customer", String.valueOf(i_return_customer));
+
+                                        int i_return_company = 0;
+
+                                        if (c.getString(9) != null) {
+                                            if (c.getString(9).trim()
+                                                    .equalsIgnoreCase("0")
+                                                    || c.getString(9).trim().equalsIgnoreCase("")) {
+
+                                                i_return_company = 0;
+
+                                            } else {
+
+                                                i_return_company = Integer.parseInt(c.getString(9).trim());
+                                            }
+                                        }
+
+
+                                        Log.e("i_return_company", String.valueOf(i_return_company));
+
+                                        /*...................End...................*/
+
+                                        //New changes
+                                        int i_clstk = i_stokinhand - i_sold + i_return_customer - i_return_company;
+
+                                        //old apk 2.7
+                                        // int i_clstk = i_stokinhand - i_sold;
+
+                                        Log.e("i_clstk", String.valueOf(i_clstk));
+
+                                        if (c.getString(0) != null) {
+                                            if (!c.getString(0)
+                                                    .equalsIgnoreCase("")) {
+
+                                                if (!c.getString(0)
+                                                        .equalsIgnoreCase(
+                                                                " ")) {
+                                                    Float total_gross = Float.parseFloat(c.getString(0));
+
+                                                    gross = total_gross + calc_gross;
+
+                                                } else {
+                                                    gross = calc_gross;
+
+                                                }
+
+                                            } else {
+                                                gross = calc_gross;
+
+                                            }
+                                        } else {
+                                            gross = calc_gross;
+
+                                        }
+
+                                        if (c.getString(2) != null) {
+                                            if (!c.getString(2)
+                                                    .equalsIgnoreCase("")) {
+
+                                                if (!c.getString(2)
+                                                        .contains(" ")) {
+
+                                                    disss = (Float.parseFloat(c
+                                                            .getString(2)) + a);
+
+                                                } else {
+                                                    if (edt_discount
+                                                            .getText()
+                                                            .toString()
+                                                            .equals("")) {
+                                                        // discount = 0;//
+                                                        disss = 0;
+                                                    } else {
+
+                                                        disss = a;
+
+                                                    }
+
+                                                }
+
+                                            } else {
+                                                if (edt_discount.getText()
+                                                        .toString()
+                                                        .equals("")) {
+
+                                                    disss = 0;
+                                                } else {
+
+                                                    disss = 0;
+
+                                                }
+                                            }
+                                        } else {
+                                            if (edt_discount.getText()
+                                                    .toString().equals("")) {
+                                                // discount = 0;//
+                                                disss = 0;
+                                            } else {
+
+                                                disss = a;
+                                            }
+                                        }
+
+                                        if (c.getString(1) != null) {
+                                            if (!c.getString(1)
+                                                    .equalsIgnoreCase("")) {
+
+                                                if (!c.getString(1)
+                                                        .contains(" ")) {
+
+                                                    String cal_gross = String
+                                                            .valueOf(calc_gross);
+
+                                                    net1 = Float.parseFloat(c
+                                                            .getString(1))
+                                                            + Float.parseFloat(cal_gross)
+                                                            - a;
+
+                                                } else {
+                                                    String cal_gross = String
+                                                            .valueOf(calc_gross);
+
+                                                    net1 = (Float
+                                                            .parseFloat(cal_gross) - a);
+
+                                                }
+
+                                            } else {
+                                                String cal_gross = String
+                                                        .valueOf(calc_gross);
+
+                                                net1 = (Float
+                                                        .parseFloat(cal_gross) - a);
+                                            }
+
+                                        } else {
+                                            String cal_gross = String
+                                                    .valueOf(calc_gross);
+
+                                            net1 = (Float
+                                                    .parseFloat(cal_gross) - a);
+                                        }
+
+                                        Calendar cal = Calendar
+                                                .getInstance();
+                                        SimpleDateFormat month_date = new SimpleDateFormat(
+                                                "MMMM");
+                                        String month_name = month_date
+                                                .format(cal.getTime());
+
+                                        Calendar cal1 = Calendar
+                                                .getInstance();
+                                        SimpleDateFormat year_format = new SimpleDateFormat(
+                                                "yyyy");
+                                        String year_name = year_format
+                                                .format(cal1.getTime());
+
+                                        Calendar cal2 = Calendar
+                                                .getInstance();
+                                        SimpleDateFormat sdf = new SimpleDateFormat(
+                                                "yyyy-MM-dd HH:mm:ss");
+                                        String insert_timestamp = sdf
+                                                .format(cal2.getTime());
+
+                                        String[] insert_timestamps = insert_timestamp
+                                                .split(" ");
+
+                                        String check_timestamp = insert_timestamps[0];
+
+                                        boolean bool = db
+                                                .update(tv_dbID.getText()
+                                                                .toString(),
+                                                        new String[]{
+                                                                shaddd,
+                                                                String.valueOf(i_clstk),
+                                                                String.valueOf(String.format("%.2f", gross)),
+                                                                String.valueOf(disss),
+                                                                String.valueOf(String.format("%.2f", net1)),
+                                                                String.valueOf(i_sold),
+                                                                "0",
+                                                                month_name,
+                                                                year_name,
+                                                                insert_timestamp,
+                                                                insert_timestamp,
+                                                                "s"},
+                                                        new String[]{
+                                                                "shadeNo",
+                                                                "close_bal",
+                                                                "total_gross_amount",
+                                                                "discount",
+                                                                "total_net_amount",
+                                                                "sold_stock",
+                                                                "savedServer",
+                                                                "month",
+                                                                "year",
+                                                                "updateDate",
+                                                                "insert_date",
+                                                                "flag"},
+                                                        "stock", "db_id");
+
+
+                                        if (bool == true) {
+                                            count++;
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(SaleCalculation.this,
+                                            "Stock not available",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+
+                            if (count == tl_sale_calculation.getChildCount() - 1) {
+
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                        SaleCalculation.this);
+
+                                // set title
+                                alertDialogBuilder
+                                        .setTitle("Saved Successfully!!");
+
+                                // set dialog message
+                                alertDialogBuilder
+                                        .setMessage("Go  TO  :")
+                                        .setCancelable(false)
+
+                                        .setNegativeButton(
+                                                "Sale Page",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(
+                                                            DialogInterface dialog,
+                                                            int id) {
+
+                                                        dialog.cancel();
+                                                        finish();
+                                                        startActivity(new Intent(
+                                                                SaleCalculation.this,
+                                                                StockSaleActivityForDubai.class));
+
+                                                    }
+                                                })
+
+                                        .setPositiveButton(
+                                                "Home",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(
+                                                            DialogInterface dialog,
+                                                            int id) {
+
+                                                        dialog.cancel();
+                                                        finish();
+                                                        startActivity(new Intent(
+                                                                SaleCalculation.this,
+                                                                DashboardNewActivity.class));
+
+                                                    }
+                                                });
+
+                                // create alert dialog
+                                AlertDialog alertDialog = alertDialogBuilder
+                                        .create();
+
+                                // show it
+                                alertDialog.show();
+                            } else {
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                        SaleCalculation.this);
+
+                                // set title
+                                alertDialogBuilder
+                                        .setTitle("Data Not Saved!!!");
+
+                                // set dialog message
+                                alertDialogBuilder
+                                        .setMessage(
+                                                "Please check the available stock for specified products")
+                                        .setCancelable(false)
+
+                                        .setNegativeButton(
+                                                "OK",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(
+                                                            DialogInterface dialog,
+                                                            int id) {
+
+                                                        dialog.cancel();
+                                                        finish();
+                                                        startActivity(new Intent(
+                                                                SaleCalculation.this,
+                                                                StockSaleActivityForDubai.class));
 
                                                     }
                                                 });

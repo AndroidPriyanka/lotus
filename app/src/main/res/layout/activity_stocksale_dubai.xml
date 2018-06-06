@@ -1,4 +1,271 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0b5571"
+    android:orientation="vertical">
+
+    <include layout="@layout/headernew" />
+
+    <!--<ScrollView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:text="@string/stocksale"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/_14sdp"
+            android:textStyle="italic" />
+
+        <RadioGroup
+            android:id="@+id/radio_stock_sale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView1"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <RadioButton
+                android:id="@+id/radio_stock"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/_50sdp"
+                android:layout_weight="1"
+                android:text="STOCK"
+                android:checked="true"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/_12sdp" />
+
+            <RadioButton
+                android:id="@+id/radio_sale"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/_50sdp"
+                android:layout_weight="1"
+                android:text="SALE"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/_12sdp" />
+
+
+        </RadioGroup>
+
+
+        <LinearLayout
+            android:id="@+id/stock_salelayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/radio_stock_sale"
+            android:layout_above="@+id/btn_proceed"
+            android:layout_marginLeft="@dimen/_7sdp"
+            android:layout_marginRight="@dimen/_7sdp"
+            android:layout_marginBottom="@dimen/_7sdp"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/_2sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@android:color/white"
+                android:visibility="visible"
+                app:cardCornerRadius="@dimen/_3sdp"
+                app:cardElevation="@dimen/_2sdp">
+
+                <!--<android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white">-->
+
+
+                    <AutoCompleteTextView
+                        android:id="@+id/spin_brand"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        android:clickable="false"
+                        android:completionThreshold="1"
+                        android:focusable="false"
+                        android:gravity="center_vertical"
+                        android:hint="Brand"
+                        android:imeOptions="actionNext"
+                        android:inputType="none"
+                        android:maxLength="50"
+                        android:nextFocusDown="@+id/spin_category"
+                        android:paddingLeft="@dimen/_10sdp"
+                        android:paddingRight="@dimen/_5sdp"
+                        android:singleLine="true"
+                        android:textIsSelectable="true"
+                        android:textSize="@dimen/_7sdp"
+                        android:windowSoftInputMode="stateHidden" />
+
+               <!-- </android.support.design.widget.TextInputLayout>-->
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/modecardview"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/_2sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@android:color/white"
+                android:visibility="visible"
+                app:cardCornerRadius="@dimen/_3sdp"
+                app:cardElevation="@dimen/_2sdp">
+
+               <!-- <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white">-->
+
+
+                    <AutoCompleteTextView
+                        android:id="@+id/spin_offer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        android:clickable="false"
+                        android:completionThreshold="1"
+                        android:focusable="false"
+                        android:gravity="center_vertical"
+                        android:hint="Offer"
+                        android:imeOptions="actionNext"
+                        android:inputType="none"
+                        android:maxLength="50"
+                        android:nextFocusDown="@+id/edt_sub_source"
+                        android:paddingLeft="@dimen/_10sdp"
+                        android:paddingRight="@dimen/_5sdp"
+                        android:singleLine="true"
+                        android:textIsSelectable="true"
+                        android:textSize="@dimen/_7sdp"
+                        android:windowSoftInputMode="stateHidden" />
+
+               <!-- </android.support.design.widget.TextInputLayout>-->
+
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="#F7DCB4"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/_3sdp"
+                android:weightSum="3">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:gravity="left"
+                    android:text="PRODUCT"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="PTT"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_10sdp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TableLayout
+                        android:id="@+id/tl_productList"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/_2sdp">
+
+
+                        <TableRow
+                            android:id="@+id/tr_header"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:padding="@dimen/_3sdp"
+                            android:weightSum="3">
+
+
+                            <TextView
+                                style="@style/list_heading"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2"
+                                android:gravity="left"
+                                android:text="PRODUCT" />
+
+                            <TextView
+                                style="@style/list_heading"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="PTT" />
+
+
+                        </TableRow>
+
+                    </TableLayout>
+                </LinearLayout>
+
+            </ScrollView>
+
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_proceed"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_gravity="right"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:background="@drawable/proceed" />
+
+
+    </RelativeLayout>
+    <!-- </ScrollView>-->
+
+</LinearLayout>
+
+<!--
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,64 +283,68 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/include_header">
 
-        <TableLayout
-            android:id="@+id/tl_spinerlayout"
+        <TextView
+            android:id="@+id/txt_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:text="@string/stocksale"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/_14sdp"
+            android:textStyle="italic" />
+
+        <RadioGroup
+            android:id="@+id/radio_stock_sale"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_header"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <RadioButton
+                android:id="@+id/radio_stock"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/_50sdp"
+                android:layout_weight="1"
+                android:text="STOCK"
+                android:checked="true"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/_12sdp" />
+
+            <RadioButton
+                android:id="@+id/radio_sale"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/_50sdp"
+                android:layout_weight="1"
+                android:text="SALE"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/_12sdp" />
+
+
+        </RadioGroup>
+
+
+        <LinearLayout
+            android:id="@+id/stock_salelayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginLeft="@dimen/_5sdp"
             android:layout_marginRight="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_5sdp">
+            android:orientation="vertical"
+            android:layout_below="@+id/radio_stock_sale"
+            android:layout_above="@+id/btn_proceed">
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/txt_header"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:text="@string/stocksale"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    android:textStyle="italic"
-                    android:typeface="serif" />
-            </TableRow>
-
-            <RadioGroup
-                android:id="@+id/radio_stock_sale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <RadioButton
-                    android:id="@+id/radio_stock"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="@dimen/_50sdp"
-                    android:layout_weight="1"
-                    android:text="STOCK"
-                    android:checked="true"
-                    android:textColor="#FFFFFF"
-                    android:textSize="@dimen/_12sdp" />
-
-                <RadioButton
-                    android:id="@+id/radio_sale"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="@dimen/_50sdp"
-                    android:layout_weight="1"
-                    android:text="SALE"
-                    android:textColor="#FFFFFF"
-                    android:textSize="@dimen/_12sdp" />
-
-
-            </RadioGroup>
 
             <TableRow
                 android:layout_width="match_parent"
@@ -83,7 +354,7 @@
                     style="@style/label_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Category" />
+                    android:text="Brand" />
             </TableRow>
 
             <TableRow
@@ -92,7 +363,7 @@
                 android:gravity="center">
 
                 <Spinner
-                    android:id="@+id/sp_product_category"
+                    android:id="@+id/sp_brand"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_25sdp"
                     android:background="@drawable/dropdown"
@@ -107,7 +378,7 @@
                     style="@style/label_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Type" />
+                    android:text="Offer" />
             </TableRow>
 
             <TableRow
@@ -115,50 +386,12 @@
                 android:layout_height="wrap_content">
 
                 <Spinner
-                    android:id="@+id/sp_product_type"
+                    android:id="@+id/sp_offer"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_25sdp"
                     android:background="@drawable/dropdown"
                     android:prompt="@string/select_type" />
             </TableRow>
-
-           <!-- <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/txt_product_mode"
-                    style="@style/label_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Mode" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center">
-
-                <Spinner
-                    android:id="@+id/sp_product_mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_25sdp"
-                    android:background="@drawable/dropdown"
-                    android:textAlignment="center" />
-            </TableRow>-->
-
-        </TableLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_marginRight="@dimen/_5sdp"
-            android:layout_below="@+id/tl_spinerlayout"
-            android:layout_above="@+id/btn_proceed">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -214,4 +447,5 @@
     </RelativeLayout>
 
 
-</RelativeLayout>
+</RelativeLayout>-->
+
