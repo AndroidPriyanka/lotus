@@ -52,7 +52,7 @@ public class StockSaleActivityForDubai extends Activity implements View.OnClickL
     RadioGroup radio_stock_sale;
     RadioButton radio_stock, radio_sale;
     LinearLayout stock_salelayout;
-    String username;
+    String username,bdename,outletcode;
     boolean stock = false, sale = false;
     Dbcon db;
     ArrayList<String> productBrand;
@@ -98,9 +98,11 @@ public class StockSaleActivityForDubai extends Activity implements View.OnClickL
         radio_sale = (RadioButton) findViewById(R.id.radio_sale);
 
         username = sp.getString("username", "");
+        outletcode = sp.getString("FLRCode", "");
+        bdename = sp.getString("BDEusername", "");
         Log.v("", "username==" + username);
 
-        tv_h_username.setText(username);
+        tv_h_username.setText(bdename);
 
         db = new Dbcon(this);
         db.open();
@@ -312,7 +314,7 @@ public class StockSaleActivityForDubai extends Activity implements View.OnClickL
                         if (sale) {
                             tl_productList.addView(tr_header);
                             //getproductDetailsforSale(offername,subcategoryname,categoryname,brandname);
-                            getallproductsforsale(brandname, offername);
+                            getallproductsforsale(brandname, offername,outletcode);
 
                         } else {
                             tl_productList.removeAllViews();
@@ -520,10 +522,10 @@ public class StockSaleActivityForDubai extends Activity implements View.OnClickL
 
     }
 
-    public void getallproductsforsale(String selected_brand, String selected_offer) {
+    public void getallproductsforsale(String selected_brand, String selected_offer ,String flrcode) {
         productDetailsArray.clear();
         db.open();
-        Cursor cursor = db.fetchAllproductslistforstocktable(selected_brand, selected_offer);
+        Cursor cursor = db.fetchAllproductslistforstocktable(selected_brand, selected_offer, flrcode);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
 

@@ -71,7 +71,7 @@ public class StockAllActivity extends Activity {
     private static SpannableStringBuilder ssbuilder;
     String rt_stk1 = "0";
     TextView tv_h_username;// -------
-    String username, role, outletcode;
+    String username, role, outletcode,bdename;
     SharedPreferences shp;
     SharedPreferences.Editor shpeditor;
     static Context context;
@@ -115,6 +115,7 @@ public class StockAllActivity extends Activity {
 
         username = shp.getString("username", "");
         role = shp.getString("Role", "");
+        bdename = shp.getString("BDEusername", "");
         outletcode = shp.getString("FLRCode", "");
 
         if (role.equalsIgnoreCase("DUB")) {
@@ -145,7 +146,7 @@ public class StockAllActivity extends Activity {
         tv_h_username = (TextView) findViewById(R.id.tv_h_username);
 
 
-        tv_h_username.setText(username);
+        tv_h_username.setText(bdename);
 
         btn_back.setOnClickListener(new OnClickListener() {
 

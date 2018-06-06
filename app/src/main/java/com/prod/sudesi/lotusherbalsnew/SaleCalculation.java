@@ -76,7 +76,7 @@ public class SaleCalculation extends Activity {
     private static SpannableStringBuilder ssbuilder;
 
     TextView tv_h_username;// -------
-    String username,FLRCode,role;
+    String username,FLRCode,role,bdename;
     SharedPreferences shp;
     SharedPreferences.Editor shpeditor;
     static Context context;
@@ -122,6 +122,7 @@ public class SaleCalculation extends Activity {
         username = shp.getString("username", "");
         FLRCode = shp.getString("FLRCode","");
         role = shp.getString("Role","");
+        bdename = shp.getString("BDEusername", "");
 
         Intent intent = getIntent();
 
@@ -146,7 +147,7 @@ public class SaleCalculation extends Activity {
 
         tv_h_username = (TextView) findViewById(R.id.tv_h_username);
 
-        tv_h_username.setText(username);
+        tv_h_username.setText(bdename);
 
         // ----------------------------
         btn_save.setOnClickListener(new OnClickListener() {

@@ -122,8 +122,6 @@
 
         <activity android:name="com.prod.sudesi.lotusherbalsnew.OutletWiseSaleActivity" />
 
-        <activity android:name="com.prod.sudesi.lotusherbalsnew.StockAllActivityForDubai" />
-
         <activity
             android:name="com.prod.sudesi.lotusherbalsnew.OutletWiseSalesCumulativeActivity"
             android:screenOrientation="landscape" />
