@@ -956,6 +956,28 @@ public class Dbcon {
 
     }
 
+    public Cursor getReportforStockDubai(String outletcode) {
+        // TODO Auto-generated method stub
+
+        Log.e("", "checkrrr1");
+
+        String selectquery = "SELECT Customers.id, Orders.CategoryId ,Orders.db_id, Orders.EANCode, Orders.ProductCategory ," +
+                "Orders.ProductType ,Orders.ProductName ,Orders.Size ,Orders.MRP,Customers.emp_id, Customers.opening_stock ," +
+                "Customers.stock_received,Customers.stock_in_hand,Customers.close_bal,Customers.return_saleable," +
+                "Customers.return_non_saleable,Customers.sold_stock ,Customers.total_gross_amount,Customers.total_net_amount," +
+                "Customers.discount,Customers.savedServer,Customers. insert_date ,Customers.shadeNo ,Customers.FLRCode FROM product_master Orders," +
+                "stock Customers where Orders.db_id=Customers.db_id and Customers.FLRCode = '" + outletcode + "' order by Orders.order_flag";  // new join query with Product Master table 11.05.2015//04.07.2015
+
+
+        Cursor cursor = database.rawQuery(selectquery, null);
+
+        Log.e("", "checkrrr2");
+
+
+        return cursor;
+
+    }
+
 	/*public Cursor getReportforSale( ) {
 		// TODO Auto-generated method stub
 

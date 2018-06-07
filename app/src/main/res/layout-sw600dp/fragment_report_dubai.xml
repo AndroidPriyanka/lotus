@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <include layout="@layout/report_include_dubai" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_1sdp"
+        android:layout_marginLeft="@dimen/_150sdp"
+        android:layout_marginRight="@dimen/_150sdp"
+        android:layout_marginTop="@dimen/_1sdp"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/outletcardview"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_32sdp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/_1sdp"
+            android:background="@android:color/white"
+            android:visibility="visible"
+            app:cardCornerRadius="@dimen/_3sdp"
+            app:cardElevation="@dimen/_2sdp">
+
+         <!--   <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white">
+-->
+
+                <AutoCompleteTextView
+                    android:id="@+id/spin_outletname"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:completionThreshold="1"
+                    android:gravity="center_vertical"
+                    android:hint="Outlet Name"
+                    android:imeOptions="actionNext"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:windowSoftInputMode="stateHidden"
+                    android:inputType="none"
+                    android:textIsSelectable="true"
+                    android:maxLength="50"
+                    android:nextFocusDown="@+id/edt_sub_source"
+                    android:paddingLeft="@dimen/_10sdp"
+                    android:paddingRight="@dimen/_5sdp"
+                    android:singleLine="true"
+                    android:textSize="@dimen/_7sdp"
+                    />
+
+          <!--  </android.support.design.widget.TextInputLayout>-->
+
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+    <HorizontalScrollView
+        android:id="@+id/horizantal_scrollview_stock_report"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TableRow
+                android:id="@+id/tr_label_stock"
+                android:layout_width="1760dp"
+                android:layout_height="wrap_content"
+                android:background="@layout/tableborder_stock"
+                android:gravity="center"
+                android:visibility="visible"
+                android:weightSum="100">
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    android:text="Id" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    android:text="Cat" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+
+
+                    android:gravity="center"
+                    android:text="Type" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="525dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+
+
+                    android:gravity="center"
+                    android:text="Product" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:text="Size" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:text="MRP" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:text="Op-Bal" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:text="Stk recvd" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:text="Rtn-From Cust" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:text="Rtn to Company" />
+
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:text="Stk in hand" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:text="Sold" />
+
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:text="Cl-Bal" />
+
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:text="Total" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:text="Dis" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:text="Nett" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Status" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Outlet" />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_label_tester"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@layout/tableborder_stock"
+                android:gravity="center"
+                android:visibility="gone"
+                android:weightSum="100">
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    android:text="Cat" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+
+
+                    android:gravity="center"
+                    android:text="Type" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+
+
+                    android:gravity="center"
+                    android:text="Product" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:text="Size" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:text="Status" />
+
+
+            </TableRow>
+
+            <ListView
+                android:id="@+id/stock_list"
+                android:layout_width="1760dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:divider="@color/gray"
+                android:dividerHeight="1dp"></ListView>
+
+            <ListView
+                android:id="@+id/testerlist"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:divider="@color/gray"
+                android:visibility="gone"
+                android:dividerHeight="1dp"></ListView>
+
+            <TableRow
+                android:id="@+id/tr_label_attend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@layout/tableborder_stock"
+                android:gravity="center"
+                android:visibility="gone"
+                android:weightSum="100">
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Date" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+
+                    android:gravity="center"
+                    android:text="Attendance" />
+
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+
+                    android:gravity="center"
+                    android:text="Absent Type" />
+
+            </TableRow>
+
+            <ListView
+                android:id="@+id/attendancelist"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:divider="@color/gray"
+                android:dividerHeight="1dp"></ListView>
+
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
+</LinearLayout>

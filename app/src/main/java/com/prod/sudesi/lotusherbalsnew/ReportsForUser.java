@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -25,6 +26,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -35,7 +38,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.prod.sudesi.lotusherbalsnew.Models.OutletModel;
 import com.prod.sudesi.lotusherbalsnew.adapter.ReportAdapter;
 import com.prod.sudesi.lotusherbalsnew.adapter.ReportAttendance;
 import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
@@ -81,10 +86,15 @@ public class ReportsForUser extends Activity {
 
     TextView tv_h_username;
     Button btn_home, btn_logout;
+    AutoCompleteTextView sp_outletName;
+    CardView outletcardview;
     String username;
-    String displayCategory;
+    String displayCategory, role, flotername,outletstring,outletName,outletCode;
 
     ShowReportofAttendance report_attendance;
+    private ArrayList<OutletModel> outletDetailsArraylist;
+    OutletModel outletModel;
+    String[] strOutletArray = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,36 +103,118 @@ public class ReportsForUser extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
-
-		/*
+        context = ReportsForUser.this;
+        /*
          * public onCreateView(LayoutInflater inflater, ViewGroup container,
-		 * Bundle savedInstanceState) {
-		 */
+         * Bundle savedInstanceState) {
+         */
         // TODO Auto-generated method stub
         // return super.onCreateView(inflater, container, savedInstanceState);
 
         // View view = inflater.inflate(R.layout.fragment_report, null);
         // context = getActivity().getApplicationContext();
+        shp = context.getSharedPreferences("Lotus", context.MODE_PRIVATE);
+        shpeditor = shp.edit();
+        db = new Dbcon(this);
+        role = shp.getString("Role", "");
+        flotername = shp.getString("FLRCode", "");
+        username = shp.getString("username", "");
+        if (role.equalsIgnoreCase("DUB")) {
+            setContentView(R.layout.fragment_report_dubai);
+            sp_outletName=(AutoCompleteTextView)findViewById(R.id.spin_outletname);
+            outletcardview=(CardView) findViewById(R.id.outletcardview);
+        } else {
+            setContentView(R.layout.fragment_report);
+        }
 
-        setContentView(R.layout.fragment_report);
+        fetchOutletDetails();
+        if (outletDetailsArraylist.size() > 0) {
 
+            strOutletArray = new String[outletDetailsArraylist.size()];
+            for (int i = 0; i < outletDetailsArraylist.size(); i++) {
+                strOutletArray[i] = outletDetailsArraylist.get(i).getOutletname();
+            }
+        }
+        if (outletDetailsArraylist != null && outletDetailsArraylist.size() > 0) {
+            ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strOutletArray) {
+                @Override
+                public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                    View v = null;
+                    // If this is the initial dummy entry, make it hidden
+                    if (position == 0) {
+                        TextView tv = new TextView(getContext());
+                        tv.setHeight(0);
+                        tv.setVisibility(View.GONE);
+                        v = tv;
+                    } else {
+                        // Pass convertView as null to prevent reuse of special case views
+                        v = super.getDropDownView(position, null, parent);
+                    }
+                    // Hide scroll bar because it appears sometimes unnecessarily, this does not prevent scrolling
+                    parent.setVerticalScrollBarEnabled(false);
+                    return v;
+                }
+            };
+
+            adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            sp_outletName.setAdapter(adapter1);
+        }
+
+        sp_outletName.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                sp_outletName.showDropDown();
+                return false;
+            }
+        });
+
+        sp_outletName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if (strOutletArray != null && strOutletArray.length > 0) {
+                    reportlist.clear();
+                    outletstring = parent.getItemAtPosition(position).toString();
+                    String text = null,outletcode;
+                    for (int i = 0; i < outletDetailsArraylist.size(); i++) {
+                        text = outletDetailsArraylist.get(i).getOutletname();
+                        outletcode = outletDetailsArraylist.get(i).getBACodeOutlet();
+                        if (text.equalsIgnoreCase(outletstring)) {
+                            outletName = text;
+                            outletCode = outletcode;
+                        }
+                    }
+
+                    if (text != null && text.length() > 0) {
+                            new ShowReportofStock().execute();
+
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Please Select Outlet", Toast.LENGTH_SHORT).show();
+                    }
+
+
+                }
+            }
+        });
         //////////Crash Report
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
-
+        if (!role.equalsIgnoreCase("DUB")) {
+            rb_t = (RadioButton) findViewById(R.id.rb_tester);
+            rg_lhm_choice = (RadioGroup) findViewById(R.id.rg_lhm_choice);
+        }
         rb_s = (RadioButton) findViewById(R.id.rb_stock);
-        rb_t = (RadioButton) findViewById(R.id.rb_tester);
+        //
         rb_attendance = (RadioButton) findViewById(R.id.rb_attendance);
-        rg_lhm_choice = (RadioGroup) findViewById(R.id.rg_lhm_choice);
+        //
 
-        db = new Dbcon(this);
+
         mProgress = new ProgressDialog(this);
 
-        context = ReportsForUser.this;
+
         //------------------
 
-        shp = context.getSharedPreferences("Lotus", context.MODE_PRIVATE);
-        shpeditor = shp.edit();
 
         table_row_stock = (TableRow) findViewById(R.id.tr_label_stock);
         table_row_tester = (TableRow) findViewById(R.id.tr_label_tester);
@@ -131,7 +223,7 @@ public class ReportsForUser extends Activity {
 
         btn_home = (Button) findViewById(R.id.btn_home);
         btn_logout = (Button) findViewById(R.id.btn_logout);
-        username = shp.getString("username", "");
+
         //tv_h_username.setText(username);
 
         btn_logout.setOnClickListener(new OnClickListener() {
@@ -183,103 +275,148 @@ public class ReportsForUser extends Activity {
         listview = (ListView) findViewById(R.id.stock_list);
         listview_t = (ListView) findViewById(R.id.testerlist);
         attendancelist = (ListView) findViewById(R.id.attendancelist);
-
-        rb_s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                // TODO Auto-generated method stub
-                if (rb_s.isChecked()) {
-
-                    rg_lhm_choice.setVisibility(View.VISIBLE);
-                    rg_lhm_choice.clearCheck();
-                    table_row_attend.setVisibility(View.GONE);
-                    attendancelist.setVisibility(View.GONE);
-                    rb_attendance.setChecked(false);
+        if (!role.equalsIgnoreCase("DUB")) {
+            rb_s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView,
+                                             boolean isChecked) {
+                    // TODO Auto-generated method stub
+                    if (rb_s.isChecked()) {
+
+                        rg_lhm_choice.setVisibility(View.VISIBLE);
+                        rg_lhm_choice.clearCheck();
+                        table_row_attend.setVisibility(View.GONE);
+                        attendancelist.setVisibility(View.GONE);
+                        rb_attendance.setChecked(false);
+
+
+                    }
                 }
-            }
-        });
+            });
+        }else {
+            rb_s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-        rb_t.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO Auto-generated method stub
-                if (rb_t.isChecked()) {
-                    rg_lhm_choice.setVisibility(View.GONE);
-                    reportlist1.clear();
-                    rb_s.setChecked(false);
-                    table_row_tester.setVisibility(View.VISIBLE);
-                    table_row_stock.setVisibility(View.GONE);
-                    listview.setVisibility(View.GONE);
-                    listview_t.setVisibility(View.VISIBLE);
-                    table_row_attend.setVisibility(View.GONE);
-                    attendancelist.setVisibility(View.GONE);
-                    rb_attendance.setChecked(false);
-                    new ShowReportofTester().execute();
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView,
+                                             boolean isChecked) {
+                    // TODO Auto-generated method stub
+                    if (rb_s.isChecked()) {
+                        table_row_stock.setVisibility(View.VISIBLE);
+                        table_row_attend.setVisibility(View.GONE);
+                        attendancelist.setVisibility(View.GONE);
+                        rb_attendance.setChecked(false);
+                        outletcardview.setVisibility(View.VISIBLE);
+
+
+                    }
                 }
-            }
-        });
+            });
+        }
+        if (!role.equalsIgnoreCase("DUB")) {
+            rb_t.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-        rg_lhm_choice.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    // TODO Auto-generated method stub
+                    if (rb_t.isChecked()) {
+                        rg_lhm_choice.setVisibility(View.GONE);
+                        reportlist1.clear();
+                        rb_s.setChecked(false);
+                        table_row_tester.setVisibility(View.VISIBLE);
+                        table_row_stock.setVisibility(View.GONE);
+                        listview.setVisibility(View.GONE);
+                        listview_t.setVisibility(View.VISIBLE);
+                        table_row_attend.setVisibility(View.GONE);
+                        attendancelist.setVisibility(View.GONE);
+                        rb_attendance.setChecked(false);
+                        new ShowReportofTester().execute();
+                    }
+                }
+            });
 
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                // TODO Auto-generated method stub
-                RadioButton rb = (RadioButton) findViewById(checkedId);
-                rb_t.setChecked(false);
-                table_row_tester.setVisibility(View.GONE);
-                table_row_stock.setVisibility(View.VISIBLE);
-                listview_t.setVisibility(View.GONE);
-                reportlist.clear();
-                if (rb != null) {
-                    String s = rb.getText().toString();
+            rg_lhm_choice.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
-                    if (s.equalsIgnoreCase("LH")) {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    // TODO Auto-generated method stub
+                    RadioButton rb = (RadioButton) findViewById(checkedId);
+                    rb_t.setChecked(false);
+                    table_row_tester.setVisibility(View.GONE);
+                    table_row_stock.setVisibility(View.VISIBLE);
+                    listview_t.setVisibility(View.GONE);
+                    reportlist.clear();
+                    if (rb != null) {
+                        String s = rb.getText().toString();
 
-                        displayCategory = "SKIN";
-                        new ShowReportofStock().execute();
-                    } else if (s.equalsIgnoreCase("LHM")) {
+                        if (s.equalsIgnoreCase("LH")) {
 
-                        displayCategory = "COLOR";
-                        new ShowReportofStock().execute();
+                            displayCategory = "SKIN";
+                            new ShowReportofStock().execute();
+                        } else if (s.equalsIgnoreCase("LHM")) {
+
+                            displayCategory = "COLOR";
+                            new ShowReportofStock().execute();
+                        }
+
                     }
 
                 }
+            });
+        }
+        if (!role.equalsIgnoreCase("DUB")) {
+            rb_attendance.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-            }
-        });
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    // TODO Auto-generated method stub
 
+                    if (isChecked) {
+                        table_row_stock.setVisibility(View.GONE);
+                        table_row_tester.setVisibility(View.GONE);
+                        table_row_attend.setVisibility(View.VISIBLE);
+                        listview.setVisibility(View.GONE);
+                        listview_t.setVisibility(View.GONE);
+                        attendancelist.setVisibility(View.VISIBLE);
+                        rb_s.setChecked(false);
+                        rb_t.setChecked(false);
+                        rg_lhm_choice.setVisibility(View.GONE);
+                        reportlist1.clear();
+                        report_attendance = new ShowReportofAttendance();
+                        report_attendance.execute();
+                    } else {
 
-        rb_attendance.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO Auto-generated method stub
-
-                if (isChecked) {
-                    table_row_stock.setVisibility(View.GONE);
-                    table_row_tester.setVisibility(View.GONE);
-                    table_row_attend.setVisibility(View.VISIBLE);
-                    listview.setVisibility(View.GONE);
-                    listview_t.setVisibility(View.GONE);
-                    attendancelist.setVisibility(View.VISIBLE);
-                    rb_s.setChecked(false);
-                    rb_t.setChecked(false);
-                    rg_lhm_choice.setVisibility(View.GONE);
-                    reportlist1.clear();
-                    report_attendance = new ShowReportofAttendance();
-                    report_attendance.execute();
-                } else {
-
-                    attendancelist.setVisibility(View.GONE);
+                        attendancelist.setVisibility(View.GONE);
+                    }
                 }
-            }
-        });
+            });
+        }else {
+            rb_attendance.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    // TODO Auto-generated method stub
+
+                    if (isChecked) {
+                        sp_outletName.setText("");
+                        table_row_stock.setVisibility(View.GONE);
+                        table_row_attend.setVisibility(View.VISIBLE);
+                        listview.setVisibility(View.GONE);
+                        outletcardview.setVisibility(View.GONE);
+                        attendancelist.setVisibility(View.VISIBLE);
+                        rb_s.setChecked(false);
+                        reportlist1.clear();
+                        report_attendance = new ShowReportofAttendance();
+                        report_attendance.execute();
+                    } else {
+
+                        attendancelist.setVisibility(View.GONE);
+                    }
+                }
+            });
+        }
 
         listview.setOnItemClickListener(new OnItemClickListener() {
 
@@ -365,6 +502,34 @@ public class ReportsForUser extends Activity {
         // return view;
     }
 
+    private void fetchOutletDetails() {
+        try {
+            outletDetailsArraylist = new ArrayList<OutletModel>();
+            Cursor cursor;
+            db.open();
+            cursor = db.getdata_outlet(username);
+
+            if (cursor != null && cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+
+                    outletModel = new OutletModel();
+                    outletModel.setBACodeOutlet(cursor.getString(cursor.getColumnIndex("baCodeOutlet")));
+                    outletModel.setBAnameOutlet(cursor.getString(cursor.getColumnIndex("banameOutlet")));
+                    outletModel.setOutletname(cursor.getString(cursor.getColumnIndex("outletname")));
+                    outletModel.setFlotername(cursor.getString(cursor.getColumnIndex("flotername")));
+
+                    outletDetailsArraylist.add(outletModel);
+                } while (cursor.moveToNext());
+                cursor.close();
+            }
+            db.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public class ShowReportofStock extends AsyncTask<String, String, ArrayList<HashMap<String, String>>> {
 
         String flag;
@@ -383,8 +548,11 @@ public class ReportsForUser extends Activity {
             // TODO Auto-generated method stub
             try {
                 db.open();
-                cursor_stock = db.getReportforStock(displayCategory);
-
+                if (!role.equalsIgnoreCase("DUB")) {
+                    cursor_stock = db.getReportforStock(displayCategory);
+                }else {
+                    cursor_stock=db.getReportforStockDubai(outletCode);
+                }
                 if (cursor_stock != null && cursor_stock.moveToFirst()) {
                     cursor_stock.moveToFirst();
 
