@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tableRow3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="2">
+
+    <TextView
+        android:id="@+id/txtdate1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_margin="@dimen/_1sdp"
+        android:layout_weight="0.6"
+        android:background="#ffffff"
+        android:gravity="center"
+        android:text="Date"
+        android:textSize="@dimen/_10sdp" />
+
+    <TableLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.4"
+        android:stretchColumns="*">
+
+        <TableRow
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txtvalue"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_margin="@dimen/_1sdp"
+                android:background="#ffffff"
+                android:gravity="center"
+                android:text="Sale Value"
+                android:textSize="@dimen/_10sdp" />
+
+            <TextView
+                android:id="@+id/txtunit"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_margin="@dimen/_1sdp"
+                android:background="#ffffff"
+                android:gravity="center"
+                android:text="Sale Unit"
+                android:textSize="@dimen/_10sdp" />
+
+        </TableRow>
+
+    </TableLayout>
+
+</TableRow>

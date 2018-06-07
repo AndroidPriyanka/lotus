@@ -274,16 +274,16 @@ public class DashboardNewActivity extends Activity {
 
                                 } else {
                                     startActivity(new Intent(getApplicationContext(),
-                                            OutletWiseSaleActivity.class));
+                                            StockNewActivity.class));
                                 }
                             } else {
                                 startActivity(new Intent(getApplicationContext(),
-                                        OutletWiseSaleActivity.class));
+                                        StockNewActivity.class));
                             }
 
                         } else {
                             startActivity(new Intent(getApplicationContext(),
-                                    OutletWiseSaleActivity.class));
+                                    StockNewActivity.class));
                         }
                     } else {
                         Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
