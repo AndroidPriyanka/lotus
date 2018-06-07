@@ -962,7 +962,7 @@ public class Dbcon {
         Log.e("", "checkrrr1");
 
         String selectquery = "SELECT Customers.id, Orders.CategoryId ,Orders.db_id, Orders.EANCode, Orders.ProductCategory ," +
-                "Orders.ProductType ,Orders.ProductName ,Orders.Size ,Orders.MRP,Customers.emp_id, Customers.opening_stock ," +
+                "Orders.SingleOffer ,Orders.ProductName ,Orders.Size ,Orders.MRP,Customers.emp_id, Customers.opening_stock ," +
                 "Customers.stock_received,Customers.stock_in_hand,Customers.close_bal,Customers.return_saleable," +
                 "Customers.return_non_saleable,Customers.sold_stock ,Customers.total_gross_amount,Customers.total_net_amount," +
                 "Customers.discount,Customers.savedServer,Customers. insert_date ,Customers.shadeNo ,Customers.FLRCode FROM product_master Orders," +

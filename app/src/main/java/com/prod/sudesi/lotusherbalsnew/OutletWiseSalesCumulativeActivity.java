@@ -20,8 +20,16 @@ import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
 import com.prod.sudesi.lotusherbalsnew.libs.LotusWebservice;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 public class OutletWiseSalesCumulativeActivity extends Activity {
 
@@ -43,6 +51,11 @@ public class OutletWiseSalesCumulativeActivity extends Activity {
     TextView tv_h_username;
     Button btn_home, btn_logout;
     String username, bdename;
+
+    String str_Month;
+    String year;
+    Date startdate, enddate;
+    ArrayList<String> dates_array;
 
     ConnectionDetector cd;
 
@@ -66,11 +79,11 @@ public class OutletWiseSalesCumulativeActivity extends Activity {
         shp = context.getSharedPreferences("Lotus", MODE_PRIVATE);
         shpeditor = shp.edit();
 
-        listView_outletwisesales_report = findViewById(R.id.listView_outletwisesales_report);
+        listView_outletwisesales_report = (ListView)findViewById(R.id.listView_outletwisesales_report);
 
-        tv_h_username = findViewById(R.id.tv_h_username);
-        btn_home = findViewById(R.id.btn_home);
-        btn_logout = findViewById(R.id.btn_logout);
+        tv_h_username = (TextView)findViewById(R.id.tv_h_username);
+        btn_home = (Button)findViewById(R.id.btn_home);
+        btn_logout = (Button)findViewById(R.id.btn_logout);
 
         username = shp.getString("username", "");
         Log.v("", "username==" + username);
@@ -78,6 +91,13 @@ public class OutletWiseSalesCumulativeActivity extends Activity {
         bdename = shp.getString("BDEusername", "");
 
         tv_h_username.setText(bdename);
+
+        Intent intent = getIntent();
+        str_Month = intent.getStringExtra("month");
+        String y[] = intent.getStringExtra("year").split("-");
+//		str_year = intent.getStringExtra("");
+        Log.e("str_Month", str_Month);
+        year = y[0];
 
         btn_logout.setOnClickListener(new View.OnClickListener() {
 
@@ -104,11 +124,110 @@ public class OutletWiseSalesCumulativeActivity extends Activity {
         });
         //---------------------
 
+        System.out.println("   startdate--" + getStartEnd(str_Month, year)[0]);
+        System.out.println("   enddate--" + getStartEnd(str_Month, year)[1]);
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        try {
+
+
+            startdate = format.parse(getStartEnd(str_Month, year)[0]);
+            enddate = format.parse(getStartEnd(str_Month, year)[1]);
+
+            System.out.println("   startdate1--" + startdate);
+            System.out.println("   enddate1--" + enddate);
+
+            List<Date> dates = getDaysBetweenDates(startdate, enddate);
+
+            Log.e("dates", dates.toString());
+
+            dates_array = new ArrayList<String>();
+
+            for (int i = 0; i < dates.size(); i++) {
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+                String reportDate = df.format(dates.get(i));
+                Log.d("Date is", " " + reportDate);
+                dates_array.add(reportDate);
+
+                // Print what date is today!
+                System.out.println("Report Date: " + reportDate);
+            }
+
+
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        /*try {
+            new TotalOutletSale().execute();
+        }catch(Exception e){
+            e.printStackTrace();
+        }*/
+
     }
 
     private void loadReports() {
         outletWiseSalesAdapter = new OutletWiseSalesAdapter(OutletWiseSalesCumulativeActivity.this, todaymessagelist);
         listView_outletwisesales_report.setAdapter(outletWiseSalesAdapter);// add custom adapter to
         // listview
+    }
+
+    @SuppressLint("WrongConstant")
+    public static List<Date> getDaysBetweenDates(Date startdate, Date enddate) {
+        List<Date> dates = new ArrayList<Date>();
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(startdate);
+
+        while (calendar.getTime().before(enddate) || calendar.getTime().equals(enddate)) {
+            Date result = calendar.getTime();
+            dates.add(result);
+            calendar.add(Calendar.DATE, 1);
+        }
+        return dates;
+    }
+
+    public String[] getStartEnd(String Month, String year) {
+        String startend[] = new String[2];
+
+        if (Month.equalsIgnoreCase("January")) {
+            startend[0] = year + "-01-01";
+            startend[1] = year + "-01-31";
+        } else if (Month.equalsIgnoreCase("February")) {
+            startend[0] = year + "-02-01";
+            startend[1] = year + "-02-28";
+        } else if (Month.equalsIgnoreCase("March")) {
+            startend[0] = year + "-03-01";
+            startend[1] = year + "-03-31";
+        } else if (Month.equalsIgnoreCase("April")) {
+            startend[0] = year + "-04-01";
+            startend[1] = year + "-04-30";
+        } else if (Month.equalsIgnoreCase("May")) {
+            startend[0] = year + "-05-01";
+            startend[1] = year + "-05-31";
+        } else if (Month.equalsIgnoreCase("June")) {
+            startend[0] = year + "-06-01";
+            startend[1] = year + "-06-30";
+        } else if (Month.equalsIgnoreCase("July")) {
+            startend[0] = year + "-07-01";
+            startend[1] = year + "-07-31";
+        } else if (Month.equalsIgnoreCase("August")) {
+            startend[0] = year + "-08-01";
+            startend[1] = year + "-08-31";
+        } else if (Month.equalsIgnoreCase("September")) {
+            startend[0] = year + "-09-01";
+            startend[1] = year + "-09-30";
+        } else if (Month.equalsIgnoreCase("October")) {
+            startend[0] = year + "-10-01";
+            startend[1] = year + "-10-31";
+        } else if (Month.equalsIgnoreCase("November")) {
+            startend[0] = year + "-11-01";
+            startend[1] = year + "-11-30";
+        } else if (Month.equalsIgnoreCase("December")) {
+            startend[0] = year + "-12-01";
+            startend[1] = year + "-12-31";
+        }
+
+        return startend;
     }
 }

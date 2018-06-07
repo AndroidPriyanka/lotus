@@ -80,6 +80,9 @@ public class Dbhelper extends SQLiteOpenHelper {
     private static final String TABLE_ALTER_ATTENDANCE2 = "alter table attendance add column logout_date text;";
 
     private static final String TABLE_CREATE_FLOTEROUTLET = "create table floteroutlet(id integer primary key autoincrement,baCodeOutlet text,banameOutlet text,outletname text,flotername text);";
+    private static final String TABLE_DASHBOARD_DETAILS_DUBAI = "create table dashboard_details_dubai(id integer primary key autoincrement, BOC text,AndroidCreatedDate text,SoldQty text,Soldvalue text)";
+
+
 
     private static Dbhelper dbInstance = null;
     private static SQLiteDatabase database;
@@ -183,6 +186,7 @@ public class Dbhelper extends SQLiteOpenHelper {
             database.execSQL(TABLE_CREATE_STOCK1);
             database.execSQL(TABLE_CREATE_STOCK2);
             database.execSQL(TABLE_PRODUCT_MASTER1);
+            database.execSQL(TABLE_DASHBOARD_DETAILS_DUBAI);
         }
 
     }

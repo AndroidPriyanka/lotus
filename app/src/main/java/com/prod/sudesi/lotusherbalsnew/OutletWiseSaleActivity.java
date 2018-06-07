@@ -68,6 +68,9 @@ public class OutletWiseSaleActivity extends Activity {
 
     String firstyear, sencondyear;
 
+    String CurrentYear,NextYear,PreviousYear;
+    int int_previous_year;
+
     //----------------
 
     @Override
@@ -104,6 +107,10 @@ public class OutletWiseSaleActivity extends Activity {
 
         tv_h_username.setText(bdename);
 
+        sp_month = (Spinner) findViewById(R.id.spin_month);
+        sp_year = (Spinner) findViewById(R.id.spin_year);
+
+
         btn_logout.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -128,108 +135,45 @@ public class OutletWiseSaleActivity extends Activity {
             }
         });
 
-        //--------------/---------
         try {
             current_year_n2 = shp.getString("current_year", "");
             int_current_year_n2 = Integer.parseInt(current_year_n2);
 
-            String comparedatewith = current_year_n2 + "-03-26";
-
-            current_server_date = shp.getString("todaydate", "");
-
-            Log.v("", "current_server_date=" + current_server_date);
-
-            Log.v("", "comparedatewith=" + comparedatewith);
-
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date date1 = null;
-            Date date2 = null;
-            try {
-                date1 = sdf.parse(current_server_date);
-                date2 = sdf.parse(comparedatewith);
-            } catch (ParseException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-            if (!current_year_n2.equalsIgnoreCase("") && date1.compareTo(date2) > 0) {
+            if (!current_year_n2.equalsIgnoreCase("")) {
 
                 int int_current_year_n22 = int_current_year_n2 + 1;
 
-                String current_year_n2 = String.valueOf(int_current_year_n22);
+                NextYear = String.valueOf(int_current_year_n22);
 
                 int_current_year_n1 = int_current_year_n22 - 1;
 
-                current_year_n1 = String.valueOf(int_current_year_n1);
+                CurrentYear = String.valueOf(int_current_year_n1);
 
-                int_previous_year_p1 = int_current_year_n1 - 1;
+                int_previous_year = int_current_year_n1 - 1;
 
-                previous_year_p1 = String.valueOf(int_previous_year_p1);
+                PreviousYear = String.valueOf(int_previous_year);
 
-                firstyear = current_year_n1 + "-" + current_year_n2;//---------
-
-                sencondyear = previous_year_p1 + "-" + current_year_n1;
-
-            } else {
-
-                int_current_year_n1 = int_current_year_n2 - 1;
-
-                current_year_n1 = String.valueOf(int_current_year_n1);
-
-                int_previous_year_p1 = int_current_year_n1 - 1;
-
-                previous_year_p1 = String.valueOf(int_previous_year_p1);
-
-                firstyear = current_year_n1 + "-" + current_year_n2;//---------
-
-                sencondyear = previous_year_p1 + "-" + current_year_n1;
             }
-
-            //-------------/----------
-            // ---------------------
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        //horizantalscrollviewforbamonthreport =(HorizontalScrollView)findViewById(R.id.horizantalview_for_bamonth_report);
-
-		/*horizantalscrollviewforbamonthreport.setOnTouchListener(new OnTouchListener() {
-
-			@SuppressLint("ClickableViewAccessibility")
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				// TODO Auto-generated method stub
-
-				int scrollX = v.getScrollX();
-				int scrollY = v.getScrollY();
-
-				horizantalscrollviewforbamonthreport.scrollTo(scrollX, scrollY);
-				return false;
-			}
-		});*/
-
-        sp_month = (Spinner) findViewById(R.id.spin_month);
-        sp_year = (Spinner) findViewById(R.id.spin_year);
-
         List<String> list_moth = new ArrayList<String>();
-        list_moth.add("Select");
-        list_moth.add("BOC1");
-        list_moth.add("BOC2");
-        list_moth.add("BOC3");
+        list_moth.add("January");
+        list_moth.add("February");
+        list_moth.add("March");
 
-        list_moth.add("BOC4");
-        list_moth.add("BOC5");
-        list_moth.add("BOC6");
+        list_moth.add("April");
+        list_moth.add("May");
+        list_moth.add("June");
 
-        list_moth.add("BOC7");
-        list_moth.add("BOC8");
-        list_moth.add("BOC9");
+        list_moth.add("July");
+        list_moth.add("August");
+        list_moth.add("September");
 
-        list_moth.add("BOC10");
-        list_moth.add("BOC11");
-        list_moth.add("BOC12");
+        list_moth.add("October");
+        list_moth.add("November");
+        list_moth.add("December");
 
         ArrayAdapter<String> adapter_month = new ArrayAdapter<String>(getApplicationContext(), R.layout.custom_sp_item, list_moth);
         adapter_month.setDropDownViewResource(R.layout.custom_spinner_dropdown_text);
@@ -237,9 +181,9 @@ public class OutletWiseSaleActivity extends Activity {
 
         List<String> list_year = new ArrayList<String>();
 
-        list_year.add("Select");
-        list_year.add(sencondyear);
-        list_year.add(firstyear);
+        list_year.add(PreviousYear);
+        list_year.add(CurrentYear);
+        list_year.add(NextYear);
 
         ArrayAdapter<String> adapter_year = new ArrayAdapter<String>(getApplicationContext(), R.layout.custom_sp_item, list_year);
         adapter_year.setDropDownViewResource(R.layout.custom_spinner_dropdown_text);

@@ -49,7 +49,7 @@ public class BocCumulativeDashboardActivity extends Activity {
     Dbcon dbcon;
     Button btn_home;
     TextView tv_h_username;
-    String username, bdename, role;
+    String username, bdename, role, outletcode;
     ArrayList<String> dates_array;
     ListView listView;
     private Context context;
@@ -84,6 +84,12 @@ public class BocCumulativeDashboardActivity extends Activity {
         context = getApplicationContext();
         shp = context.getSharedPreferences("Lotus", context.MODE_PRIVATE);
         shpeditor = shp.edit();
+
+        username = shp.getString("username", "");
+        bdename = shp.getString("BDEusername", "");
+        role = shp.getString("Role", "");
+        outletcode = shp.getString("FLRCode", "");
+
         db = new Dbcon(BocCumulativeDashboardActivity.this);
         cd = new ConnectionDetector(BocCumulativeDashboardActivity.this);
 
@@ -95,16 +101,25 @@ public class BocCumulativeDashboardActivity extends Activity {
         Intent intent = getIntent();
         str_BOC = intent.getStringExtra("month");
         String y[] = intent.getStringExtra("year").split("-");
+
 //		str_year = intent.getStringExtra("");
         Log.e("str_BOC", str_BOC);
-        year = y[0];
-        year1 = y[1];
+        if(role.equalsIgnoreCase("DUB")){
+            year = y[0];
 
-        txt_boc.setText(str_BOC);
-        txt_year.setText(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
-        username = shp.getString("username", "");
-        bdename = shp.getString("BDEusername", "");
-        role = shp.getString("Role", "");
+            txt_boc.setText(str_BOC);
+            txt_year.setText(year);
+        }else{
+            year = y[0];
+            year1 = y[1];
+
+            txt_boc.setText(str_BOC);
+            txt_year.setText(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+        }
+
+
+
+
         tv_h_username = (TextView) findViewById(R.id.tv_h_username);
         tv_h_username.setText(bdename);
 
@@ -129,132 +144,77 @@ public class BocCumulativeDashboardActivity extends Activity {
                 // DashboardNewActivity.class));
             }
         });
-        System.out.println("   startdate--" + getStartEnd(str_BOC, year, year1)[0]);
-        System.out.println("   enddate--" + getStartEnd(str_BOC, year, year1)[1]);
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        try {
+
+        if(role.equalsIgnoreCase("DUB")){
+            System.out.println("   startdate--" + getStartEndForDubai(str_BOC, year)[0]);
+            System.out.println("   enddate--" + getStartEndForDubai(str_BOC, year)[1]);
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            try {
+
+                startdate = format.parse(getStartEndForDubai(str_BOC, year)[0]);
+                enddate = format.parse(getStartEndForDubai(str_BOC, year)[1]);
+
+                System.out.println("   startdate1--" + startdate);
+                System.out.println("   enddate1--" + enddate);
+
+                List<Date> dates = getDaysBetweenDates(startdate, enddate);
+
+                Log.e("dates", dates.toString());
+
+                dates_array = new ArrayList<String>();
+
+                for (int i = 0; i < dates.size(); i++) {
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+                    String reportDate = df.format(dates.get(i));
+                    Log.d("Date is", " " + reportDate);
+                    dates_array.add(reportDate);
+
+                    // Print what date is today!
+                    System.out.println("Report Date: " + reportDate);
+                }
 
 
-            startdate = format.parse(getStartEnd(str_BOC, year, year1)[0]);
-            enddate = format.parse(getStartEnd(str_BOC, year, year1)[1]);
-
-            System.out.println("   startdate1--" + startdate);
-            System.out.println("   enddate1--" + enddate);
-
-            List<Date> dates = getDaysBetweenDates(startdate, enddate);
-
-            Log.e("dates", dates.toString());
-
-            dates_array = new ArrayList<String>();
-
-            for (int i = 0; i < dates.size(); i++) {
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-
-                String reportDate = df.format(dates.get(i));
-                Log.d("Date is", " " + reportDate);
-                dates_array.add(reportDate);
-
-                // Print what date is today!
-                System.out.println("Report Date: " + reportDate);
+            } catch (ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
+        }else {
+            System.out.println("   startdate--" + getStartEnd(str_BOC, year, year1)[0]);
+            System.out.println("   enddate--" + getStartEnd(str_BOC, year, year1)[1]);
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            try {
 
 
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+                startdate = format.parse(getStartEnd(str_BOC, year, year1)[0]);
+                enddate = format.parse(getStartEnd(str_BOC, year, year1)[1]);
+
+                System.out.println("   startdate1--" + startdate);
+                System.out.println("   enddate1--" + enddate);
+
+                List<Date> dates = getDaysBetweenDates(startdate, enddate);
+
+                Log.e("dates", dates.toString());
+
+                dates_array = new ArrayList<String>();
+
+                for (int i = 0; i < dates.size(); i++) {
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+                    String reportDate = df.format(dates.get(i));
+                    Log.d("Date is", " " + reportDate);
+                    dates_array.add(reportDate);
+
+                    // Print what date is today!
+                    System.out.println("Report Date: " + reportDate);
+                }
+
+
+            } catch (ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
-
-//        skin_array = new ArrayList<HashMap<String, String>>();
-//        for (int i = 0; i < dates_array.size(); i++) {
-//            Log.d("Date in for loop is", "" + dates_array.get(i));
-//            skin_array.add(dbcon.getCumulativeData(dates_array.get(i), "SKIN"));
-//        }
-//
-//        Log.e("skin_array", skin_array.toString());
-//        color_array = new ArrayList<HashMap<String, String>>();
-//        for (int i = 0; i < dates_array.size(); i++) {
-//            color_array.add(dbcon.getCumulativeData(dates_array.get(i), "COLOR"));
-//        }
-//        Log.e("color_array", color_array.toString());
-//        total_array = new ArrayList<HashMap<String, String>>();
-//        for (int i = 0; i < dates_array.size(); i++) {
-//            total_array.add(dbcon.getCumulativeData(dates_array.get(i), ""));
-//        }
-//        Log.e("total_array", total_array.toString());
-//        final_array = new ArrayList<HashMap<String, String>>();
-//
-//
-//        for (int i = 0; i < dates_array.size(); i++) {
-//            HashMap<String, String> map = new HashMap<String, String>();
-//            map.put("DATE", dates_array.get(i));
-//
-//            int skin_index = -1;
-//            for (int j = 0; j < skin_array.size(); j++) {
-//                if (skin_array.get(j).get("Date").equals(dates_array.get(i))) {
-//                    skin_index = j;
-//                    System.out.println("skin_index  " + skin_index);
-//                    break;
-//                } else {
-//                    skin_index = -1;
-//                }
-//
-//            }
-//
-//
-//            if (skin_index == -1) {
-//                map.put("LH_UNIT", "0");
-//                map.put("LH_VALUE", "0");
-//            } else {
-//                map.put("LH_UNIT", skin_array.get(skin_index).get("SaleUnit"));
-//                map.put("LH_VALUE", skin_array.get(skin_index).get("SaleValue"));
-//            }
-//
-//
-//            int color_index = -1;
-//            for (int j = 0; j < color_array.size(); j++) {
-//                if (color_array.get(j).get("Date").equals(dates_array.get(i))) {
-//                    color_index = j;
-//                    System.out.println("color_index  " + color_index);
-//                    break;
-//                } else {
-//                    color_index = -1;
-//                }
-//
-//            }
-//
-//
-//            if (color_index == -1) {
-//                map.put("LM_UNIT", "0");
-//                map.put("LM_VALUE", "0");
-//            } else {
-//                map.put("LM_UNIT", color_array.get(color_index).get("SaleUnit"));
-//                map.put("LM_VALUE", color_array.get(color_index).get("SaleValue"));
-//            }
-//
-//
-//            int total_index = -1;
-//            for (int j = 0; j < total_array.size(); j++) {
-//                if (total_array.get(j).get("Date").equals(dates_array.get(i))) {
-//                    total_index = j;
-//                    System.out.println("total_index  " + total_index);
-//                    break;
-//                } else {
-//                    total_index = -1;
-//                }
-//
-//            }
-//
-//            if (total_index == -1) {
-//                map.put("C_UNIT", "0");
-//                map.put("C_VALUE", "0");
-//            } else {
-//                map.put("C_UNIT", total_array.get(total_index).get("SaleUnit"));
-//                map.put("C_VALUE", total_array.get(total_index).get("SaleValue"));
-//            }
-//
-//            final_array.add(map);
-//
-//        }
 
 
         if (role.equalsIgnoreCase("DUB")) {
@@ -531,34 +491,31 @@ public class BocCumulativeDashboardActivity extends Activity {
                 if (cd.isConnectingToInternet()) {
                     db.open();
                     SoapObject resultsRequestSOAP = null;
-                    final String[] columns = new String[]{"BOC", "AndroidCreatedDate", "COLOR", "ColorSoldQty", "ColorSoldValue", "SKIN", "SkinSoldQty", "SkinSoldValue", "TOTAL", "TotalQty", "TotalValue"};
+                    final String[] columns = new String[]{"BOC", "AndroidCreatedDate", "SoldQty", "Soldvalue"};
 
                     DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-                    String startdate[] = getStartEnd(str_BOC, year, year1);
+                    String startdate[];
+                    if(role.equalsIgnoreCase("DUB")){
+                         startdate = getStartEndForDubai(str_BOC, year);
+                    }else{
+                         startdate = getStartEnd(str_BOC, year, year1);
+                    }
+
 
 //						if(Type_radio_button.equalsIgnoreCase("ALL")){
 
                     // resultsRequestSOAP = service.GetDashboradData(0,  FromDate_date,  ToDate_date,  username, Type_radio_button);
-                    resultsRequestSOAP = service.GetDashboradData("2", startdate[0], startdate[1], username, "ALL");
+                    resultsRequestSOAP = service.DubaiGetDashboardData(startdate[0], startdate[1], outletcode, username);
                     if (resultsRequestSOAP != null) {
                         for (int i = 0; i < resultsRequestSOAP.getPropertyCount(); i++) {
                             SoapObject getmessaage = (SoapObject) resultsRequestSOAP.getProperty(i);
                             HashMap<String, String> map = new HashMap<String, String>();
-                            map.put("DATE", dates_array.get(i));
+                            //map.put("DATE", dates_array.get(i));
 
-                            map.put("AndroidCreatedDate", String.valueOf(getmessaage.getProperty("AndroidCreatedDate")));
-                            map.put("SKIN", String.valueOf(getmessaage.getProperty("SKIN")));
-                            map.put("SkinSoldValue", String.valueOf(getmessaage.getProperty("SkinSoldValue")));
-                            map.put("SkinSoldQty", String.valueOf(getmessaage.getProperty("SkinSoldQty")));
-
-                            map.put("COLOR", String.valueOf(getmessaage.getProperty("COLOR")));
-                            map.put("ColorSoldValue", String.valueOf(getmessaage.getProperty("ColorSoldValue")));
-                            map.put("ColorSoldQty", String.valueOf(getmessaage.getProperty("ColorSoldQty")));
-
-                            map.put("TOTAL", String.valueOf(getmessaage.getProperty("TOTAL")));
-                            map.put("TotalValue", String.valueOf(getmessaage.getProperty("TotalValue")));
-                            map.put("TotalQty", String.valueOf(getmessaage.getProperty("TotalQty")));
+                            map.put("Datenew", String.valueOf(getmessaage.getProperty("Datenew")));
+                            map.put("SoldQty", String.valueOf(getmessaage.getProperty("SoldQty")));
+                            map.put("Soldvalue", String.valueOf(getmessaage.getProperty("Soldvalue")));
 
                             final_array.add(map);
                         }
@@ -568,36 +525,22 @@ public class BocCumulativeDashboardActivity extends Activity {
                         {
                             if (cursor != null && cursor.getCount() > 0) {
 
-                                db.deleteMulti("dashboard_details", "BOC=?", new String[]{str_BOC});
+                                db.deleteMulti("dashboard_details_dubai", "BOC=?", new String[]{str_BOC});
                                 for (int i = 0; i < final_array.size(); i++) {
                                     String[] values = new String[]{str_BOC,
-                                            String.valueOf(final_array.get(i).get("DATE")),
-                                            String.valueOf(final_array.get(i).get("COLOR")),
-                                            String.valueOf(final_array.get(i).get("ColorSoldQty")),
-                                            String.valueOf(final_array.get(i).get("ColorSoldValue")),
-                                            String.valueOf(final_array.get(i).get("SKIN")),
-                                            String.valueOf(final_array.get(i).get("SkinSoldQty")),
-                                            String.valueOf(final_array.get(i).get("SkinSoldValue")),
-                                            String.valueOf(final_array.get(i).get("TOTAL")),
-                                            String.valueOf(final_array.get(i).get("TotalQty")),
-                                            String.valueOf(final_array.get(i).get("TotalValue"))};
-                                    db.insert(values, columns, "dashboard_details");
+                                            String.valueOf(final_array.get(i).get("Datenew")),
+                                            String.valueOf(final_array.get(i).get("SoldQty")),
+                                            String.valueOf(final_array.get(i).get("Soldvalue"))};
+                                    db.insert(values, columns, "dashboard_details_dubai");
                                 }
                             } else {
 
                                 for (int i = 0; i < final_array.size(); i++) {
                                     String[] values = new String[]{str_BOC,
-                                            String.valueOf(final_array.get(i).get("DATE")),
-                                            String.valueOf(final_array.get(i).get("COLOR")),
-                                            String.valueOf(final_array.get(i).get("ColorSoldQty")),
-                                            String.valueOf(final_array.get(i).get("ColorSoldValue")),
-                                            String.valueOf(final_array.get(i).get("SKIN")),
-                                            String.valueOf(final_array.get(i).get("SkinSoldQty")),
-                                            String.valueOf(final_array.get(i).get("SkinSoldValue")),
-                                            String.valueOf(final_array.get(i).get("TOTAL")),
-                                            String.valueOf(final_array.get(i).get("TotalQty")),
-                                            String.valueOf(final_array.get(i).get("TotalValue"))};
-                                    db.insert(values, columns, "dashboard_details");
+                                            String.valueOf(final_array.get(i).get("Datenew")),
+                                            String.valueOf(final_array.get(i).get("SoldQty")),
+                                            String.valueOf(final_array.get(i).get("Soldvalue"))};
+                                    db.insert(values, columns, "dashboard_details_dubai");
                                 }
 
                             }
@@ -658,9 +601,9 @@ public class BocCumulativeDashboardActivity extends Activity {
 
                     txt_date.setText(c.getString(c.getColumnIndex("AndroidCreatedDate")));
                     txt_date.setGravity(1);
-                    txtvalue.setText(c.getString(c.getColumnIndex("TotalValue")));
+                    txtvalue.setText(c.getString(c.getColumnIndex("SoldQty")));
                     txtvalue.setGravity(1);
-                    txtunit.setText(c.getString(c.getColumnIndex("TotalQty")));
+                    txtunit.setText(c.getString(c.getColumnIndex("Soldvalue")));
                     txtunit.setGravity(1);
                     tl_cumulativeD.addView(tr);
 
@@ -671,6 +614,51 @@ public class BocCumulativeDashboardActivity extends Activity {
             db.close();
 
         }
+    }
+
+
+    public String[] getStartEndForDubai(String Month, String year) {
+        String startend[] = new String[2];
+
+        if (Month.equalsIgnoreCase("January")) {
+            startend[0] = year + "-01-01";
+            startend[1] = year + "-01-31";
+        } else if (Month.equalsIgnoreCase("February")) {
+            startend[0] = year + "-02-01";
+            startend[1] = year + "-02-28";
+        } else if (Month.equalsIgnoreCase("March")) {
+            startend[0] = year + "-03-01";
+            startend[1] = year + "-03-31";
+        } else if (Month.equalsIgnoreCase("April")) {
+            startend[0] = year + "-04-01";
+            startend[1] = year + "-04-30";
+        } else if (Month.equalsIgnoreCase("May")) {
+            startend[0] = year + "-05-01";
+            startend[1] = year + "-05-31";
+        } else if (Month.equalsIgnoreCase("June")) {
+            startend[0] = year + "-06-01";
+            startend[1] = year + "-06-30";
+        } else if (Month.equalsIgnoreCase("July")) {
+            startend[0] = year + "-07-01";
+            startend[1] = year + "-07-31";
+        } else if (Month.equalsIgnoreCase("August")) {
+            startend[0] = year + "-08-01";
+            startend[1] = year + "-08-31";
+        } else if (Month.equalsIgnoreCase("September")) {
+            startend[0] = year + "-09-01";
+            startend[1] = year + "-09-30";
+        } else if (Month.equalsIgnoreCase("October")) {
+            startend[0] = year + "-10-01";
+            startend[1] = year + "-10-31";
+        } else if (Month.equalsIgnoreCase("November")) {
+            startend[0] = year + "-11-01";
+            startend[1] = year + "-11-30";
+        } else if (Month.equalsIgnoreCase("December")) {
+            startend[0] = year + "-12-01";
+            startend[1] = year + "-12-31";
+        }
+
+        return startend;
     }
 
 
