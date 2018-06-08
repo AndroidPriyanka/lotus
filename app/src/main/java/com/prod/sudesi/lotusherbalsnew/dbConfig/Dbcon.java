@@ -3685,6 +3685,16 @@ public class Dbcon {
         return c;
     }
 
+    public Cursor getDashboardDataforDubai(String boc) {
+        // TODO Auto-generated method stub
+
+        String sql = "select * from dashboard_details_dubai where BOC = '" + boc + "'";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        return c;
+    }
+
     public void InsertstockForFLR(
             String cat_id, String db_id1,String eancode,String product_cat,
             String product_type, String product_name, String size, String price,String emp_id,

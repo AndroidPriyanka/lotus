@@ -49,7 +49,7 @@ public class DashboardNewActivity extends Activity {
     // today
     private Dbcon db = null;
     String[] values;
-    String username, bdename;
+    String username, bdename, role;
 
     ConnectionDetector cd;
     LotusWebservice service;
@@ -62,7 +62,7 @@ public class DashboardNewActivity extends Activity {
 
     Button btn_attendance, btn_stock, btn_tester, btn_visibility,
             btn_notification, btn_reports, btn_datasync, btn_BAreport,
-            btn_BAMonthreport, btn_sale, btn_dashboard, btn_super_atten,btn_stock_sale,btn_outletwise;
+            btn_BAMonthreport, btn_sale, btn_dashboard, btn_super_atten, btn_stock_sale, btn_outletwise;
 
     TextView tv_h_username;
     Button btn_home, btn_logout;
@@ -100,6 +100,8 @@ public class DashboardNewActivity extends Activity {
 
         sp = mContext.getSharedPreferences("Lotus", Context.MODE_PRIVATE);
         spe = sp.edit();
+
+        role = sp.getString("Role", "");
 
         //enableBroadcastReceiver();
 
@@ -177,7 +179,7 @@ public class DashboardNewActivity extends Activity {
         btn_home.setVisibility(View.INVISIBLE);
         Log.e("db.checkStockUploaded()", String.valueOf(db.checkStockUploaded()));
 
-        if(sp.getString("Role","").equalsIgnoreCase("DUB")){
+        if (sp.getString("Role", "").equalsIgnoreCase("DUB")) {
             btn_stock.setVisibility(View.GONE);
             btn_sale.setVisibility(View.GONE);
             btn_outletwise.setVisibility(View.VISIBLE);
@@ -250,7 +252,7 @@ public class DashboardNewActivity extends Activity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                if (sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                if (role.equalsIgnoreCase("FLR")) {
                     Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
                 } else {
                     Calendar calendar = Calendar.getInstance();
@@ -367,9 +369,9 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                if (role.equalsIgnoreCase("FLR")) {
                     Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
-                } else {
+               } else {
                     Intent i = new Intent(getApplicationContext(),
                             BAYearWiseReport.class);
                     startActivity(i);
@@ -383,8 +385,10 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                if (role.equalsIgnoreCase("FLR")) {
                     Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
+                } else if (role.equalsIgnoreCase("DUB")) {
+                    Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
                 } else {
                     Intent i = new Intent(getApplicationContext(),
                             BAMonthWiseReport.class);
@@ -412,7 +416,7 @@ public class DashboardNewActivity extends Activity {
 
 
                 if (cd.isCurrentDateMatchDeviceDate()) {
-                    if (sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                    if (role.equalsIgnoreCase("FLR")) {
 
                         startActivity(new Intent(getApplicationContext(),
                                 SaleActivityForFloter.class));

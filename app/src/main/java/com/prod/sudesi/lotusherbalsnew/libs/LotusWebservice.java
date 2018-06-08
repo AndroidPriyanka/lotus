@@ -1562,6 +1562,39 @@ public class LotusWebservice {
 		return result;
 	}
 
+	public SoapObject DubaiBAOutletSale(String bacode, String OutletCode) {
+
+		SoapObject result = null;
+		try {
+
+			SoapObject request = new SoapObject("http://tempuri.org/",
+					"DubaiBAOutletSale");
+
+			request.addProperty("bacode", bacode);
+			request.addProperty("OutletCode", OutletCode);
+
+			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+					SoapEnvelope.VER11);// soap envelop with version
+			envelope.setOutputSoapObject(request); // set request object
+			envelope.dotNet = true;
+
+			HttpTransportSE androidHttpTransport = new HttpTransportSE(url,60000);// http
+			// transport
+			// call
+			androidHttpTransport.call("http://tempuri.org/IService1/DubaiBAOutletSale", envelope);
+
+			androidHttpTransport.getServiceConnection().disconnect();  //23.04.2015
+
+			result = (SoapObject) envelope.getResponse();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Log.e("DubaiBAOutletSale==", result.toString());
+		return result;
+	}
+
 	//------------------------------END--------------------------------------
 	
 }

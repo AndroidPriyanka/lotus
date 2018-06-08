@@ -96,7 +96,7 @@ public class BocCumulativeDashboardActivity extends Activity {
         service = new LotusWebservice(BocCumulativeDashboardActivity.this);
         prgdialog = new ProgressDialog(BocCumulativeDashboardActivity.this);
 
-        final_array = new ArrayList<HashMap<String, String>>();
+
 
         Intent intent = getIntent();
         str_BOC = intent.getStringExtra("month");
@@ -310,6 +310,7 @@ public class BocCumulativeDashboardActivity extends Activity {
                     // resultsRequestSOAP = service.GetDashboradData(0,  FromDate_date,  ToDate_date,  username, Type_radio_button);
                     resultsRequestSOAP = service.GetDashboradData("2", startdate[0], startdate[1], username, "ALL");
                     if (resultsRequestSOAP != null) {
+                        final_array = new ArrayList<HashMap<String, String>>();
                         for (int i = 0; i < resultsRequestSOAP.getPropertyCount(); i++) {
                             SoapObject getmessaage = (SoapObject) resultsRequestSOAP.getProperty(i);
                             HashMap<String, String> map = new HashMap<String, String>();
@@ -508,27 +509,49 @@ public class BocCumulativeDashboardActivity extends Activity {
                     // resultsRequestSOAP = service.GetDashboradData(0,  FromDate_date,  ToDate_date,  username, Type_radio_button);
                     resultsRequestSOAP = service.DubaiGetDashboardData(startdate[0], startdate[1], outletcode, username);
                     if (resultsRequestSOAP != null) {
+                        final_array = new ArrayList<HashMap<String, String>>();
                         for (int i = 0; i < resultsRequestSOAP.getPropertyCount(); i++) {
                             SoapObject getmessaage = (SoapObject) resultsRequestSOAP.getProperty(i);
                             HashMap<String, String> map = new HashMap<String, String>();
-                            //map.put("DATE", dates_array.get(i));
+                            map.put("DATE", dates_array.get(i));
 
-                            map.put("Datenew", String.valueOf(getmessaage.getProperty("Datenew")));
-                            map.put("SoldQty", String.valueOf(getmessaage.getProperty("SoldQty")));
-                            map.put("Soldvalue", String.valueOf(getmessaage.getProperty("Soldvalue")));
+                            if(getmessaage.getProperty("Datenew")!=null &&
+                                    !getmessaage.getProperty("Datenew").toString().equalsIgnoreCase("anyType{}")){
+
+                                map.put("Datenew", String.valueOf(getmessaage.getProperty("Datenew")));
+
+                            }else{
+                                map.put("Datenew", "0");
+                            }
+                            if(getmessaage.getProperty("SoldQty")!=null &&
+                                    !getmessaage.getProperty("SoldQty").toString().equalsIgnoreCase("anyType{}")){
+
+                                map.put("SoldQty", String.valueOf(getmessaage.getProperty("SoldQty")));
+
+                            }else{
+                                map.put("SoldQty", "0");
+                            }
+                            if(getmessaage.getProperty("Soldvalue")!=null &&
+                                    !getmessaage.getProperty("Soldvalue").toString().equalsIgnoreCase("anyType{}")){
+
+                                map.put("Soldvalue", String.valueOf(getmessaage.getProperty("Soldvalue")));
+
+                            }else{
+                                map.put("Soldvalue", "0");
+                            }
 
                             final_array.add(map);
                         }
 
 
-                        Cursor cursor = db.getDashboardData(str_BOC);
+                        Cursor cursor = db.getDashboardDataforDubai(str_BOC);
                         {
                             if (cursor != null && cursor.getCount() > 0) {
 
                                 db.deleteMulti("dashboard_details_dubai", "BOC=?", new String[]{str_BOC});
                                 for (int i = 0; i < final_array.size(); i++) {
                                     String[] values = new String[]{str_BOC,
-                                            String.valueOf(final_array.get(i).get("Datenew")),
+                                            String.valueOf(final_array.get(i).get("DATE")),
                                             String.valueOf(final_array.get(i).get("SoldQty")),
                                             String.valueOf(final_array.get(i).get("Soldvalue"))};
                                     db.insert(values, columns, "dashboard_details_dubai");
@@ -537,7 +560,7 @@ public class BocCumulativeDashboardActivity extends Activity {
 
                                 for (int i = 0; i < final_array.size(); i++) {
                                     String[] values = new String[]{str_BOC,
-                                            String.valueOf(final_array.get(i).get("Datenew")),
+                                            String.valueOf(final_array.get(i).get("DATE")),
                                             String.valueOf(final_array.get(i).get("SoldQty")),
                                             String.valueOf(final_array.get(i).get("Soldvalue"))};
                                     db.insert(values, columns, "dashboard_details_dubai");
@@ -586,7 +609,7 @@ public class BocCumulativeDashboardActivity extends Activity {
 
             db.open();
 
-            Cursor c = db.getDashboardData(str_BOC);
+            Cursor c = db.getDashboardDataforDubai(str_BOC);
             if (c != null && c.getCount() > 0) {
                 //  Log.e("Cursor", DatabaseUtils.dumpCursorToString(c));
                 c.moveToFirst();

@@ -86,10 +86,10 @@ public class BAReportAdapter extends BaseAdapter {
 					.findViewById(R.id.tv_bar_monthC);
 			viewHolder.tv_skinbalC = (TextView) convertView
 					.findViewById(R.id.tv_bar_SkinbalC);
-			
+
 			viewHolder.tv_colorbalC = (TextView) convertView
 					.findViewById(R.id.tv_bar_ColorbalC);
-			
+
 			viewHolder.tv_growthC_skin = (TextView) convertView
 					.findViewById(R.id.tv_bar_growthC_skin);
 			viewHolder.tv_growthC_color = (TextView) convertView
