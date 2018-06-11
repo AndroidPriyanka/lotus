@@ -123,80 +123,84 @@ public class ReportsForUser extends Activity {
             setContentView(R.layout.fragment_report_dubai);
             sp_outletName=(AutoCompleteTextView)findViewById(R.id.spin_outletname);
             outletcardview=(CardView) findViewById(R.id.outletcardview);
+
+            fetchOutletDetails();
+
+            if (outletDetailsArraylist.size() > 0) {
+
+                strOutletArray = new String[outletDetailsArraylist.size()];
+                for (int i = 0; i < outletDetailsArraylist.size(); i++) {
+                    strOutletArray[i] = outletDetailsArraylist.get(i).getOutletname();
+                }
+            }
+            if (outletDetailsArraylist != null && outletDetailsArraylist.size() > 0) {
+                ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strOutletArray) {
+                    @Override
+                    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                        View v = null;
+                        // If this is the initial dummy entry, make it hidden
+                        if (position == 0) {
+                            TextView tv = new TextView(getContext());
+                            tv.setHeight(0);
+                            tv.setVisibility(View.GONE);
+                            v = tv;
+                        } else {
+                            // Pass convertView as null to prevent reuse of special case views
+                            v = super.getDropDownView(position, null, parent);
+                        }
+                        // Hide scroll bar because it appears sometimes unnecessarily, this does not prevent scrolling
+                        parent.setVerticalScrollBarEnabled(false);
+                        return v;
+                    }
+                };
+
+                adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                sp_outletName.setAdapter(adapter1);
+            }
+
+            sp_outletName.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    sp_outletName.showDropDown();
+                    return false;
+                }
+            });
+
+            sp_outletName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    if (strOutletArray != null && strOutletArray.length > 0) {
+                        reportlist.clear();
+                        outletstring = parent.getItemAtPosition(position).toString();
+                        String text = null,outletcode;
+                        for (int i = 0; i < outletDetailsArraylist.size(); i++) {
+                            text = outletDetailsArraylist.get(i).getOutletname();
+                            outletcode = outletDetailsArraylist.get(i).getBACodeOutlet();
+                            if (text.equalsIgnoreCase(outletstring)) {
+                                outletName = text;
+                                outletCode = outletcode;
+                            }
+                        }
+
+                        if (text != null && text.length() > 0) {
+                            new ShowReportofStock().execute();
+
+                        }else{
+                            Toast.makeText(getApplicationContext(), "Please Select Outlet", Toast.LENGTH_SHORT).show();
+                        }
+
+
+                    }
+                }
+            });
+
+
         } else {
             setContentView(R.layout.fragment_report);
         }
 
-        fetchOutletDetails();
-        if (outletDetailsArraylist.size() > 0) {
-
-            strOutletArray = new String[outletDetailsArraylist.size()];
-            for (int i = 0; i < outletDetailsArraylist.size(); i++) {
-                strOutletArray[i] = outletDetailsArraylist.get(i).getOutletname();
-            }
-        }
-        if (outletDetailsArraylist != null && outletDetailsArraylist.size() > 0) {
-            ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strOutletArray) {
-                @Override
-                public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                    View v = null;
-                    // If this is the initial dummy entry, make it hidden
-                    if (position == 0) {
-                        TextView tv = new TextView(getContext());
-                        tv.setHeight(0);
-                        tv.setVisibility(View.GONE);
-                        v = tv;
-                    } else {
-                        // Pass convertView as null to prevent reuse of special case views
-                        v = super.getDropDownView(position, null, parent);
-                    }
-                    // Hide scroll bar because it appears sometimes unnecessarily, this does not prevent scrolling
-                    parent.setVerticalScrollBarEnabled(false);
-                    return v;
-                }
-            };
-
-            adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            sp_outletName.setAdapter(adapter1);
-        }
-
-        sp_outletName.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                sp_outletName.showDropDown();
-                return false;
-            }
-        });
-
-        sp_outletName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                if (strOutletArray != null && strOutletArray.length > 0) {
-                    reportlist.clear();
-                    outletstring = parent.getItemAtPosition(position).toString();
-                    String text = null,outletcode;
-                    for (int i = 0; i < outletDetailsArraylist.size(); i++) {
-                        text = outletDetailsArraylist.get(i).getOutletname();
-                        outletcode = outletDetailsArraylist.get(i).getBACodeOutlet();
-                        if (text.equalsIgnoreCase(outletstring)) {
-                            outletName = text;
-                            outletCode = outletcode;
-                        }
-                    }
-
-                    if (text != null && text.length() > 0) {
-                            new ShowReportofStock().execute();
-
-                    }else{
-                        Toast.makeText(getApplicationContext(), "Please Select Outlet", Toast.LENGTH_SHORT).show();
-                    }
-
-
-                }
-            }
-        });
         //////////Crash Report
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
@@ -209,17 +213,11 @@ public class ReportsForUser extends Activity {
         rb_attendance = (RadioButton) findViewById(R.id.rb_attendance);
         //
 
-
         mProgress = new ProgressDialog(this);
-
-
         //------------------
-
-
         table_row_stock = (TableRow) findViewById(R.id.tr_label_stock);
         table_row_tester = (TableRow) findViewById(R.id.tr_label_tester);
         table_row_attend = (TableRow) findViewById(R.id.tr_label_attend);
-
 
         btn_home = (Button) findViewById(R.id.btn_home);
         btn_logout = (Button) findViewById(R.id.btn_logout);

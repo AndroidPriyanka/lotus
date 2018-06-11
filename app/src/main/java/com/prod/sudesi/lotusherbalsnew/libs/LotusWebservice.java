@@ -1595,6 +1595,45 @@ public class LotusWebservice {
 		return result;
 	}
 
+	public SoapObject DubaiTotalOutletSaleAPK(String bacode, String FromDate, String Todate)
+	{
+		SoapObject result = null;
+		try {
+
+			SoapObject request = new SoapObject("http://tempuri.org/",
+					"DubaiTotalOutletSaleAPK");
+
+			request.addProperty("bacode", bacode);
+			request.addProperty("FromDate", FromDate);
+			request.addProperty("Todate", Todate);
+
+			Log.e("Request", request.toString());
+
+			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+					SoapEnvelope.VER11);// soap envelop with version
+			envelope.setOutputSoapObject(request); // set request object
+			envelope.dotNet = true;
+
+			HttpTransportSE androidHttpTransport = new HttpTransportSE(url);// http
+			// transport
+			// call
+			androidHttpTransport.call("http://tempuri.org/IService1/DubaiTotalOutletSaleAPK", envelope);
+
+			//androidHttpTransport.getServiceConnection().disconnect();  //23.04.2015
+
+			result = (SoapObject) envelope.getResponse();
+
+			Log.e("DubaiTotalOutletSaleAPK", result.toString());
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return result;
+
+	}
+
 	//------------------------------END--------------------------------------
 	
 }

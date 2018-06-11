@@ -24,14 +24,13 @@ public class BAReportAdapterDubai extends BaseAdapter {
     public BAReportAdapterDubai(Activity a, ArrayList<HashMap<String, String>> d) {
         activity = a;
         data = d;
-        inflater = (LayoutInflater) activity
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
-        return data.size()-1;
+        return data.size();
     }
 
     @Override
@@ -83,92 +82,52 @@ public class BAReportAdapterDubai extends BaseAdapter {
         HashMap<String, String> map = new HashMap<String, String>();
         map = data.get(position);
 
-        String py = map.get("PreviousYearP");
-        String samtp = map.get("SkinAmountP");
-        String camtp = map.get("ColorAmountP");
-        String gp_skin = map.get("GrowthPSkin");
-        String gp_color = map.get("GrowthPColor");
-
-        String cy = map.get("CurrentYearC");
-        String samtc = map.get("SkinAmountC");
-        String camtc = map.get("ColorAmountC");
-        String gc_skin = map.get("GrowthCSkin");
-        String gc_color = map.get("GrowthCColor");
+        String GroCurSkin = map.get("GrowthCSkin");
+        String GroPreSkin = map.get("GrowthPSkin");
+        String NetAmtCurSkin = map.get("NetAmountCSkin");
+        String NetAmtPreSkin = map.get("NetAmountPSkin");
+        String yearMonthsC = map.get("years_MonthsC");
+        String yearMonthsP = map.get("years_MonthsP");
 
 
+        if (GroCurSkin.equalsIgnoreCase("anyType{}") || GroCurSkin==null ||GroCurSkin.equalsIgnoreCase("null") ) {
 
-        if (py.equalsIgnoreCase("anyType{}") || py==null ||py.equalsIgnoreCase("null") ) {
-
-            py = "0";
+            GroCurSkin = "0";
         }
 
-        if (samtp.equalsIgnoreCase("anyType{}")|| samtp==null|| samtp.equalsIgnoreCase("null")) {
+        if (GroPreSkin.equalsIgnoreCase("anyType{}")|| GroPreSkin==null|| GroPreSkin.equalsIgnoreCase("null")) {
 
-            samtp = "0";
+            GroPreSkin = "0";
         }
 
-        if (camtp.equalsIgnoreCase("anyType{}")|| camtp==null|| camtp.equalsIgnoreCase("null")) {
+        if (NetAmtCurSkin.equalsIgnoreCase("anyType{}")|| NetAmtCurSkin==null|| NetAmtCurSkin.equalsIgnoreCase("null")) {
 
-            camtp = "0";
+            NetAmtCurSkin = "0";
         }
 
-        if (gp_skin.equalsIgnoreCase("anyType{}") ||gp_skin ==null||gp_skin.equalsIgnoreCase("null")) {
+        if (NetAmtPreSkin.equalsIgnoreCase("anyType{}") ||NetAmtPreSkin ==null||NetAmtPreSkin.equalsIgnoreCase("null")) {
 
-            gp_skin = "0";
+            NetAmtPreSkin = "0";
         }
-        if (gp_color.equalsIgnoreCase("anyType{}") ||gp_color ==null||gp_color.equalsIgnoreCase("null")) {
+        if (yearMonthsC.equalsIgnoreCase("anyType{}") ||yearMonthsC ==null||yearMonthsC.equalsIgnoreCase("null")) {
 
-            gp_color = "0";
-        }
-
-
-        if (cy.equalsIgnoreCase("anyType{}")|| cy==null||cy.equalsIgnoreCase("null")) {
-
-            cy = "0";
-        }
-        if (samtc.equalsIgnoreCase("anyType{}") || samtc==null||samtc.equalsIgnoreCase("null")) {
-
-            samtc = "0";
+            yearMonthsC = "0";
         }
 
-        if (camtc.equalsIgnoreCase("anyType{}") || camtc==null||camtc.equalsIgnoreCase("null")) {
+        if (yearMonthsP.equalsIgnoreCase("anyType{}")|| yearMonthsP==null||yearMonthsP.equalsIgnoreCase("null")) {
 
-            camtc = "0";
-        }
-        if (gc_skin.equalsIgnoreCase("anyType{}")|| gc_skin==null||gc_skin.equalsIgnoreCase("null")) {
-
-            gc_skin = "0";
-        }
-        if (gc_color.equalsIgnoreCase("anyType{}")|| gc_color==null||gc_color.equalsIgnoreCase("null")) {
-
-            gc_color = "0";
+            yearMonthsP = "0";
         }
 
 
 
-		/*viewHolder.tv_MonthsP.setText(map.get("PreviousYearP"));
-		viewHolder.tv_netbalP.setText(map.get("NetAmountP"));
-		viewHolder.tv_growthP.setText(map.get("GrowthP"));
-		viewHolder.tv_MonthsC.setText(map.get("CurrentYearC"));
-		viewHolder.tv_netbalC.setText(map.get("NetAmountC"));
-		viewHolder.tv_growthC.setText(map.get("GrowthC"));*/
+		viewHolder.txtmonthc.setText(yearMonthsC);
+		viewHolder.txtnetamtc.setText(NetAmtCurSkin);
+		viewHolder.txtgrowthc.setText(GroCurSkin);
+		viewHolder.txtmonthp.setText(yearMonthsP);
+		viewHolder.txtnetamtp.setText(NetAmtPreSkin);
+		viewHolder.txtgrowthp.setText(GroPreSkin);
 
-      /*  viewHolder.tv_MonthsP.setText(py);
-        viewHolder.tv_skinbalP.setText(samtp);
-        viewHolder.tv_colorbalP.setText(camtp);
-
-        viewHolder.tv_growthP_skin.setText(gp_skin);
-        viewHolder.tv_growthP_color.setText(gp_color);
-
-        viewHolder.tv_MonthsC.setText(cy);
-        viewHolder.tv_skinbalC.setText(samtc);
-        viewHolder.tv_colorbalC.setText(camtc);
-        viewHolder.tv_growthC_skin.setText(gc_skin);
-        viewHolder.tv_growthC_color.setText(gc_color);*/
-
-        // RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-        // 70, 70);
-        // params.setMargins(5,15,0, 0);
 
         return convertView;
 

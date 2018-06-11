@@ -42,6 +42,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -62,7 +63,7 @@ public class SaleCalculation extends Activity {
     String str_stockinhand;
     String sclo = "";
     String old_return;
-    String str_price,str_grossamt,str_discount,str_soldstock;
+    String str_price, str_grossamt, str_discount, str_soldstock;
 
     EditText edt_gross, edt_discount, edt_net;
 
@@ -76,13 +77,14 @@ public class SaleCalculation extends Activity {
     private static SpannableStringBuilder ssbuilder;
 
     TextView tv_h_username;// -------
-    String username,FLRCode,role,bdename;
+    String username, FLRCode, role, bdename;
     SharedPreferences shp;
     SharedPreferences.Editor shpeditor;
     static Context context;
 
     ScrollView scrv_sale;
     ConnectionDetector cd;
+    LinearLayout discountlayout;
 
     String enacod[], catid[], pro_name[], size[], db_id[], mrp[], shadeno[], singleoffer[];
 
@@ -102,12 +104,14 @@ public class SaleCalculation extends Activity {
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
         tl_sale_calculation = (TableLayout) findViewById(R.id.tl_sale_calculation);
+        discountlayout = (LinearLayout) findViewById(R.id.discountlayout);
+
         // scrv_sale = (ScrollView)findViewById(R.id.scrv_sale);
 
         context = getApplicationContext();
         cd = new ConnectionDetector(context);
         edt_gross = (EditText) findViewById(R.id.edt_gross);
-        edt_discount = (EditText) findViewById(R.id.edt_discount);
+
         edt_net = (EditText) findViewById(R.id.edt_net);
 
         btn_save = (Button) findViewById(R.id.btn_save);
@@ -120,9 +124,15 @@ public class SaleCalculation extends Activity {
         shpeditor = shp.edit();
 
         username = shp.getString("username", "");
-        FLRCode = shp.getString("FLRCode","");
-        role = shp.getString("Role","");
+        FLRCode = shp.getString("FLRCode", "");
+        role = shp.getString("Role", "");
         bdename = shp.getString("BDEusername", "");
+
+        if (!role.equalsIgnoreCase("DUB")) {
+            edt_discount = (EditText) findViewById(R.id.edt_discount);
+        } else {
+            discountlayout.setVisibility(View.GONE);
+        }
 
         Intent intent = getIntent();
 
@@ -134,10 +144,10 @@ public class SaleCalculation extends Activity {
             enacod = intent.getStringArrayExtra("encode");
             singleoffer = intent.getStringArrayExtra("singleoffer");
         } else {
-             db_id = intent.getStringArrayExtra("db_id");
+            db_id = intent.getStringArrayExtra("db_id");
             pro_name = intent.getStringArrayExtra("pro_name");
-             mrp = intent.getStringArrayExtra("mrp");
-             shadeno = intent.getStringArrayExtra("shadeNo");
+            mrp = intent.getStringArrayExtra("mrp");
+            shadeno = intent.getStringArrayExtra("shadeNo");
             enacod = intent.getStringArrayExtra("encode");
             size = intent.getStringArrayExtra("size");
             catid = intent.getStringArrayExtra("catid");
@@ -169,11 +179,11 @@ public class SaleCalculation extends Activity {
                     }
                 }, 5000);// set time as per your requirement
 
-                if(role.equalsIgnoreCase("FLR")){
+                if (role.equalsIgnoreCase("FLR")) {
                     saveMethodForFLR();
-                }else if(role.equalsIgnoreCase("DUB")){
+                } else if (role.equalsIgnoreCase("DUB")) {
                     saveMethodForDubai();
-                }else{
+                } else {
                     saveMethodForLHR();
                 }
 
@@ -185,11 +195,11 @@ public class SaleCalculation extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if(shp.getString("Role","").equalsIgnoreCase("FLR")) {
+                if (shp.getString("Role", "").equalsIgnoreCase("FLR")) {
                     finish();
                     startActivity(new Intent(SaleCalculation.this,
                             SaleActivityForFloter.class));
-                }else{
+                } else {
                     finish();
                     startActivity(new Intent(SaleCalculation.this,
                             SaleNewActivity.class));
@@ -416,6 +426,7 @@ public class SaleCalculation extends Activity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) try {
                     int total = 0;
+                    Float Total = 0.0f;
                     for (int i = 0; i < tl_sale_calculation.getChildCount(); i++) {
 
                         TableRow t = (TableRow) tl_sale_calculation
@@ -425,7 +436,6 @@ public class SaleCalculation extends Activity {
                         TextView tv_mrp = (TextView) t.getChildAt(2);
                         int int_quantity, int_mrp;
                         Float fl_mrp;
-                        Float Total = 0.0f;
 
                         if (!edt_qty.getText().toString().equals("")) {
                             if (role.equalsIgnoreCase("DUB")) {
@@ -461,27 +471,29 @@ public class SaleCalculation extends Activity {
             public void onFocusChange(View v, boolean hasFocus) {
                 try {
                     if (hasFocus) {
-                        if (edt_gross.getText().toString().equals("")) {
+                        if (role.equalsIgnoreCase("DUB")) {
+                            if (edt_gross.getText().toString().equals("")) {
 
-                        } else if (edt_discount.getText().toString().equals("")) {
-                            edt_net.setText(edt_gross.getText().toString());
-                        } else if (!edt_gross.getText().toString().equals("")
-                                && !edt_discount.getText().toString()
-                                .equals("")) {
-                            if(role.equalsIgnoreCase("DUB")){
+                            } else if (!edt_gross.getText().toString().equals("")) {
 
                                 Float gross = Float.parseFloat(edt_gross.getText().toString());
-                                int discount = Integer.parseInt(edt_discount.getText().toString());
-                                Float str_net = gross - Float.parseFloat(String.valueOf(discount));
-                                edt_net.setText(String.valueOf(str_net));
+                                edt_net.setText(String.valueOf(gross));
 
-                            }else {
+                            }
+                        }else {
+                            if (edt_gross.getText().toString().equals("")) {
+
+                            } else if (edt_discount.getText().toString().equals("")) {
+                                edt_net.setText(edt_gross.getText().toString());
+                            } else if (!edt_gross.getText().toString().equals("")
+                                    && !edt_discount.getText().toString().equals("")) {
+
                                 int gross = Integer.parseInt(edt_gross.getText().toString());
                                 int discount = Integer.parseInt(edt_discount.getText().toString());
                                 String str_net = String.valueOf(gross - discount);
                                 edt_net.setText(str_net);
-                            }
 
+                            }
                         }
                     } else {
 
@@ -494,30 +506,31 @@ public class SaleCalculation extends Activity {
             }
 
         });
+        if (!role.equalsIgnoreCase("DUB")) {
+            edt_discount.addTextChangedListener(new TextWatcher() {
 
-        edt_discount.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before,
+                                          int count) {
+                    // TODO Auto-generated method stub
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                // TODO Auto-generated method stub
+                }
 
-            }
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count,
+                                              int after) {
+                    // TODO Auto-generated method stub
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-                // TODO Auto-generated method stub
+                }
 
-            }
+                @Override
+                public void afterTextChanged(Editable s) {
+                    // TODO Auto-generated method stub
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
-
-                edt_net.setText("");
-            }
-        });
+                    edt_net.setText("");
+                }
+            });
+        }
 
     }
 
@@ -983,7 +996,7 @@ public class SaleCalculation extends Activity {
         return closebal;
     }
 
-    private void saveMethodForLHR(){
+    private void saveMethodForLHR() {
         if (cd.isCurrentDateMatchDeviceDate()) {
             try {
 
@@ -1668,7 +1681,7 @@ public class SaleCalculation extends Activity {
 
     }
 
-    private void saveMethodForFLR(){
+    private void saveMethodForFLR() {
 
         if (cd.isCurrentDateMatchDeviceDate()) {
             try {
@@ -1753,16 +1766,16 @@ public class SaleCalculation extends Activity {
                                 String price = tv_mrp.getText().toString().trim();
                                 String size1 = "" + size[i];
                                 String eancode;
-                                if(enacod !=null){
-                                     eancode = "" + enacod[i];
-                                }else{
-                                     eancode = "0";
+                                if (enacod != null) {
+                                    eancode = "" + enacod[i];
+                                } else {
+                                    eancode = "0";
                                 }
                                 String db_id1 = tv_dbID.getText().toString().trim();
                                 String cat_id;
-                                if(catid !=null){
+                                if (catid != null) {
                                     cat_id = "" + catid[i];
-                                }else{
+                                } else {
                                     cat_id = "0";
                                 }
 
@@ -1924,14 +1937,14 @@ public class SaleCalculation extends Activity {
 
                                 //int pricecustomer = Integer.parseInt(str_price) * new_retrn_sale;
                                 int i_net_amt = 0;
-                                if(str_price.equalsIgnoreCase("0")
-                                        && str_soldstock.equalsIgnoreCase("0")){
+                                if (str_price.equalsIgnoreCase("0")
+                                        && str_soldstock.equalsIgnoreCase("0")) {
                                     i_net_amt = calc_gross;
-                                }else {
+                                } else {
                                     i_net_amt = Integer.parseInt(str_price) * soldstock;
                                 }
 
-                                float net_amt = Float.parseFloat(String.valueOf(i_net_amt))- Float.parseFloat(str_discount);
+                                float net_amt = Float.parseFloat(String.valueOf(i_net_amt)) - Float.parseFloat(str_discount);
 
 
                                 if (mCursor.getCount() == 0) {
@@ -2122,7 +2135,7 @@ public class SaleCalculation extends Activity {
 
     }
 
-    private void saveMethodForDubai(){
+    private void saveMethodForDubai() {
         if (cd.isCurrentDateMatchDeviceDate()) {
             try {
 
@@ -2160,8 +2173,8 @@ public class SaleCalculation extends Activity {
 
                     if (!edt_gross.getText().toString().equals("")
                             && !edt_net.getText().toString().equals("")) {
-                        float dis;
-                        if (!edt_discount.getText().toString()
+                        float dis = 0;
+                       /* if (!edt_discount.getText().toString()
                                 .equalsIgnoreCase(" ")
                                 || !edt_discount.getText().toString()
                                 .equalsIgnoreCase("")) {
@@ -2169,7 +2182,7 @@ public class SaleCalculation extends Activity {
                                     .toString());
                         } else {
                             dis = 0;
-                        }
+                        }*/
 
                         String tt = String.valueOf(tl_sale_calculation
                                 .getChildCount());
@@ -2366,41 +2379,19 @@ public class SaleCalculation extends Activity {
                                                             .getString(2)) + a);
 
                                                 } else {
-                                                    if (edt_discount
-                                                            .getText()
-                                                            .toString()
-                                                            .equals("")) {
-                                                        // discount = 0;//
-                                                        disss = 0;
-                                                    } else {
 
                                                         disss = a;
-
-                                                    }
-
                                                 }
 
                                             } else {
-                                                if (edt_discount.getText()
-                                                        .toString()
-                                                        .equals("")) {
-
-                                                    disss = 0;
-                                                } else {
 
                                                     disss = 0;
 
-                                                }
                                             }
                                         } else {
-                                            if (edt_discount.getText()
-                                                    .toString().equals("")) {
-                                                // discount = 0;//
-                                                disss = 0;
-                                            } else {
 
-                                                disss = a;
-                                            }
+                                            disss = a;
+
                                         }
 
                                         if (c.getString(1) != null) {

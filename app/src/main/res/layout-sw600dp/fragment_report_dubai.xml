@@ -341,55 +341,62 @@
                 android:visibility="gone"
                 android:dividerHeight="1dp"></ListView>
 
-            <TableRow
-                android:id="@+id/tr_label_attend"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@layout/tableborder_stock"
-                android:gravity="center"
-                android:visibility="gone"
-                android:weightSum="100">
-
-                <TextView
-                    style="@style/report_textview_heading"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Date" />
-
-                <TextView
-                    style="@style/report_textview_heading"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-
-                    android:gravity="center"
-                    android:text="Attendance" />
-
-                <TextView
-                    style="@style/report_textview_heading"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-
-                    android:gravity="center"
-                    android:text="Absent Type" />
-
-            </TableRow>
-
-            <ListView
-                android:id="@+id/attendancelist"
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:divider="@color/gray"
-                android:dividerHeight="1dp"></ListView>
-
 
         </LinearLayout>
     </HorizontalScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TableRow
+            android:id="@+id/tr_label_attend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@layout/tableborder_stock"
+            android:gravity="center"
+            android:visibility="gone"
+            android:weightSum="3">
+
+            <TextView
+                style="@style/report_textview_heading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Date" />
+
+            <TextView
+                style="@style/report_textview_heading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Attendance" />
+
+            <TextView
+                style="@style/report_textview_heading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Absent Type" />
+
+        </TableRow>
+
+        <ListView
+            android:id="@+id/attendancelist"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:divider="@color/gray"
+            android:dividerHeight="1dp"></ListView>
+
+    </LinearLayout>
 
 
 </LinearLayout>

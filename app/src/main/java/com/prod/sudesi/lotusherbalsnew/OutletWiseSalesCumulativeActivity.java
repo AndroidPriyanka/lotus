@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,11 +15,14 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.prod.sudesi.lotusherbalsnew.adapter.OutletWiseSalesAdapter;
 import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
 import com.prod.sudesi.lotusherbalsnew.libs.LotusWebservice;
+
+import org.ksoap2.serialization.SoapObject;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -57,6 +61,10 @@ public class OutletWiseSalesCumulativeActivity extends Activity {
     Date startdate, enddate;
     ArrayList<String> dates_array;
 
+    private OutletWiseSalesAdapter adapter;
+
+    ArrayList<HashMap<String, String>> final_array;
+
     ConnectionDetector cd;
 
     @SuppressLint("CommitPrefEdits")
@@ -79,11 +87,13 @@ public class OutletWiseSalesCumulativeActivity extends Activity {
         shp = context.getSharedPreferences("Lotus", MODE_PRIVATE);
         shpeditor = shp.edit();
 
-        listView_outletwisesales_report = (ListView)findViewById(R.id.listView_outletwisesales_report);
+        listView_outletwisesales_report = (ListView) findViewById(R.id.listView_outletwisesales_report);
 
-        tv_h_username = (TextView)findViewById(R.id.tv_h_username);
-        btn_home = (Button)findViewById(R.id.btn_home);
-        btn_logout = (Button)findViewById(R.id.btn_logout);
+        final_array = new ArrayList<HashMap<String, String>>();
+
+        tv_h_username = (TextView) findViewById(R.id.tv_h_username);
+        btn_home = (Button) findViewById(R.id.btn_home);
+        btn_logout = (Button) findViewById(R.id.btn_logout);
 
         username = shp.getString("username", "");
         Log.v("", "username==" + username);
@@ -159,18 +169,12 @@ public class OutletWiseSalesCumulativeActivity extends Activity {
             e.printStackTrace();
         }
 
-        /*try {
-            new TotalOutletSale().execute();
-        }catch(Exception e){
+        try {
+            new DubaiTotalOutletSaleAPK().execute();
+        } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
 
-    }
-
-    private void loadReports() {
-        outletWiseSalesAdapter = new OutletWiseSalesAdapter(OutletWiseSalesCumulativeActivity.this, todaymessagelist);
-        listView_outletwisesales_report.setAdapter(outletWiseSalesAdapter);// add custom adapter to
-        // listview
     }
 
     @SuppressLint("WrongConstant")
@@ -229,5 +233,82 @@ public class OutletWiseSalesCumulativeActivity extends Activity {
         }
 
         return startend;
+    }
+
+
+    public class DubaiTotalOutletSaleAPK extends AsyncTask<Void, Void, SoapObject> {
+
+        SoapObject soap_result;
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+            prgdialog.setTitle("Status");
+            prgdialog.setMessage("Please wait...");
+            prgdialog.show();
+        }
+
+
+        @Override
+        protected SoapObject doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+
+            if (!cd.isConnectingToInternet()) {
+                soap_result = null;
+            } else {
+                String startdate[] = getStartEnd(str_Month, year);
+
+                soap_result = service.DubaiTotalOutletSaleAPK(username, startdate[0], startdate[1]);
+                if (soap_result != null) {
+                    for (int i = 0; i < soap_result.getPropertyCount(); i++) {
+                        SoapObject getmessaage = (SoapObject) soap_result.getProperty(i);
+
+                        if (getmessaage != null) {
+                            if (getmessaage.getProperty("outletname") != null && !getmessaage.getProperty("outletname").toString().equalsIgnoreCase("anyType{}")) {
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put("outletname", String.valueOf(getmessaage.getProperty("outletname")));
+
+                                if (getmessaage.getProperty("SoldStock") != null && !getmessaage.getProperty("SoldStock").toString().equalsIgnoreCase("anyType{}")) {
+                                    map.put("SoldStock", String.valueOf(getmessaage.getProperty("SoldStock")));
+                                } else {
+                                    map.put("SoldStock", "0");
+                                }
+
+                                if (getmessaage.getProperty("NetAmount") != null && !getmessaage.getProperty("NetAmount").toString().equalsIgnoreCase("anyType{}")) {
+                                    map.put("NetAmount", String.valueOf(getmessaage.getProperty("NetAmount")));
+                                } else {
+                                    map.put("NetAmount", "0");
+                                }
+
+                                final_array.add(map);
+                            }
+                        }
+                    }
+
+
+                }
+            }
+
+            return soap_result;
+        }
+
+
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+            prgdialog.dismiss();
+            if (result != null) {
+                adapter = new OutletWiseSalesAdapter(OutletWiseSalesCumulativeActivity.this, final_array);
+                listView_outletwisesales_report.setAdapter(adapter);// add custom adapter to
+                adapter.notifyDataSetChanged();
+
+
+            } else {
+                Toast.makeText(OutletWiseSalesCumulativeActivity.this, "Please Check Internet Connectivity", Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 }

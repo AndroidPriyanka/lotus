@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.prod.sudesi.lotusherbalsnew.adapter.BAReportAdapter;
+import com.prod.sudesi.lotusherbalsnew.adapter.BAReportAdapterDubai;
 import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
 import com.prod.sudesi.lotusherbalsnew.libs.LotusWebservice;
@@ -46,6 +47,8 @@ public class BAYearWiseReport extends Activity {
     private ProgressDialog prgdialog;
 
     private BAReportAdapter adapter;
+
+    private BAReportAdapterDubai adapter1;
 
     LotusWebservice service;
 
@@ -106,6 +109,7 @@ public class BAYearWiseReport extends Activity {
 
         if (role.equalsIgnoreCase("DUB")) {
             yearlayout.setVisibility(View.GONE);
+            colorskinlayout.setVisibility(View.GONE);
             yearlayoutdubai.setVisibility(View.VISIBLE);
         }
 
@@ -312,7 +316,11 @@ public class BAYearWiseReport extends Activity {
 
                 Toast.makeText(BAYearWiseReport.this, "Connectivity Error!! Please try again", Toast.LENGTH_SHORT).show();
             } else {
-                loadReports();
+                if(role.equalsIgnoreCase("DUB")){
+                    loadReportsforDubai();
+                }else{
+                    loadReports();
+                }
             }
         }
     }
@@ -427,18 +435,41 @@ public class BAYearWiseReport extends Activity {
 
                     if (getmessaage != null) {
 
-                        map.put("GrowthCSkin", String.valueOf(getmessaage.getProperty("GrowthCSkin")));
+                        if (getmessaage.getProperty("GrowthCSkin") != null && !getmessaage.getProperty("GrowthCSkin").toString().equalsIgnoreCase("anyType{}")) {
+                            map.put("GrowthCSkin", String.valueOf(getmessaage.getProperty("GrowthCSkin")));
+                        } else {
+                            map.put("GrowthCSkin", "0");
+                        }
 
-                        map.put("GrowthPSkin", String.valueOf(getmessaage.getProperty("GrowthPSkin")));
+                        if (getmessaage.getProperty("GrowthPSkin") != null && !getmessaage.getProperty("GrowthPSkin").toString().equalsIgnoreCase("anyType{}")) {
+                            map.put("GrowthPSkin", String.valueOf(getmessaage.getProperty("GrowthPSkin")));
+                        } else {
+                            map.put("GrowthPSkin", "0");
+                        }
 
-                        map.put("NetAmountCSkin", String.valueOf(getmessaage.getProperty("NetAmountCSkin")));
+                        if (getmessaage.getProperty("NetAmountCSkin") != null && !getmessaage.getProperty("NetAmountCSkin").toString().equalsIgnoreCase("anyType{}")) {
+                            map.put("NetAmountCSkin", String.valueOf(getmessaage.getProperty("NetAmountCSkin")));
+                        } else {
+                            map.put("NetAmountCSkin", "0");
+                        }
 
-                        map.put("NetAmountPSkin", String.valueOf(getmessaage.getProperty("NetAmountPSkin")));
+                        if (getmessaage.getProperty("NetAmountPSkin") != null && !getmessaage.getProperty("NetAmountPSkin").toString().equalsIgnoreCase("anyType{}")) {
+                            map.put("NetAmountPSkin", String.valueOf(getmessaage.getProperty("NetAmountPSkin")));
+                        } else {
+                            map.put("NetAmountPSkin", "0");
+                        }
 
-                        map.put("years_MonthsC", String.valueOf(getmessaage.getProperty("years_MonthsC")));
+                        if (getmessaage.getProperty("years_MonthsC") != null && !getmessaage.getProperty("years_MonthsC").toString().equalsIgnoreCase("anyType{}")) {
+                            map.put("years_MonthsC", String.valueOf(getmessaage.getProperty("years_MonthsC")));
+                        } else {
+                            map.put("years_MonthsC", "0");
+                        }
 
-                        map.put("years_MonthsP", String.valueOf(getmessaage.getProperty("years_MonthsP")));
-
+                        if (getmessaage.getProperty("years_MonthsP") != null && !getmessaage.getProperty("years_MonthsP").toString().equalsIgnoreCase("anyType{}")) {
+                            map.put("years_MonthsP", String.valueOf(getmessaage.getProperty("years_MonthsP")));
+                        } else {
+                            map.put("years_MonthsP", "0");
+                        }
 
                         todaymessagelist.add(map);
                     }
@@ -463,5 +494,10 @@ public class BAYearWiseReport extends Activity {
         adapter = new BAReportAdapter(BAYearWiseReport.this, todaymessagelist);
         lv_ba_report.setAdapter(adapter);// add custom adapter to
         // listview
+    }
+
+    private void loadReportsforDubai() {
+        adapter1 = new BAReportAdapterDubai(BAYearWiseReport.this, todaymessagelist);
+        lv_ba_report.setAdapter(adapter1);
     }
 }
