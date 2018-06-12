@@ -1684,6 +1684,62 @@ public class Dbcon {
 
     }
 
+    public void insertProductMasterFirsttimefordubai(String db_stock_id, String id, String productId,
+                                             String catCodeId, String eANCode, String empId,
+                                             String productCategory, String productType, String productName,
+                                             String opening_Stock, String freshStock, String stock_inhand,
+                                             String soldStock, String s_Return_NonSaleable,
+                                             String s_Return_Saleable, String closingBal, String grossAmount,
+                                             String discount, String netAmount, String size, String price,
+                                             String lMD, String androidCreatedDate, String month, String year,
+                                                     String outletcode, String singleoffer) {
+        // TODO Auto-generated method stub
+
+        ContentValues values = new ContentValues();
+        // for (int i = 0; i < count1; i++) {
+
+        Log.e("inserting into stock==", "");
+
+        values.put("product_category", productCategory);
+        values.put("product_type", productType);
+        values.put("product_name", productName);
+        values.put("db_stock_id", db_stock_id);
+        values.put("db_id", productId);
+        values.put("product_id", catCodeId);
+        values.put("eancode", eANCode);
+        values.put("size", size);
+        values.put("price", price);
+        values.put("opening_stock", opening_Stock);
+        values.put("stock_received", freshStock);
+        values.put("stock_in_hand", stock_inhand);
+        values.put("sold_stock", soldStock);
+        values.put("return_non_saleable", s_Return_NonSaleable);
+        values.put("return_saleable", s_Return_Saleable);
+        values.put("close_bal", closingBal);
+        values.put("total_gross_amount", grossAmount);
+        values.put("discount", discount);
+        values.put("emp_id", empId);
+        values.put("total_net_amount", netAmount);
+        values.put("last_modified_date", lMD);
+        values.put("insert_date", androidCreatedDate);
+        values.put("updateDate", androidCreatedDate);
+        values.put("savedServer", "1");
+        values.put("month", month);
+        values.put("year", year);
+        values.put("FLRCode", outletcode);
+        values.put("SingleOffer", productType);
+
+        Log.e("", "values==" + values);
+
+        database.insert("stock", null, values);
+
+        // }
+        // getStockdetails();
+        database.close();
+
+
+    }
+
     public void insertSyncLog(String Exception, String LineNo, String methodname,
                               String createddate, String lastmodifieddate, String username,
                               String SyncMethod, String result) {

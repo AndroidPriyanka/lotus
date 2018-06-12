@@ -1634,6 +1634,36 @@ public class LotusWebservice {
 
 	}
 
+	public SoapObject DataDownloadDubai(String bacode, String Fromdate, String Todate, String outletcode) {
+		SoapObject result = null;
+		try {
+			Log.v("", "sync stock service called");
+			SoapObject request = new SoapObject("http://tempuri.org/",
+					"DataDownloadDubai");
+			request.addProperty("bacode", bacode);
+			request.addProperty("Fromdate", Fromdate);
+			request.addProperty("Todate", Todate);
+			request.addProperty("outletcode", outletcode);
+			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+					SoapEnvelope.VER11);// soap envelop with version
+			envelope.setOutputSoapObject(request); // set request object
+			envelope.dotNet = true;
+
+			HttpTransportSE androidHttpTransport = new HttpTransportSE(url,60000);// http
+			// transport
+			// call
+			androidHttpTransport.call(
+					"http://tempuri.org/IService1/DataDownloadDubai", envelope);
+
+			result = (SoapObject) envelope.getResponse();
+			Log.e("DataDownloadDubai=", result.toString());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 	//------------------------------END--------------------------------------
 	
 }

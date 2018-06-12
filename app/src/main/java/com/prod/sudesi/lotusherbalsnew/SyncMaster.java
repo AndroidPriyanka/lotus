@@ -53,11 +53,15 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 import static android.content.ContentValues.TAG;
 
@@ -79,7 +83,7 @@ public class SyncMaster extends Activity {
     int soapresultforvisibilityid;
 
     private double lon = 0.0, lat = 0.0;
-    String username, FLRCode, bdename, imgpth, producttype;
+    String username, FLRCode, bdename, imgpth, producttype,role;
 
     // shredpreference
     private SharedPreferences sharedpre = null;
@@ -104,10 +108,14 @@ public class SyncMaster extends Activity {
     ArrayList<HashMap<String, String>> listofimages = new ArrayList<HashMap<String, String>>();
 
     public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
-//    public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock/";//Production Server
+    //    public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock/";//Production Server
     private JSONArray array = new JSONArray();
     String flag;
     String ErroFlag = "";
+
+    Date startdate, enddate;
+    ArrayList<String> dates_array;
+    String str_BOC, year,current_year,year1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,7 +161,9 @@ public class SyncMaster extends Activity {
         username = sp.getString("username", "");
         Log.e("", "username==" + username);
 
-        FLRCode = sp.getString("FLRCode","");
+        FLRCode = sp.getString("FLRCode", "");
+
+        role = sp.getString("Role","");
 
         bdename = sp.getString("BDEusername", "");
 
@@ -162,6 +172,52 @@ public class SyncMaster extends Activity {
         btn_logout = (Button) findViewById(R.id.btn_logout);
 
         tv_h_username.setText(bdename);
+
+        if(role.equalsIgnoreCase("DUB")) {
+            Calendar cal = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat(
+                    "yyyy-MMMM-dd");
+            String insert_timestamp = sdf.format(cal
+                    .getTime());
+
+            String[] items1 = insert_timestamp.split("-");
+            year = items1[0];
+            str_BOC = items1[1];
+
+            System.out.println("   startdate--" + getStartEndForDubai(str_BOC, year)[0]);
+            System.out.println("   enddate--" + getStartEndForDubai(str_BOC, year)[1]);
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            try {
+
+                startdate = format.parse(getStartEndForDubai(str_BOC, year)[0]);
+                enddate = format.parse(getStartEndForDubai(str_BOC, year)[1]);
+
+                System.out.println("   startdate1--" + startdate);
+                System.out.println("   enddate1--" + enddate);
+
+                List<Date> dates = getDaysBetweenDates(startdate, enddate);
+
+                Log.e("dates", dates.toString());
+
+                dates_array = new ArrayList<String>();
+
+                for (int i = 0; i < dates.size(); i++) {
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+                    String reportDate = df.format(dates.get(i));
+                    Log.d("Date is", " " + reportDate);
+                    dates_array.add(reportDate);
+
+                    // Print what date is today!
+                    System.out.println("Report Date: " + reportDate);
+                }
+
+
+            } catch (ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
 
         btn_logout.setOnClickListener(new OnClickListener() {
 
@@ -218,7 +274,11 @@ public class SyncMaster extends Activity {
                     Toast.makeText(context, "Data Download not use for Floter", Toast.LENGTH_LONG).show();
                 } else {
                     if (cd.isCurrentDateMatchDeviceDate()) {
-                        new InsertFirstTimeMaster().execute();
+                        if(role.equalsIgnoreCase("DUB")){
+                            new DataDownloadForDubai().execute();
+                        }else {
+                            new InsertFirstTimeMaster().execute();
+                        }
                     } else {
                         Toast.makeText(SyncMaster.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
 
@@ -250,8 +310,8 @@ public class SyncMaster extends Activity {
                     readusermanual();
                     /*
                      * Intent i = new Intent(MainActivity.this,
-					 * UserManual.class); startActivity(i);
-					 */
+                     * UserManual.class); startActivity(i);
+                     */
                 } catch (Exception e) {
 
                 }
@@ -277,9 +337,9 @@ public class SyncMaster extends Activity {
                     }
                 }, 5000);// set time as per your requirement
 
-                if(cd.isCurrentDateMatchDeviceDate()) {
+                if (cd.isCurrentDateMatchDeviceDate()) {
                     uploaddata();
-                }else{
+                } else {
                     Toast.makeText(SyncMaster.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
 
                 }
@@ -307,9 +367,9 @@ public class SyncMaster extends Activity {
                     }
                 }, 5000);// set time as per your requirement
 
-                if(cd.isCurrentDateMatchDeviceDate()) {
+                if (cd.isCurrentDateMatchDeviceDate()) {
                     new InsertProductMaster().execute();
-                }else{
+                } else {
                     Toast.makeText(SyncMaster.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
 
                 }
@@ -632,10 +692,10 @@ public class SyncMaster extends Activity {
                                     }
                                     /*
                                      * if (order_flag!=null ||
-									 * order_flag.equalsIgnoreCase("NULL")) {
-									 * Log.e("", "anytype for sku_h");
-									 * order_flag = " "; }
-									 */
+                                     * order_flag.equalsIgnoreCase("NULL")) {
+                                     * Log.e("", "anytype for sku_h");
+                                     * order_flag = " "; }
+                                     */
 
                                     Log.v("", "flag=" + flag);
                                     // if (flag.equalsIgnoreCase("E")) {
@@ -698,7 +758,7 @@ public class SyncMaster extends Activity {
                                     db.insertSyncLog(error, String.valueOf(n),
                                             "GetProducts()", Createddate,
                                             Createddate,
-                                            sp.getString("username", ""),
+                                            username,
                                             "GetProducts", "Fail");
                                 }
 
@@ -742,7 +802,7 @@ public class SyncMaster extends Activity {
                             db.insertSyncLog("GetProducts_SE",
                                     String.valueOf(n), "GetProducts()",
                                     Createddate, Createddate,
-                                    sp.getString("username", ""),
+                                    username,
                                     "GetProducts", "Fail");
                         }
                     }
@@ -763,7 +823,7 @@ public class SyncMaster extends Activity {
                     db.insertSyncLog(
                             "Internet Connection Lost, Soap in giving null while 'GetProducts'",
                             String.valueOf(n), "GetProducts()", Createddate,
-                            Createddate, sp.getString("username", ""),
+                            Createddate, username,
                             "GetProducts", "Fail");
                 }
 
@@ -1067,7 +1127,7 @@ public class SyncMaster extends Activity {
                                     db.insertSyncLog(error, String.valueOf(n),
                                             "GetTesterProducts()", Createddate,
                                             Createddate,
-                                            sp.getString("username", ""),
+                                            username,
                                             "GetTesterProducts()", "Fail");
                                 }
 
@@ -1111,7 +1171,7 @@ public class SyncMaster extends Activity {
                             db.insertSyncLog("GetTesterProducts_SE",
                                     String.valueOf(n), "GetTesterProducts()",
                                     Createddate, Createddate,
-                                    sp.getString("username", ""),
+                                    username,
                                     "GetTesterProducts()", "Fail");
                         }
                     }
@@ -1133,7 +1193,7 @@ public class SyncMaster extends Activity {
                             "Internet Connection Lost, Soap in giving null while 'GetTesterProducts'",
                             String.valueOf(n), "GetTesterProducts()",
                             Createddate, Createddate,
-                            sp.getString("username", ""),
+                            username,
                             "GetTesterProducts()", "Fail");
                 }
             }
@@ -1214,9 +1274,9 @@ public class SyncMaster extends Activity {
         public syncAllData(String flag) {
             super();
             // do stuff
-            if(flag.equalsIgnoreCase("TRUE")){
+            if (flag.equalsIgnoreCase("TRUE")) {
                 ErroFlag = "1";
-            }else{
+            } else {
                 ErroFlag = "0";
             }
         }
@@ -1347,7 +1407,7 @@ public class SyncMaster extends Activity {
                                                     "SaveTesterData()",
                                                     Createddate,
                                                     Createddate,
-                                                    sp.getString("username", ""),
+                                                    username,
                                                     "SaveTesterData()", "Fail");
                                         }
                                     } else {
@@ -1371,7 +1431,7 @@ public class SyncMaster extends Activity {
                                                 String.valueOf(n),
                                                 "SaveTesterData()",
                                                 Createddate, Createddate,
-                                                sp.getString("username", ""),
+                                                username,
                                                 "SaveTesterData()", "Fail");
 
                                     }
@@ -1406,7 +1466,7 @@ public class SyncMaster extends Activity {
                                 .getLineNumber();
                         db.insertSyncLog(Error, String.valueOf(n),
                                 "SaveTesterData()", Createddate, Createddate,
-                                sp.getString("username", ""),
+                                username,
                                 "SaveTesterData()", "Fail");
 
                     }
@@ -1486,7 +1546,7 @@ public class SyncMaster extends Activity {
 													"SaveAttendance()",
 													Createddate,
 													Createddate,
-													sp.getString("username", ""),
+													username,
 													"SaveAttendance()", "Fail");
 
 										}
@@ -1511,7 +1571,7 @@ public class SyncMaster extends Activity {
 												String.valueOf(n),
 												"SaveAttendance()",
 												Createddate, Createddate,
-												sp.getString("username", ""),
+												username,
 												"SaveAttendance()", "Fail");
 
 									}
@@ -1542,7 +1602,7 @@ public class SyncMaster extends Activity {
 								.getLineNumber();
 						db.insertSyncLog(Error, String.valueOf(n),
 								"SaveAttendance()", Createddate, Createddate,
-								sp.getString("username", ""),
+								username,
 								"SaveAttendance()", "Fail");
 
 					}*/
@@ -1776,7 +1836,7 @@ public class SyncMaster extends Activity {
                                                 String.valueOf(n),
                                                 "SaveStock()", Createddate,
                                                 Createddate,
-                                                sp.getString("username", ""),
+                                                username,
                                                 "SaveStock()", "Fail");
 
                                     }
@@ -1816,7 +1876,7 @@ public class SyncMaster extends Activity {
                                 .getLineNumber();
                         db.insertSyncLog(Error, String.valueOf(n),
                                 "SaveStock()", Createddate, Createddate,
-                                sp.getString("username", ""), "SaveStock()",
+                                username, "SaveStock()",
                                 "Fail");
 
                     }*/
@@ -2096,7 +2156,7 @@ public class SyncMaster extends Activity {
                                                     "SaveStockEveryDayNetvalue()",
                                                     Createddate,
                                                     Createddate,
-                                                    sp.getString("username", ""),
+                                                    username,
                                                     "SaveStockEveryDayNetvalue()",
                                                     "Fail");
 
@@ -2124,7 +2184,7 @@ public class SyncMaster extends Activity {
                                                 String.valueOf(n),
                                                 "SaveStockEveryDayNetvalue()",
                                                 Createddate, Createddate,
-                                                sp.getString("username", ""),
+                                                username,
                                                 "SaveStockEveryDayNetvalue()",
                                                 "Fail");
 
@@ -2164,7 +2224,7 @@ public class SyncMaster extends Activity {
                                 .getLineNumber();
                         db.insertSyncLog(Error, String.valueOf(n),
                                 "SaveStockEveryDayNetvalue()", Createddate,
-                                Createddate, sp.getString("username", ""),
+                                Createddate, username,
                                 "SaveStockEveryDayNetvalue()", "Fail");
 
                     }
@@ -2237,23 +2297,23 @@ public class SyncMaster extends Activity {
                                                         .getimageDetails1();
 
 												*//*
-												 * if (upload_image != null &&
-												 * upload_image.moveToFirst()) {
-												 *
-												 * upload_image.moveToFirst();
-												 * do{ Log.v("",
-												 * "visibility_id="
-												 * +upload_image.getString(5));
-												 * Log.v("",
-												 * "visibility_id="+upload_image
-												 * .getString(6));
-												 *
-												 * }while(upload_image.moveToNext
-												 * ());
-												 *
-												 *
-												 * }
-												 *//*
+                     * if (upload_image != null &&
+                     * upload_image.moveToFirst()) {
+                     *
+                     * upload_image.moveToFirst();
+                     * do{ Log.v("",
+                     * "visibility_id="
+                     * +upload_image.getString(5));
+                     * Log.v("",
+                     * "visibility_id="+upload_image
+                     * .getString(6));
+                     *
+                     * }while(upload_image.moveToNext
+                     * ());
+                     *
+                     *
+                     * }
+                     *//*
                                                 if (upload_image.getCount() > 0) {
 
                                                     if (upload_image != null
@@ -2673,26 +2733,26 @@ public class SyncMaster extends Activity {
                                                 }
 
 												*//*
-												 * String image_name_return =
-												 * ImageUtils
-												 * .getCompressedImagePath(
-												 * image_array1 .getString(2),
-												 * username, producttype); if
-												 * (image_name_return==null) {
-												 *
-												 *
-												 * Log.e("",
-												 * "image_name_return=" +
-												 * image_name_return); } else {
-												 *
-												 * Log.e("",
-												 * "image_name_return=" +
-												 * image_name_return);
-												 *
-												 *
-												 *
-												 * }
-												 *//*
+                     * String image_name_return =
+                     * ImageUtils
+                     * .getCompressedImagePath(
+                     * image_array1 .getString(2),
+                     * username, producttype); if
+                     * (image_name_return==null) {
+                     *
+                     *
+                     * Log.e("",
+                     * "image_name_return=" +
+                     * image_name_return); } else {
+                     *
+                     * Log.e("",
+                     * "image_name_return=" +
+                     * image_name_return);
+                     *
+                     *
+                     *
+                     * }
+                     *//*
 
                                             } while (image_array1.moveToNext());
 
@@ -2720,7 +2780,7 @@ public class SyncMaster extends Activity {
                                                 String.valueOf(n),
                                                 "SaveVisibility()",
                                                 Createddate, Createddate,
-                                                sp.getString("username", ""),
+                                                username,
                                                 "Transaction Upload", "Fail");
 
                                     }
@@ -2738,27 +2798,27 @@ public class SyncMaster extends Activity {
                         }
 
 						*//*
-						 * if(soap_result_img != null && soap_result_img_data
-						 * !=null &&
-						 * !soap_result_img_data.toString().equalsIgnoreCase
-						 * ("SE") ){
-						 *
-						 * String result_visibility =
-						 * soap_result_img.toString(); String result_visibility1
-						 * = soap_result_img_data.toString(); Log.v("",
-						 * "result_visibility=" + result_visibility); Log.v("",
-						 * "result_visibility1=" + result_visibility1);
-						 *
-						 *
-						 *
-						 * if (result_visibility1.equalsIgnoreCase("TRUE")) {
-						 *
-						 * db.update_scan_data(); db.update_image_data();
-						 *
-						 * db.close();
-						 *
-						 * } }
-						 *//*
+                     * if(soap_result_img != null && soap_result_img_data
+                     * !=null &&
+                     * !soap_result_img_data.toString().equalsIgnoreCase
+                     * ("SE") ){
+                     *
+                     * String result_visibility =
+                     * soap_result_img.toString(); String result_visibility1
+                     * = soap_result_img_data.toString(); Log.v("",
+                     * "result_visibility=" + result_visibility); Log.v("",
+                     * "result_visibility1=" + result_visibility1);
+                     *
+                     *
+                     *
+                     * if (result_visibility1.equalsIgnoreCase("TRUE")) {
+                     *
+                     * db.update_scan_data(); db.update_image_data();
+                     *
+                     * db.close();
+                     *
+                     * } }
+                     *//*
                     } catch (Exception e) {
 
                         e.printStackTrace();
@@ -2777,7 +2837,7 @@ public class SyncMaster extends Activity {
                                 .getLineNumber();
                         db.insertSyncLog(Error, String.valueOf(n),
                                 "Visibility()", Createddate, Createddate,
-                                sp.getString("username", ""), "Visibility()",
+                                username, "Visibility()",
                                 "Fail");
 
                     }
@@ -2899,7 +2959,7 @@ public class SyncMaster extends Activity {
                                         // date);
                                         contentvalues.put("FLAG", "U");
                                         db.updatevalues("SYNC_LOG",
-                                                contentvalues,"ID", eid);
+                                                contentvalues, "ID", eid);
                                         db.delete_errorlog_data();
 
                                     } else if (statussss.equalsIgnoreCase("SE")) {
@@ -2923,7 +2983,7 @@ public class SyncMaster extends Activity {
                                                 String.valueOf(n),
                                                 "StoreErrorLogTablettxt()",
                                                 Createddate, Createddate,
-                                                sp.getString("username", ""),
+                                                username,
                                                 "StoreErrorLogTablettxt()",
                                                 "Fail");
 
@@ -2948,7 +3008,7 @@ public class SyncMaster extends Activity {
                                             String.valueOf(n),
                                             "StoreErrorLogTablettxt()",
                                             Createddate, Createddate,
-                                            sp.getString("username", ""),
+                                            username,
                                             "StoreErrorLogTablettxt()", "Fail");
 
                                     // String errors=
@@ -2989,7 +3049,7 @@ public class SyncMaster extends Activity {
 
                         db.insertSyncLog(error, String.valueOf(n),
                                 "StoreErrorLogTablettxt()", Createddate,
-                                Createddate, sp.getString("username", ""),
+                                Createddate, username,
                                 "StoreErrorLogTablettxt()", "Fail");
 
                     }
@@ -3081,7 +3141,7 @@ public class SyncMaster extends Activity {
                                                 String.valueOf(n),
                                                 "InsertStockCummData()",
                                                 Createddate, Createddate,
-                                                sp.getString("username", ""),
+                                                username,
                                                 "Data Upload", "Fail");
 
                                     }
@@ -3107,7 +3167,7 @@ public class SyncMaster extends Activity {
                                             String.valueOf(n),
                                             "InsertStockCummData()",
                                             Createddate, Createddate,
-                                            sp.getString("username", ""),
+                                            username,
                                             "Data Upload", "Fail");
 
                                 }
@@ -3356,29 +3416,29 @@ public class SyncMaster extends Activity {
                                             );
 
 									*//*
-									 * soap_result_stock = service.SaveStock(
-									 * stock_array.getString(2),
-									 * stock_array.getString(1), eancode_string,
-									 * username, stock_array.getString(4),
-									 * stock_array.getString(5),
-									 * stock_array.getString(6), shad,
-									 *
-									 * opening_stock_string,
-									 * stock_receive_string,
-									 * stock_in_hand_string,
-									 *
-									 * sold_string, return_salable_string,
-									 * return_non_salable_string,
-									 *
-									 * close_bal_string, gross_amount_string,
-									 *
-									 * discount_string, net_amount_string,
-									 * size_string, price_string,
-									 * stock_array.getString(21)
-									 *
-									 *
-									 * );
-									 *//*
+                     * soap_result_stock = service.SaveStock(
+                     * stock_array.getString(2),
+                     * stock_array.getString(1), eancode_string,
+                     * username, stock_array.getString(4),
+                     * stock_array.getString(5),
+                     * stock_array.getString(6), shad,
+                     *
+                     * opening_stock_string,
+                     * stock_receive_string,
+                     * stock_in_hand_string,
+                     *
+                     * sold_string, return_salable_string,
+                     * return_non_salable_string,
+                     *
+                     * close_bal_string, gross_amount_string,
+                     *
+                     * discount_string, net_amount_string,
+                     * size_string, price_string,
+                     * stock_array.getString(21)
+                     *
+                     *
+                     * );
+                     *//*
 
                                     if (soap_result_stock != null) {
                                         String result_stock = soap_result_stock
@@ -3438,7 +3498,7 @@ public class SyncMaster extends Activity {
                                                 String.valueOf(n),
                                                 "SaveStock()", Createddate,
                                                 Createddate,
-                                                sp.getString("username", ""),
+                                                username,
                                                 "SaveStock()", "Fail");
 
                                     }
@@ -3477,7 +3537,7 @@ public class SyncMaster extends Activity {
                                 .getLineNumber();
                         db.insertSyncLog(Error, String.valueOf(n),
                                 "SaveStock()", Createddate, Createddate,
-                                sp.getString("username", ""), "SaveStock()",
+                                username, "SaveStock()",
                                 "Fail");
 
                     }*/
@@ -3514,7 +3574,7 @@ public class SyncMaster extends Activity {
                     String strDate = mdformat.format(calendar1.getTime());
 
                     soap_result = service.DataDownload(
-                            sp.getString("username", ""), strDate);//strDate
+                            username, strDate);//strDate
 
                     if (soap_result != null) {
 
@@ -3957,7 +4017,7 @@ public class SyncMaster extends Activity {
                                 db.insertSyncLog("FirstTimeSync_SE",
                                         String.valueOf(n), "DataDownload()",
                                         Createddate, Createddate,
-                                        sp.getString("username", ""),
+                                        username,
                                         "DataDownload()", "Fail");
                                 db.close();
                             }
@@ -3978,13 +4038,13 @@ public class SyncMaster extends Activity {
                         db.insertSyncLog("Soup is null - DataDownload()",
                                 String.valueOf(n), "DataDownload()",
                                 Createddate, Createddate,
-                                sp.getString("username", ""), "Data Download",
+                                username, "Data Download",
                                 "Fail");
 
                     }
 
                     soap_result = service.DataDownloadForSale(
-                            sp.getString("username", ""), strDate);//strDate
+                            username, strDate);//strDate
 
                     if (soap_result != null) {
 
@@ -4427,7 +4487,7 @@ public class SyncMaster extends Activity {
                                 db.insertSyncLog("FirstTimeSync_SE",
                                         String.valueOf(n), "DataDownload()",
                                         Createddate, Createddate,
-                                        sp.getString("username", ""),
+                                        username,
                                         "DataDownload()", "Fail");
                                 db.close();
                             }
@@ -4448,13 +4508,13 @@ public class SyncMaster extends Activity {
                         db.insertSyncLog("Soup is null - DataDownload()",
                                 String.valueOf(n), "DataDownload()",
                                 Createddate, Createddate,
-                                sp.getString("username", ""), "Data Download",
+                                username, "Data Download",
                                 "Fail");
 
                     }
 
 					/*soap_result = service.SyncStockData(
-							sp.getString("username", ""), lastdatesync);
+							username, lastdatesync);
 					// soap_result =
 					// service.SyncStockData(sp.getString("username",
 					// ""),"05/01/2014 12:38:40");
@@ -4877,23 +4937,23 @@ public class SyncMaster extends Activity {
 
 								// }
 								*//*
-								 * } catch (Exception e) { // TODO: handle
-								 * exception e.printStackTrace(); String Error =
-								 * e.toString(); Log.v("","se2 error"); final
-								 * Calendar calendar = Calendar .getInstance();
-								 * SimpleDateFormat formatter = new
-								 * SimpleDateFormat( "MM/dd/yyyy HH:mm:ss");
-								 * String Createddate =
-								 * formatter.format(calendar .getTime()); Flag =
-								 * "4"; int n =
-								 * Thread.currentThread().getStackTrace
-								 * ()[2].getLineNumber(); db.open();
-								 * db.insertSyncLog(Error,String.valueOf(n),
-								 * "SyncStockData()"
-								 * ,Createddate,Createddate,sp.getString
-								 * ("username", ""),"SyncStockData()","Fail");
-								 * db.close(); }
-								 *//*
+                     * } catch (Exception e) { // TODO: handle
+                     * exception e.printStackTrace(); String Error =
+                     * e.toString(); Log.v("","se2 error"); final
+                     * Calendar calendar = Calendar .getInstance();
+                     * SimpleDateFormat formatter = new
+                     * SimpleDateFormat( "MM/dd/yyyy HH:mm:ss");
+                     * String Createddate =
+                     * formatter.format(calendar .getTime()); Flag =
+                     * "4"; int n =
+                     * Thread.currentThread().getStackTrace
+                     * ()[2].getLineNumber(); db.open();
+                     * db.insertSyncLog(Error,String.valueOf(n),
+                     * "SyncStockData()"
+                     * ,Createddate,Createddate,sp.getString
+                     * ("username", ""),"SyncStockData()","Fail");
+                     * db.close(); }
+                     *//*
 
 							} else if (soap_result1.getProperty("status")
 									.toString().equalsIgnoreCase("E")) {
@@ -4906,12 +4966,12 @@ public class SyncMaster extends Activity {
 										.UpdateTableData(db_stock_id_array,
 												"S", EmpId);
 								*//*
-								 * Log.e("",
-								 * "soap_update_stock_row= "+soap_update_stock_row
-								 * .toString());
-								 *
-								 * Log.e("", "string ids== "+db_stock_id_array);
-								 *//*
+                     * Log.e("",
+                     * "soap_update_stock_row= "+soap_update_stock_row
+                     * .toString());
+                     *
+                     * Log.e("", "string ids== "+db_stock_id_array);
+                     *//*
 								SimpleDateFormat dateFormat = new SimpleDateFormat(
 										"MM/dd/yyyy HH:mm:ss");
 								// get current date time with Date()
@@ -4960,7 +5020,7 @@ public class SyncMaster extends Activity {
 								db.insertSyncLog("FirstTimeSync_SE",
 										String.valueOf(n), "SyncStockData()",
 										Createddate, Createddate,
-										sp.getString("username", ""),
+										username,
 										"SyncStockData()", "Fail");
 								db.close();
 							}
@@ -4984,7 +5044,7 @@ public class SyncMaster extends Activity {
 						db.insertSyncLog("Soup is null - SyncStockData()",
 								String.valueOf(n), "SyncStockData()",
 								Createddate, Createddate,
-								sp.getString("username", ""), "Data Download",
+								username, "Data Download",
 								"Fail");
 
 					}*/
@@ -4996,7 +5056,7 @@ public class SyncMaster extends Activity {
                     db.close();
 
                     soap_result_tester = service.SyncGetTesterData(
-                            sp.getString("username", ""), lastdatesync1);// 09.10.2015
+                            username, lastdatesync1);// 09.10.2015
 
                     Log.e("pm", "pm1");
                     if (soap_result_tester != null) {
@@ -5222,25 +5282,25 @@ public class SyncMaster extends Activity {
                                 }
 
                                 // }
-								/*
-								 * } catch (Exception e) { // TODO: handle
-								 * exception e.printStackTrace(); String Error =
-								 * e.toString(); Log.v("","se2 error"); final
-								 * Calendar calendar = Calendar .getInstance();
-								 * SimpleDateFormat formatter = new
-								 * SimpleDateFormat( "MM/dd/yyyy HH:mm:ss");
-								 * String Createddate =
-								 * formatter.format(calendar .getTime()); Flag =
-								 * "4"; int n =
-								 * Thread.currentThread().getStackTrace
-								 * ()[2].getLineNumber(); db.open();
-								 * db.insertSyncLog(Error,String.valueOf(n),
-								 * "SyncGetTesterData()"
-								 * ,Createddate,Createddate,
-								 * sp.getString("username",
-								 * ""),"SyncGetTesterData()","Fail");
-								 * db.close(); }
-								 */
+                                /*
+                                 * } catch (Exception e) { // TODO: handle
+                                 * exception e.printStackTrace(); String Error =
+                                 * e.toString(); Log.v("","se2 error"); final
+                                 * Calendar calendar = Calendar .getInstance();
+                                 * SimpleDateFormat formatter = new
+                                 * SimpleDateFormat( "MM/dd/yyyy HH:mm:ss");
+                                 * String Createddate =
+                                 * formatter.format(calendar .getTime()); Flag =
+                                 * "4"; int n =
+                                 * Thread.currentThread().getStackTrace
+                                 * ()[2].getLineNumber(); db.open();
+                                 * db.insertSyncLog(Error,String.valueOf(n),
+                                 * "SyncGetTesterData()"
+                                 * ,Createddate,Createddate,
+                                 * sp.getString("username",
+                                 * ""),"SyncGetTesterData()","Fail");
+                                 * db.close(); }
+                                 */
 
                             } else if (soap_result_tester1
                                     .getProperty("status").toString()
@@ -5303,7 +5363,7 @@ public class SyncMaster extends Activity {
                                         String.valueOf(n),
                                         "SyncGetTesterData()", Createddate,
                                         Createddate,
-                                        sp.getString("username", ""),
+                                        username,
                                         "Data Download", "Fail");
                                 db.close();
                             }
@@ -5325,7 +5385,7 @@ public class SyncMaster extends Activity {
                         db.insertSyncLog("Soup is null - SyncGetTesterData()",
                                 String.valueOf(n), "SyncGetTesterData()",
                                 Createddate, Createddate,
-                                sp.getString("username", ""), "Data Download",
+                                username, "Data Download",
                                 "Fail");
                         db.close();
 
@@ -5342,7 +5402,7 @@ public class SyncMaster extends Activity {
                 db.close();
 
                 soap_result_boc_day = service.SyncStockNetvalue(
-                        sp.getString("username", ""), lastdatesync_boc_day);// 09.10.2015
+                        username, lastdatesync_boc_day);// 09.10.2015
 
                 Log.e("pm", "pm1");
                 if (soap_result_boc_day != null) {
@@ -5518,11 +5578,11 @@ public class SyncMaster extends Activity {
                             String LMD = soap_result_boc_day1
                                     .getProperty("LMD").toString();
 
-							/*
-							 * if(LMD == null){ LMD="";
-							 *
-							 * }
-							 */
+                            /*
+                             * if(LMD == null){ LMD="";
+                             *
+                             * }
+                             */
                             // ---
                             if (LMD == null) {
                                 LMD = "";
@@ -5753,22 +5813,22 @@ public class SyncMaster extends Activity {
 
                             }
                             // }
-							/*
-							 * } catch (Exception e) { // TODO: handle exception
-							 * e.printStackTrace(); String Error = e.toString();
-							 * Log.v("","se2 error"); final Calendar calendar =
-							 * Calendar .getInstance(); SimpleDateFormat
-							 * formatter = new SimpleDateFormat(
-							 * "MM/dd/yyyy HH:mm:ss"); String Createddate =
-							 * formatter.format(calendar .getTime()); Flag =
-							 * "4"; int n =
-							 * Thread.currentThread().getStackTrace(
-							 * )[2].getLineNumber(); db.open();
-							 * db.insertSyncLog(Error,String.valueOf(n),
-							 * "SyncStockNetvalue()"
-							 * ,Createddate,Createddate,sp.getString("username",
-							 * ""),"SyncStockNetvalue()","Fail"); db.close(); }
-							 */
+                            /*
+                             * } catch (Exception e) { // TODO: handle exception
+                             * e.printStackTrace(); String Error = e.toString();
+                             * Log.v("","se2 error"); final Calendar calendar =
+                             * Calendar .getInstance(); SimpleDateFormat
+                             * formatter = new SimpleDateFormat(
+                             * "MM/dd/yyyy HH:mm:ss"); String Createddate =
+                             * formatter.format(calendar .getTime()); Flag =
+                             * "4"; int n =
+                             * Thread.currentThread().getStackTrace(
+                             * )[2].getLineNumber(); db.open();
+                             * db.insertSyncLog(Error,String.valueOf(n),
+                             * "SyncStockNetvalue()"
+                             * ,Createddate,Createddate,sp.getString("username",
+                             * ""),"SyncStockNetvalue()","Fail"); db.close(); }
+                             */
 
                         } else if (soap_result_boc_day1.getProperty("status")
                                 .toString().equalsIgnoreCase("E")) {
@@ -5822,7 +5882,7 @@ public class SyncMaster extends Activity {
                             db.insertSyncLog("SyncStockNetvalue_SE",
                                     String.valueOf(n),
                                     "SyncStockNetvalue_SE()", Createddate,
-                                    Createddate, sp.getString("username", ""),
+                                    Createddate, username,
                                     "Data Download", "Fail");
                             db.close();
                         }
@@ -5844,7 +5904,7 @@ public class SyncMaster extends Activity {
                     db.insertSyncLog("Soap is null - SyncStockNetvalue()",
                             String.valueOf(n), "SyncStockNetvalue()",
                             Createddate, Createddate,
-                            sp.getString("username", ""), "Data Download",
+                            username, "Data Download",
                             "Fail");
                     db.close();
                 }
@@ -5857,7 +5917,7 @@ public class SyncMaster extends Activity {
                 db.close();
 
                 soap_result_monthwise = service.SyncStockCummData(
-                        sp.getString("username", ""),
+                        username,
                         lastdatesync_stock_mothwise);// 09.10.2015
 
                 Log.e("pm", "pm1");
@@ -6037,11 +6097,11 @@ public class SyncMaster extends Activity {
                             String LMD = soap_result_monthwise1.getProperty(
                                     "LMD").toString();
 
-							/*
-							 * if(LMD == null){ LMD="";
-							 *
-							 * }
-							 */
+                            /*
+                             * if(LMD == null){ LMD="";
+                             *
+                             * }
+                             */
 
                             if (LMD == null) {
                                 LMD = "";
@@ -6077,12 +6137,12 @@ public class SyncMaster extends Activity {
                                     .getProperty("AndroidCreatedDate")
                                     .toString();
 
-							/*
-							 * if(AndroidCreatedDate == null){
-							 * AndroidCreatedDate="";
-							 *
-							 * }
-							 */
+                            /*
+                             * if(AndroidCreatedDate == null){
+                             * AndroidCreatedDate="";
+                             *
+                             * }
+                             */
 
                             String MONTH = "", YEAR = "";
                             if (AndroidCreatedDate == null) {
@@ -6303,7 +6363,7 @@ public class SyncMaster extends Activity {
                             db.insertSyncLog("SyncStockCummData_SE",
                                     String.valueOf(n),
                                     "SyncStockCummData_SE()", Createddate,
-                                    Createddate, sp.getString("username", ""),
+                                    Createddate, username,
                                     "Data Download", "Fail");
                             db.close();
                         }
@@ -6327,7 +6387,7 @@ public class SyncMaster extends Activity {
                     db.insertSyncLog("Soup is null - SyncStockCummData()",
                             String.valueOf(n), "SyncStockCummData()",
                             Createddate, Createddate,
-                            sp.getString("username", ""), "Data Download",
+                            username, "Data Download",
                             "Fail");
                     db.close();
                 }
@@ -6355,7 +6415,7 @@ public class SyncMaster extends Activity {
                         .getLineNumber();
                 db.open();
                 db.insertSyncLog(Error, String.valueOf(n), "", Createddate,
-                        Createddate, sp.getString("username", ""),
+                        Createddate, username,
                         "Data Download", "Fail");
                 db.close();
 
@@ -6399,9 +6459,9 @@ public class SyncMaster extends Activity {
                                 public void onClick(DialogInterface dialog, int id) {
                                     //do things
                                     dialog.dismiss();
-                                   // boolean bocflag = true;
+                                    // boolean bocflag = true;
                                     Intent i = new Intent(SyncMaster.this, DashboardNewActivity.class);
-                                 //   i.putExtra("Bocflag",bocflag);
+                                    //   i.putExtra("Bocflag",bocflag);
                                     startActivity(i);
                                 }
                             });
@@ -6426,15 +6486,15 @@ public class SyncMaster extends Activity {
 						Toast.LENGTH_SHORT).show();
 */
                 } /*
-			 * else if (Flag.equalsIgnoreCase("3")) {
-			 *
-			 *
-			 * Toast.makeText(context, "Sync Successfully!!",
-			 * Toast.LENGTH_SHORT).show(); startActivity(new
-			 * Intent(SyncMaster.this, DashboardNewActivity.class));
-			 *
-			 * }
-			 */
+                 * else if (Flag.equalsIgnoreCase("3")) {
+                 *
+                 *
+                 * Toast.makeText(context, "Sync Successfully!!",
+                 * Toast.LENGTH_SHORT).show(); startActivity(new
+                 * Intent(SyncMaster.this, DashboardNewActivity.class));
+                 *
+                 * }
+                 */
                 // }
                 else if (Flag.equalsIgnoreCase("4")) {
 
@@ -6620,7 +6680,7 @@ public class SyncMaster extends Activity {
 
                 showProgreesDialog();
 //                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, URL, array, new Response.Listener<JSONArray>() {
-                    JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST,URL, array, new Response.Listener<JSONArray>() {
+                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, URL, array, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray jsonResponse) {
 
@@ -6653,7 +6713,7 @@ public class SyncMaster extends Activity {
 
                                     }
 
-                                    Log.e("JSON_TRUE",flag+"_MSG_"+message);
+                                    Log.e("JSON_TRUE", flag + "_MSG_" + message);
                                     new syncAllData(flag).execute();
 
                                 } else {
@@ -6679,9 +6739,9 @@ public class SyncMaster extends Activity {
 
                                     int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
                                     db.insertSyncLog(message, String.valueOf(n), "SaveStock()", Createddate,
-                                            Createddate, sp.getString("username", ""),
+                                            Createddate, username,
                                             "SaveStock()", "Fail");
-                                    Log.e("JSON_TRUE",flag+"_MSG_"+message);
+                                    Log.e("JSON_TRUE", flag + "_MSG_" + message);
                                     new syncAllData(ErroFlag).execute();
                                 }
                                 dissmissDialog();
@@ -6714,7 +6774,7 @@ public class SyncMaster extends Activity {
                                 "SaveStock()", "Fail");
 
 //                        Toast.makeText(context,"Stock Data not upload", Toast.LENGTH_SHORT).show();
-                        Log.e("JSON_ERROR","ERROR");
+                        Log.e("JSON_ERROR", "ERROR");
                         new syncAllData(ErroFlag).execute();
 
                     }
@@ -6736,17 +6796,16 @@ public class SyncMaster extends Activity {
                         DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                 TestApplication.getInstance().addToRequestQueue(jsonArrayRequest);
 
-            }else{
+            } else {
                 DisplayDialogMessage("Connectivity Error Please check internet");
             }
 
         } else {
-            Toast.makeText(this,"No Stock For Data Upload", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No Stock For Data Upload", Toast.LENGTH_SHORT).show();
             Log.e("NoStock dataupload",
                     String.valueOf(stock_array.getCount()));
         }
     }
-
 
 
     private void showProgreesDialog() {
@@ -6762,6 +6821,831 @@ public class SyncMaster extends Activity {
             progressDialog.dismiss();
 
     }
+
+
+    public class DataDownloadForDubai extends AsyncTask<Void, Void, SoapObject> {
+
+        private SoapObject soap_result = null;
+
+        SoapObject soap_result1 = null;
+        String Flag;
+
+        SoapPrimitive soap_update_stock_row = null;
+
+
+        int syncstockdata = 1;
+
+        String db_stock_id_array = "";
+
+        String EmpId = sp.getString("username", "");
+        String Erro_function = "";
+        String ErroFlag = "";
+
+        @Override
+        protected SoapObject doInBackground(Void... params) {
+
+            try {
+
+                if (!cd.isConnectingToInternet()) {
+
+                    Flag = "0";
+
+                } else {
+
+                    try {
+                        Log.e("", "saveto server1-stcok");
+                        db.open();
+                        stock_array = db.getStockdetails();
+                        // db.close();
+                        // ------------------
+
+                        if (stock_array.getCount() > 0) {
+
+                            if (stock_array != null && stock_array.moveToFirst()) {
+                                stock_array.moveToFirst();
+
+                                String shad;
+                                do {
+
+                                    Log.v("", "dbid=" + stock_array.getString(2));
+                                    Log.v("", "category_id=" + stock_array.getString(1));
+                                    Log.v("", "enacode=" + stock_array.getString(3));
+                                    Log.v("", "empid=" + stock_array.getString(9));
+                                    Log.v("", "product_category=" + stock_array.getString(4));
+                                    Log.v("", "product_type=" + stock_array.getString(5));
+                                    Log.v("", "product_name=" + stock_array.getString(6));
+                                    Log.v("", "opening_stock=" + stock_array.getString(10));
+                                    Log.v("", "stock_receive=" + stock_array.getString(11));
+                                    Log.v("", "stock_inhand=" + stock_array.getString(12));
+                                    Log.v("", "sold=" + stock_array.getString(16));
+                                    Log.v("", "return_s=" + stock_array.getString(14));
+                                    Log.v("", "return_ns=" + stock_array.getString(15));
+                                    Log.v("", "close_bal=" + stock_array.getString(13));
+                                    Log.v("", "t_gross=" + stock_array.getString(17));
+                                    Log.v("", "discount=" + stock_array.getString(19));
+                                    Log.v("", "net_amount=" + stock_array.getString(18));
+                                    Log.v("", "size=" + stock_array.getString(7));
+                                    Log.v("", "price=" + stock_array.getString(8));
+                                    Log.v("", "insert_date" + stock_array.getString(21));
+
+                                    if (stock_array.getString(23) != null
+                                            || !stock_array.getString(23).equalsIgnoreCase("null")) {
+
+                                        Log.v("", "shadeno=" + stock_array.getString(23));
+                                        shad = stock_array.getString(23).toString();
+
+                                    } else {
+                                        Log.v("", "shadeno=" + stock_array.getString(23));
+                                        shad = "";
+                                    }
+
+                                    SoapPrimitive soap_result_stock = service
+                                            .SaveStock(
+                                                    stock_array.getString(0),
+                                                    stock_array.getString(2),
+                                                    stock_array.getString(1),
+                                                    stock_array.getString(3),
+                                                    username,
+                                                    stock_array.getString(4),
+                                                    stock_array.getString(5),
+                                                    stock_array.getString(6),
+                                                    shad,
+                                                    stock_array.getString(10),
+                                                    stock_array.getString(11),
+                                                    stock_array.getString(12),
+                                                    stock_array.getString(16),
+                                                    stock_array.getString(14),
+                                                    stock_array.getString(15),
+                                                    stock_array.getString(13),
+                                                    stock_array.getString(17),
+                                                    stock_array.getString(19),
+                                                    stock_array.getString(18),
+                                                    stock_array.getString(7),
+                                                    stock_array.getString(8),
+                                                    stock_array.getString(21)
+
+                                            );
+
+                                    if (soap_result_stock != null) {
+                                        String result_stock = soap_result_stock
+                                                .toString();
+                                        Log.v("", "result_stock="
+                                                + result_stock);
+                                        if (result_stock.matches(".*\\d+.*")) {
+                                            Log.e("", "stock id for update=="
+                                                    + stock_array.getString(0));
+                                            db.open();
+                                            db.update_stock_data(result_stock);
+                                            db.close();
+
+                                        } else if (result_stock
+                                                .equalsIgnoreCase("SE")) {
+
+                                            ErroFlag = "0";
+                                            Erro_function = "SaveStock()_SE";
+                                            final Calendar calendar1 = Calendar
+                                                    .getInstance();
+                                            SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                                    "MM/dd/yyyy HH:mm:ss");
+                                            String Createddate = formatter1
+                                                    .format(calendar1.getTime());
+
+                                            int n = Thread.currentThread()
+                                                    .getStackTrace()[2]
+                                                    .getLineNumber();
+                                            db.insertSyncLog("SaveStock_SE",
+                                                    String.valueOf(n),
+                                                    "SaveStock()", Createddate,
+                                                    Createddate, sp.getString(
+                                                            "username", ""),
+                                                    "SaveStock()", "Fail");
+
+                                        }
+
+                                    } else {
+
+                                        ErroFlag = "0";
+                                        Erro_function = "SaveStock()-null";
+
+                                        final Calendar calendar1 = Calendar
+                                                .getInstance();
+                                        SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                                "MM/dd/yyyy HH:mm:ss");
+                                        String Createddate = formatter1
+                                                .format(calendar1.getTime());
+
+                                        int n = Thread.currentThread()
+                                                .getStackTrace()[2]
+                                                .getLineNumber();
+                                        db.insertSyncLog(
+                                                "Internet Connection Lost, Soap in giving null while 'SaveStock'",
+                                                String.valueOf(n),
+                                                "SaveStock()", Createddate,
+                                                Createddate,
+                                                username,
+                                                "SaveStock()", "Fail");
+
+                                    }
+
+                                } while (stock_array.moveToNext());
+
+                            } else {
+
+                                Flag = "2";
+                                Log.e("", "no data available");
+
+                            }
+
+                        } else if (stock_array == null) {
+
+                        } else {
+                            Log.e("NoStock dataupload",String.valueOf(stock_array.getCount()));
+                        }
+
+                    } catch (Exception e) {
+                        ErroFlag = "0";
+                        Erro_function = "SaveStock()";
+                        e.printStackTrace();
+
+                        String Error = e.toString();
+
+                        final Calendar cal = Calendar.getInstance();
+                        SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss");
+                        String Createddate = formatter1.format(cal.getTime());
+
+                        int n = Thread.currentThread().getStackTrace()[2]
+                                .getLineNumber();
+                        db.insertSyncLog(Error, String.valueOf(n),
+                                "SaveStock()", Createddate, Createddate,
+                                username, "SaveStock()",
+                                "Fail");
+
+                    }
+
+                    String startdate[] = getStartEndForDubai(str_BOC, year);
+
+                    soap_result = service.DataDownloadDubai(username, startdate[0], startdate[1], FLRCode);
+
+                    if (soap_result != null) {
+
+                        for (int i = 0; i < soap_result.getPropertyCount(); i++) {
+
+                            soap_result1 = (SoapObject) soap_result.getProperty(i);
+
+                            Log.e("pm",
+                                    "status="
+                                            + soap_result1
+                                            .getProperty("status")
+                                            .toString());
+
+                            if (soap_result1.getProperty("status").toString().equalsIgnoreCase("C")) {
+
+                                String db_stock_id = soap_result1.getProperty("Id").toString();
+
+                                String db_Id = soap_result1.getProperty("ProductId").toString();
+
+                                Log.v("", "db_Id=" + db_Id);
+
+                                String CatCodeId = soap_result1.getProperty("CatCodeId").toString();
+
+                                if (CatCodeId == null) {
+                                    CatCodeId = "";
+
+                                }
+                                Log.v("", "CatCodeId=" + CatCodeId);
+
+                                String ProductId = soap_result1.getProperty("ProductId").toString();
+                                Log.v("", "ProductId=" + ProductId);
+
+                                if (ProductId == null) {
+                                    ProductId = "";
+
+                                }
+
+                                String EANCode = soap_result1.getProperty("EANCode").toString();
+
+                                if (EANCode == null) {
+                                    EANCode = "";
+
+                                }
+                                EmpId = soap_result1.getProperty("EmpId").toString();
+
+                                if (EmpId == null) {
+                                    EmpId = "";
+
+                                }
+                                String ProductCategory = soap_result1.getProperty("ProductCategory").toString();
+
+                                if (ProductCategory == null) {
+                                    ProductCategory = "";
+
+                                }
+                                String ProductType = soap_result1.getProperty("ProductType").toString();
+
+                                if (ProductType == null) {
+                                    ProductType = "";
+
+                                }
+                                String ProductName = soap_result1.getProperty("ProductName").toString();
+                                if (ProductName == null) {
+                                    ProductName = "";
+
+                                }
+
+                                String Opening_Stock = soap_result1.getProperty("Opening_Stock").toString();
+                                if (Opening_Stock == null) {
+                                    Opening_Stock = "";
+
+                                }
+
+                                String FreshStock = soap_result1.getProperty("FreshStock").toString();
+                                if (FreshStock == null) {
+                                    FreshStock = "";
+
+                                }
+
+                                String Stock_inhand = soap_result1.getProperty("Stock_inhand").toString();
+
+                                if (Stock_inhand == null) {
+                                    Stock_inhand = "";
+
+                                }
+                                String SoldStock = soap_result1.getProperty("SoldStock").toString();
+
+                                if (SoldStock == null) {
+                                    SoldStock = "";
+
+                                }
+                                String S_Return_Saleable = soap_result1.getProperty("S_Return_Saleable").toString();
+
+                                if (S_Return_Saleable == null) {
+                                    S_Return_Saleable = "";
+
+                                }
+                                String S_Return_NonSaleable = soap_result1.getProperty("S_Return_NonSaleable").toString();
+
+                                if (S_Return_NonSaleable == null) {
+                                    S_Return_NonSaleable = "";
+
+                                }
+                                String ClosingBal = soap_result1.getProperty("ClosingBal").toString();
+
+                                if (ClosingBal == null) {
+                                    ClosingBal = "";
+
+                                }
+                                String GrossAmount = soap_result1.getProperty("GrossAmount").toString();
+
+                                if (GrossAmount == null) {
+                                    GrossAmount = "";
+
+                                }
+                                String Discount = soap_result1.getProperty("Discount").toString();
+
+                                if (Discount == null) {
+                                    Discount = "";
+
+                                }
+                                String NetAmount = soap_result1.getProperty(
+                                        "NetAmount").toString();
+
+                                if (NetAmount == null) {
+                                    NetAmount = "";
+
+                                }
+                                String Size = soap_result1.getProperty("Size").toString();
+
+                                if (Size == null) {
+                                    Size = "";
+
+                                }
+                                String Price = soap_result1.getProperty("Price").toString();
+
+                                if (Price == null) {
+                                    Price = "";
+
+                                }
+                                String LMD = soap_result1.getProperty("LMD").toString();
+
+                                if (LMD == null) {
+                                    LMD = "";
+
+                                } else {
+
+                                    try {
+                                        String inputPattern = "MM/dd/yyyy hh:mm:ss a";
+                                        String outputPattern = "yyyy-MM-dd HH:mm:ss";
+
+                                        DateFormat inputFormat = new SimpleDateFormat(
+                                                inputPattern);
+                                        SimpleDateFormat outputFormat = new SimpleDateFormat(
+                                                outputPattern);
+
+                                        Date date = inputFormat.parse(LMD);
+                                        LMD = outputFormat.format(date);
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                String AndroidCreatedDate = soap_result1.getProperty("AndroidCreatedDate").toString();
+
+                                String MONTH = "", YEAR = "";
+                                if (AndroidCreatedDate == null) {
+                                    AndroidCreatedDate = "";
+
+                                } else {
+
+                                    try {
+                                        String inputPattern = "MM/dd/yyyy hh:mm:ss a";
+                                        String outputPattern = "yyyy-MM-dd HH:mm:ss";
+
+                                        SimpleDateFormat inputFormat = new SimpleDateFormat(
+                                                inputPattern);
+                                        SimpleDateFormat outputFormat = new SimpleDateFormat(
+                                                outputPattern);
+
+                                        Date date = inputFormat
+                                                .parse(AndroidCreatedDate);
+                                        AndroidCreatedDate = outputFormat
+                                                .format(date);
+
+                                        String[] addd = AndroidCreatedDate
+                                                .split(" ");
+                                        String addd1 = addd[0];
+                                        String[] addd2 = addd1.split("-");
+
+                                        String month = addd2[1];
+                                        YEAR = addd2[0];
+                                        //
+                                        SimpleDateFormat monthParse = new SimpleDateFormat(
+                                                "MM");
+                                        SimpleDateFormat monthDisplay = new SimpleDateFormat(
+                                                "MMMM");
+                                        MONTH = monthDisplay.format(monthParse
+                                                .parse(month));
+                                        //
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                String outletcode = soap_result1.getProperty("OutletCode").toString();
+
+                                if (outletcode == null) {
+                                    outletcode = "";
+
+                                }
+
+                                if (db_Id.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for db_Id");
+                                    db_Id = " ";
+                                }
+                                if (CatCodeId.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for CatCodeId");
+                                    CatCodeId = " ";
+                                }
+
+                                if (ProductId.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for ProductId");
+                                    ProductId = " ";
+                                }
+                                if (EANCode.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for EANCode");
+                                    EANCode = " ";
+                                }
+
+                                if (EmpId.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for EmpId");
+                                    EmpId = " ";
+                                }
+                                if (ProductCategory.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for ProductCategory");
+                                    ProductCategory = " ";
+                                }
+                                if (ProductType.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for ProductType");
+                                    ProductType = " ";
+                                }
+
+                                if (ProductName.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for ProductName");
+                                    ProductName = " ";
+                                }
+                                if (Opening_Stock.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for Opening_Stock");
+                                    Opening_Stock = " ";
+                                }
+
+                                if (FreshStock.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for FreshStock");
+                                    FreshStock = " ";
+                                }
+                                if (Stock_inhand.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for Stock_inhand");
+                                    Stock_inhand = " ";
+                                }
+                                if (SoldStock.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for SoldStock");
+                                    SoldStock = " ";
+                                }
+                                if (S_Return_Saleable.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for S_Return_Saleable");
+                                    S_Return_Saleable = " ";
+                                }
+                                if (S_Return_NonSaleable.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("",
+                                            "anytype for S_Return_NonSaleable");
+                                    S_Return_NonSaleable = " ";
+                                }
+                                if (ClosingBal.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for ClosingBal");
+                                    ClosingBal = " ";
+                                }
+                                if (GrossAmount.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for GrossAmount");
+                                    GrossAmount = " ";
+                                }
+                                if (Discount.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for Discount");
+                                    Discount = " ";
+                                }
+                                if (NetAmount.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for NetAmount");
+                                    NetAmount = " ";
+                                }
+                                if (Size.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for Size");
+                                    Size = " ";
+                                }
+                                if (Price.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for sku_l");
+                                    Price = " ";
+                                }
+                                if (LMD.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for LMD");
+                                    LMD = " ";
+                                }
+                                if (AndroidCreatedDate.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for AndroidCreatedDate");
+                                    AndroidCreatedDate = " ";
+                                }
+
+                                if (outletcode.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for outletcode");
+                                    outletcode = " ";
+                                }
+
+                                Log.e("pm", "pm5--");
+                                db.open();
+
+                                Cursor c1 = db.CheckDataExist("stock", db_Id,
+                                        ProductCategory, ProductType,
+                                        ProductName);
+
+
+                                int count = c1.getCount();
+                                Log.v("", "" + count);
+                                db.close();
+                                if (count > 0) {
+
+                                    db.open();
+                                    db.UpdateStockSync1(ProductCategory,
+                                            ProductType, ProductName, EmpId,
+                                            Opening_Stock, Stock_inhand, ClosingBal,
+                                            FreshStock, GrossAmount, SoldStock,
+                                            Price, Size, db_Id, LMD, Discount,
+                                            NetAmount,
+                                            S_Return_Saleable,
+                                            S_Return_NonSaleable);
+                                    db.close();
+
+                                    db_stock_id_array = db_stock_id_array + ","
+                                            + db_Id;
+
+                                } else {
+
+                                    Log.e("pm", "pm5");
+                                    db.open();
+                                    db.insertProductMasterFirsttimefordubai(
+                                            db_stock_id, db_Id, ProductId,
+                                            CatCodeId, EANCode, EmpId,
+                                            ProductCategory, ProductType,
+                                            ProductName, Opening_Stock,
+                                            FreshStock, Stock_inhand,
+                                            SoldStock, S_Return_NonSaleable,
+                                            S_Return_Saleable, ClosingBal,
+                                            GrossAmount, Discount, NetAmount,
+                                            Size, Price, LMD,
+                                            AndroidCreatedDate, MONTH, YEAR,outletcode,ProductType);
+                                    db.close();
+
+                                    db_stock_id_array = db_stock_id_array + ","
+                                            + db_Id;
+
+                                }
+
+                            } else if (soap_result1.getProperty("status")
+                                    .toString().equalsIgnoreCase("E")) {
+                                Log.e("pm", "pm7");
+                                // Flag = "1";
+
+                                writeStringAsFile(db_stock_id_array);
+
+                                soap_update_stock_row = service
+                                        .UpdateTableData(db_stock_id_array,
+                                                "S", EmpId);
+
+                                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                                        "MM/dd/yyyy HH:mm:ss");
+                                // get current date time with Date()
+                                Calendar cal = Calendar.getInstance();
+                                // dateFormat.format(cal.getTime())
+                                db.open();
+                                db.updateDateSync(
+                                        dateFormat.format(cal.getTime()),
+                                        "stock");
+                                db.close();
+
+                            } else if (soap_result1.getProperty("status")
+                                    .toString().equalsIgnoreCase("N")) {
+
+                                // Flag = "3";
+                                Log.e("", "string ids== " + db_stock_id_array);
+                                soap_update_stock_row = service
+                                        .UpdateTableData(db_stock_id_array,
+                                                "S", EmpId);
+                                Log.e("", "soap_update_stock_row= "
+                                        + soap_update_stock_row.toString());
+
+                                syncstockdata = 1;
+                            } else if (soap_result1.getProperty("status")
+                                    .toString().equalsIgnoreCase("SE")) {
+
+                                soap_update_stock_row = service
+                                        .UpdateTableData(db_stock_id_array,
+                                                "S", EmpId);
+                                Log.e("", "soap_update_stock_row= "
+                                        + soap_update_stock_row.toString());
+
+                                // Flag="2";
+                                Log.e("", "string ids== " + db_stock_id_array);
+                                syncstockdata = 0;
+                                final Calendar calendar = Calendar
+                                        .getInstance();
+                                SimpleDateFormat formatter = new SimpleDateFormat(
+                                        "MM/dd/yyyy HH:mm:ss");
+                                String Createddate = formatter.format(calendar
+                                        .getTime());
+                                Log.v("", "se error");
+                                int n = Thread.currentThread().getStackTrace()[2]
+                                        .getLineNumber();
+                                db.open();
+                                db.insertSyncLog("FirstTimeSync_SE",
+                                        String.valueOf(n), "DataDownload()",
+                                        Createddate, Createddate,
+                                        username,
+                                        "DataDownload()", "Fail");
+                                db.close();
+                            }
+                        }
+
+                    } else {
+                        Log.v("", "Soap result is null");
+
+                        syncstockdata = 0;
+                        final Calendar calendar = Calendar.getInstance();
+                        SimpleDateFormat formatter = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss");
+                        String Createddate = formatter.format(calendar
+                                .getTime());
+
+                        int n = Thread.currentThread().getStackTrace()[2]
+                                .getLineNumber();
+                        db.insertSyncLog("Soup is null - DataDownload()",
+                                String.valueOf(n), "DataDownload()",
+                                Createddate, Createddate,
+                                username, "Data Download",
+                                "Fail");
+
+                    }
+                }
+
+
+                if (syncstockdata == 1) {
+
+                    Flag = "1";
+                } else {
+
+                    Flag = "2";
+                }
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                String Error = e.toString();
+
+                final Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat formatter = new SimpleDateFormat(
+                        "MM/dd/yyyy HH:mm:ss");
+                String Createddate = formatter.format(calendar.getTime());
+                Flag = "4";
+                int n = Thread.currentThread().getStackTrace()[2]
+                        .getLineNumber();
+                db.open();
+                db.insertSyncLog(Error, String.valueOf(n), "", Createddate,
+                        Createddate, username,
+                        "Data Download", "Fail");
+                db.close();
+
+            }
+
+            return soap_result;
+        }
+
+
+        @Override
+        protected void onPostExecute(SoapObject result) {
+
+            // TODO Auto-generated method stub
+            // super.onPostExecute(result);
+
+            db.close();
+            mProgress.dismiss();
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                DisplayDialogMessage("Check Your Internet Connection!!!");
+
+            } else
+
+                if (Flag.equalsIgnoreCase("1")) {
+
+                   /* boolean boc26 = false;
+                    spe.putBoolean("BOC26", boc26);
+                    spe.putBoolean("DialogDismiss", true);
+                    spe.commit();*/
+                    //final boolean boolRecd = false;
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SyncMaster.this);
+                    builder.setMessage("Data Download Completed Successfully!!")
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //do things
+                                    dialog.dismiss();
+                                    // boolean bocflag = true;
+                                    Intent i = new Intent(SyncMaster.this, DashboardNewActivity.class);
+                                    //   i.putExtra("Bocflag",bocflag);
+                                    startActivity(i);
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                } else if (Flag.equalsIgnoreCase("2")) {
+
+                    DisplayDialogMessage("Data Download Incomplete!!");
+
+                } else if (Flag.equalsIgnoreCase("4")) {
+
+                    DisplayDialogMessage("Data Download Incomplete!!,Please try again after some time");
+
+                } else {
+
+                    DisplayDialogMessage("Data Download Incomplete!!");
+
+                }
+
+        }
+
+        private void DisplayDialogMessage(String msg) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(SyncMaster.this);
+            builder.setMessage(msg)
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            //do things
+                            dialog.dismiss();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+
+            mProgress.setMessage("Receiving.....");
+            mProgress.show();
+            mProgress.setCancelable(false);
+        }
+
+    }
+
+    public static List<Date> getDaysBetweenDates(Date startdate, Date enddate) {
+        List<Date> dates = new ArrayList<Date>();
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(startdate);
+
+        while (calendar.getTime().before(enddate) || calendar.getTime().equals(enddate)) {
+            Date result = calendar.getTime();
+            dates.add(result);
+            calendar.add(Calendar.DATE, 1);
+        }
+        return dates;
+    }
+
+
+    public String[] getStartEndForDubai(String Month, String year) {
+        String startend[] = new String[2];
+
+        if (Month.equalsIgnoreCase("January")) {
+            startend[0] = year + "-01-01";
+            startend[1] = year + "-01-31";
+        } else if (Month.equalsIgnoreCase("February")) {
+            startend[0] = year + "-02-01";
+            startend[1] = year + "-02-28";
+        } else if (Month.equalsIgnoreCase("March")) {
+            startend[0] = year + "-03-01";
+            startend[1] = year + "-03-31";
+        } else if (Month.equalsIgnoreCase("April")) {
+            startend[0] = year + "-04-01";
+            startend[1] = year + "-04-30";
+        } else if (Month.equalsIgnoreCase("May")) {
+            startend[0] = year + "-05-01";
+            startend[1] = year + "-05-31";
+        } else if (Month.equalsIgnoreCase("June")) {
+            startend[0] = year + "-06-01";
+            startend[1] = year + "-06-30";
+        } else if (Month.equalsIgnoreCase("July")) {
+            startend[0] = year + "-07-01";
+            startend[1] = year + "-07-31";
+        } else if (Month.equalsIgnoreCase("August")) {
+            startend[0] = year + "-08-01";
+            startend[1] = year + "-08-31";
+        } else if (Month.equalsIgnoreCase("September")) {
+            startend[0] = year + "-09-01";
+            startend[1] = year + "-09-30";
+        } else if (Month.equalsIgnoreCase("October")) {
+            startend[0] = year + "-10-01";
+            startend[1] = year + "-10-31";
+        } else if (Month.equalsIgnoreCase("November")) {
+            startend[0] = year + "-11-01";
+            startend[1] = year + "-11-30";
+        } else if (Month.equalsIgnoreCase("December")) {
+            startend[0] = year + "-12-01";
+            startend[1] = year + "-12-31";
+        }
+
+        return startend;
+    }
+
 
 
 }
