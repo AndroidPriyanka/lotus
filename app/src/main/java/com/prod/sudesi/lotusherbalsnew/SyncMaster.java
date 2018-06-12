@@ -7033,11 +7033,7 @@ public class SyncMaster extends Activity {
 
                             soap_result1 = (SoapObject) soap_result.getProperty(i);
 
-                            Log.e("pm",
-                                    "status="
-                                            + soap_result1
-                                            .getProperty("status")
-                                            .toString());
+                            Log.e("pm","status=" + soap_result1.getProperty("status").toString());
 
                             if (soap_result1.getProperty("status").toString().equalsIgnoreCase("C")) {
 
@@ -7387,49 +7383,19 @@ public class SyncMaster extends Activity {
                                             + db_Id;
 
                                 }
+                                syncstockdata = 1;
 
                             } else if (soap_result1.getProperty("status")
                                     .toString().equalsIgnoreCase("E")) {
-                                Log.e("pm", "pm7");
-                                // Flag = "1";
 
-                                writeStringAsFile(db_stock_id_array);
-
-                                soap_update_stock_row = service
-                                        .UpdateTableData(db_stock_id_array,
-                                                "S", EmpId);
-
-                                SimpleDateFormat dateFormat = new SimpleDateFormat(
-                                        "MM/dd/yyyy HH:mm:ss");
-                                // get current date time with Date()
-                                Calendar cal = Calendar.getInstance();
-                                // dateFormat.format(cal.getTime())
-                                db.open();
-                                db.updateDateSync(
-                                        dateFormat.format(cal.getTime()),
-                                        "stock");
-                                db.close();
-
+                                syncstockdata = 0;
                             } else if (soap_result1.getProperty("status")
                                     .toString().equalsIgnoreCase("N")) {
 
-                                // Flag = "3";
-                                Log.e("", "string ids== " + db_stock_id_array);
-                                soap_update_stock_row = service
-                                        .UpdateTableData(db_stock_id_array,
-                                                "S", EmpId);
-                                Log.e("", "soap_update_stock_row= "
-                                        + soap_update_stock_row.toString());
 
-                                syncstockdata = 1;
+                                syncstockdata = 2;
                             } else if (soap_result1.getProperty("status")
                                     .toString().equalsIgnoreCase("SE")) {
-
-                                soap_update_stock_row = service
-                                        .UpdateTableData(db_stock_id_array,
-                                                "S", EmpId);
-                                Log.e("", "soap_update_stock_row= "
-                                        + soap_update_stock_row.toString());
 
                                 // Flag="2";
                                 Log.e("", "string ids== " + db_stock_id_array);
@@ -7478,7 +7444,7 @@ public class SyncMaster extends Activity {
                 if (syncstockdata == 1) {
 
                     Flag = "1";
-                } else {
+                } else if(syncstockdata == 2){
 
                     Flag = "2";
                 }
@@ -7487,12 +7453,11 @@ public class SyncMaster extends Activity {
 
                 e.printStackTrace();
                 String Error = e.toString();
-
+                Flag = "3";
                 final Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat formatter = new SimpleDateFormat(
                         "MM/dd/yyyy HH:mm:ss");
                 String Createddate = formatter.format(calendar.getTime());
-                Flag = "4";
                 int n = Thread.currentThread().getStackTrace()[2]
                         .getLineNumber();
                 db.open();
@@ -7524,22 +7489,14 @@ public class SyncMaster extends Activity {
 
                 if (Flag.equalsIgnoreCase("1")) {
 
-                   /* boolean boc26 = false;
-                    spe.putBoolean("BOC26", boc26);
-                    spe.putBoolean("DialogDismiss", true);
-                    spe.commit();*/
-                    //final boolean boolRecd = false;
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(SyncMaster.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SyncMaster.this);
                     builder.setMessage("Data Download Completed Successfully!!")
                             .setCancelable(false)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     //do things
                                     dialog.dismiss();
-                                    // boolean bocflag = true;
                                     Intent i = new Intent(SyncMaster.this, DashboardNewActivity.class);
-                                    //   i.putExtra("Bocflag",bocflag);
                                     startActivity(i);
                                 }
                             });
@@ -7548,9 +7505,9 @@ public class SyncMaster extends Activity {
 
                 } else if (Flag.equalsIgnoreCase("2")) {
 
-                    DisplayDialogMessage("Data Download Incomplete!!");
+                    DisplayDialogMessage("No Record Found!!");
 
-                } else if (Flag.equalsIgnoreCase("4")) {
+                } else if (Flag.equalsIgnoreCase("3")) {
 
                     DisplayDialogMessage("Data Download Incomplete!!,Please try again after some time");
 
