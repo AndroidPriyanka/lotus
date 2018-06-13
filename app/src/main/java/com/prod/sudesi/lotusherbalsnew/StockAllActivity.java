@@ -297,8 +297,8 @@ public class StockAllActivity extends Activity {
                     TableRow.LayoutParams lp;
                     lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 3f);
                     TextView productname = new TextView(this);
-                    if(show_pro_name != null &&
-                            !show_pro_name.equals("")) {
+                    if(show_pro_name[i] != null &&
+                            !show_pro_name[i].equalsIgnoreCase("")) {
                         productname.setText(show_pro_name[i]);
                     }else{
                         productname.setText(pro_name[i]);
