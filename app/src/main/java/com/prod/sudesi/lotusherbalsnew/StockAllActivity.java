@@ -1414,7 +1414,7 @@ public class StockAllActivity extends Activity {
 
             Log.e("str_soldstock", str_soldstock);
 
-            int soldstock = Integer.parseInt(str_soldstock) - new_retrn_sale;
+            /*int soldstock = Integer.parseInt(str_soldstock) - new_retrn_sale;
 
             int pricecustomer = Integer.parseInt(str_price) * new_retrn_sale;
 
@@ -1422,7 +1422,7 @@ public class StockAllActivity extends Activity {
 
             int i_net_amt = pricesold - pricecustomer;
 
-            float net_amt = Float.parseFloat(String.valueOf(i_net_amt)) - Float.parseFloat(str_discount);
+            float net_amt = Float.parseFloat(String.valueOf(i_net_amt)) - Float.parseFloat(str_discount);*/
 
             //--------Old production apk use
             int i_stkinand = Integer
@@ -1438,7 +1438,7 @@ public class StockAllActivity extends Activity {
             Log.e("i_stkinand", String.valueOf(i_stkinand));
 
             //--------Old production apk use
-            int i_close = i_stkinand - soldstock;
+            int i_close = i_stkinand - Integer.parseInt(solddd);
 
             Log.e("i_close", String.valueOf(i_close));
 
@@ -1459,11 +1459,8 @@ public class StockAllActivity extends Activity {
                         db_id1,
                         cat_id,
                         insert_timestamp,
-                        String.valueOf(soldstock),
                         String.valueOf(new_retrn_sale),
                         String.valueOf(new_retrn_non_sale),
-                        String.valueOf(i_net_amt),
-                        String.valueOf(net_amt),
                         str_discount,
                         shadenon, insert_timestamp,
                         month_name, year_name);
@@ -1478,21 +1475,15 @@ public class StockAllActivity extends Activity {
             } else {
                 db.open();
                 db.UpdateStock_new(
-
                         product_category, product_type1,
                         product_name, username,
                         String.valueOf(i_stock_inand),
                         String.valueOf(i_close),
-
                         String.valueOf(new_fresh_stock),
-
                         price, size1, eancode, db_id1,
                         cat_id, insert_timestamp,
-                        String.valueOf(soldstock),
                         String.valueOf(new_retrn_sale),
                         String.valueOf(new_retrn_non_sale),
-                        String.valueOf(i_net_amt),
-                        String.valueOf(net_amt),
                         str_discount,
                         shadenon, insert_timestamp,
                         month_name, year_name);

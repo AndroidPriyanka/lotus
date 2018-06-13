@@ -2222,8 +2222,7 @@ public class Dbcon {
             String product_type, String product_name, String emp_id,
             String stockinhand, String cl_stk, String fresher_stock,
             String price, String size, String eancode, String db_id1, String cat_id,
-            String date,String soldstock,
-            String return_saleable, String return_non_saleable, String i_netamt, String netamt,String discount,
+            String date,String return_saleable, String return_non_saleable,String discount,
             String shadno,String updateDate, String month_name, String year_name) {
         // TODO Auto-generated method stub
 
@@ -2246,11 +2245,8 @@ public class Dbcon {
 
 
         values.put("stock_received", fresher_stock);
-        values.put("sold_stock", soldstock);
         values.put("return_non_saleable", return_non_saleable);
         values.put("return_saleable", return_saleable);
-        values.put("total_gross_amount", i_netamt);
-        values.put("total_net_amount", netamt);
         values.put("discount", discount);
         values.put("insert_date", date);
 
@@ -2323,8 +2319,7 @@ public class Dbcon {
                                 String cl_stk,
                                 String fresher_stock,
                                 String price, String size, String eancode, String db_id1, String cat_id,
-                                String date,String soldstock,
-                                String return_saleable, String return_non_saleable, String i_netamt,String netamt,
+                                String date,String return_saleable, String return_non_saleable,
                                 String discount,String shadno, String updateDate, String month_name, String year_name) {
 
         // TODO Auto-generated method stub
@@ -2334,11 +2329,8 @@ public class Dbcon {
 
 
         String sql = "update stock set  stock_in_hand = " + "'" + stockinhand + "'" +
-                " ,sold_stock = " + "'" + soldstock + "'" +
                 " ,return_saleable = " + "'" + return_saleable + "'" +
                 " ,return_non_saleable = " + "'" + return_non_saleable + "'" +
-                " ,total_gross_amount = " + "'" + i_netamt + "'" +
-                " ,total_net_amount = " + "'" + netamt + "'" +
                 " ,discount = " + "'" + discount + "'" +
                 ",stock_received = " + "'" + fresher_stock + "'" + "," +
                 "close_bal = " + "'" + cl_stk + "'" + "," +
