@@ -75,7 +75,7 @@ public class StockAllActivity extends Activity {
     SharedPreferences shp;
     SharedPreferences.Editor shpeditor;
     static Context context;
-    String enacod[], catid[], pro_name[], size[], db_id[], mrp[], shadeno[], singleoffer[];
+    String enacod[], catid[], pro_name[],show_pro_name[], size[], db_id[], mrp[], shadeno[], singleoffer[];
     String old_return_non_salable = "", old_return_salable = "";
     ScrollView scrv_sale;
     String rt_n_s_stk, rt_s_stk;
@@ -136,6 +136,7 @@ public class StockAllActivity extends Activity {
         } else {
             db_id = intent.getStringArrayExtra("db_id");
             pro_name = intent.getStringArrayExtra("pro_name");
+            show_pro_name = intent.getStringArrayExtra("show_pro_name");
             mrp = intent.getStringArrayExtra("mrp");
             shadeno = intent.getStringArrayExtra("shadeNo");
             enacod = intent.getStringArrayExtra("encode");
@@ -296,7 +297,12 @@ public class StockAllActivity extends Activity {
                     TableRow.LayoutParams lp;
                     lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 3f);
                     TextView productname = new TextView(this);
-                    productname.setText(pro_name[i]);
+                    if(show_pro_name != null &&
+                            !show_pro_name.equals("")) {
+                        productname.setText(show_pro_name[i]);
+                    }else{
+                        productname.setText(pro_name[i]);
+                    }
                     productname.setTextColor(Color.WHITE);
                     productname.setMaxEms(12);
                     productname.setTextSize(11);

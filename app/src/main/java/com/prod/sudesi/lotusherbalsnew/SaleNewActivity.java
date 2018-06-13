@@ -64,6 +64,8 @@ public class SaleNewActivity extends Activity implements OnClickListener {
     int modecounter = 0;
     public static String PMODE;
 
+    String selected_type;
+
     String username, bdename, mrpstring = "";
 
     @Override
@@ -215,7 +217,7 @@ public class SaleNewActivity extends Activity implements OnClickListener {
                 } else {
                     String selected_category = sp_product_category
                             .getSelectedItem().toString();
-                    String selected_type = sp_product_type.getSelectedItem()
+                    selected_type = sp_product_type.getSelectedItem()
                             .toString();
 
                     Log.v("", "" + selected_category + " " + selected_type);
@@ -332,18 +334,15 @@ public class SaleNewActivity extends Activity implements OnClickListener {
                             if(spinvalue==false){
                                     Toast.makeText(getApplicationContext(), "Please select MRP", Toast.LENGTH_SHORT).show();
                             }else {
+                                String show_pro_name[] = new String[arr_selectedDBids.size()];
                                 String pro_name[] = new String[arr_selectedDBids.size()];
-                                String chck_db_id[] = new String[arr_selectedDBids
-                                        .size()];
+                                String chck_db_id[] = new String[arr_selectedDBids.size()];
                                 String chck_mrp[] = new String[arr_selectedDBids.size()];
                         /*String chck_closing[] = new String[arr_selectedDBids.size()];*/
-                                String chck_size[] = new String[arr_selectedDBids
-                                        .size()];
-                                String chck_cat_id[] = new String[arr_selectedDBids
-                                        .size()];
+                                String chck_size[] = new String[arr_selectedDBids.size()];
+                                String chck_cat_id[] = new String[arr_selectedDBids.size()];
                                 String enacode[] = new String[arr_selectedDBids.size()];
-                                String chck_shade[] = new String[arr_selectedDBids
-                                        .size()];
+                                String chck_shade[] = new String[arr_selectedDBids.size()];
 
                                 for (int i4 = 0; i4 < arr_selectedDBids.size(); i4++) {
                                     Cursor cur = db.fetchallSpecifyMSelect(
@@ -352,6 +351,17 @@ public class SaleNewActivity extends Activity implements OnClickListener {
                                             null);
                                     if (cur != null && cur.getCount() > 0) {
                                         cur.moveToFirst();
+
+                                        String productname = cur.getString(cur.getColumnIndex("ProductName")).trim();
+                                        String [] arr = productname.split(" ", 2);
+                                        String firstword =  arr[0];
+                                        String splitingword = arr[1];
+                                        String ProductName = "";
+                                        String firstword1 = firstword.replaceFirst("\\s++$", "");
+                                        if(selected_type.trim().contains(firstword1.trim())){
+                                            ProductName = splitingword;
+                                        }
+                                        show_pro_name[i4] = ProductName;
 
                                         pro_name[i4] = cur.getString(cur
                                                 .getColumnIndex("ProductName"));
@@ -375,6 +385,7 @@ public class SaleNewActivity extends Activity implements OnClickListener {
                                 startActivity(new Intent(SaleNewActivity.this,
                                         SaleCalculation.class)
                                         .putExtra("db_id", chck_db_id)
+                                        .putExtra("show_pro_name", show_pro_name)
                                         .putExtra("pro_name", pro_name)
                                         .putExtra("mrp", chck_mrp)
                                         .putExtra("enacode", enacode)
@@ -425,7 +436,9 @@ public class SaleNewActivity extends Activity implements OnClickListener {
                 Log.e("c.getCount()", String.valueOf(c.getCount()));
                 Log.e("product_name", cursor.getString(cursor.getColumnIndex("ProductName")));
 
-                String comma_ids[] = null, comma_dbids[] = null, comma_mrps[] = null, comma_size[] = null, comma_catid[] = null, comma_eancode[] = null, comma_product[] = null, comma_shade[] = null;
+                String comma_ids[] = null, comma_dbids[] = null, comma_mrps[] = null,
+                        comma_size[] = null, comma_catid[] = null, comma_eancode[] = null,
+                        comma_product[] = null, comma_product_show[] = null, comma_shade[] = null;
 
                 if (c != null && c.getCount() > 0) {
                     c.moveToFirst();
@@ -437,6 +450,7 @@ public class SaleNewActivity extends Activity implements OnClickListener {
                     comma_catid = new String[c.getCount()];
                     comma_eancode = new String[c.getCount()];
                     comma_product = new String[c.getCount()];
+                    comma_product_show = new String[c.getCount()];
                     comma_shade = new String[c.getCount()];
 
                     for (int i = 0; i < c.getCount(); i++) {
@@ -444,14 +458,22 @@ public class SaleNewActivity extends Activity implements OnClickListener {
                         comma_dbids[i] = c.getString(c.getColumnIndex("db_id"));
                         comma_mrps[i] = c.getString(c.getColumnIndex("price"));
                         comma_size[i] = c.getString(c.getColumnIndex("size"));
-                        comma_catid[i] = c.getString(c
-                                .getColumnIndex("product_id"));
-                        comma_eancode[i] = c.getString(c
-                                .getColumnIndex("eancode"));
-                        comma_product[i] = c.getString(c
-                                .getColumnIndex("product_name"));
-                        comma_shade[i] = c.getString(c
-                                .getColumnIndex("shadeNo"));
+                        comma_catid[i] = c.getString(c.getColumnIndex("product_id"));
+                        comma_eancode[i] = c.getString(c.getColumnIndex("eancode"));
+
+                        String productname = c.getString(c.getColumnIndex("product_name")).trim();
+                        String [] arr = productname.split(" ", 2);
+                        String firstword =  arr[0];
+                        String splitingword = arr[1];
+                        String ProductName = "";
+                        String firstword1 = firstword.replaceFirst("\\s++$", "");
+                        if(selected_type.trim().contains(firstword1.trim())){
+                            ProductName = splitingword;
+                        }
+                        comma_product_show[i] = ProductName;
+
+                        comma_product[i] = c.getString(c.getColumnIndex("product_name"));
+                        comma_shade[i] = c.getString(c.getColumnIndex("shadeNo"));
 
                         c.moveToNext();
 
@@ -468,6 +490,7 @@ public class SaleNewActivity extends Activity implements OnClickListener {
                     map.put("DBIDS", comma_dbids);
                     map.put("CATID", comma_catid);
                     map.put("EANCODE", comma_eancode);
+                    map.put("PRODUCTSHOW", comma_product_show);
                     map.put("PRODUCT", comma_product);
                     map.put("SHADENO", comma_shade);
 
@@ -489,7 +512,12 @@ public class SaleNewActivity extends Activity implements OnClickListener {
 
                     TextView txtmrp = (TextView) tr.findViewById(R.id.txt_mrp);
 
-                    cb.setText(productDetailsArray.get(i).get("PRODUCT")[0]);
+                    if(productDetailsArray.get(i).get("PRODUCTSHOW")[0] != null &&
+                            !productDetailsArray.get(i).get("PRODUCTSHOW")[0].equalsIgnoreCase("")) {
+                        cb.setText(productDetailsArray.get(i).get("PRODUCTSHOW")[0]);
+                    }else{
+                        cb.setText(productDetailsArray.get(i).get("PRODUCT")[0]);
+                    }
 
                     final String mrps[] = productDetailsArray.get(i).get("MRPS");
 

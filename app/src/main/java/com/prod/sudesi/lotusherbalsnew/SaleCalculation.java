@@ -86,7 +86,7 @@ public class SaleCalculation extends Activity {
     ConnectionDetector cd;
     LinearLayout discountlayout;
 
-    String enacod[], catid[], pro_name[], size[], db_id[], mrp[], shadeno[], singleoffer[];
+    String enacod[], catid[], pro_name[],show_pro_name[], size[], db_id[], mrp[], shadeno[], singleoffer[];
 
 
     // private ProgressDialog mProgress = null;
@@ -146,6 +146,7 @@ public class SaleCalculation extends Activity {
         } else {
             db_id = intent.getStringArrayExtra("db_id");
             pro_name = intent.getStringArrayExtra("pro_name");
+            show_pro_name = intent.getStringArrayExtra("show_pro_name");
             mrp = intent.getStringArrayExtra("mrp");
             shadeno = intent.getStringArrayExtra("shadeNo");
             enacod = intent.getStringArrayExtra("encode");
@@ -342,7 +343,12 @@ public class SaleCalculation extends Activity {
                 TableRow.LayoutParams lp;
                 lp = new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 3f);
                 TextView productname = new TextView(this);
-                productname.setText(pro_name[i]);
+                if(show_pro_name != null &&
+                        !show_pro_name.equals("")) {
+                    productname.setText(show_pro_name[i]);
+                }else{
+                    productname.setText(pro_name[i]);
+                }
                 productname.setTextColor(Color.WHITE);
                 productname.setMaxEms(12);
                 productname.setTextSize(11);
