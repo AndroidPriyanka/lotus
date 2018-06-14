@@ -154,9 +154,15 @@ public class StockAllActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                finish();
-                startActivity(new Intent(StockAllActivity.this,
-                        StockSaleActivityForDubai.class));
+                if(role.equalsIgnoreCase("DUB")) {
+                    finish();
+                    startActivity(new Intent(StockAllActivity.this,
+                            StockSaleActivityForDubai.class));
+                }else{
+                    finish();
+                    startActivity(new Intent(StockAllActivity.this,
+                            StockNewActivity.class));
+                }
             }
         });
 

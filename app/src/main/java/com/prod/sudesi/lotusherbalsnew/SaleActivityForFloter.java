@@ -63,6 +63,7 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
     public static String PMODE;
 
     String username, bdename, mrpstring = "",columnname;
+    String selected_type;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -220,7 +221,7 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
                 } else {
                     String selected_category = sp_product_category
                             .getSelectedItem().toString();
-                    String selected_type = sp_product_type.getSelectedItem()
+                    selected_type = sp_product_type.getSelectedItem()
                             .toString();
 
                     Log.v("", "" + selected_category + " " + selected_type);
@@ -314,6 +315,7 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
                         comma_catid[] = new String[c.getCount()],
                         comma_eancode[] = new String[c.getCount()],
                         comma_product[] = new String[c.getCount()],
+                        comma_product_show[] = new String[c.getCount()],
                         comma_shade[] = new String[c.getCount()];
 
                 if (c != null && c.getCount() > 0) {
@@ -326,6 +328,18 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
                         comma_size[i] = c.getString(c.getColumnIndex("Size"));
                         comma_catid[i] = c.getString(c.getColumnIndex("CategoryId"));
                         comma_eancode[i] = c.getString(c.getColumnIndex("EANCode"));
+
+                        String productname = c.getString(c.getColumnIndex("ProductName")).trim();
+                        String [] arr = productname.split(" ", 2);
+                        String firstword =  arr[0];
+                        String splitingword = arr[1];
+                        String ProductName = "";
+                        String firstword1 = firstword.replaceFirst("\\s++$", "");
+                        if(selected_type.trim().contains(firstword1.trim())){
+                            ProductName = splitingword;
+                        }
+                        comma_product_show[i] = ProductName;
+
                         comma_product[i] = c.getString(c.getColumnIndex("ProductName"));
                         comma_shade[i] = c.getString(c.getColumnIndex("ShadeNo"));
 
@@ -340,6 +354,7 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
                 map.put("DBIDS", comma_dbids);
                 map.put("CATID", comma_catid);
                 map.put("EANCODE", comma_eancode);
+                map.put("PRODUCTSHOW", comma_product_show);
                 map.put("PRODUCT", comma_product);
                 map.put("SHADENO", comma_shade);
 
@@ -358,7 +373,12 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
 
                 TextView txtmrp = (TextView) tr.findViewById(R.id.txt_mrp);
 
-                cb.setText(productDetailsArray.get(i).get("PRODUCT")[0]);
+                if(productDetailsArray.get(i).get("PRODUCTSHOW")[0] != null &&
+                        !productDetailsArray.get(i).get("PRODUCTSHOW")[0].equalsIgnoreCase("")) {
+                    cb.setText(productDetailsArray.get(i).get("PRODUCTSHOW")[0]);
+                }else{
+                    cb.setText(productDetailsArray.get(i).get("PRODUCT")[0]);
+                }
 
                 final String mrps[] = productDetailsArray.get(i).get("MRPS");
 
@@ -467,6 +487,7 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
                     if (spinvalue == false) {
                         Toast.makeText(getApplicationContext(), "Please select MRP", Toast.LENGTH_SHORT).show();
                     } else {
+                        String show_pro_name[] = new String[arr_selectedDBids.size()];
                         String pro_name[] = new String[arr_selectedDBids.size()];
                         String chck_db_id[] = new String[arr_selectedDBids.size()];
                         String chck_mrp[] = new String[arr_selectedDBids.size()];
@@ -480,6 +501,16 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
                             if (cur != null && cur.getCount() > 0) {
                                 cur.moveToFirst();
 
+                                String productname = cur.getString(cur.getColumnIndex("ProductName")).trim();
+                                String [] arr = productname.split(" ", 2);
+                                String firstword =  arr[0];
+                                String splitingword = arr[1];
+                                String ProductName = "";
+                                String firstword1 = firstword.replaceFirst("\\s++$", "");
+                                if(selected_type.trim().contains(firstword1.trim())){
+                                    ProductName = splitingword;
+                                }
+                                show_pro_name[i] = ProductName;
                                 pro_name[i] = cur.getString(cur.getColumnIndex("ProductName"));
                                 chck_db_id[i] = arr_selectedDBids.get(i);
                                 chck_mrp[i] = cur.getString(cur.getColumnIndex("MRP"));
@@ -493,6 +524,7 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
                         startActivity(new Intent(SaleActivityForFloter.this,
                                 SaleCalculation.class)
                                 .putExtra("db_id", chck_db_id)
+                                .putExtra("show_pro_name", show_pro_name)
                                 .putExtra("pro_name", pro_name)
                                 .putExtra("mrp", chck_mrp)
                                 .putExtra("encode", enacode)

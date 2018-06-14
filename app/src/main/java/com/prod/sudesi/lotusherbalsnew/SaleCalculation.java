@@ -196,11 +196,15 @@ public class SaleCalculation extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (shp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                if (role.equalsIgnoreCase("FLR")) {
                     finish();
                     startActivity(new Intent(SaleCalculation.this,
                             SaleActivityForFloter.class));
-                } else {
+                } else if(role.equalsIgnoreCase("DUB")){
+                    finish();
+                    startActivity(new Intent(SaleCalculation.this,
+                            StockSaleActivityForDubai.class));
+                }else{
                     finish();
                     startActivity(new Intent(SaleCalculation.this,
                             SaleNewActivity.class));
