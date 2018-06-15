@@ -1903,7 +1903,7 @@ public class SaleCalculation extends Activity {
                                     mCursor.moveToFirst();
                                     str_discount = mCursor.getString(mCursor
                                             .getColumnIndex("discount"));
-                                    if (str_discount != null) {
+                                   /* if (str_discount != null) {
 
                                         if (str_discount.equals("")) {
 
@@ -1912,13 +1912,48 @@ public class SaleCalculation extends Activity {
 
                                     } else {
                                         str_discount = "0.0";
+                                    }*/
+
+                                    if (str_discount != null) {
+                                        if (!str_discount.equalsIgnoreCase("")) {
+
+                                            if (!str_discount.contains(" ")) {
+
+                                                disss = (Float.parseFloat(str_discount) + a);
+
+                                            } else {
+                                                if (edt_discount.getText().toString().equals("")) {
+                                                    disss = 0;
+                                                } else {
+                                                    disss = a;
+                                                }
+
+                                            }
+
+                                        } else {
+                                            if (edt_discount.getText().toString().equals("")) {
+                                                disss = 0;
+                                            } else {
+                                                disss = a;
+
+                                            }
+                                        }
+                                    } else {
+                                        if (edt_discount.getText().toString().equals("")) {
+                                            disss = 0;
+                                        } else {
+                                            disss = a;
+                                        }
                                     }
 
                                 } else {
-                                    str_discount = "0.0";
+                                    if (edt_discount.getText().toString().equals("")) {
+                                        disss = 0;
+                                    } else {
+                                        disss = a;
+                                    }
                                 }
 
-                                Log.e("str_discount", str_discount);
 
                                 if (mCursor != null && mCursor.getCount() > 0) {
                                     mCursor.moveToFirst();
@@ -1954,7 +1989,7 @@ public class SaleCalculation extends Activity {
                                     i_net_amt = Integer.parseInt(str_price) * soldstock;
                                 }
 
-                                float net_amt = Float.parseFloat(String.valueOf(i_net_amt)) - Float.parseFloat(str_discount);
+                                float net_amt = Float.parseFloat(String.valueOf(i_net_amt)) - disss;
 
 
                                 if (mCursor.getCount() == 0) {
@@ -1979,7 +2014,7 @@ public class SaleCalculation extends Activity {
                                             String.valueOf(soldstock),
                                             String.valueOf(i_net_amt),
                                             String.valueOf(net_amt),
-                                            str_discount,
+                                            String.valueOf(disss),
                                             insert_timestamp,
                                             shaddd,
                                             month_name,
@@ -2007,7 +2042,7 @@ public class SaleCalculation extends Activity {
                                             "0",
                                             String.valueOf(i_net_amt),
                                             String.valueOf(net_amt),
-                                            str_discount,
+                                            String.valueOf(disss),
                                             shaddd,
                                             insert_timestamp,
                                             month_name,
