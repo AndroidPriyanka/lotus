@@ -60,7 +60,7 @@ public class DashboardNewActivity extends Activity {
     String attendanceDate = "", attendmonth;
     String yesterdaydate1 = "";
 
-    Button btn_attendance, btn_stock, btn_tester, btn_visibility,
+    Button btn_attendance, btn_stock, btn_return, btn_visibility,
             btn_notification, btn_reports, btn_datasync, btn_BAreport,
             btn_BAMonthreport, btn_sale, btn_dashboard, btn_super_atten, btn_stock_sale, btn_outletwise;
 
@@ -155,7 +155,7 @@ public class DashboardNewActivity extends Activity {
         btn_attendance = (Button) findViewById(R.id.btn_atten);
         btn_visibility = (Button) findViewById(R.id.btn_visibility);
         btn_stock = (Button) findViewById(R.id.btn_stock);
-        btn_tester = (Button) findViewById(R.id.btn_tester);
+        btn_return = (Button) findViewById(R.id.btn_return);
         btn_reports = (Button) findViewById(R.id.btn_report);
         btn_notification = (Button) findViewById(R.id.btn_notifi);
         btn_datasync = (Button) findViewById(R.id.btn_master_sync);
@@ -234,15 +234,20 @@ public class DashboardNewActivity extends Activity {
                 startActivity(i);
             }
         });
-        btn_tester.setOnClickListener(new OnClickListener() {
+        btn_return.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-
-                /*startActivity(new Intent(getApplicationContext(),
-                        TesterSubmitActivity.class));*/
-                Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+                if (role.equalsIgnoreCase("FLR")) {
+                    Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
+                } else if (role.equalsIgnoreCase("DUB")) {
+                    Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+                } else {
+                    startActivity(new Intent(getApplicationContext(),
+                            ReturnsActivity.class));
+                    //Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -312,9 +317,12 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-
-                startActivity(new Intent(getApplicationContext(),
-                        NotificationFragment.class));
+                if (role.equalsIgnoreCase("DUB")) {
+                    Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+                } else {
+                    startActivity(new Intent(getApplicationContext(),
+                            NotificationFragment.class));
+                }
 
             }
         });

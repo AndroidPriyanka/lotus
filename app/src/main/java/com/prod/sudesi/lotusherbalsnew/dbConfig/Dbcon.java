@@ -124,6 +124,16 @@ public class Dbcon {
         return mCursor;
     }
 
+    public Cursor fetchonefordubai(String fValue, String tbl, String names[],
+                           String fName) throws SQLException {
+        Cursor mCursor = database.query(true, tbl, names, fName + "='" + fValue
+                + "'", null, null, null, null, null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+    }
+
     private ContentValues createContentValues(String values[], String names[]) {
         ContentValues values1 = new ContentValues();
 
@@ -1358,12 +1368,12 @@ public class Dbcon {
 
     }
 
-    public Cursor fetchAllproductslistforstockforsale1(String selected_brand,String selected_offer,String product_name) {
+    public Cursor fetchAllproductslistforstockforsale1(String selected_brand,String selected_offer,String product_name,String outletcode) {
         // TODO Auto-generated method stub
 
 //	String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"' AND ProductName = '"+product_name+"'  AND db_id in (select db_id  from stock where close_bal > 0 and product_name = '"+product_name+"') ORDER BY order_flag ";
 
-        String selectquery = "select * from stock where product_category = " + "'" + selected_brand + "'" + " AND SingleOffer = " + "'" + selected_offer + "' AND product_name = '" + product_name + "'  AND  close_bal > 0";
+        String selectquery = "select * from stock where product_category = " + "'" + selected_brand + "'" + " AND SingleOffer = " + "'" + selected_offer + "' AND product_name = '" + product_name + "' AND FLRCode = '" + outletcode + "' AND  close_bal > 0";
 
         Log.e("selectquery", "==" + selectquery);
         Cursor cursort = database.rawQuery(selectquery, null);
@@ -1419,7 +1429,7 @@ public class Dbcon {
         // TODO Auto-generated method stub
 //		String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"' ORDER BY order_flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
 
-        String selectquery = "select distinct(product_name) ProductName from stock where product_category = " + "'" + selected_brand + "'" + " AND SingleOffer = " + "'" + selected_offer + "'" + " AND FLRCode = " + "'" + flrcode + "' ORDER BY flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
+        String selectquery = "select distinct(product_name) ProductName from stock where product_category = " + "'" + selected_brand + "'" + " AND SingleOffer = " + "'" + selected_offer + "'" + " AND FLRCode = " + "'" + flrcode + "' ORDER BY flag";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
 
 
         //String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"'"+" AND price_type = "+"'"+flag+"'  AND db_id in (select db_id  from stock where close_bal > 0)";
@@ -1727,7 +1737,7 @@ public class Dbcon {
         values.put("month", month);
         values.put("year", year);
         values.put("FLRCode", outletcode);
-        values.put("SingleOffer", productType);
+        values.put("SingleOffer", singleoffer);
 
         Log.e("", "values==" + values);
 
@@ -1937,6 +1947,19 @@ public class Dbcon {
         return c;
     }
 
+    public Cursor CheckDataExistfordubai(String tablename, String db_id, String outletcode) {
+        // TODO Auto-generated method stub
+        Log.v("", "check id available or not frm product_master");
+        String sql = "select * from  '" + tablename + "'  where  db_id =" + "'" + db_id + "' And FLRCode =" + "'" + outletcode + "'";
+        //	+" and product_category= '"+Product_Cat+"' and product_type= '"+Product_type+"' and product_name= '"+Product_name+"'";
+
+        Log.v("", "sql==" + sql);
+
+        Cursor c = database.rawQuery(sql, null);
+
+        return c;
+    }
+
     public void UpdateStockSync(//String product_id,
                                 String product_category,
                                 String product_type1,
@@ -2003,6 +2026,42 @@ public class Dbcon {
                 ",total_net_amount = " + "'" + ttnamt + "'" + ",discount = " + "'" + disc + "'" +
                 ",last_modified_date = " + "'" + update_timestamp + "'" +
                 ", savedServer='1' where db_id = " + "'" + db_id1 + "'" + "";
+        Log.v("", "update stock sql==" + sql);
+        database.execSQL(sql);
+
+    }
+
+    public void UpdateStockSyncfordubai(//String product_id,
+                                 String product_category,
+                                 String product_type1,
+                                 String product_name,
+                                 String emp_id,
+                                 String op_stk,
+                                 String stk_hand,
+                                 String cl_stk,
+                                 String fresh_stock1,
+                                 String ttl_amount,
+                                 String sold_stk,
+                                 String price,
+                                 String size,
+                                 String db_id1,
+                                 String update_timestamp,
+                                 String disc,
+                                 String ttnamt,
+                                 String new_retn,
+                                 String new_rtn_n_sold, String outletcode) {
+
+        // TODO Auto-generated method stub
+
+
+        Log.e("", "inside update stock");
+
+        String sql = "update stock set close_bal = " + "'" + cl_stk + "'" + " ,opening_stock = " + "'" + op_stk + "'" + ", stock_in_hand = " + "'" + stk_hand + "'" +
+                " ,return_saleable = " + "'" + new_retn + "'" + " ,return_non_saleable = " + "'" + new_rtn_n_sold + "'" +
+                ",stock_received = " + "'" + fresh_stock1 + "'" + ",sold_stock = " + "'" + sold_stk + "'" + ",total_gross_amount = " + "'" + ttl_amount + "'" +
+                ",total_net_amount = " + "'" + ttnamt + "'" + ",discount = " + "'" + disc + "'" +
+                ",last_modified_date = " + "'" + update_timestamp + "'" +
+                ", savedServer='1' where db_id = " + "'" + db_id1 + "'" + " And FLRCode = " + "'" + outletcode + "'";
         Log.v("", "update stock sql==" + sql);
         database.execSQL(sql);
 
@@ -2372,10 +2431,53 @@ public class Dbcon {
                 "shadeNo = " + "'" + shadno + "'" + "," +
                 "insert_date = " + "'" + date + "'" +
                 ", flag = " + "'s'" +
-                ", savedServer='0',updateDate ='" + updateDate + "' ,month='" + month_name + "', year='" + year_name + "', FLRCode='" + flrcode + "', SingleOffer='" + singleoffer + "' where db_id = " + "'" + db_id1 + "'" + "";
+                ", savedServer='0',updateDate ='" + updateDate + "' ,month='" + month_name + "', year='" + year_name + "', FLRCode='" + flrcode + "', SingleOffer='" + singleoffer + "' where db_id = " + "'" + db_id1 + "'" + "' And FLRCode = " + "'" + flrcode + "'";
         Log.e("", "update stock sql==" + sql);
         database.execSQL(sql);
 
+    }
+
+
+    public boolean UpdateSale_forDubai(String shaddd,
+                                        String cl_stk,
+                                        String gross,
+                                        String discount, String i_netamt,
+                                       String soldstock, String month_name, String year_name,
+                                       String updateDate,String insert_timestamp,
+                                       String db_id1, String flrcode) {
+
+
+        // TODO Auto-generated method stub
+
+
+        Log.e("", "inside update stock");
+
+
+        boolean result = false;
+
+        String sql = "update stock set  shadeNo = " + "'" + shaddd + "'" +
+                " ,close_bal = " + "'" + cl_stk + "'" +
+                " ,total_gross_amount = " + "'" + gross + "'" +
+                " ,discount = " + "'" + discount + "'" +
+                ",total_net_amount = " + "'" + i_netamt + "'" + "," +
+                "sold_stock = " + "'" + soldstock + "'" + "," +
+                "savedServer='0'" +
+                ",month='" + month_name + "', year='" + year_name + "'" +
+                ",updateDate ='" + updateDate + "'" +
+                ",insert_date ='" + insert_timestamp + "', flag = " + "'s'" +
+                " where db_id = " + "'" + db_id1 + "'" + " And FLRCode = " + "'" + flrcode + "'";
+        Log.e("", "update stock sql==" + sql);
+
+        Cursor c = database.rawQuery(sql, null);
+        if (c != null && c.getCount() > 0) {
+            result = false;
+        } else {
+            result = true;
+        }
+
+        //database.execSQL(sql);
+
+        return result;
     }
 
 
@@ -2687,6 +2789,19 @@ public class Dbcon {
         // TODO Auto-generated method stub
 
         String sql = "select Distinct(banameOutlet), * from floteroutlet where flotername =" + "'" + flotername + "'";
+
+        Cursor c = database.rawQuery(sql, null);
+
+
+        return c;
+    }
+
+    public Cursor fetchdatafordubai_dbid_outletcode(String db_id, String outletcode) {
+        // TODO Auto-generated method stub
+
+        //SELECT DISTINCT total_gross_amount, total_net_amount, discount, close_bal, sold_stock, opening_stock, stock_received, return_saleable, stock_in_hand, return_non_saleable, price FROM stock WHERE FLRCode = 'KMT TC'
+        String sql = "select Distinct total_gross_amount, total_net_amount, discount, close_bal, sold_stock, opening_stock, " +
+                "stock_received, return_saleable, stock_in_hand, return_non_saleable, price, * from stock where FLRCode =" + "'" + outletcode + "' And db_id =" + "'" + db_id + "'";
 
         Cursor c = database.rawQuery(sql, null);
 

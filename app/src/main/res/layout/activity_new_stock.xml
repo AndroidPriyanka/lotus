@@ -87,7 +87,7 @@
                         android:prompt="@string/select_type" />
                 </TableRow>
 
-                <TableRow
+              <!--  <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -110,7 +110,7 @@
                         android:layout_height="@dimen/_25sdp"
                         android:background="@drawable/dropdown"
                         android:textAlignment="center" />
-                </TableRow>
+                </TableRow>-->
             </TableLayout>
 
 

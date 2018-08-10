@@ -55,6 +55,7 @@ public class OutletActivity extends Activity {
     SharedPreferences.Editor shpeditor;
     LotusWebservice service;
     private ProgressDialog pd;
+    private ProgressDialog pd1;
     ConnectionDetector cd;
     Dbcon db;
     String flotername, bdename, role, check, flrid, lhrid, currentdate;
@@ -80,6 +81,7 @@ public class OutletActivity extends Activity {
         outlet = (AutoCompleteTextView) findViewById(R.id.spin_outlet);
 
         pd = new ProgressDialog(this);
+        pd1 = new ProgressDialog(this);
         service = new LotusWebservice(this);
         cd = new ConnectionDetector(this);
         db = new Dbcon(this);
@@ -331,7 +333,8 @@ public class OutletActivity extends Activity {
                         for (int i = 0; i < outletDetailsArraylist.size(); i++) {
 
                             strOutletArray[i + 1] = outletDetailsArraylist.get(i).getOutletname() + "(" +
-                                    outletDetailsArraylist.get(i).getBAnameOutlet() + ")";
+                                    outletDetailsArraylist.get(i).getBAnameOutlet() + "-" +
+                                    outletDetailsArraylist.get(i).getBACodeOutlet() + ")";
                         }
                     }
                 } else {
@@ -455,9 +458,9 @@ public class OutletActivity extends Activity {
         protected void onPreExecute() {
             // TODO Auto-generated method stub
 
-            pd.setMessage("Please Wait....");
-            pd.show();
-            pd.setCancelable(false);
+            pd1.setMessage("Please Wait....");
+            pd1.show();
+            pd1.setCancelable(false);
 
         }
 
@@ -496,8 +499,8 @@ public class OutletActivity extends Activity {
         protected void onPostExecute(SoapObject result) {
             // TODO Auto-generated method stub
 
-            if (pd != null && pd.isShowing() && !OutletActivity.this.isFinishing()) {
-                pd.dismiss();
+            if (pd1 != null && pd1.isShowing() && !OutletActivity.this.isFinishing()) {
+                pd1.dismiss();
             }
 
             if (Flag.equalsIgnoreCase("0")) {

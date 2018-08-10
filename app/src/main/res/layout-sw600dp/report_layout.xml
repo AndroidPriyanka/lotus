@@ -234,6 +234,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="1dp"
                 android:layout_weight="1"
+                android:singleLine="true"
                 android:background="@layout/tableborder_for_fields"
                 android:gravity="left"
                 android:paddingLeft="5dp"

@@ -110,13 +110,21 @@ public class LoginActivity extends Activity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
 
-    //Production
+    //Production India
     /*public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
     public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production*/
 
-    //UAT
-    public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT
-    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT
+    //UAT India
+    //public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
+    //public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT India
+
+    //Production Dubai
+     public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Dubai_Pro.apk"; //production
+    public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config_dubai.txt";//production
+
+    //UAT Dubai
+    //public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_Dubai_UAT.apk"; //UAT Dubai
+    //public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config_dubai.txt";//UAT Dubai
 
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE);

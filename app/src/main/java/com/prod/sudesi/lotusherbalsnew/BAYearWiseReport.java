@@ -182,6 +182,9 @@ public class BAYearWiseReport extends Activity {
 
                     CurrentYear = String.valueOf(int_current_year_n2);
 
+                    tvPreviousyear.setText(PreviousYear);
+                    tvCurrentyear.setText(CurrentYear);
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();

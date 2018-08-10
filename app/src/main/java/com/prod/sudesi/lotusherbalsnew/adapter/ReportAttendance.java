@@ -81,9 +81,11 @@ public class ReportAttendance extends BaseAdapter {
 		
 		HashMap<String, String> map = new HashMap<String, String>();
 		map = data.get(position);        
+
+		String[] date = map.get("ADATE").split(" ");
+		String adate = date[0];
 		
-		
-		viewHolder.txt_adate.setText(map.get("ADATE"));
+		viewHolder.txt_adate.setText(adate);
 		viewHolder.txt_attendance.setText(map.get("ATTENDANCE"));
 		viewHolder.txt_atype.setText(map.get("ABSENTTYPE"));
 		

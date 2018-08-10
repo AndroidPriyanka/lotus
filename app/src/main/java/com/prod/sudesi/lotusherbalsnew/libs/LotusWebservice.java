@@ -15,17 +15,17 @@ public class LotusWebservice {
 
 	// -----------------Mahi
 
-//	String url = "http://lotusws.lotussmartforce.com/Service1.svc";// production lotus server
-	String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
+	String url = "http://lotusws.lotussmartforce.com/Service1.svc";// production lotus server
+	//String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
 
 
 	public LotusWebservice(Context con) {
 		context = con;
 	}
 
-	public SoapObject SaveAttendance(String empid, String date,
+	public SoapPrimitive SaveAttendance(String empid, String date,
 			String attend, String absent_type, String lat, String lon) {
-        SoapObject result = null;
+		SoapPrimitive result = null;
 		try {
 			Log.v("", "attendace service called");
             SoapObject request = new SoapObject("http://tempuri.org/",
@@ -52,7 +52,7 @@ public class LotusWebservice {
 			androidHttpTransport.call(
 					"http://tempuri.org/IService1/SaveAttendance", envelope);
 
-			result = (SoapObject) envelope.getResponse();
+			result = (SoapPrimitive) envelope.getResponse();
 			Log.e("SaveAttendance", result.toString());
 
 		} catch (Exception e) {
@@ -60,6 +60,44 @@ public class LotusWebservice {
 		}
 		return result;
 	}
+
+    public SoapObject SaveAttendanceForDubai(String empid, String date,
+                                     String attend, String absent_type, String lat, String lon) {
+        SoapObject result = null;
+        try {
+            Log.v("", "attendace service called");
+            SoapObject request = new SoapObject("http://tempuri.org/",
+                    "SaveAttendance_Dubai");
+
+            request.addProperty("emp_id", empid);
+            request.addProperty("Adate", date);
+            request.addProperty("attendance", attend);
+            request.addProperty("AbsentType", absent_type);
+            request.addProperty("lat", lat);
+            request.addProperty("lon", lon);
+
+            Log.e("AttendanceValues", empid + "---" + date + "---" + attend
+                    + "---" + absent_type + "---" + lat + "---" + lon);
+
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+                    SoapEnvelope.VER11);// soap envelop with version
+            envelope.setOutputSoapObject(request); // set request object
+            envelope.dotNet = true;
+
+            HttpTransportSE androidHttpTransport = new HttpTransportSE(url,60000);// http
+            // transport
+            // call
+            androidHttpTransport.call(
+                    "http://tempuri.org/IService1/SaveAttendance_Dubai", envelope);
+
+            result = (SoapObject) envelope.getResponse();
+            Log.e("SaveAttendance_Dubai", result.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
 	public SoapPrimitive SaveStock(String id,String Pid, String CatCodeId,
 			String EANCode, String empId, String ProductCategory,
@@ -658,7 +696,7 @@ public class LotusWebservice {
 			Log.v("", "empid==" + empid);
 			request.addProperty("EmpId", empid);
 			request.addProperty("Date", lastsync_date);
-			Log.d("Date of servcer sync result",""+lastsync_date+"-"+empid);
+			//Log.d("Date of servcer sync result",""+lastsync_date+"-"+empid);
 			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
 					SoapEnvelope.VER11);// soap envelop with version
 			envelope.setOutputSoapObject(request); // set request object
@@ -866,7 +904,7 @@ public class LotusWebservice {
 							envelope);
 
 			result = (SoapObject) envelope.getResponse();
-			Log.e("GetVisibilityNotReceivedImage=", result.toString());
+			//Log.e("GetVisibilityNotReceivedImage=", result.toString());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1112,7 +1150,7 @@ public class LotusWebservice {
 			Log.v("","Log2");
 			result = (SoapPrimitive) envelope.getResponse();
 			Log.v("","Log3");
-			Log.e("InsertStockEveryDayNetvalue", result.toString());
+			//Log.e("InsertStockEveryDayNetvalue", result.toString());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1198,7 +1236,7 @@ public class LotusWebservice {
 			request.addProperty("lat", lat);
 			request.addProperty("lon", lon);
 			
-			Log.e("SaveSupervisorAttendance", request.toString());
+			//Log.e("SaveSupervisorAttendance", request.toString());
 
 			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
 					SoapEnvelope.VER11);// soap envelop with version
@@ -1212,7 +1250,7 @@ public class LotusWebservice {
 					"http://tempuri.org/IService1/SaveSupervisorAttendance", envelope);
 
 			result = (SoapPrimitive) envelope.getResponse();
-			Log.e("SaveSupervisorAttendance", result.toString());
+			//Log.e("SaveSupervisorAttendance", result.toString());
 			
 		}
 		catch(Exception e)
@@ -1533,8 +1571,8 @@ public class LotusWebservice {
 			SoapObject request = new SoapObject("http://tempuri.org/",
 					"DubaiGetDashboardData");
 
-			request.addProperty("MinDate", fromdate);
-			request.addProperty("MaxDate", todate);
+			request.addProperty("FromDate", fromdate);
+			request.addProperty("ToDate", todate);
 			request.addProperty("OutletCode", outletcode);
 			request.addProperty("bacode", EMpid);
 

@@ -913,7 +913,13 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                         dialog.dismiss();
 
                                         try {
-                                            new SaveAttendance().execute(attendance_flag, leavetype_flag);
+                                            if(role.equalsIgnoreCase("DUB")){
+                                                new SaveAttendanceForDubai().execute(attendance_flag, leavetype_flag);
+                                            }else if(role.equalsIgnoreCase("FLR")){
+                                                new SaveAttendanceForDubai().execute(attendance_flag, leavetype_flag);
+                                            }else {
+                                                new SaveAttendance().execute(attendance_flag, leavetype_flag);
+                                            }
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -1262,7 +1268,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         return month;
     }
 
-    private class SaveAttendance extends AsyncTask<String, Void, SoapObject> {
+    private class SaveAttendanceForDubai extends AsyncTask<String, Void, SoapObject> {
 
 
         SoapObject soap_result_attendance = null;
@@ -1313,10 +1319,10 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                 try {
                     if (attendance_flag.equalsIgnoreCase("P") &&
                             attendance_flag.length() > 0 && attendance_flag != null) {
-                        soap_result_attendance = service.SaveAttendance(username, attendanceDate1,
+                        soap_result_attendance = service.SaveAttendanceForDubai(username, attendanceDate1,
                                 attendance_flag, "", String.valueOf(lat), String.valueOf(lon));
                     } else {
-                        soap_result_attendance = service.SaveAttendance(username, attendanceDate1,
+                        soap_result_attendance = service.SaveAttendanceForDubai(username, attendanceDate1,
                                 attendance_flag, leavetype_flag, String.valueOf(lat), String.valueOf(lon));
                     }
 
@@ -1358,76 +1364,63 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                             presentList.add(attendanceModel);
                         }
 
-                        for (int j = 0; j < presentList.size(); j++) {
-                            attendanceModel = presentList.get(j);
-
-                            SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
-                            Date date = df.parse(attendanceModel.getADate());
-
-                            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            savedate = form.format(date);
-
-                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                            String adate = sdf.format(date.getTime());
-
-                           /* Date date1 = new Date();
-                            SimpleDateFormat form1 = new SimpleDateFormat("yyyy-MM-dd");
-                            String currentdate = form1.format(date1);
-
-                            if (adate.equalsIgnoreCase(currentdate)) {
-
-                                autoid = attendanceModel.getAid();
-
-                                spe.putString("AttendAid", autoid);
-                                spe.commit();
-                            }*/
-
-                            String sld[] = attendanceModel.getADate().split(" ");
-                            final String sld1 = sld[0];
-
-                            String ddd[] = sld1.split("/");
-                            final String year = ddd[2];
-
-                            String attendmonth1 = getmonthNo1(attendmonth);
-
-                            db.open();
-                            Cursor c = db.getuniquedataAttendance(username, adate);
-
-                            int count = c.getCount();
-                            Log.v("", "" + count);
-                            db.close();
-                            if (count > 0) {
-
-                            } else {
-                                db.open();
-
-                                values = new String[]{username,
-                                        savedate,
-                                        attendanceModel.getAttendanceValue(),
-                                        "",
-                                        String.valueOf(lat),
-                                        String.valueOf(lon),
-                                        "1",
-                                        attendmonth1,
-                                        "",
-                                        year};
-
-                                db.insert(values, columns, "attendance");
-
-                                db.close();
-
-                            }
-
-                        }
-
-
                         Log.v("", "soap_result_attendance=" + status);
                         if (status.equalsIgnoreCase("TRUE")) {
                             ErroFlag = "1";
-                                       /* db.update_Attendance_data(attendance_array.getString(0));
+
+                            for (int j = 0; j < presentList.size(); j++) {
+                                attendanceModel = presentList.get(j);
+
+                                SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
+                                Date date = df.parse(attendanceModel.getADate());
+
+                                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                savedate = form.format(date);
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                String adate = sdf.format(date.getTime());
+
+                                String sld[] = attendanceModel.getADate().split(" ");
+                                final String sld1 = sld[0];
+
+                                String ddd[] = sld1.split("/");
+                                final String year = ddd[2];
+
+                                String attendmonth1 = getmonthNo1(attendmonth);
+
+                                db.open();
+                                Cursor c = db.getuniquedataAttendance(username, adate);
+
+                                int count = c.getCount();
+                                Log.v("", "" + count);
+                                db.close();
+                                if (count > 0) {
+
+                                } else {
+                                    db.open();
+
+                                    values = new String[]{username,
+                                            savedate,
+                                            attendanceModel.getAttendanceValue(),
+                                            "",
+                                            String.valueOf(lat),
+                                            String.valueOf(lon),
+                                            "1",
+                                            attendmonth1,
+                                            "",
+                                            year};
+
+                                    db.insert(values, columns, "attendance");
+
+                                    db.close();
+
+                                }
+
+                            }
+                        /* db.update_Attendance_data(attendance_array.getString(0));
                                         db.close();*/
 
-                            String sld2[] = attendanceDate1.split(" ");
+                           /* String sld2[] = attendanceDate1.split(" ");
                             final String sld3 = sld2[0];
 
                             String ddd1[] = sld3.split("-");
@@ -1470,7 +1463,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                         "attendance");
 
                                 db.close();
-                            }
+                            }*/
 
 
                         } else if (status.equalsIgnoreCase("FAIL")) {
@@ -1487,7 +1480,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
                         }
                     } else {
-                        ErroFlag = "0";
+                        ErroFlag = "3";
                         //String errors = "Soap in giving null while 'Attendance' and 'checkSyncFlag = 2' in  data Sync";
                         //we.writeToSD(errors.toString());
                         final Calendar calendar1 = Calendar
@@ -1504,7 +1497,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
 
                 } catch (Exception e) {
-                    ErroFlag = "0";
+                    //ErroFlag = "3";
                     Erro_function = "Attendance";
                     e.printStackTrace();
                     String Error = e.toString();
@@ -1590,171 +1583,372 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
     private class SaveLogoutTime extends AsyncTask<Void, Void, SoapPrimitive> {
 
-            ProgressDialog progress;
+        ProgressDialog progress;
 
-            SoapPrimitive soap_result;
-
-            @Override
-            protected SoapPrimitive doInBackground(Void... params) {
-                // TODO Auto-generated method stub
-
-                Date date = new Date();
-                SimpleDateFormat form = new SimpleDateFormat(
-                        "yyyy-MM-dd HH:mm:ss");
-
-                attendanceDate1 = form.format(date);
-                soap_result = service.SaveLogoutTime(username, attendanceDate1);
-
-                return soap_result;
-            }
-
-            @Override
-            protected void onPreExecute() {
-                // TODO Auto-generated method stub
-                super.onPreExecute();
-                progress = new ProgressDialog(AttendanceFragment.this);
-                progress.setTitle("Uploading");
-                progress.setMessage("Please Wait.......");
-                progress.setCancelable(false);
-                progress.show();
-            }
-
-            @Override
-            protected void onPostExecute(SoapPrimitive result) {
-                // TODO Auto-generated method stub
-                super.onPostExecute(result);
-                progress.dismiss();
-                if (result != null) {
-                    if (result.toString().equalsIgnoreCase("true")) {
-                        Toast.makeText(AttendanceFragment.this, "Uploaded Succesfully", Toast.LENGTH_LONG).show();
-
-                        Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(i);
-                    } else {
-                        Toast.makeText(AttendanceFragment.this, "Data Not uploaded", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(AttendanceFragment.this, "Please check internet Connectivity", Toast.LENGTH_LONG).show();
-                }
-            }
-
-
-        }
-
+        SoapPrimitive soap_result;
 
         @Override
-        public void onStart() {
-            super.onStart();
+        protected SoapPrimitive doInBackground(Void... params) {
+            // TODO Auto-generated method stub
 
-            if (!checkPermissions()) {
-                requestPermissions();
+            Date date = new Date();
+            SimpleDateFormat form = new SimpleDateFormat(
+                    "yyyy-MM-dd HH:mm:ss");
+
+            attendanceDate1 = form.format(date);
+            soap_result = service.SaveLogoutTime(username, attendanceDate1);
+
+            return soap_result;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+            progress = new ProgressDialog(AttendanceFragment.this);
+            progress.setTitle("Uploading");
+            progress.setMessage("Please Wait.......");
+            progress.setCancelable(false);
+            progress.show();
+        }
+
+        @Override
+        protected void onPostExecute(SoapPrimitive result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+            progress.dismiss();
+            if (result != null) {
+                if (result.toString().equalsIgnoreCase("true")) {
+                    Toast.makeText(AttendanceFragment.this, "Uploaded Succesfully", Toast.LENGTH_LONG).show();
+
+                    Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                } else {
+                    Toast.makeText(AttendanceFragment.this, "Data Not uploaded", Toast.LENGTH_LONG).show();
+                }
             } else {
-                getLastLocation();
+                Toast.makeText(AttendanceFragment.this, "Please check internet Connectivity", Toast.LENGTH_LONG).show();
             }
+        }
+
+
+    }
+
+    private class SaveAttendance extends AsyncTask<String, Void, SoapPrimitive> {
+
+
+        SoapPrimitive soap_attendance = null;
+
+        String ErroFlag;
+        String Erro_function = "";
+
+        Cursor attendance_array;
+
+        String Flag;
+
+        String attendance_flag = "";
+        String leavetype_flag = "";
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+
+            mProgress.setMessage("Please Wait");
+            mProgress.show();
+            mProgress.setCancelable(false);
         }
 
         @Override
-        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                               @NonNull int[] grantResults) {
-            Log.i(TAG, "onRequestPermissionResult");
-            if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
-                if (grantResults.length <= 0) {
-                    // If user interaction was interrupted, the permission request is cancelled and you
-                    // receive empty arrays.
-                    Log.i(TAG, "User interaction was cancelled.");
-                } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission granted.
-                    getLastLocation();
-                } else {
-                    // Permission denied.
+        protected SoapPrimitive doInBackground(String... params) {
+            // TODO Auto-generated method stub
 
-                    // Notify the user via a SnackBar that they have rejected a core permission for the
-                    // app, which makes the Activity useless. In a real app, core permissions would
-                    // typically be best requested during a welcome-screen flow.
+            attendance_flag = params[0];
+            leavetype_flag = params[1];
 
-                    // Additionally, it is important to remember that a permission might have been
-                    // rejected without asking the user for permission (device policy or "Never ask
-                    // again" prompts). Therefore, a user interface affordance is typically implemented
-                    // when permissions are denied. Otherwise, your app could appear unresponsive to
-                    // touches or interactions which have required permissions.
-                    showSnackbar(R.string.textwarn, R.string.settings,
-                            new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    // Build intent that displays the App settings screen.
-                                    Intent intent = new Intent();
-                                    intent.setAction(
-                                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                    Uri uri = Uri.fromParts("package",
-                                            BuildConfig.APPLICATION_ID, null);
-                                    intent.setData(uri);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
-                                }
-                            });
+            final String[] columns = new String[]{"emp_id", "Adate",
+                    "attendance", "absent_type", "lat", "lon", "savedServer", "month",
+                    "holiday_desc", "year"};
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "3";
+                // stop executing code by return
+
+            } else {
+
+
+                Flag = "1";
+
+                try {
+                    if (attendance_flag.equalsIgnoreCase("P") &&
+                            attendance_flag.length() > 0 && attendance_flag != null) {
+                        soap_attendance = service.SaveAttendance(username, attendanceDate1,
+                                attendance_flag, "", String.valueOf(lat), String.valueOf(lon));
+                    } else {
+                        soap_attendance = service.SaveAttendance(username, attendanceDate1,
+                                attendance_flag, leavetype_flag, String.valueOf(lat), String.valueOf(lon));
+                    }
+
+                    if (soap_attendance != null) {
+                        String t = soap_attendance.toString();
+                        Log.v("", "soap_result_attendance=" + t);
+                        if (t.equalsIgnoreCase("TRUE")) {
+                            ErroFlag = "1";
+
+                            String sld[] = attendanceDate1.split(" ");
+                            final String sld1 = sld[0];
+
+                            String ddd[] = sld1.split("-");
+                            final String year = ddd[0];
+
+                            String attendmonth1 = getmonthNo1(attendmonth);
+
+                            if (attendance_flag.equalsIgnoreCase("P") &&
+                                    attendance_flag.length() > 0 && attendance_flag != null) {
+                                db.open();
+
+                                values = new String[]{username,
+                                        attendanceDate1,
+                                        attendance_flag,
+                                        "",
+                                        String.valueOf(lat),
+                                        String.valueOf(lon),
+                                        "1",
+                                        attendmonth1,
+                                        "",
+                                        year};
+
+                                db.insert(values, columns, "attendance");
+
+                                db.close();
+                            } else {
+                                db.open();
+
+                                values = new String[]{
+                                        username,
+                                        attendanceDate1,
+                                        attendance_flag,
+                                        leavetype_flag,
+                                        String.valueOf(lat),
+                                        String.valueOf(lon),
+                                        "1", attendmonth1,
+                                        "", year};
+
+                                db.insert(values, columns,
+                                        "attendance");
+
+                                db.close();
+                            }
+
+
+                        } else if (t.equalsIgnoreCase("FAIL")) {
+                            ErroFlag = "0";
+                            final Calendar calendar1 = Calendar
+                                    .getInstance();
+                            SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                    "MM/dd/yyyy HH:mm:ss");
+                            String Createddate = formatter1.format(calendar1
+                                    .getTime());
+
+                            int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                            db.insertSyncLog("SaveAttendace_SE", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
+
+                        }
+                    } else {
+                        ErroFlag = "3";
+                        //String errors = "Soap in giving null while 'Attendance' and 'checkSyncFlag = 2' in  data Sync";
+                        //we.writeToSD(errors.toString());
+                        final Calendar calendar1 = Calendar
+                                .getInstance();
+                        SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss");
+                        String Createddate = formatter1.format(calendar1
+                                .getTime());
+
+                        int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                        db.insertSyncLog("Internet Connection Lost, Soap in giving null while 'SaveAttendace'", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
+
+                    }
+
+                } catch (Exception e) {
+                    ErroFlag = "3";
+                    Erro_function = "Attendance";
+                    e.printStackTrace();
+                    String Error = e.toString();
+
+                    final Calendar calendar1 = Calendar
+                            .getInstance();
+                    SimpleDateFormat formatter1 = new SimpleDateFormat(
+                            "MM/dd/yyyy HH:mm:ss");
+                    String Createddate = formatter1.format(calendar1
+                            .getTime());
+
+                    int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                    db.insertSyncLog(Error, String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
+
+
                 }
+                //}
             }
+
+            return null;
         }
 
-        private void showSnackbar(final int mainTextStringId, final int actionStringId,
-                                  View.OnClickListener listener) {
-            Snackbar.make(findViewById(android.R.id.content),
-                    getString(mainTextStringId),
-                    Snackbar.LENGTH_INDEFINITE)
-                    .setAction(getString(actionStringId), listener).show();
+        @Override
+        protected void onPostExecute(SoapPrimitive result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+
+            mProgress.dismiss();
+            if (Flag.equalsIgnoreCase("3")) {
+
+                Toast.makeText(getApplicationContext(), "Connectivity Error Please check internet ", Toast.LENGTH_SHORT).show();
+            }
+
+            if (ErroFlag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(getApplicationContext(), "Please Enter Today Date", Toast.LENGTH_SHORT).show();
+            }
+            if (ErroFlag.equalsIgnoreCase("1")) {
+
+                Toast.makeText(getApplicationContext(), "Attendance Successfully Sync", Toast.LENGTH_SHORT).show();
+
+                if (attendance_flag.equalsIgnoreCase("A")) {
+
+
+                    Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+
+                } else {
+
+                    Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
+                    i.putExtra("FROM", "LOGIN");
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                }
+
+            }
+
         }
 
-        private boolean checkPermissions() {
-            int permissionState = ActivityCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION);
-            return permissionState == PackageManager.PERMISSION_GRANTED;
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (!checkPermissions()) {
+            requestPermissions();
+        } else {
+            getLastLocation();
         }
+    }
 
-        private void startLocationPermissionRequest() {
-            ActivityCompat.requestPermissions(AttendanceFragment.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
-        }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        Log.i(TAG, "onRequestPermissionResult");
+        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            if (grantResults.length <= 0) {
+                // If user interaction was interrupted, the permission request is cancelled and you
+                // receive empty arrays.
+                Log.i(TAG, "User interaction was cancelled.");
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted.
+                getLastLocation();
+            } else {
+                // Permission denied.
 
-        private void requestPermissions() {
-            boolean shouldProvideRationale =
-                    ActivityCompat.shouldShowRequestPermissionRationale(this,
-                            Manifest.permission.ACCESS_FINE_LOCATION);
+                // Notify the user via a SnackBar that they have rejected a core permission for the
+                // app, which makes the Activity useless. In a real app, core permissions would
+                // typically be best requested during a welcome-screen flow.
 
-            // Provide an additional rationale to the user. This would happen if the user denied the
-            // request previously, but didn't check the "Don't ask again" checkbox.
-            if (shouldProvideRationale) {
-                Log.i(TAG, "Displaying permission rationale to provide additional context.");
-
-                showSnackbar(R.string.textwarn, android.R.string.ok,
+                // Additionally, it is important to remember that a permission might have been
+                // rejected without asking the user for permission (device policy or "Never ask
+                // again" prompts). Therefore, a user interface affordance is typically implemented
+                // when permissions are denied. Otherwise, your app could appear unresponsive to
+                // touches or interactions which have required permissions.
+                showSnackbar(R.string.textwarn, R.string.settings,
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                // Request permission
-                                startLocationPermissionRequest();
+                                // Build intent that displays the App settings screen.
+                                Intent intent = new Intent();
+                                intent.setAction(
+                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package",
+                                        BuildConfig.APPLICATION_ID, null);
+                                intent.setData(uri);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
                             }
                         });
-
-            } else {
-                Log.i(TAG, "Requesting permission");
-                // Request permission. It's possible this can be auto answered if device policy
-                // sets the permission in a given state or the user denied the permission
-                // previously and checked "Never ask again".
-                startLocationPermissionRequest();
             }
         }
+    }
 
-        private void getLastLocation() {
-            mFusedLocationClient.getLastLocation()
-                    .addOnCompleteListener(this, new OnCompleteListener<Location>() {
+    private void showSnackbar(final int mainTextStringId, final int actionStringId,
+                              View.OnClickListener listener) {
+        Snackbar.make(findViewById(android.R.id.content),
+                getString(mainTextStringId),
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(getString(actionStringId), listener).show();
+    }
+
+    private boolean checkPermissions() {
+        int permissionState = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        return permissionState == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void startLocationPermissionRequest() {
+        ActivityCompat.requestPermissions(AttendanceFragment.this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                REQUEST_PERMISSIONS_REQUEST_CODE);
+    }
+
+    private void requestPermissions() {
+        boolean shouldProvideRationale =
+                ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION);
+
+        // Provide an additional rationale to the user. This would happen if the user denied the
+        // request previously, but didn't check the "Don't ask again" checkbox.
+        if (shouldProvideRationale) {
+            Log.i(TAG, "Displaying permission rationale to provide additional context.");
+
+            showSnackbar(R.string.textwarn, android.R.string.ok,
+                    new View.OnClickListener() {
                         @Override
-                        public void onComplete(@NonNull Task<Location> task) {
-                            if (task.isSuccessful() && task.getResult() != null) {
-                                mLastLocation = task.getResult();
+                        public void onClick(View view) {
+                            // Request permission
+                            startLocationPermissionRequest();
+                        }
+                    });
 
-                                lat = mLastLocation.getLatitude();
-                                lon = mLastLocation.getLongitude();
+        } else {
+            Log.i(TAG, "Requesting permission");
+            // Request permission. It's possible this can be auto answered if device policy
+            // sets the permission in a given state or the user denied the permission
+            // previously and checked "Never ask again".
+            startLocationPermissionRequest();
+        }
+    }
+
+    private void getLastLocation() {
+        mFusedLocationClient.getLastLocation()
+                .addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            mLastLocation = task.getResult();
+
+                            lat = mLastLocation.getLatitude();
+                            lon = mLastLocation.getLongitude();
 
                            /* mLatitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
                                     mLatitudeLabel,
@@ -1762,12 +1956,12 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                             mLongitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
                                     mLongitudeLabel,
                                     mLastLocation.getLongitude()));*/
-                            } else {
-                                Log.w(TAG, "getLastLocation:exception", task.getException());
+                        } else {
+                            Log.w(TAG, "getLastLocation:exception", task.getException());
 
-                            }
                         }
-                    });
-        }
-
+                    }
+                });
     }
+
+}

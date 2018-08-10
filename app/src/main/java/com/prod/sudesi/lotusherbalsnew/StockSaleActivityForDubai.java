@@ -533,7 +533,7 @@ public class StockSaleActivityForDubai extends Activity implements View.OnClickL
                 HashMap<String, String[]> map = new HashMap<String, String[]>();
                 db.open();
                 Cursor c = db.fetchAllproductslistforstockforsale1(selected_brand, selected_offer,
-                        cursor.getString(cursor.getColumnIndex("ProductName")));
+                        cursor.getString(cursor.getColumnIndex("ProductName")),outletcode);
 
                 Log.e("c.getCount()", String.valueOf(c.getCount()));
                 Log.e("product_name", cursor.getString(cursor.getColumnIndex("ProductName")));

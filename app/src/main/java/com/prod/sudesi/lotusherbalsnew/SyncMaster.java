@@ -107,8 +107,8 @@ public class SyncMaster extends Activity {
     ArrayList<HashMap<String, String>> listofsyncerrorlog = new ArrayList<HashMap<String, String>>();
     ArrayList<HashMap<String, String>> listofimages = new ArrayList<HashMap<String, String>>();
 
-    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
-    //    public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock/";//Production Server
+    //public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
+      public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
     private JSONArray array = new JSONArray();
     String flag;
     String ErroFlag = "";
@@ -7236,6 +7236,13 @@ public class SyncMaster extends Activity {
 
                                 }
 
+                                String singleoffer = soap_result1.getProperty("SingleOffer").toString();
+
+                                if (singleoffer == null) {
+                                    singleoffer = "";
+
+                                }
+
                                 if (db_Id.equalsIgnoreCase("anyType{}")) {
                                     Log.e("", "anytype for db_Id");
                                     db_Id = " ";
@@ -7335,12 +7342,16 @@ public class SyncMaster extends Activity {
                                     outletcode = " ";
                                 }
 
+                                if (singleoffer.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for singleoffer");
+                                    singleoffer = " ";
+                                }
+
                                 Log.e("pm", "pm5--");
                                 db.open();
 
-                                Cursor c1 = db.CheckDataExist("stock", db_Id,
-                                        ProductCategory, ProductType,
-                                        ProductName);
+                                Cursor c1 = db.CheckDataExistfordubai("stock", db_Id,
+                                        outletcode);
 
 
                                 int count = c1.getCount();
@@ -7349,14 +7360,14 @@ public class SyncMaster extends Activity {
                                 if (count > 0) {
 
                                     db.open();
-                                    db.UpdateStockSync1(ProductCategory,
+                                    db.UpdateStockSyncfordubai(ProductCategory,
                                             ProductType, ProductName, EmpId,
                                             Opening_Stock, Stock_inhand, ClosingBal,
                                             FreshStock, GrossAmount, SoldStock,
                                             Price, Size, db_Id, LMD, Discount,
                                             NetAmount,
                                             S_Return_Saleable,
-                                            S_Return_NonSaleable);
+                                            S_Return_NonSaleable,FLRCode);
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","
@@ -7376,7 +7387,7 @@ public class SyncMaster extends Activity {
                                             S_Return_Saleable, ClosingBal,
                                             GrossAmount, Discount, NetAmount,
                                             Size, Price, LMD,
-                                            AndroidCreatedDate, MONTH, YEAR,outletcode,ProductType);
+                                            AndroidCreatedDate, MONTH, YEAR,outletcode,singleoffer);
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","

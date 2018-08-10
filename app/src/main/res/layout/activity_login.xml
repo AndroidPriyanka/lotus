@@ -84,7 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="(PRO_v2.10)"
+                android:text="(Lotus_Dubai_Pro_v1.0)"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#B6B6B4"
                 android:textStyle="italic" />

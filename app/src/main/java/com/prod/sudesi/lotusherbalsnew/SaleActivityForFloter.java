@@ -34,7 +34,7 @@ import static android.content.ContentValues.TAG;
 
 public class SaleActivityForFloter extends Activity implements View.OnClickListener {
 
-    Spinner sp_product_category, sp_product_type, sp_product_mode;
+    Spinner sp_product_category, sp_product_type; //sp_product_mode;
 
     Button btn_proceed, btn_home, btn_logout;
 
@@ -42,7 +42,7 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
 
     TableRow tr_header;
 
-    TextView tv_h_username, txt_header, txt_product_mode;
+    TextView tv_h_username, txt_header; //txt_product_mode;
 
     SharedPreferences shp;
     SharedPreferences.Editor shpeditor;
@@ -77,7 +77,7 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
 
         sp_product_category = (Spinner) findViewById(R.id.sp_product_category);
         sp_product_type = (Spinner) findViewById(R.id.sp_product_type);
-        sp_product_mode = (Spinner) findViewById(R.id.sp_product_mode);
+        //sp_product_mode = (Spinner) findViewById(R.id.sp_product_mode);
         tl_productList = (TableLayout) findViewById(R.id.tl_productList);
         btn_proceed = (Button) findViewById(R.id.btn_proceed);
         btn_home = (Button) findViewById(R.id.btn_home);
@@ -85,14 +85,14 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
         tr_header = (TableRow) findViewById(R.id.tr_header);
         tv_h_username = (TextView) findViewById(R.id.tv_h_username);
         txt_header = (TextView) findViewById(R.id.txt_header);
-        txt_product_mode = (TextView) findViewById(R.id.txt_product_mode);
-        txt_product_mode.setVisibility(View.GONE);
+        //txt_product_mode = (TextView) findViewById(R.id.txt_product_mode);
+        //txt_product_mode.setVisibility(View.GONE);
         txt_header.setText("SALE");
 
         btn_proceed.setOnClickListener(this);
         btn_home.setOnClickListener(this);
         btn_logout.setOnClickListener(this);
-        sp_product_mode.setVisibility(View.GONE);
+        //sp_product_mode.setVisibility(View.GONE);
 
         shp = getSharedPreferences("Lotus", MODE_PRIVATE);
         shpeditor = shp.edit();
