@@ -15,15 +15,16 @@ public class LotusWebservice {
 
 	// -----------------Mahi
 
-	String url = "http://lotusws.lotussmartforce.com/Service1.svc";// production lotus server
-	//String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
+	//String url = "http://lotusws.lotussmartforce.com/Service1.svc";// production lotus server
+	String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
 
 
 	public LotusWebservice(Context con) {
 		context = con;
 	}
 
-	public SoapPrimitive SaveAttendance(String empid, String date,
+	//For current production using this method
+	/*public SoapPrimitive SaveAttendance(String empid, String date,
 			String attend, String absent_type, String lat, String lon) {
 		SoapPrimitive result = null;
 		try {
@@ -59,8 +60,9 @@ public class LotusWebservice {
 			e.printStackTrace();
 		}
 		return result;
-	}
+	}*/
 
+	//For current production using this method for dubai
     public SoapObject SaveAttendanceForDubai(String empid, String date,
                                      String attend, String absent_type, String lat, String lon) {
         SoapObject result = null;
@@ -98,6 +100,45 @@ public class LotusWebservice {
         }
         return result;
     }
+
+    //for using india and dubai UAT
+	public SoapObject SaveAttendance(String empid, String date,
+											 String attend, String absent_type, String lat, String lon) {
+		SoapObject result = null;
+		try {
+			Log.v("", "attendace service called");
+			SoapObject request = new SoapObject("http://tempuri.org/",
+					"SaveAttendance");
+
+			request.addProperty("emp_id", empid);
+			request.addProperty("Adate", date);
+			request.addProperty("attendance", attend);
+			request.addProperty("AbsentType", absent_type);
+			request.addProperty("lat", lat);
+			request.addProperty("lon", lon);
+
+			Log.e("AttendanceValues", empid + "---" + date + "---" + attend
+					+ "---" + absent_type + "---" + lat + "---" + lon);
+
+			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+					SoapEnvelope.VER11);// soap envelop with version
+			envelope.setOutputSoapObject(request); // set request object
+			envelope.dotNet = true;
+
+			HttpTransportSE androidHttpTransport = new HttpTransportSE(url,60000);// http
+			// transport
+			// call
+			androidHttpTransport.call(
+					"http://tempuri.org/IService1/SaveAttendance", envelope);
+
+			result = (SoapObject) envelope.getResponse();
+			Log.e("SaveAttendance", result.toString());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 
 	public SoapPrimitive SaveStock(String id,String Pid, String CatCodeId,
 			String EANCode, String empId, String ProductCategory,

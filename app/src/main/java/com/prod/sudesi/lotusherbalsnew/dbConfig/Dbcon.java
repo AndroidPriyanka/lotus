@@ -2323,6 +2323,57 @@ public class Dbcon {
         database.close();
     }
 
+    public void Insertstock_Customer_Company(
+            String product_cat,
+            String product_type, String product_name, String emp_id,
+            String stockinhand, String cl_stk, String fresher_stock,
+            String price, String size, String eancode, String db_id1, String cat_id,
+            String date,String soldstock,
+            String return_saleable, String return_non_saleable, String i_netamt, String netamt,String discount,
+            String shadno,String updateDate, String month_name, String year_name) {
+        // TODO Auto-generated method stub
+
+        ContentValues values = new ContentValues();
+
+        values.put("product_category", product_cat);
+        values.put("product_type", product_type);
+        values.put("product_name", product_name);
+
+        values.put("emp_id", emp_id);
+        values.put("stock_in_hand", stockinhand);
+        values.put("close_bal", cl_stk);
+
+        values.put("savedServer", "0");
+        values.put("price", price);
+        values.put("size", size);
+        values.put("db_id", db_id1);
+        values.put("product_id", cat_id);
+        values.put("eancode", eancode);
+
+
+        values.put("stock_received", fresher_stock);
+        values.put("sold_stock", soldstock);
+        values.put("return_non_saleable", return_non_saleable);
+        values.put("return_saleable", return_saleable);
+        values.put("total_gross_amount", i_netamt);
+        values.put("total_net_amount", netamt);
+        values.put("discount", discount);
+        values.put("insert_date", date);
+
+        values.put("shadeNo", shadno);
+        values.put("updateDate", updateDate);
+        values.put("month", month_name);
+        values.put("year", year_name);
+        values.put("flag", "s");
+        Log.e("InsertStock", values.toString());
+
+        database.insert("stock", null, values);
+
+        //}
+        // getStockdetails();
+        database.close();
+    }
+
     public void Insertstock_newforDubai(
             String product_cat,
             String product_type, String product_name, String emp_id,
@@ -2390,6 +2441,41 @@ public class Dbcon {
         String sql = "update stock set  stock_in_hand = " + "'" + stockinhand + "'" +
                 " ,return_saleable = " + "'" + return_saleable + "'" +
                 " ,return_non_saleable = " + "'" + return_non_saleable + "'" +
+                " ,discount = " + "'" + discount + "'" +
+                ",stock_received = " + "'" + fresher_stock + "'" + "," +
+                "close_bal = " + "'" + cl_stk + "'" + "," +
+                "shadeNo = " + "'" + shadno + "'" + "," +
+                "insert_date = " + "'" + date + "'" +
+                ", flag = " + "'s'" +
+                ", savedServer='0',updateDate ='" + updateDate + "' ,month='" + month_name + "', year='" + year_name + "' where db_id = " + "'" + db_id1 + "'" + "";
+        Log.e("", "update stock sql==" + sql);
+        database.execSQL(sql);
+
+    }
+
+    public void UpdateStock_Customer_Company(String product_cat,
+                                String product_type, String product_name,
+                                String emp_id,
+                                String stockinhand,
+                                String cl_stk,
+                                String fresher_stock,
+                                String price, String size, String eancode, String db_id1, String cat_id,
+                                String date,String soldstock,
+                                String return_saleable, String return_non_saleable, String i_netamt,String netamt,
+                                String discount,String shadno, String updateDate, String month_name, String year_name) {
+
+        // TODO Auto-generated method stub
+
+
+        Log.e("", "inside update stock");
+
+
+        String sql = "update stock set  stock_in_hand = " + "'" + stockinhand + "'" +
+                " ,sold_stock = " + "'" + soldstock + "'" +
+                " ,return_saleable = " + "'" + return_saleable + "'" +
+                " ,return_non_saleable = " + "'" + return_non_saleable + "'" +
+                " ,total_gross_amount = " + "'" + i_netamt + "'" +
+                " ,total_net_amount = " + "'" + netamt + "'" +
                 " ,discount = " + "'" + discount + "'" +
                 ",stock_received = " + "'" + fresher_stock + "'" + "," +
                 "close_bal = " + "'" + cl_stk + "'" + "," +

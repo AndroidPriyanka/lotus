@@ -19,7 +19,7 @@
 
             <TableRow
                 android:id="@+id/tr_label_stock"
-                android:layout_width="2200dp"
+                android:layout_width="1860dp"
                 android:layout_height="wrap_content"
                 android:background="@layout/tableborder_stock"
                 android:gravity="center"
@@ -28,28 +28,24 @@
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="90dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Id" />
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="100dp"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
                     android:gravity="center"
-
                     android:text="Cat" />
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="200dp"
+                    android:layout_width="160dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Type" />
@@ -58,101 +54,81 @@
                     style="@style/report_textview_heading"
                     android:layout_width="525dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
-
                     android:gravity="center"
                     android:text="Product" />
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="100dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
-
-                    android:gravity="center"
-                    android:text="Size" />
-
-                <TextView
-                    style="@style/report_textview_heading"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_weight="1"
-
                     android:gravity="center"
                     android:text="MRP" />
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="80dp"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Size" />
 
+                <TextView
+                    style="@style/report_textview_heading"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="Op-Bal" />
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="80dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
-
                     android:gravity="center"
                     android:text="Stk recvd" />
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="80dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
-
                     android:gravity="center"
                     android:text="Rtn-From Cust" />
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="80dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
-
                     android:gravity="center"
                     android:text="Rtn to Company" />
 
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="80dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
-
                     android:gravity="center"
                     android:text="Stk in hand" />
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="80dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
-
                     android:gravity="center"
                     android:text="Sold" />
 
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="100dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
-
                     android:gravity="center"
                     android:text="Cl-Bal" />
 
@@ -161,19 +137,15 @@
                     style="@style/report_textview_heading"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
-
                     android:gravity="center"
                     android:text="Total" />
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="90dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
-
                     android:gravity="center"
                     android:text="Dis" />
 
@@ -181,19 +153,15 @@
                     style="@style/report_textview_heading"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
-
                     android:gravity="center"
                     android:text="Nett" />
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="90dp"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
-
                     android:gravity="center"
                     android:text="Status" />
 
@@ -201,7 +169,6 @@
                     style="@style/report_textview_heading"
                     android:layout_width="110dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="2dp"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Outlet" />
@@ -210,10 +177,9 @@
 
             <ListView
                 android:id="@+id/stock_list"
-                android:layout_width="2200dp"
+                android:layout_width="1860dp"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:divider="@color/gray"
                 android:dividerHeight="1dp"></ListView>
 

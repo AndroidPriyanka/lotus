@@ -78,7 +78,7 @@ public class StockAllActivity extends Activity {
     String enacod[], catid[], pro_name[],show_pro_name[], size[], db_id[], mrp[], shadeno[], singleoffer[];
     String old_return_non_salable = "", old_return_salable = "";
     ScrollView scrv_sale;
-    String rt_n_s_stk, rt_s_stk;
+    //String rt_n_s_stk, rt_s_stk;
     ConnectionDetector cd;
 
     @Override
@@ -99,7 +99,7 @@ public class StockAllActivity extends Activity {
         context = getApplicationContext();
         cd = new ConnectionDetector(context);
         titel = (TextView) findViewById(R.id.textView1);
-        titel.setText("" + StockNewActivity.PMODE);
+        titel.setText("Stock Received");
         edt_gross = (EditText) findViewById(R.id.edt_gross);
         edt_discount = (EditText) findViewById(R.id.edt_discount);
         edt_net = (EditText) findViewById(R.id.edt_net);
@@ -121,7 +121,7 @@ public class StockAllActivity extends Activity {
         if (role.equalsIgnoreCase("DUB")) {
             titel.setText("Opening Stock");
         } else {
-            titel.setText("" + StockNewActivity.PMODE);
+            titel.setText("Stock Received");
         }
 
         Intent intent = getIntent();
@@ -1132,14 +1132,15 @@ public class StockAllActivity extends Activity {
 
             if (opt.equalsIgnoreCase("Stock Received")) {
                 fresh_stock = edt_qty.getText().toString();
-                rt_n_s_stk = "0";
-                rt_s_stk = "0";
+//                rt_n_s_stk = "0";
+//                rt_s_stk = "0";
 
                 Log.e("fresh_stock", fresh_stock);
-                Log.e("rt_n_s_stk", rt_n_s_stk);
-                Log.e("rt_s_stk", rt_s_stk);
+//                Log.e("rt_n_s_stk", rt_n_s_stk);
+//                Log.e("rt_s_stk", rt_s_stk);
 
-            } else if (opt
+            }
+            /*else if (opt
                     .equalsIgnoreCase("Return From Customer")) {
                 fresh_stock = "0";
                 rt_n_s_stk = "0";
@@ -1161,7 +1162,7 @@ public class StockAllActivity extends Activity {
                 Log.e("rt_s_stk", rt_s_stk);
 
 
-            }
+            }*/
             if (old_stock_recive != null) {
 
                 if (old_stock_recive.equalsIgnoreCase("")
@@ -1220,13 +1221,18 @@ public class StockAllActivity extends Activity {
                     .parseInt(fresh_stock)
                     + Integer.parseInt(old_stock_recive);
 
-            int new_retrn_sale = Integer.parseInt(rt_s_stk)
+            /*int new_retrn_sale = Integer.parseInt(rt_s_stk)
                     + Integer.parseInt(old_return_salable);
 
             int new_retrn_non_sale = Integer
                     .parseInt(rt_n_s_stk)
                     + Integer
-                    .parseInt(old_return_non_salable);
+                    .parseInt(old_return_non_salable);*/
+            //new changes
+
+            int new_retrn_sale = Integer.parseInt(old_return_salable);
+
+            int new_retrn_non_sale = Integer.parseInt(old_return_non_salable);
 
             Log.e("new_fresh_stock", String.valueOf(new_fresh_stock));
             Log.e("new_retrn_sale", String.valueOf(new_retrn_sale));
@@ -1529,8 +1535,8 @@ public class StockAllActivity extends Activity {
             String product_type1 = StockSaleActivityForDubai.selected_product_offer;
 
             fresh_stock = edt_qty.getText().toString();
-            rt_n_s_stk = "0";
-            rt_s_stk = "0";
+            //rt_n_s_stk = "0";
+            //rt_s_stk = "0";
 
             String product_name = pro_name[i];// changed
             // 06.12.2014
@@ -1593,13 +1599,19 @@ public class StockAllActivity extends Activity {
                     .parseInt(fresh_stock)
                     + Integer.parseInt(old_stock_recive);
 
-            int new_retrn_sale = Integer.parseInt(rt_s_stk)
+            /*int new_retrn_sale = Integer.parseInt(rt_s_stk)
                     + Integer.parseInt(old_return_salable);
 
             int new_retrn_non_sale = Integer
                     .parseInt(rt_n_s_stk)
                     + Integer
-                    .parseInt(old_return_non_salable);
+                    .parseInt(old_return_non_salable);*/
+
+            //new changes
+
+            int new_retrn_sale = Integer.parseInt(old_return_salable);
+
+            int new_retrn_non_sale = Integer.parseInt(old_return_non_salable);
 
             Log.e("new_fresh_stock", String.valueOf(new_fresh_stock));
             Log.e("new_retrn_sale", String.valueOf(new_retrn_sale));
@@ -1642,11 +1654,10 @@ public class StockAllActivity extends Activity {
             String solddd = "0";
 
             db.open();
-            Cursor cur = db.fetchone(tv_dbID.getText()
-                            .toString(), "stock", new String[]{
+            Cursor cur = db.fetchonefordubai(outletcode, "stock", new String[]{
                             "sold_stock", "total_gross_amount",
                             "total_net_amount", "discount"},
-                    "db_id");
+                    "FLRCode");
             if (cur != null && cur.getCount() > 0) {
                 cur.moveToFirst();
 
@@ -1677,9 +1688,8 @@ public class StockAllActivity extends Activity {
 
             Cursor mCursor;
             db.open();
-            mCursor = db.getuniquedata1("", "", tv_dbID
-                    .getText().toString(), "");
-
+            mCursor = db.getuniquedatadubai(tv_dbID
+                    .getText().toString(), outletcode);
 
             if (mCursor != null && mCursor.getCount() > 0) {
                 mCursor.moveToFirst();

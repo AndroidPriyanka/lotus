@@ -86,7 +86,7 @@ public class SaleCalculation extends Activity {
     ConnectionDetector cd;
     LinearLayout discountlayout;
 
-    String enacod[], catid[], pro_name[],show_pro_name[], size[], db_id[], mrp[], shadeno[], singleoffer[];
+    String enacod[], catid[], pro_name[], show_pro_name[], size[], db_id[], mrp[], shadeno[], singleoffer[];
 
 
     // private ProgressDialog mProgress = null;
@@ -200,11 +200,11 @@ public class SaleCalculation extends Activity {
                     finish();
                     startActivity(new Intent(SaleCalculation.this,
                             SaleActivityForFloter.class));
-                } else if(role.equalsIgnoreCase("DUB")){
+                } else if (role.equalsIgnoreCase("DUB")) {
                     finish();
                     startActivity(new Intent(SaleCalculation.this,
                             StockSaleActivityForDubai.class));
-                }else{
+                } else {
                     finish();
                     startActivity(new Intent(SaleCalculation.this,
                             SaleNewActivity.class));
@@ -347,10 +347,10 @@ public class SaleCalculation extends Activity {
                 TableRow.LayoutParams lp;
                 lp = new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 3f);
                 TextView productname = new TextView(this);
-                if(show_pro_name[i] != null &&
+                if (show_pro_name[i] != null &&
                         !show_pro_name[i].equalsIgnoreCase("")) {
                     productname.setText(show_pro_name[i]);
-                }else{
+                } else {
                     productname.setText(pro_name[i]);
                 }
                 productname.setTextColor(Color.WHITE);
@@ -490,7 +490,7 @@ public class SaleCalculation extends Activity {
                                 edt_net.setText(String.valueOf(gross));
 
                             }
-                        }else {
+                        } else {
                             if (edt_gross.getText().toString().equals("")) {
 
                             } else if (edt_discount.getText().toString().equals("")) {
@@ -1226,10 +1226,67 @@ public class SaleCalculation extends Activity {
 
                                         Log.e("i_return_company", String.valueOf(i_return_company));
 
+                                        int grossamt = 0;
+
+                                        if (c.getString(0) != null) {
+                                            if (c.getString(0).trim()
+                                                    .equalsIgnoreCase("0")
+                                                    || c.getString(0).trim().equalsIgnoreCase("")) {
+
+                                                grossamt = 0;
+
+                                            } else {
+
+                                                grossamt = Integer.parseInt(c.getString(0).trim());
+                                            }
+                                        }
+
+
+                                        Log.e("gross_amount", String.valueOf(i_return_company));
+
+                                        int stockreceived = 0;
+
+                                        if (c.getString(6) != null) {
+                                            if (c.getString(6).trim()
+                                                    .equalsIgnoreCase("0")
+                                                    || c.getString(6).trim().equalsIgnoreCase("")) {
+
+                                                stockreceived = 0;
+
+                                            } else {
+
+                                                stockreceived = Integer.parseInt(c.getString(6).trim());
+                                            }
+                                        }
+
+
+                                        Log.e("gross_amount", String.valueOf(i_return_company));
+
                                         /*...................End...................*/
 
+                                        //New changes 13/08/2018
+                                        if (i_return_customer > 0) {
+
+                                            if (calc_gross == (i_return_customer * Integer.parseInt(tv_mrp
+                                                    .getText().toString()))) {
+                                                calc_gross = calc_gross;
+
+                                            } else if (grossamt == 0) {
+                                                calc_gross = calc_gross;
+
+                                            } else {
+                                                if (stockreceived > 0) {
+                                                    calc_gross = calc_gross;
+                                                } else {
+                                                    calc_gross = calc_gross - (i_return_customer * Integer.parseInt(tv_mrp
+                                                            .getText().toString()));
+                                                }
+                                            }
+                                            calc_gross = Math.abs(calc_gross);
+                                        }
+
                                         //New changes
-                                        int i_clstk = i_stokinhand - i_sold + i_return_customer - i_return_company;
+                                        int i_clstk = i_stokinhand - i_sold - i_return_company;
 
                                         //old apk 2.7
                                         // int i_clstk = i_stokinhand - i_sold;
@@ -1376,11 +1433,17 @@ public class SaleCalculation extends Activity {
 
                                         String check_timestamp = insert_timestamps[0];
 
+                                        if (i_clstk == 0) {
+
+                                            i_return_customer = 0;
+                                        }
+
                                         boolean bool = db
                                                 .update(tv_dbID.getText()
                                                                 .toString(),
                                                         new String[]{
                                                                 shaddd,
+                                                                String.valueOf(i_return_customer),
                                                                 String.valueOf(i_clstk),
                                                                 String.valueOf(gross),
                                                                 String.valueOf(disss),
@@ -1394,6 +1457,7 @@ public class SaleCalculation extends Activity {
                                                                 "s"},
                                                         new String[]{
                                                                 "shadeNo",
+                                                                "return_saleable",
                                                                 "close_bal",
                                                                 "total_gross_amount",
                                                                 "discount",
@@ -2262,7 +2326,9 @@ public class SaleCalculation extends Activity {
                                 int stkinhand = 0;
                                 int i_sold = 0;
                                 db.open();
-                                Cursor c = db.fetchallSpecifyMSelect(
+                                Cursor c = db.fetchdatafordubai_dbid_outletcode(tv_dbID.getText()
+                                        .toString(), FLRCode);
+                               /* Cursor c = db.fetchallSpecifyMSelect(
                                         "stock", new String[]{
                                                 "total_gross_amount",
                                                 "total_net_amount",
@@ -2273,10 +2339,9 @@ public class SaleCalculation extends Activity {
                                                 "return_saleable",
                                                 "stock_in_hand",
                                                 "return_non_saleable", "price"},
-                                        "db_id = '"
-                                                + tv_dbID.getText()
-                                                .toString() + "'",
-                                        null, null);
+                                        "FLRCode = '"
+                                                + FLRCode + "'",
+                                        null, null);*/
                                 if (c != null && c.getCount() > 0) {
                                     c.moveToFirst();
 
@@ -2425,12 +2490,12 @@ public class SaleCalculation extends Activity {
 
                                                 } else {
 
-                                                        disss = a;
+                                                    disss = a;
                                                 }
 
                                             } else {
 
-                                                    disss = 0;
+                                                disss = 0;
 
                                             }
                                         } else {
@@ -2505,9 +2570,20 @@ public class SaleCalculation extends Activity {
 
                                         String check_timestamp = insert_timestamps[0];
 
-                                        boolean bool = db
-                                                .update(tv_dbID.getText()
-                                                                .toString(),
+                                        boolean bool = db.UpdateSale_forDubai(shaddd,
+                                                String.valueOf(i_clstk),
+                                                String.valueOf(String.format("%.2f", gross)),
+                                                String.valueOf(disss),
+                                                String.valueOf(String.format("%.2f", net1)),
+                                                String.valueOf(i_sold),
+                                                month_name,
+                                                year_name,
+                                                insert_timestamp,
+                                                insert_timestamp,
+                                                tv_dbID.getText().toString(),
+                                                FLRCode);
+                                       /* boolean bool = db
+                                                .update(FLRCode,
                                                         new String[]{
                                                                 shaddd,
                                                                 String.valueOf(i_clstk),
@@ -2534,7 +2610,7 @@ public class SaleCalculation extends Activity {
                                                                 "updateDate",
                                                                 "insert_date",
                                                                 "flag"},
-                                                        "stock", "db_id");
+                                                        "stock", "FLRCode");*/
 
 
                                         if (bool == true) {

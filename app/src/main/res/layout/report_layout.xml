@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="1800dp"
+    android:layout_width="1860dp"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TableLayout
         android:id="@+id/tr_stock_report"
-        android:layout_width="1800dp"
+        android:layout_width="1860dp"
         android:layout_height="wrap_content">
 
         <TableRow
-            android:layout_width="1800dp"
+            android:layout_width="1860dp"
             android:layout_height="wrap_content"
             android:weightSum="100">
 
             <TextView
                 android:id="@+id/tv_productid"
                 style="@style/report_textview"
-                android:layout_width="80dp"
+                android:layout_width="55dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@layout/tableborder_for_fields"
@@ -28,7 +28,7 @@
             <TextView
                 android:id="@+id/tv_category"
                 style="@style/report_textview"
-                android:layout_width="105dp"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@layout/tableborder_for_fields"
@@ -45,7 +45,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@layout/tableborder_for_fields"
-
                 android:gravity="left"
                 android:paddingLeft="5dp"
                 android:singleLine="true"
@@ -57,13 +56,22 @@
                 android:layout_width="525dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-
                 android:background="@layout/tableborder_for_fields"
-
                 android:gravity="left"
                 android:paddingLeft="5dp"
                 android:singleLine="true"
                 android:text="Product" />
+
+            <TextView
+                android:id="@+id/tv_report_price"
+                style="@style/report_textview"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_for_fields"
+                android:gravity="left"
+                android:paddingLeft="5dp"
+                android:text="Price" />
 
 
             <TextView
@@ -79,22 +87,12 @@
                 android:singleLine="true"
                 android:text="Size" />
 
-            <TextView
-                android:id="@+id/tv_report_price"
-                style="@style/report_textview"
-                android:layout_width="55dp"
-                android:layout_height="wrap_content"
 
-                android:layout_weight="1"
-                android:background="@layout/tableborder_for_fields"
-                android:gravity="left"
-                android:paddingLeft="5dp"
-                android:text="Price" />
 
             <TextView
                 android:id="@+id/tv_r_open_stock"
                 style="@style/report_textview"
-                android:layout_width="55dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@layout/tableborder_for_fields"
@@ -161,7 +159,7 @@
             <TextView
                 android:id="@+id/tv_close"
                 style="@style/report_textview"
-                android:layout_width="55dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@layout/tableborder_for_fields"

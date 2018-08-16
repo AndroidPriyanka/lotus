@@ -107,8 +107,8 @@ public class SyncMaster extends Activity {
     ArrayList<HashMap<String, String>> listofsyncerrorlog = new ArrayList<HashMap<String, String>>();
     ArrayList<HashMap<String, String>> listofimages = new ArrayList<HashMap<String, String>>();
 
-    //public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
-      public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
+      public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
+      //public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
     private JSONArray array = new JSONArray();
     String flag;
     String ErroFlag = "";
@@ -6642,29 +6642,29 @@ public class SyncMaster extends Activity {
                             shad = "";
                         }
 
-                        obj.put("id", stock_array.getString(0));
-                        obj.put("Pid", stock_array.getString(2));
-                        obj.put("CatCodeId", stock_array.getString(1));
-                        obj.put("EANCode", stock_array.getString(3));
-                        obj.put("empId", username);
-                        obj.put("ProductCategory", stock_array.getString(4));
-                        obj.put("product_type", stock_array.getString(5));
-                        obj.put("product_name", stock_array.getString(6));
-                        obj.put("shadeno", shad);
-                        obj.put("Opening_Stock", stock_array.getString(10));
-                        obj.put("FreshStock", stock_array.getString(11));
-                        obj.put("Stock_inhand", stock_array.getString(12));
-                        obj.put("SoldStock", stock_array.getString(16));
-                        obj.put("S_Return_Saleable", stock_array.getString(14));
-                        obj.put("S_Return_NonSaleable", stock_array.getString(15));
-                        obj.put("ClosingBal", stock_array.getString(13));
-                        obj.put("GrossAmount", stock_array.getString(17));
-                        obj.put("Discount", stock_array.getString(19));
-                        obj.put("NetAmount", stock_array.getString(18));
-                        obj.put("Size", stock_array.getString(7));
-                        obj.put("Price", stock_array.getString(8));
-                        obj.put("AndroidCreatedDate", stock_array.getString(21));
-                        obj.put("FLRCode", FLRCode);
+                        obj.put("id", cd.getNonNullValues(stock_array.getString(0)));
+                        obj.put("Pid",  cd.getNonNullValues(stock_array.getString(2)));
+                        obj.put("CatCodeId",  cd.getNonNullValues(stock_array.getString(1)));
+                        obj.put("EANCode",  cd.getNonNullValues(stock_array.getString(3)));
+                        obj.put("empId",  cd.getNonNullValues(username));
+                        obj.put("ProductCategory",  cd.getNonNullValues(stock_array.getString(4)));
+                        obj.put("product_type",  cd.getNonNullValues(stock_array.getString(5)));
+                        obj.put("product_name",  cd.getNonNullValues(stock_array.getString(6)));
+                        obj.put("shadeno",  cd.getNonNullValues(shad));
+                        obj.put("Opening_Stock",  cd.getNonNullValues(stock_array.getString(10)));
+                        obj.put("FreshStock",  cd.getNonNullValues(stock_array.getString(11)));
+                        obj.put("Stock_inhand",  cd.getNonNullValues(stock_array.getString(12)));
+                        obj.put("SoldStock",  cd.getNonNullValues(stock_array.getString(16)));
+                        obj.put("S_Return_Saleable",  cd.getNonNullValues(stock_array.getString(14)));
+                        obj.put("S_Return_NonSaleable",  cd.getNonNullValues(stock_array.getString(15)));
+                        obj.put("ClosingBal",  cd.getNonNullValues(stock_array.getString(13)));
+                        obj.put("GrossAmount",  cd.getNonNullValues(stock_array.getString(17)));
+                        obj.put("Discount",  cd.getNonNullValues(stock_array.getString(19)));
+                        obj.put("NetAmount",  cd.getNonNullValues(stock_array.getString(18)));
+                        obj.put("Size",  cd.getNonNullValues(stock_array.getString(7)));
+                        obj.put("Price",  cd.getNonNullValues(stock_array.getString(8)));
+                        obj.put("AndroidCreatedDate",  cd.getNonNullValues(stock_array.getString(21)));
+                        obj.put("FLRCode",  cd.getNonNullValues(FLRCode));
 
 
                     } catch (JSONException e) {
@@ -7613,6 +7613,7 @@ public class SyncMaster extends Activity {
 
         return startend;
     }
+
 
 
 

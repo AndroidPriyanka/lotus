@@ -115,16 +115,16 @@ public class LoginActivity extends Activity {
     public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production*/
 
     //UAT India
-    //public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
-    //public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT India
+    public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
+    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT India
 
     //Production Dubai
-     public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Dubai_Pro.apk"; //production
-    public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config_dubai.txt";//production
+     /*public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Dubai_Pro.apk"; //production
+    public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config_dubai.txt";//production*/
 
     //UAT Dubai
-    //public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_Dubai_UAT.apk"; //UAT Dubai
-    //public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config_dubai.txt";//UAT Dubai
+    /*public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_Dubai_UAT.apk"; //UAT Dubai
+    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config_dubai.txt";//UAT Dubai*/
 
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE);

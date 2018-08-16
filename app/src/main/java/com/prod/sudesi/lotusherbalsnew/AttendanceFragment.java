@@ -913,13 +913,16 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                         dialog.dismiss();
 
                                         try {
-                                            if(role.equalsIgnoreCase("DUB")){
+                                            // Production live now
+                                            /*if(role.equalsIgnoreCase("DUB")){
                                                 new SaveAttendanceForDubai().execute(attendance_flag, leavetype_flag);
                                             }else if(role.equalsIgnoreCase("FLR")){
                                                 new SaveAttendanceForDubai().execute(attendance_flag, leavetype_flag);
                                             }else {
                                                 new SaveAttendance().execute(attendance_flag, leavetype_flag);
-                                            }
+                                            }*/
+                                            //using below method for testing on UAT India and dubai
+                                            new SaveAttendance().execute(attendance_flag, leavetype_flag);
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -1635,7 +1638,8 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
     }
 
-    private class SaveAttendance extends AsyncTask<String, Void, SoapPrimitive> {
+    // production live now this method
+    /*private class SaveAttendance extends AsyncTask<String, Void, SoapPrimitive> {
 
 
         SoapPrimitive soap_attendance = null;
@@ -1834,7 +1838,275 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
         }
 
+    }*/
+
+    // using for testing UAT India and dubai
+
+    private class SaveAttendance extends AsyncTask<String, Void, SoapObject> {
+
+
+        SoapObject soap_result_attendance = null;
+
+        //SoapPrimitive soap_result_tester = null;
+
+        String ErroFlag;
+        String Erro_function = "";
+
+        Cursor attendance_array;
+
+        String Flag;
+
+        String attendance_flag = "";
+        String leavetype_flag = "";
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+
+            mProgress.setMessage("Please Wait");
+            mProgress.show();
+            mProgress.setCancelable(false);
+        }
+
+        @Override
+        protected SoapObject doInBackground(String... params) {
+            // TODO Auto-generated method stub
+
+            attendance_flag = params[0];
+            leavetype_flag = params[1];
+
+            final String[] columns = new String[]{"emp_id", "Adate",
+                    "attendance", "absent_type", "lat", "lon", "savedServer", "month",
+                    "holiday_desc", "year"};
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "3";
+                // stop executing code by return
+
+            } else {
+
+
+                Flag = "1";
+
+                try {
+                    if (attendance_flag.equalsIgnoreCase("P") &&
+                            attendance_flag.length() > 0 && attendance_flag != null) {
+                        soap_result_attendance = service.SaveAttendance(username, attendanceDate1,
+                                attendance_flag, "", String.valueOf(lat), String.valueOf(lon));
+                    } else {
+                        soap_result_attendance = service.SaveAttendance(username, attendanceDate1,
+                                attendance_flag, leavetype_flag, String.valueOf(lat), String.valueOf(lon));
+                    }
+
+                    if (soap_result_attendance != null) {
+                        presentList = new ArrayList<AttendanceModel>();
+                        for (int i = 0; i < soap_result_attendance.getPropertyCount(); i++) {
+
+                            SoapObject soapObject = (SoapObject) soap_result_attendance.getProperty(i);
+
+                            ADate = soapObject.getProperty("ADate").toString();
+
+
+                            if (ADate == null) {
+                                ADate = "";
+                            }
+
+                            status = soapObject.getProperty("status").toString();
+                            if (status == null) {
+                                status = "";
+                            }
+
+                            Aid = soapObject.getProperty("ID").toString();
+                            if (Aid == null) {
+                                Aid = "";
+                            }
+                            spe.putString("AttendAid", Aid);
+                            spe.commit();
+
+                            AttendanceValue = soapObject.getProperty("AttendanceValue").toString();
+                            if (AttendanceValue == null) {
+                                AttendanceValue = "";
+                            }
+
+                            attendanceModel = new AttendanceModel();
+                            attendanceModel.setADate(ADate);
+                            attendanceModel.setAttendanceValue(AttendanceValue);
+                            attendanceModel.setAid(Aid);
+
+                            presentList.add(attendanceModel);
+                        }
+
+                        Log.v("", "soap_result_attendance=" + status);
+                        if (status.equalsIgnoreCase("TRUE")) {
+                            ErroFlag = "1";
+
+                            for (int j = 0; j < presentList.size(); j++) {
+                                attendanceModel = presentList.get(j);
+
+                                SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
+                                Date date = df.parse(attendanceModel.getADate());
+
+                                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                savedate = form.format(date);
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                String adate = sdf.format(date.getTime());
+
+                                String sld[] = attendanceModel.getADate().split(" ");
+                                final String sld1 = sld[0];
+
+                                String ddd[] = sld1.split("/");
+                                final String year = ddd[2];
+
+                                String attendmonth1 = getmonthNo1(attendmonth);
+
+                                db.open();
+                                Cursor c = db.getuniquedataAttendance(username, adate);
+
+                                int count = c.getCount();
+                                Log.v("", "" + count);
+                                db.close();
+                                if (count > 0) {
+
+                                } else {
+                                    db.open();
+
+                                    values = new String[]{username,
+                                            savedate,
+                                            attendanceModel.getAttendanceValue(),
+                                            "",
+                                            String.valueOf(lat),
+                                            String.valueOf(lon),
+                                            "1",
+                                            attendmonth1,
+                                            "",
+                                            year};
+
+                                    db.insert(values, columns, "attendance");
+
+                                    db.close();
+
+                                }
+
+                            }
+
+                        } else if (status.equalsIgnoreCase("FAIL")) {
+                            ErroFlag = "0";
+                            final Calendar calendar1 = Calendar
+                                    .getInstance();
+                            SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                    "MM/dd/yyyy HH:mm:ss");
+                            String Createddate = formatter1.format(calendar1
+                                    .getTime());
+
+                            int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                            db.insertSyncLog("SaveAttendace_SE", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
+
+                        }
+                    } else {
+                        ErroFlag = "3";
+                        //String errors = "Soap in giving null while 'Attendance' and 'checkSyncFlag = 2' in  data Sync";
+                        //we.writeToSD(errors.toString());
+                        final Calendar calendar1 = Calendar
+                                .getInstance();
+                        SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss");
+                        String Createddate = formatter1.format(calendar1
+                                .getTime());
+
+                        int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                        db.insertSyncLog("Internet Connection Lost, Soap in giving null while 'SaveAttendace'", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
+
+                    }
+
+
+                } catch (Exception e) {
+                    //ErroFlag = "3";
+                    Erro_function = "Attendance";
+                    e.printStackTrace();
+                    String Error = e.toString();
+
+                    final Calendar calendar1 = Calendar
+                            .getInstance();
+                    SimpleDateFormat formatter1 = new SimpleDateFormat(
+                            "MM/dd/yyyy HH:mm:ss");
+                    String Createddate = formatter1.format(calendar1
+                            .getTime());
+
+                    int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                    db.insertSyncLog(Error, String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
+
+
+                }
+                //}
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+
+            mProgress.dismiss();
+            if (Flag.equalsIgnoreCase("3")) {
+
+                Toast.makeText(getApplicationContext(), "Connectivity Error Please check internet ", Toast.LENGTH_SHORT).show();
+            }
+
+            if (ErroFlag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(getApplicationContext(), "Please Enter Today Date", Toast.LENGTH_SHORT).show();
+            }
+            if (ErroFlag.equalsIgnoreCase("1")) {
+
+                Toast.makeText(getApplicationContext(), "Attendance Successfully Sync", Toast.LENGTH_SHORT).show();
+
+
+                if (role.equalsIgnoreCase("FLR")) {
+                    if (attendance_flag.equalsIgnoreCase("A")) {
+                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+
+                    } else {
+                        spe.putString("FLROutletSelect", "False");
+                        spe.commit();
+                        Intent i = new Intent(getApplicationContext(), OutletActivity.class);
+                        //i.putExtra("FromAttendancefloter", "AF");
+                        startActivity(i);
+                    }
+                } else if (role.equalsIgnoreCase("DUB")) {
+                    if (attendance_flag.equalsIgnoreCase("A")) {
+                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+
+                    } else {
+                        Intent i = new Intent(getApplicationContext(), OutletActivity.class);
+                        startActivity(i);
+                    }
+                } else {
+                    if (attendance_flag.equalsIgnoreCase("A")) {
+                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+
+                    } else {
+                        Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                    }
+                }
+            }
+
+        }
+
     }
+
 
 
     @Override

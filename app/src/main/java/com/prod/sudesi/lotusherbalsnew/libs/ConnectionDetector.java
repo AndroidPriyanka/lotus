@@ -62,4 +62,12 @@ public class ConnectionDetector {
 
         return false;
     }
+
+    public String getNonNullValues(String str) {
+        if (str == null || str.isEmpty() || str.equalsIgnoreCase("null") || str.equalsIgnoreCase("")) {
+            return "";
+        } else {
+            return str;
+        }
+    }
 }

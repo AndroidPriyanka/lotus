@@ -1,27 +1,25 @@
 package com.prod.sudesi.lotusherbalsnew;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -33,18 +31,17 @@ import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
+public class ReturnsActivity extends Activity implements View.OnClickListener {
 
-public class StockNewActivity extends Activity implements OnClickListener {
 
-    Spinner sp_product_category, sp_product_type; //sp_product_mode;
+    Spinner sp_prod_category, sp_prod_type; //sp_product_mode;
 
-    Button btn_proceed, btn_home, btn_logout;
+    Button btn_returnproceed, btn_home, btn_logout;
 
-    TableLayout tl_productList;
+    TableLayout tl_returnproductList;
 
     TableRow tr_header;
 
@@ -66,37 +63,43 @@ public class StockNewActivity extends Activity implements OnClickListener {
 
     private String[] arraySpinner;
 
-    //int modecounter = 0;
-    //public static String PMODE;
+    int modecounter = 0;
+    public static String PMODE;
 
     String username, bdename;
 
     String sclo = "", mrpstring, columnname;
     String selected_type;
 
+    RadioGroup radio_cust_comp;
+    RadioButton radio_cust, radio_comp;
+    boolean cust = false, comp = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_new_stock);
+        setContentView(R.layout.activity_returns);
+
         //////////Crash Report
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
-        sp_product_category = (Spinner) findViewById(R.id.sp_product_category);
-        sp_product_type = (Spinner) findViewById(R.id.sp_product_type);
-        //sp_product_mode = (Spinner) findViewById(R.id.sp_product_mode);
-        tl_productList = (TableLayout) findViewById(R.id.tl_productList);
-        btn_proceed = (Button) findViewById(R.id.btn_proceed);
+        sp_prod_category = (Spinner) findViewById(R.id.sp_prod_category);
+        sp_prod_type = (Spinner) findViewById(R.id.sp_prod_type);
+        tl_returnproductList = (TableLayout) findViewById(R.id.tl_returnproductList);
+        btn_returnproceed = (Button) findViewById(R.id.btn_returnproceed);
         btn_home = (Button) findViewById(R.id.btn_home);
         btn_logout = (Button) findViewById(R.id.btn_logout);
         tr_header = (TableRow) findViewById(R.id.tr_header);
         tv_h_username = (TextView) findViewById(R.id.tv_h_username);
 
-        btn_proceed.setOnClickListener(this);
+        radio_cust_comp = (RadioGroup) findViewById(R.id.radio_cust_comp);
+        radio_cust = (RadioButton) findViewById(R.id.radio_cust);
+        radio_comp = (RadioButton) findViewById(R.id.radio_comp);
+
+        btn_returnproceed.setOnClickListener(this);
         btn_home.setOnClickListener(this);
         btn_logout.setOnClickListener(this);
 
@@ -136,16 +139,16 @@ public class StockNewActivity extends Activity implements OnClickListener {
 
         ArrayAdapter<String> product_adapter = new ArrayAdapter<String>(
                 // context, android.R.layout.simple_spinner_item,
-                StockNewActivity.this, R.layout.custom_sp_item, productcategory);
+                ReturnsActivity.this, R.layout.custom_sp_item, productcategory);
 
         product_adapter
                 // .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 .setDropDownViewResource(R.layout.custom_spinner_dropdown_text);
 
-        sp_product_category.setAdapter(product_adapter);
+        sp_prod_category.setAdapter(product_adapter);
 
-        sp_product_category
-                .setOnItemSelectedListener(new OnItemSelectedListener() {
+        sp_prod_category
+                .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                     @Override
                     public void onItemSelected(AdapterView<?> parent,
@@ -153,7 +156,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
                         try {
                             // TODO Auto-generated method stub
 
-                            selected_product_category = sp_product_category
+                            selected_product_category = sp_prod_category
                                     .getItemAtPosition(position).toString().trim();
 
                             if (selected_product_category
@@ -162,10 +165,10 @@ public class StockNewActivity extends Activity implements OnClickListener {
                                     .equalsIgnoreCase("")) {
 
                                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                                        StockNewActivity.this,
+                                        ReturnsActivity.this,
                                         android.R.layout.simple_spinner_dropdown_item,
                                         new String[]{});
-                                sp_product_type.setAdapter(adapter);
+                                sp_prod_type.setAdapter(adapter);
 
                             } else {
 
@@ -174,7 +177,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
 
                                     columnname = "CategoryId";
 
-                                }else{
+                                } else {
                                     columnname = "ShadeNo";
                                 }
 
@@ -186,13 +189,13 @@ public class StockNewActivity extends Activity implements OnClickListener {
                                 ArrayAdapter<String> product_adapter1 = new ArrayAdapter<String>(
                                         // context,
                                         // android.R.layout.simple_spinner_item,
-                                        StockNewActivity.this,
+                                        ReturnsActivity.this,
                                         R.layout.custom_sp_item, producttypeArray);
 
                                 product_adapter1
                                         // .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                         .setDropDownViewResource(R.layout.custom_spinner_dropdown_text);
-                                sp_product_type.setAdapter(product_adapter1);
+                                sp_prod_type.setAdapter(product_adapter1);
                             }
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
@@ -208,34 +211,34 @@ public class StockNewActivity extends Activity implements OnClickListener {
                     }
                 });
 
-        sp_product_type.setOnItemSelectedListener(new OnItemSelectedListener() {
+        sp_prod_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int arg2, long arg3) {
 
-                selected_product_type = sp_product_type.getItemAtPosition(arg2)
+                selected_product_type = sp_prod_type.getItemAtPosition(arg2)
                         .toString().trim();
 
                 if (selected_product_type.equalsIgnoreCase("Select")
                         || selected_product_category.equalsIgnoreCase("")) {
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                            StockNewActivity.this,
+                            ReturnsActivity.this,
                             android.R.layout.simple_spinner_dropdown_item,
                             new String[]{});
 
                 } else {
-                    String selected_category = sp_product_category
+                    String selected_category = sp_prod_category
                             .getSelectedItem().toString();
-                    selected_type = sp_product_type.getSelectedItem()
+                    selected_type = sp_prod_type.getSelectedItem()
                             .toString();
 
                     Log.v("", "" + selected_category + " " + selected_type);
                     productDetailsArray.clear();
-                    tl_productList.removeAllViews();
-                    tl_productList.addView(tr_header);
-                    getallproducts(selected_category, selected_type, "N",columnname);
+                    tl_returnproductList.removeAllViews();
+                    tl_returnproductList.addView(tr_header);
+                    getallproducts(selected_category, selected_type, "N", columnname);
 
                 }
 
@@ -249,120 +252,63 @@ public class StockNewActivity extends Activity implements OnClickListener {
 
         });
 
-
-        /*this.arraySpinner = new String[]{
-                "Select Mode", "Stock Received", "Return From Customer", "Return to Company"
-        };
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                // context, android.R.layout.simple_spinner_item,
-                StockNewActivity.this, R.layout.custom_sp_item, arraySpinner);
-        ;
-        adapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_text);
-
-
-        sp_product_mode.setAdapter(adapter);
-
-        sp_product_mode.setOnItemSelectedListener(new OnItemSelectedListener() {
-
+        radio_cust_comp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                       int arg2, long arg3) {
-                // TODO Auto-generated method stub
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                String s;
+                switch (checkedId) {
+                    case R.id.radio_cust:
+                        cust = true;
+                        comp = false;
+                        s = "Return From Customer";
+                        Log.e("s", s);
+                        if (s.equalsIgnoreCase("Select Mode")
+                                || s.equalsIgnoreCase("")) {
+                        } else {
+                            modecounter = 1;
+                            PMODE = s;
 
-                String s = sp_product_mode.getSelectedItem().toString();
+                        }
+                        break;
 
-                Log.e("s", s);
-                if (s.equalsIgnoreCase("Select Mode")
-                        || s.equalsIgnoreCase("")) {
-                } else {
-                    modecounter = 1;
-                    PMODE = s;
+                    case R.id.radio_comp:
+                        comp = true;
+                        cust = false;
+                        s = "Return to Company";
+                        Log.e("s", s);
+                        if (s.equalsIgnoreCase("Select Mode")
+                                || s.equalsIgnoreCase("")) {
+                        } else {
+                            modecounter = 1;
+                            PMODE = s;
 
+                        }
+                        break;
                 }
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
         });
-*/
-
     }
 
     @Override
     public void onClick(View v) {
-        // TODO Auto-generated method stub
         switch (v.getId()) {
-            case R.id.btn_proceed:
 
-                btn_proceed.setEnabled(false);
+            case R.id.btn_returnproceed:
+
+                btn_returnproceed.setEnabled(false);
 
                 new Handler().postDelayed(new Runnable() {
 
                     @Override
                     public void run() {
                         // This method will be executed once the timer is over
-                        btn_proceed.setEnabled(true);
+                        btn_returnproceed.setEnabled(true);
                         Log.d(TAG, "resend1");
 
                     }
-                }, 5000);// set time as per your requirement
+                }, 5000);
 
-                /*if (sp_product_mode.getSelectedItem().toString().equalsIgnoreCase("Return From Customer")) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Selected Mode");
-                    builder.setMessage("You select Return From Customer Do you want to proceed!!!")
-                            .setCancelable(false)
-                            .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    //do things
-                                    stockProceedData();
-                                }
-                            })
-                            .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-                                public void onClick(
-
-                                        DialogInterface dialog,
-                                        int id) {
-
-                                    dialog.dismiss();
-                                }
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                } else if (sp_product_mode.getSelectedItem().toString().equalsIgnoreCase("Return to Company")) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Selected Mode");
-                    builder.setMessage("You select Return to Company Do you want to proceed!!!")
-                            .setCancelable(false)
-                            .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    //do things
-                                    stockProceedData();
-                                }
-                            })
-                            .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-                                public void onClick(
-
-                                        DialogInterface dialog,
-                                        int id) {
-
-                                    dialog.dismiss();
-                                }
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                } else {*/
-
-                    stockProceedData();
-
-                //}
-
+                stockProceedData();
 
                 break;
 
@@ -393,7 +339,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
         productDetailsArray.clear();
         db.open();
         Cursor cursor = db.fetchAllproductslistforstock(selected_category,
-                selected_type, flag,columnname);
+                selected_type, flag, columnname);
         if (cursor != null && cursor.getCount() > 0) {
 
             cursor.moveToFirst();
@@ -428,12 +374,12 @@ public class StockNewActivity extends Activity implements OnClickListener {
                         comma_eancode[i] = c.getString(c.getColumnIndex("EANCode"));
 
                         String productname = c.getString(c.getColumnIndex("ProductName")).trim();
-                        String [] arr = productname.split(" ", 2);
-                        String firstword =  arr[0];
+                        String[] arr = productname.split(" ", 2);
+                        String firstword = arr[0];
                         String splitingword = arr[1];
                         String ProductName = "";
                         String firstword1 = firstword.replaceFirst("\\s++$", "");
-                        if(selected_type.trim().contains(firstword1.trim())){
+                        if (selected_type.trim().contains(firstword1.trim())) {
                             ProductName = splitingword;
                         }
                         comma_product_show[i] = ProductName;
@@ -463,7 +409,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
 
             for (int i = 0; i < productDetailsArray.size(); i++) {
 
-                View tr = (TableRow) View.inflate(StockNewActivity.this, R.layout.inflate_stocksale_row, null);
+                View tr = (TableRow) View.inflate(ReturnsActivity.this, R.layout.inflate_stocksale_row, null);
 
                 CheckBox cb = (CheckBox) tr.findViewById(R.id.chck_product);
 
@@ -471,10 +417,10 @@ public class StockNewActivity extends Activity implements OnClickListener {
 
                 TextView txtmrp = (TextView) tr.findViewById(R.id.txt_mrp);
 
-                if(productDetailsArray.get(i).get("PRODUCTSHOW")[0] != null &&
+                if (productDetailsArray.get(i).get("PRODUCTSHOW")[0] != null &&
                         !productDetailsArray.get(i).get("PRODUCTSHOW")[0].equalsIgnoreCase("")) {
                     cb.setText(productDetailsArray.get(i).get("PRODUCTSHOW")[0]);
-                }else{
+                } else {
                     cb.setText(productDetailsArray.get(i).get("PRODUCT")[0]);
                 }
 
@@ -522,11 +468,11 @@ public class StockNewActivity extends Activity implements OnClickListener {
                     }
                 });
 
-                tl_productList.addView(tr);
+                tl_returnproductList.addView(tr);
 
             }
 
-            View tr1 = (TableRow) View.inflate(StockNewActivity.this, R.layout.inflate_stocksale_row, null);
+            View tr1 = (TableRow) View.inflate(ReturnsActivity.this, R.layout.inflate_stocksale_row, null);
             CheckBox cb = (CheckBox) tr1.findViewById(R.id.chck_product);
 
             AutoCompleteTextView spin = (AutoCompleteTextView) tr1.findViewById(R.id.spin_mrp);
@@ -535,46 +481,9 @@ public class StockNewActivity extends Activity implements OnClickListener {
 
             tr1.setVisibility(View.INVISIBLE);
 
-            tl_productList.addView(tr1);
+            tl_returnproductList.addView(tr1);
         }
 
-    }
-
-    // New Changes
-    @SuppressLint("SimpleDateFormat")
-    public String getopening(String dbid, String PRICE) {
-
-        String closebal = "", retn = "";
-        Cursor mCursor;
-        db.open();
-        mCursor = db.getuniquedata2(dbid);
-
-        int count = mCursor.getCount();
-
-        if (mCursor != null) {
-
-            if (mCursor.moveToFirst()) {
-
-                do {
-
-                    closebal = mCursor.getString(mCursor
-                            .getColumnIndex("close_bal"));
-
-                } while (mCursor.moveToNext());
-
-                sclo = "" + closebal;
-//
-            } else {
-
-                sclo = "0";
-
-            }
-
-        }
-        mCursor.close();
-        db.close();
-
-        return closebal;
     }
 
     @Override
@@ -585,34 +494,33 @@ public class StockNewActivity extends Activity implements OnClickListener {
 
     public void stockProceedData() {
 
-        //String check = "";
-
+        String check = "";
         arr_selectedDBids = new ArrayList<String>();
         int chckCount = 0;
 
-        if (sp_product_category.getSelectedItemPosition() != 0) {
+        if (sp_prod_category.getSelectedItemPosition() != 0) {
 
-            if (sp_product_type.getSelectedItemPosition() != 0) {
+            if (sp_prod_type.getSelectedItemPosition() != 0) {
 
-
-                //if (modecounter == 1) {
-                   /* if (PMODE != null) {
+                if (modecounter == 1) {
+                    if (PMODE != null) {
                         check = PMODE.trim();
                     } else {
                         Toast.makeText(getApplicationContext(),
                                 "Please select Mode",
                                 Toast.LENGTH_LONG).show();
 
-                    }*/
+                    }
 
-                    /*if (check.contentEquals("Select Mode") || check.equals("")) {
+                    if (check.contentEquals("Select Mode") || check.equals("")) {
                         Toast.makeText(getApplicationContext(),
                                 "Please select Mode",
                                 Toast.LENGTH_LONG).show();
 
-                    } else {*/
-                        for (int i = 1; i < tl_productList.getChildCount(); i++) {
-                            TableRow tr = (TableRow) tl_productList.getChildAt(i);
+                    } else {
+
+                        for (int i = 1; i < tl_returnproductList.getChildCount(); i++) {
+                            TableRow tr = (TableRow) tl_returnproductList.getChildAt(i);
                             CheckBox cb = (CheckBox) tr.getChildAt(0);
                             if (cb.isChecked()) {
                                 chckCount++;
@@ -627,8 +535,8 @@ public class StockNewActivity extends Activity implements OnClickListener {
                         } else {
                             boolean spinvalue = true;
 
-                            for (int i = 1; i < tl_productList.getChildCount(); i++) {
-                                TableRow tr = (TableRow) tl_productList.getChildAt(i);
+                            for (int i = 1; i < tl_returnproductList.getChildCount(); i++) {
+                                TableRow tr = (TableRow) tl_returnproductList.getChildAt(i);
                                 CheckBox cb = (CheckBox) tr.getChildAt(0);
                                 TextView txtmrp = (TextView) tr.getChildAt(1);
                                 AutoCompleteTextView spin = (AutoCompleteTextView) tr.getChildAt(2);
@@ -636,8 +544,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
                                 if (cb.isChecked()) {
                                     if (!spin.getText().toString().equals("")) {
                                         arr_selectedDBids.add(db.fetchStockDbID(cb.getText().toString(), spin.getText().toString(),
-                                                sp_product_category
-                                                        .getSelectedItem().toString()));
+                                                sp_prod_category.getSelectedItem().toString()));
                                     } else {
                                         spinvalue = false;
                                     }
@@ -662,12 +569,12 @@ public class StockNewActivity extends Activity implements OnClickListener {
                                         cur.moveToFirst();
 
                                         String productname = cur.getString(cur.getColumnIndex("ProductName")).trim();
-                                        String [] arr = productname.split(" ", 2);
-                                        String firstword =  arr[0];
+                                        String[] arr = productname.split(" ", 2);
+                                        String firstword = arr[0];
                                         String splitingword = arr[1];
                                         String ProductName = "";
                                         String firstword1 = firstword.replaceFirst("\\s++$", "");
-                                        if(selected_type.trim().contains(firstword1.trim())){
+                                        if (selected_type.trim().contains(firstword1.trim())) {
                                             ProductName = splitingword;
                                         }
                                         show_pro_name[i] = ProductName;
@@ -682,8 +589,8 @@ public class StockNewActivity extends Activity implements OnClickListener {
 
                                     }
                                 }
-                                startActivity(new Intent(StockNewActivity.this,
-                                        StockAllActivity.class)
+                                startActivity(new Intent(ReturnsActivity.this,
+                                        ReturnQtyActivity.class)
                                         .putExtra("db_id", chck_db_id)
                                         .putExtra("show_pro_name", show_pro_name)
                                         .putExtra("pro_name", pro_name)
@@ -697,15 +604,13 @@ public class StockNewActivity extends Activity implements OnClickListener {
                             }
 
                         }
+                    }
 
-
-                    //}
-
-                /*} else {
+                } else {
                     Toast.makeText(getApplicationContext(),
                             "Please select Mode",
                             Toast.LENGTH_LONG).show();
-                }*/
+                }
 
             } else {
                 Toast.makeText(getApplicationContext(),
@@ -720,5 +625,4 @@ public class StockNewActivity extends Activity implements OnClickListener {
                     Toast.LENGTH_LONG).show();
         }
     }
-
 }
