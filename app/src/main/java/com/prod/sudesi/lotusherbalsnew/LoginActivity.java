@@ -46,6 +46,7 @@ import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.prod.sudesi.lotusherbalsnew.Models.AttendanceModel;
 import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
 import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbhelper;
 import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
@@ -69,6 +70,7 @@ import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -86,7 +88,7 @@ public class LoginActivity extends Activity {
     SharedPreferences.Editor spe;
 
     LotusWebservice service;
-    String username = "", pass = "", VERSION_NAME = "", OS_VERSION = "",role = "";
+    String username = "", pass = "", VERSION_NAME = "", OS_VERSION = "", role = "";
 
     private ProgressDialog pd;
     ConnectionDetector cd;
@@ -109,6 +111,11 @@ public class LoginActivity extends Activity {
     boolean GPSenabled;
 
     private static final int PERMISSION_REQUEST_CODE = 1;
+
+    String attstatus, AbsentType, ADate, AttendanceValue, Aid, savedate, autoid;
+    private ArrayList<AttendanceModel> presentList;
+    AttendanceModel attendanceModel;
+    String[] values;
 
     //Production India
     /*public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
@@ -190,7 +197,7 @@ public class LoginActivity extends Activity {
 //            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 //            assert telephonyManager != null;
 //            deviceId = telephonyManager.getDeviceId();
-            deviceId =  Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
        /* } else {
             //Toast.makeText(this, "Please give access to read your phone state.", Toast.LENGTH_SHORT).show();
             requestPermission();
@@ -223,7 +230,7 @@ public class LoginActivity extends Activity {
                     }
                 }, 5000);// set time as per your requirement
 
-                if(GPSenabled== true) {
+                if (GPSenabled == true) {
                     try {
                         if (cd.isConnectingToInternet()) {
 
@@ -262,7 +269,7 @@ public class LoginActivity extends Activity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else{
+                } else {
 
                     /*AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
                     alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
@@ -322,7 +329,7 @@ public class LoginActivity extends Activity {
 //            assert telephonyManager != null;
 //            deviceId = telephonyManager.getDeviceId();
 
-            deviceId =  Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         /*} else {
            // Toast.makeText(this, "Please give access to read your phone state.", Toast.LENGTH_SHORT).show();
@@ -388,7 +395,7 @@ public class LoginActivity extends Activity {
             }
 
             if (calendar.get(Calendar.DAY_OF_MONTH) == 26 && (sp.getBoolean("BOC26", false) || !currentDate.equals(syncDate))) {
-                if(!sp.getBoolean("Bocflag",false)) {
+                if (!sp.getBoolean("Bocflag", false)) {
                     boolean boc26 = true;
                     spe.putBoolean("BOC26", boc26);
                     spe.commit();
@@ -566,8 +573,8 @@ public class LoginActivity extends Activity {
                                                 getmessaage.getProperty(
                                                         "bdename")
                                                         .toString());
-                                        contentvalues.put("bde_Code",getmessaage.getProperty("bdecode").toString());
-                                        contentvalues.put("Role",role);
+                                        contentvalues.put("bde_Code", getmessaage.getProperty("bdecode").toString());
+                                        contentvalues.put("Role", role);
 
                                         contentvalues
                                                 .put("status",
@@ -1123,7 +1130,7 @@ public class LoginActivity extends Activity {
         String a = db.getdatepresentorabsent(givendate, username);
         db.close();
         // String a="P";
-        if(role.equalsIgnoreCase("FLR")){
+        if (role.equalsIgnoreCase("FLR")) {
 
             if (a.equalsIgnoreCase("")) {
 
@@ -1134,13 +1141,13 @@ public class LoginActivity extends Activity {
 
             }
             if (a.equalsIgnoreCase("P")) {
-                if(!sp.getString("FLROutletSelect","").equalsIgnoreCase("True")) {
+                if (!sp.getString("FLROutletSelect", "").equalsIgnoreCase("True")) {
                     Intent i = new Intent(getApplicationContext(),
                             OutletActivity.class);
                     //i.putExtra("FromAttendancefloter", "LF");
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
-                }else{
+                } else {
                     Intent i = new Intent(getApplicationContext(),
                             DashboardNewActivity.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -1153,7 +1160,7 @@ public class LoginActivity extends Activity {
                 Toast.makeText(context, "U r absent today", Toast.LENGTH_SHORT)
                         .show();
             }
-        }else if(role.equalsIgnoreCase("DUB")){
+        } else if (role.equalsIgnoreCase("DUB")) {
 
             if (a.equalsIgnoreCase("")) {
 
@@ -1164,17 +1171,17 @@ public class LoginActivity extends Activity {
 
             }
             if (a.equalsIgnoreCase("P")) {
-                    Intent i = new Intent(getApplicationContext(),
-                            OutletActivity.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);
+                Intent i = new Intent(getApplicationContext(),
+                        OutletActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
 
             }
             if (a.equalsIgnoreCase("A")) {
                 Toast.makeText(context, "U r absent today", Toast.LENGTH_SHORT)
                         .show();
             }
-        }else{
+        } else {
             if (a.equalsIgnoreCase("")) {
 
 
@@ -1187,7 +1194,7 @@ public class LoginActivity extends Activity {
             } else {
 
             }*/
-                if(!sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                if (!sp.getString("Role", "").equalsIgnoreCase("FLR")) {
                     Boc26AlaramReceiver();
                 }
                 Intent i = new Intent(getApplicationContext(), AttendanceFragment.class);
@@ -1201,7 +1208,7 @@ public class LoginActivity extends Activity {
 
                 result = true;
 
-                if(!sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                if (!sp.getString("Role", "").equalsIgnoreCase("FLR")) {
                     Boc26AlaramReceiver();
                 }
                 Intent i = new Intent(getApplicationContext(),
@@ -2032,11 +2039,11 @@ public class LoginActivity extends Activity {
                     .toUpperCase().trim();
             pass = edt_password.getText().toString();
 
-            try{
+            try {
 
                 new Check_Login().execute();
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -2293,7 +2300,7 @@ public class LoginActivity extends Activity {
 
                     if (systemdate != null && serverdd != null
                             && systemdate.equalsIgnoreCase(serverdd)) {
-                        LoginUser();
+                        new GetAttendance().execute();
                     } else {
                         Toast.makeText(LoginActivity.this, "Please Check your Handset Date", Toast.LENGTH_LONG).show();
                     }
@@ -2326,6 +2333,246 @@ public class LoginActivity extends Activity {
                 e.printStackTrace();
             }
         }
+    }
+
+    private class GetAttendance extends AsyncTask<String, Void, SoapObject> {
+
+
+        SoapObject soap_result_attendance = null;
+
+        String ErroFlag;
+        String Erro_function = "";
+
+        Cursor attendance_array;
+
+        String Flag;
+
+        String attendance_flag = "";
+        String leavetype_flag = "";
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+
+            mProgress.setMessage("Please Wait");
+            mProgress.show();
+            mProgress.setCancelable(false);
+        }
+
+        @Override
+        protected SoapObject doInBackground(String... params) {
+            // TODO Auto-generated method stub
+
+            final String[] columns = new String[]{"emp_id", "Adate",
+                    "attendance", "absent_type", "lat", "lon", "savedServer", "month",
+                    "holiday_desc", "year"};
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "3";
+                // stop executing code by return
+
+            } else {
+
+
+                Flag = "1";
+
+                try {
+
+                    soap_result_attendance = service.GetAttendanceList(username);
+
+                    if (soap_result_attendance != null) {
+                        presentList = new ArrayList<AttendanceModel>();
+                        for (int i = 0; i < soap_result_attendance.getPropertyCount(); i++) {
+
+                            SoapObject soapObject = (SoapObject) soap_result_attendance.getProperty(i);
+
+                            ADate = cd.getNonNullValues(soapObject.getProperty("ADate").toString());
+
+                            AbsentType = cd.getNonNullValues(soapObject.getProperty("AbsentType").toString());
+
+                            attstatus = cd.getNonNullValues(soapObject.getProperty("status").toString());
+
+                            Aid = cd.getNonNullValues(soapObject.getProperty("ID").toString());
+
+                            AttendanceValue = cd.getNonNullValues(soapObject.getProperty("AttendanceValue").toString());
+
+
+                            attendanceModel = new AttendanceModel();
+                            attendanceModel.setADate(ADate);
+                            attendanceModel.setAttendanceValue(AttendanceValue);
+                            attendanceModel.setAbsentType(AbsentType);
+                            attendanceModel.setAid(Aid);
+
+                            presentList.add(attendanceModel);
+                        }
+
+                        Log.v("", "soap_result_attendance=" + attstatus);
+                        if (attstatus.equalsIgnoreCase("TRUE")) {
+                            ErroFlag = "1";
+
+                            for (int j = 0; j < presentList.size(); j++) {
+                                attendanceModel = presentList.get(j);
+
+                                SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
+                                Date date = df.parse(attendanceModel.getADate());
+
+                                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                savedate = form.format(date);
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                String adate = sdf.format(date.getTime());
+
+                                /*String sld[] = adate.split(" ");
+                                final String sld1 = sld[0];*/
+
+                                String ddd[] = adate.split("-");
+                                final String year = ddd[0];
+
+                                String attendmonth1 = getmonthNo1(ddd[1]);
+
+                                db.open();
+                                Cursor c = db.getuniquedataAttendance(username, adate);
+
+                                int count = c.getCount();
+                                Log.v("", "" + count);
+                                db.close();
+                                if (count > 0) {
+
+                                } else {
+                                    db.open();
+
+                                    values = new String[]{username,
+                                            savedate,
+                                            attendanceModel.getAttendanceValue(),
+                                           attendanceModel.getAbsentType(),
+                                           "0.0",
+                                            "0.0",
+                                            "1",
+                                            attendmonth1,
+                                            "",
+                                            year};
+
+                                    db.insert(values, columns, "attendance");
+
+                                    db.close();
+
+                                }
+
+                            }
+
+                        } else if (attstatus.equalsIgnoreCase("FAIL")) {
+                            ErroFlag = "0";
+                            final Calendar calendar1 = Calendar
+                                    .getInstance();
+                            SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                    "MM/dd/yyyy HH:mm:ss");
+                            String Createddate = formatter1.format(calendar1
+                                    .getTime());
+
+                            int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                            db.insertSyncLog("SaveAttendace_SE", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
+
+                        }
+                    } else {
+                        ErroFlag = "3";
+                        //String errors = "Soap in giving null while 'Attendance' and 'checkSyncFlag = 2' in  data Sync";
+                        //we.writeToSD(errors.toString());
+                        final Calendar calendar1 = Calendar
+                                .getInstance();
+                        SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss");
+                        String Createddate = formatter1.format(calendar1
+                                .getTime());
+
+                        int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                        db.insertSyncLog("Internet Connection Lost, Soap in giving null while 'SaveAttendace'", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
+
+                    }
+
+
+                } catch (Exception e) {
+                    //ErroFlag = "3";
+                    Erro_function = "Attendance";
+                    e.printStackTrace();
+                    String Error = e.toString();
+
+                    final Calendar calendar1 = Calendar
+                            .getInstance();
+                    SimpleDateFormat formatter1 = new SimpleDateFormat(
+                            "MM/dd/yyyy HH:mm:ss");
+                    String Createddate = formatter1.format(calendar1
+                            .getTime());
+
+                    int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                    db.insertSyncLog(Error, String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
+
+
+                }
+                //}
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+
+            mProgress.dismiss();
+            if (Flag.equalsIgnoreCase("3")) {
+
+                Toast.makeText(getApplicationContext(), "Connectivity Error Please check internet ", Toast.LENGTH_SHORT).show();
+            }
+
+            if (ErroFlag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(getApplicationContext(), "Getting null Response", Toast.LENGTH_SHORT).show();
+            }
+            if (ErroFlag.equalsIgnoreCase("1")) {
+
+                Toast.makeText(getApplicationContext(), "Attendance Successfully Sync", Toast.LENGTH_SHORT).show();
+
+                LoginUser();
+
+            }
+
+        }
+
+    }
+
+    public String getmonthNo1(String monthName) {
+        String month = "";
+
+        if (monthName.equals("01")) {
+            month = "1";
+        } else if (monthName.equals("02")) {
+            month = "2";
+        } else if (monthName.equals("03")) {
+            month = "3";
+        } else if (monthName.equals("04")) {
+            month = "4";
+        } else if (monthName.equals("05")) {
+            month = "5";
+        } else if (monthName.equals("06")) {
+            month = "6";
+        } else if (monthName.equals("07")) {
+            month = "7";
+        } else if (monthName.equals("08")) {
+            month = "8";
+        } else if (monthName.equals("09")) {
+            month = "9";
+        } else if (monthName.equals("10")) {
+            month = "10";
+        } else if (monthName.equals("11")) {
+            month = "11";
+        } else if (monthName.equals("12")) {
+            month = "12";
+        }
+
+        return month;
     }
 
     @SuppressLint("WrongConstant")
@@ -2438,12 +2685,12 @@ public class LoginActivity extends Activity {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                   // Toast.makeText(this, "Permission Granted, Now you can check network status.", Toast.LENGTH_LONG).show();
+                    // Toast.makeText(this, "Permission Granted, Now you can check network status.", Toast.LENGTH_LONG).show();
 
 
                 } else {
 
-                  //  Toast.makeText(this, "Permission Denied, You cannot check networkstatus.", Toast.LENGTH_LONG).show();
+                    //  Toast.makeText(this, "Permission Denied, You cannot check networkstatus.", Toast.LENGTH_LONG).show();
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setMessage("Permission is required, please Allow All Permission!")
                             .setCancelable(false)

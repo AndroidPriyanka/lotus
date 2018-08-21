@@ -140,6 +140,37 @@ public class LotusWebservice {
 		return result;
 	}
 
+	public SoapObject GetAttendanceList(String empid) {
+		SoapObject result = null;
+		try {
+			Log.v("", "attendace service called");
+			SoapObject request = new SoapObject("http://tempuri.org/",
+					"GetAttendanceList");
+
+			request.addProperty("emp_id", empid);
+
+			Log.e("GetAttendanceList", empid );
+
+			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+					SoapEnvelope.VER11);// soap envelop with version
+			envelope.setOutputSoapObject(request); // set request object
+			envelope.dotNet = true;
+
+			HttpTransportSE androidHttpTransport = new HttpTransportSE(url,60000);// http
+			// transport
+			// call
+			androidHttpTransport.call(
+					"http://tempuri.org/IService1/GetAttendanceList", envelope);
+
+			result = (SoapObject) envelope.getResponse();
+			Log.e("GetAttendanceList", result.toString());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 	public SoapPrimitive SaveStock(String id,String Pid, String CatCodeId,
 			String EANCode, String empId, String ProductCategory,
 			String product_type, String product_name, String shadeno,

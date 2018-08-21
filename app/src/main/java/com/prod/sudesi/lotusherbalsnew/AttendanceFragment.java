@@ -2059,7 +2059,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
             if (ErroFlag.equalsIgnoreCase("0")) {
 
-                Toast.makeText(getApplicationContext(), "Please Enter Today Date", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Getting null Response", Toast.LENGTH_SHORT).show();
             }
             if (ErroFlag.equalsIgnoreCase("1")) {
 
