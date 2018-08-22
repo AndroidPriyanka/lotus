@@ -1260,7 +1260,26 @@ public class SaleCalculation extends Activity {
                                         }
 
 
-                                        Log.e("gross_amount", String.valueOf(i_return_company));
+                                        Log.e("stockreceived", String.valueOf(stockreceived));
+
+
+                                        int openingstock = 0;
+
+                                        if (c.getString(5) != null) {
+                                            if (c.getString(5).trim()
+                                                    .equalsIgnoreCase("0")
+                                                    || c.getString(5).trim().equalsIgnoreCase("")) {
+
+                                                openingstock = 0;
+
+                                            } else {
+
+                                                openingstock = Integer.parseInt(c.getString(5).trim());
+                                            }
+                                        }
+
+
+                                        Log.e("openingstock", String.valueOf(openingstock));
 
                                         /*...................End...................*/
 
@@ -1275,7 +1294,7 @@ public class SaleCalculation extends Activity {
                                                 calc_gross = calc_gross;
 
                                             } else {
-                                                if (stockreceived > 0) {
+                                                if (stockreceived > 0 || openingstock > 0) {
                                                     calc_gross = calc_gross;
                                                 } else {
                                                     calc_gross = calc_gross - (i_return_customer * Integer.parseInt(tv_mrp

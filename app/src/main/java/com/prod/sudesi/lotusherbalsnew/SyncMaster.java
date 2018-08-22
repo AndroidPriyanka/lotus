@@ -2,6 +2,7 @@ package com.prod.sudesi.lotusherbalsnew;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -16,6 +17,7 @@ import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -71,7 +73,7 @@ public class SyncMaster extends Activity {
     Context context;
     private ProgressDialog progressDialog;
 
-    Button master_sync, data_sync, btn_first_time_sycn, btn_usermanual;
+    Button master_sync, data_sync, btn_first_time_sycn, btn_usermanual,btn_cleardata;
     // ,attendance, stock, tester, visibility;
 
     private Dbcon db;
@@ -142,6 +144,7 @@ public class SyncMaster extends Activity {
         btn_first_time_sycn = (Button) findViewById(R.id.btn_syncfirst);
 
         btn_usermanual = (Button) findViewById(R.id.btn_usermanual);
+        btn_cleardata = (Button) findViewById(R.id.btn_cleardata);
 
         cd = new ConnectionDetector(context);
         db = new Dbcon(context);
@@ -373,6 +376,62 @@ public class SyncMaster extends Activity {
                     Toast.makeText(SyncMaster.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
 
                 }
+            }
+        });
+
+        btn_cleardata.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                btn_cleardata.setEnabled(false);
+
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        // This method will be executed once the timer is over
+                        btn_cleardata.setEnabled(true);
+                        Log.d(TAG, "resend1");
+
+                    }
+                }, 5000);// set time as per your requirement
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        SyncMaster.this);
+
+                // set title
+                alertDialogBuilder.setTitle("Are you sure you want to delete app data?");
+
+                // set dialog message
+                alertDialogBuilder.setMessage("All the data of this app will be deleted permanently.\n" +
+                        "This includes all files, setting, accounts, databases, etc.")
+                        .setCancelable(false)
+
+                        .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+
+                                    public void onClick(
+
+                                            DialogInterface dialog,
+                                            int id) {
+                                        dialog.dismiss();
+
+                                    }
+                                })
+
+                        .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                                    public void onClick(
+                                            DialogInterface dialog,
+                                            int id) {
+                                        dialog.dismiss();
+                                        clearAppData();
+                                    }
+                                });
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder
+                        .create();
+                // show it
+                alertDialog.show();
+
             }
         });
 
@@ -7614,7 +7673,23 @@ public class SyncMaster extends Activity {
         return startend;
     }
 
+    private void clearAppData() {
 
+        try {
+            // clearing app data
+            if (Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT) {
+                ((ActivityManager)getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData(); // note: it has a return value!
+
+            } else {
+                String packageName = getApplicationContext().getPackageName();
+                Runtime runtime = Runtime.getRuntime();
+                runtime.exec("pm clear "+packageName);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

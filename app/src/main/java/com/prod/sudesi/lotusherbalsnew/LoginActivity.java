@@ -2533,7 +2533,7 @@ public class LoginActivity extends Activity {
             }
             if (ErroFlag.equalsIgnoreCase("1")) {
 
-                Toast.makeText(getApplicationContext(), "Attendance Successfully Sync", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Attendance Successfully Sync", Toast.LENGTH_SHORT).show();
 
                 LoginUser();
 
