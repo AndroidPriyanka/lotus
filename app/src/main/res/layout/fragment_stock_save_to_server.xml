@@ -9,68 +9,259 @@
         android:id="@+id/include_header"
         layout="@layout/headernew" />
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:weightSum="3">
+
+        <ImageSwitcher
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="#C72C2C" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-            <Button
-                android:id="@+id/btn_server_data_sync"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_30sdp"
-                android:background="@drawable/data_upload" />
+            <ImageSwitcher
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C" />
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btn_server_master_sync"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_30sdp"
-                android:background="@drawable/master_sync" />
-
-            <Button
-                android:id="@+id/btn_syncfirst"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_30sdp"
-                android:background="@drawable/data_download" />
-
-            <Button
-                android:id="@+id/btn_cleardata"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_30sdp"
-                android:background="@drawable/clear_data" />
-
-            <Button
-                android:id="@+id/btn_changePass"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_30sdp"
-                android:background="@drawable/change_pass" />
+                <Button
+                    android:id="@+id/btn_server_master_sync"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:layout_margin="@dimen/_20sdp"
+                    android:background="@drawable/master_sync"
+                    />
 
 
-            <Button
-                android:id="@+id/btn_usermanual"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_30sdp"
-                android:background="@drawable/user_manual" />
+            </LinearLayout>
+
+            <ImageSwitcher
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btn_server_data_sync"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/data_upload"
+                    android:layout_margin="@dimen/_20sdp"/>
+
+            </LinearLayout>
+
+            <ImageSwitcher
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C" />
 
 
         </LinearLayout>
 
-    </ScrollView>
+        <ImageSwitcher
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="#C72C2C" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <ImageSwitcher
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/btn_syncfirst"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/data_download"
+                    android:layout_margin="@dimen/_20sdp"/>
+
+
+            </LinearLayout>
+
+            <ImageSwitcher
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btn_usermanual"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/user_manual"
+                    android:layout_margin="@dimen/_20sdp"/>
+
+            </LinearLayout>
+
+            <ImageSwitcher
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C" />
+
+
+        </LinearLayout>
+
+        <ImageSwitcher
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="#C72C2C" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageSwitcher
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C"
+                android:layout_marginLeft="@dimen/_150sdp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/btn_cleardata"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:alpha="0.6"
+                    android:background="@drawable/clear_data"
+                    android:layout_margin="@dimen/_20sdp"/>
+
+            </LinearLayout>
+
+            <ImageSwitcher
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="#C72C2C"
+                android:layout_marginRight="@dimen/_150sdp"/>
+
+        </LinearLayout>
+
+        <ImageSwitcher
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="#C72C2C" />
+
+    </LinearLayout>
 </LinearLayout>
+
+
+    <!--<ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_server_data_sync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:background="@drawable/data_upload" />
+
+
+        <Button
+            android:id="@+id/btn_server_master_sync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:background="@drawable/master_sync" />
+
+        <Button
+            android:id="@+id/btn_syncfirst"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:background="@drawable/data_download" />
+
+        <Button
+            android:id="@+id/btn_cleardata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:background="@drawable/clear_data" />
+
+        <Button
+            android:id="@+id/btn_changePass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:background="@drawable/change_pass" />
+
+
+        <Button
+            android:id="@+id/btn_usermanual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:background="@drawable/user_manual" />
+
+
+    </LinearLayout>
+
+    </ScrollView>-->
+

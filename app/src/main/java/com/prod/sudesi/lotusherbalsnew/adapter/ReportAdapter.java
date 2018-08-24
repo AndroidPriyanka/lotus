@@ -58,13 +58,13 @@ public class ReportAdapter extends BaseAdapter {
         TextView type;
         TextView product;
         TextView op;
-        TextView sl;
+        TextView sold_qty,sold_rs;
         TextView rt;
         TextView rtns;
-        TextView cl;
+        TextView closing_qty,closing_rs;
         TextView size;
         TextView price;
-        TextView opening_stock;
+        TextView tv_open_rs,tv_open_qty;
         TextView stock_recieved;
         TextView totalamount;
         TextView totalnetamount;
@@ -91,14 +91,17 @@ public class ReportAdapter extends BaseAdapter {
             viewHolder.type = (TextView) convertView.findViewById(R.id.tv_type);
             viewHolder.product = (TextView) convertView.findViewById(R.id.tv_product);
             viewHolder.op = (TextView) convertView.findViewById(R.id.tv_open);
-            viewHolder.sl = (TextView) convertView.findViewById(R.id.tv_sold);
+            viewHolder.sold_qty = (TextView) convertView.findViewById(R.id.tv_sold_qty);
+            viewHolder.sold_rs = (TextView) convertView.findViewById(R.id.tv_sold_rs);
             viewHolder.rt = (TextView) convertView.findViewById(R.id.tv_return_saleable);
             viewHolder.rtns = (TextView) convertView.findViewById(R.id.tv_return_non_saleable);
-            viewHolder.cl = (TextView) convertView.findViewById(R.id.tv_close);
+            viewHolder.closing_qty = (TextView) convertView.findViewById(R.id.tv_close_qty);
+            viewHolder.closing_rs = (TextView) convertView.findViewById(R.id.tv_close_rs);
             viewHolder.size = (TextView) convertView.findViewById(R.id.tv_report_size);
             viewHolder.price = (TextView) convertView.findViewById(R.id.tv_report_price);
 
-            viewHolder.opening_stock = (TextView) convertView.findViewById(R.id.tv_r_open_stock);
+            viewHolder.tv_open_qty = (TextView) convertView.findViewById(R.id.tv_open_qty);
+            viewHolder.tv_open_rs = (TextView) convertView.findViewById(R.id.tv_open_rs);
             viewHolder.stock_recieved = (TextView) convertView.findViewById(R.id.tv_r_stock_received);
 
             viewHolder.totalamount = (TextView) convertView.findViewById(R.id.tv_report_total_amount);
@@ -130,7 +133,13 @@ public class ReportAdapter extends BaseAdapter {
 
 
         viewHolder.tv_productid.setText(map.get("db_id"));
-        viewHolder.category.setText(map.get("product_category"));
+        String category;
+        if(map.get("product_category").equalsIgnoreCase("SKIN")){
+            category = "LH";
+        }else{
+            category = "LHM";
+        }
+        viewHolder.category.setText(category);
         viewHolder.type.setText(map.get("product_type"));
         viewHolder.product.setText(map.get("product_name"));
         viewHolder.size.setText(map.get("size"));
@@ -143,7 +152,8 @@ public class ReportAdapter extends BaseAdapter {
         }
         int mrp = Integer.parseInt(map.get("price"));
         String totalopeningamt = String.valueOf(openingstock * mrp);
-        viewHolder.opening_stock.setText(openingstock + "(" + totalopeningamt + ")");
+        viewHolder.tv_open_qty.setText(String.valueOf(openingstock));
+        viewHolder.tv_open_rs.setText("\u20B9 " + totalopeningamt);
 
         viewHolder.stock_recieved.setText(map.get("stock_received"));
         viewHolder.op.setText(map.get("stock_in_hand"));
@@ -154,12 +164,21 @@ public class ReportAdapter extends BaseAdapter {
             closingstock = Integer.parseInt(map.get("close_bal"));
         }
         String totalclosingamt = String.valueOf(closingstock * mrp);
-        viewHolder.cl.setText(closingstock + "(" + totalclosingamt + ")");
+        viewHolder.closing_qty.setText(String.valueOf(closingstock));
+        viewHolder.closing_rs.setText("\u20B9 " + totalclosingamt);
         viewHolder.rt.setText(map.get("return_saleable"));
         viewHolder.rtns.setText(map.get("return_non_saleable"));
-        viewHolder.sl.setText(map.get("sold_stock"));
-        viewHolder.totalamount.setText(map.get("total_gross_amount"));
-        viewHolder.totalnetamount.setText(map.get("total_net_amount"));
+        int soldstock;
+        if (String.valueOf(map.get("sold_stock")).equalsIgnoreCase("null")) {
+            soldstock = 0;
+        } else {
+            soldstock = Integer.parseInt(map.get("sold_stock"));
+        }
+        String totalsoldamt = String.valueOf(soldstock * mrp);
+        viewHolder.sold_qty.setText(String.valueOf(soldstock));
+        viewHolder.sold_rs.setText("\u20B9 " + totalsoldamt);
+        viewHolder.totalamount.setText("\u20B9 " + map.get("total_gross_amount"));
+        viewHolder.totalnetamount.setText("\u20B9 " + map.get("total_net_amount"));
         viewHolder.discount.setText(map.get("discount"));
         viewHolder.tv_outlet.setText(map.get("FLRCode"));
 

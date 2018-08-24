@@ -1440,7 +1440,6 @@ public class StockAllActivity extends Activity {
             int i_stkinand = Integer
                     .parseInt(str_openingstock)
                     + new_fresh_stock
-                    + new_retrn_sale
                     - new_retrn_non_sale;
 
             int i_stock_inand = Integer
@@ -1450,7 +1449,7 @@ public class StockAllActivity extends Activity {
             Log.e("i_stkinand", String.valueOf(i_stkinand));
 
             //--------Old production apk use
-            int i_close = i_stock_inand - Integer.parseInt(solddd);
+            int i_close = i_stkinand - Integer.parseInt(solddd);
 
             Log.e("i_close", String.valueOf(i_close));
 

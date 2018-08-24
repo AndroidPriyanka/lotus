@@ -1044,7 +1044,7 @@ public class SaleCalculation extends Activity {
 
                     if (!edt_gross.getText().toString().equals("")
                             && !edt_net.getText().toString().equals("")) {
-                        float dis;
+                        int dis;
                         if (!edt_discount.getText().toString()
                                 .equalsIgnoreCase(" ")
                                 || !edt_discount.getText().toString()
@@ -1058,14 +1058,14 @@ public class SaleCalculation extends Activity {
                         String tt = String.valueOf(tl_sale_calculation
                                 .getChildCount());
 
-                        float ttt = Float.parseFloat(tt);
+                        int ttt = Integer.parseInt(tt);
 
-                        float a1 = dis / (ttt - 1);
+                        int a1 = dis / (ttt - 1);
 
-                        String adis = String.format("%.02f", a1);
-                        float a = Float.parseFloat(adis);
-                        float disss = 0;
-                        float net1;
+                        String adis = String.valueOf(a1);
+                        int a = Integer.parseInt(adis);
+                        int disss = 0;
+                        int net1;
 
                         if (tl_sale_calculation.getChildCount() != 1) {
                             for (int i = 0; i < tl_sale_calculation
@@ -1104,7 +1104,7 @@ public class SaleCalculation extends Activity {
                                         * Integer.parseInt(edt_qty
                                         .getText().toString());
 
-                                float boc_date_net = calc_gross - a;
+                                int boc_date_net = calc_gross - a;
 
                                 int gross = 0, net = 0, closing = 0, sold_stock = 0, discount = 0;
                                 int stkinhand = 0;
@@ -1345,8 +1345,7 @@ public class SaleCalculation extends Activity {
                                                 if (!c.getString(2)
                                                         .contains(" ")) {
 
-                                                    disss = (Float.parseFloat(c
-                                                            .getString(2)) + a);
+                                                    disss = (Integer.parseInt(c.getString(2)) + a);
 
                                                 } else {
                                                     if (edt_discount
@@ -1396,17 +1395,14 @@ public class SaleCalculation extends Activity {
                                                     String cal_gross = String
                                                             .valueOf(calc_gross);
 
-                                                    net1 = Float.parseFloat(c
-                                                            .getString(1))
-                                                            + Float.parseFloat(cal_gross)
-                                                            - a;
+                                                    net1 = Integer.parseInt(c.getString(1))
+                                                            + Integer.parseInt(cal_gross)- a;
 
                                                 } else {
                                                     String cal_gross = String
                                                             .valueOf(calc_gross);
 
-                                                    net1 = (Float
-                                                            .parseFloat(cal_gross) - a);
+                                                    net1 = (Integer.parseInt(cal_gross) - a);
 
                                                 }
 
@@ -1414,16 +1410,14 @@ public class SaleCalculation extends Activity {
                                                 String cal_gross = String
                                                         .valueOf(calc_gross);
 
-                                                net1 = (Float
-                                                        .parseFloat(cal_gross) - a);
+                                                net1 = (Integer.parseInt(cal_gross) - a);
                                             }
 
                                         } else {
                                             String cal_gross = String
                                                     .valueOf(calc_gross);
 
-                                            net1 = (Float
-                                                    .parseFloat(cal_gross) - a);
+                                            net1 = (Integer.parseInt(cal_gross) - a);
                                         }
 
                                         Calendar cal = Calendar
@@ -1811,7 +1805,7 @@ public class SaleCalculation extends Activity {
 
                     if (!edt_gross.getText().toString().equals("")
                             && !edt_net.getText().toString().equals("")) {
-                        float dis;
+                        int dis;
                         if (!edt_discount.getText().toString()
                                 .equalsIgnoreCase(" ")
                                 || !edt_discount.getText().toString()
@@ -1825,14 +1819,14 @@ public class SaleCalculation extends Activity {
                         String tt = String.valueOf(tl_sale_calculation
                                 .getChildCount());
 
-                        float ttt = Float.parseFloat(tt);
+                        int ttt = Integer.parseInt(tt);
 
-                        float a1 = dis / (ttt - 1);
+                        int a1 = dis / (ttt - 1);
 
-                        String adis = String.format("%.02f", a1);
-                        float a = Float.parseFloat(adis);
-                        float disss = 0;
-                        float net1;
+                        String adis = String.valueOf(a1);
+                        int a = Integer.parseInt(adis);
+                        int disss = 0;
+                        int net1;
 
                         if (tl_sale_calculation.getChildCount() != 1) {
                             for (int i = 0; i < tl_sale_calculation
@@ -1907,7 +1901,7 @@ public class SaleCalculation extends Activity {
                                 int calc_gross = Integer.parseInt(tv_mrp.getText().toString())
                                         * Integer.parseInt(edt_qty.getText().toString());
 
-                                float boc_date_net = calc_gross - a;
+                                int boc_date_net = calc_gross - a;
 
                                 int gross = 0, net = 0, closing = 0, sold_stock = 0, discount = 0;
                                 int stkinhand = 0;
@@ -2002,7 +1996,7 @@ public class SaleCalculation extends Activity {
 
                                             if (!str_discount.contains(" ")) {
 
-                                                disss = (Float.parseFloat(str_discount) + a);
+                                                disss = (Integer.parseInt(str_discount) + a);
 
                                             } else {
                                                 if (edt_discount.getText().toString().equals("")) {

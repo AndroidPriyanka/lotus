@@ -117,13 +117,13 @@ public class SaleActivityForFloter extends Activity implements View.OnClickListe
         if (div.equalsIgnoreCase("LH")) {
             productcategory.clear();
             productcategory.add("Select");
-            productcategory.add("SKIN");
+            productcategory.add("SKIN(LH)");
 
         }
         if (div.equalsIgnoreCase("LM")) {
             productcategory.clear();
             productcategory.add("Select");
-            productcategory.add("COLOR");
+            productcategory.add("COLOR(LHM)");
 
         }
 

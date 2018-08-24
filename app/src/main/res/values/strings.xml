@@ -78,4 +78,6 @@
     <string name="select_month">Select Month</string>
     <string name="select_year">Select Year</string>
 
+    <string name="Rs">\u20B9</string>
+
 </resources>

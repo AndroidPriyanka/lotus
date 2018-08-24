@@ -101,7 +101,7 @@ public class SyncMaster extends Activity {
 
     TextView tv_h_username;
     Button btn_home, btn_logout;
-    Button btn_ch;
+    //Button btn_ch;
 
 
     // WriteErroLogs we;
@@ -140,7 +140,7 @@ public class SyncMaster extends Activity {
 
         data_sync = (Button) findViewById(R.id.btn_server_data_sync);
         master_sync = (Button) findViewById(R.id.btn_server_master_sync);
-        btn_ch = (Button) findViewById(R.id.btn_changePass);
+        //btn_ch = (Button) findViewById(R.id.btn_changePass);
         btn_first_time_sycn = (Button) findViewById(R.id.btn_syncfirst);
 
         btn_usermanual = (Button) findViewById(R.id.btn_usermanual);
@@ -244,7 +244,7 @@ public class SyncMaster extends Activity {
             }
         });
 
-        btn_ch.setOnClickListener(new OnClickListener() {
+       /* btn_ch.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -252,7 +252,7 @@ public class SyncMaster extends Activity {
 
                 startActivity(new Intent(SyncMaster.this, ChangePassword.class));
             }
-        });
+        });*/
 
         btn_first_time_sycn.setOnClickListener(new OnClickListener() {
 
