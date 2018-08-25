@@ -577,8 +577,20 @@ public class ReportsForUser extends Activity {
                         map.put("return_saleable", cursor_stock.getString(14));
                         map.put("return_non_saleable", cursor_stock.getString(15));
                         map.put("sold_stock", cursor_stock.getString(16));
-                        map.put("total_gross_amount", cursor_stock.getString(17));
-                        map.put("total_net_amount", cursor_stock.getString(18));
+                        String gross = cursor_stock.getString(17);
+                        if(gross == null){
+                            gross = "0";
+                        }else{
+                            gross = cursor_stock.getString(17);
+                        }
+                        map.put("total_gross_amount", gross);
+                        String netamt = cursor_stock.getString(18);
+                        if(netamt == null){
+                            netamt = "0";
+                        }else{
+                            netamt = cursor_stock.getString(18);
+                        }
+                        map.put("total_net_amount", netamt);
                         map.put("discount", cursor_stock.getString(19));
                         map.put("savedServer", cursor_stock.getString(20));
                         map.put("insert_date", cursor_stock.getString(21));
