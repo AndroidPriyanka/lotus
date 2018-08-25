@@ -57,7 +57,7 @@ public class ReportAdapter extends BaseAdapter {
         TextView category;
         TextView type;
         TextView product;
-        TextView op;
+        //TextView op;
         TextView sold_qty,sold_rs;
         TextView rt;
         TextView rtns;
@@ -90,7 +90,7 @@ public class ReportAdapter extends BaseAdapter {
             viewHolder.category = (TextView) convertView.findViewById(R.id.tv_category);
             viewHolder.type = (TextView) convertView.findViewById(R.id.tv_type);
             viewHolder.product = (TextView) convertView.findViewById(R.id.tv_product);
-            viewHolder.op = (TextView) convertView.findViewById(R.id.tv_open);
+            //viewHolder.op = (TextView) convertView.findViewById(R.id.tv_open);
             viewHolder.sold_qty = (TextView) convertView.findViewById(R.id.tv_sold_qty);
             viewHolder.sold_rs = (TextView) convertView.findViewById(R.id.tv_sold_rs);
             viewHolder.rt = (TextView) convertView.findViewById(R.id.tv_return_saleable);
@@ -156,7 +156,7 @@ public class ReportAdapter extends BaseAdapter {
         viewHolder.tv_open_rs.setText("\u20B9 " + totalopeningamt);
 
         viewHolder.stock_recieved.setText(map.get("stock_received"));
-        viewHolder.op.setText(map.get("stock_in_hand"));
+        //viewHolder.op.setText(map.get("stock_in_hand"));
         int closingstock;
         if (String.valueOf(map.get("close_bal")).equalsIgnoreCase("null")) {
             closingstock = 0;

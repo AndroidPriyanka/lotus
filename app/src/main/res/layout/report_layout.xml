@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="1930dp"
+    android:layout_width="1875dp"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -151,7 +151,7 @@
                 android:singleLine="true"
                 android:text="Return non saleable" />
 
-            <TextView
+           <!-- <TextView
                 android:id="@+id/tv_open"
                 style="@style/report_textview"
                 android:layout_width="55dp"
@@ -160,7 +160,7 @@
                 android:gravity="left"
                 android:paddingLeft="5dp"
                 android:singleLine="true"
-                android:text="Stock in hand" />
+                android:text="Stock in hand" />-->
 
             <LinearLayout
                 android:layout_width="115dp"

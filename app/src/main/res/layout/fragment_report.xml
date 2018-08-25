@@ -20,7 +20,7 @@
 
             <TableRow
                 android:id="@+id/tr_label_stock"
-                android:layout_width="1930dp"
+                android:layout_width="1875dp"
                 android:layout_height="wrap_content"
                 android:background="@layout/tableborder_stock"
                 android:gravity="center"
@@ -144,12 +144,12 @@
                     android:text="Rtn to Co." />
 
 
-                <TextView
+                <!--<TextView
                     style="@style/report_textview_heading"
                     android:layout_width="55dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Stk in hand" />
+                    android:text="Stk in hand" />-->
 
                 <LinearLayout
                     android:layout_width="115dp"
@@ -360,7 +360,7 @@
 
             <ListView
                 android:id="@+id/stock_list"
-                android:layout_width="1930dp"
+                android:layout_width="1875dp"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
                 android:divider="@color/gray"
