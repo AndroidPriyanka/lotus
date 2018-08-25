@@ -974,15 +974,15 @@ public class ReturnQtyActivity extends Activity {
 
                     if (str_discount.equals("")) {
 
-                        str_discount = "0.0";
+                        str_discount = "0";
                     }
 
                 } else {
-                    str_discount = "0.0";
+                    str_discount = "0";
                 }
 
             } else {
-                str_discount = "0.0";
+                str_discount = "0";
             }
 
             Log.e("str_discount", str_discount);
@@ -1016,7 +1016,7 @@ public class ReturnQtyActivity extends Activity {
 
             int i_net_amt = pricesold - pricecustomer;
 
-            float net_amt = Float.parseFloat(String.valueOf(i_net_amt)) - Float.parseFloat(str_discount);
+            int net_amt = Integer.parseInt(String.valueOf(i_net_amt)) - Integer.parseInt(str_discount);
 
             //--------Old production apk use
             int i_stkinand = Integer

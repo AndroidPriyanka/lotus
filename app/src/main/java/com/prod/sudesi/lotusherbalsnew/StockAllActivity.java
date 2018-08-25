@@ -1392,15 +1392,15 @@ public class StockAllActivity extends Activity {
 
                     if (str_discount.equals("")) {
 
-                        str_discount = "0.0";
+                        str_discount = "0";
                     }
 
                 } else {
-                    str_discount = "0.0";
+                    str_discount = "0";
                 }
 
             } else {
-                str_discount = "0.0";
+                str_discount = "0";
             }
 
             Log.e("str_discount", str_discount);
@@ -1761,15 +1761,15 @@ public class StockAllActivity extends Activity {
 
                     if (str_discount.equals("")) {
 
-                        str_discount = "0.0";
+                        str_discount = "0";
                     }
 
                 } else {
-                    str_discount = "0.0";
+                    str_discount = "0";
                 }
 
             } else {
-                str_discount = "0.0";
+                str_discount = "0";
             }
 
             Log.e("str_discount", str_discount);
