@@ -78,6 +78,7 @@ public class SyncMaster extends Activity {
 
     private Dbcon db;
     private ProgressDialog mProgress = null;
+    private ProgressDialog pd1 = null;
     Cursor attendance_array, image_array, image_array1, test_array,
             stock_array, upload_image, upload_boc_daywise_data;
 
@@ -149,6 +150,7 @@ public class SyncMaster extends Activity {
         cd = new ConnectionDetector(context);
         db = new Dbcon(context);
         mProgress = new ProgressDialog(SyncMaster.this);
+        pd1 = new ProgressDialog(this);
         service = new LotusWebservice(SyncMaster.this);
 
         sharedpre = context
@@ -423,7 +425,14 @@ public class SyncMaster extends Activity {
                                             DialogInterface dialog,
                                             int id) {
                                         dialog.dismiss();
-                                        clearAppData();
+
+                                        try {
+                                            new ClearDataLog().execute();
+                                        }catch (Exception e){
+                                            e.printStackTrace();
+                                        }
+
+
                                     }
                                 });
                 // create alert dialog
@@ -3772,8 +3781,13 @@ public class SyncMaster extends Activity {
                                     GrossAmount = "";
 
                                 }
+
                                 String Discount = soap_result1.getProperty(
                                         "Discount").toString();
+
+                                float dis = Float.parseFloat(Discount);
+                                int d = (int) dis;
+                                Discount = String.valueOf(d);
 
                                 if (Discount == null) {
                                     Discount = "";
@@ -3781,6 +3795,10 @@ public class SyncMaster extends Activity {
                                 }
                                 String NetAmount = soap_result1.getProperty(
                                         "NetAmount").toString();
+
+                                float net = Float.parseFloat(NetAmount);
+                                int n = (int) net;
+                                NetAmount = String.valueOf(n);
 
                                 if (NetAmount == null) {
                                     NetAmount = "";
@@ -4245,12 +4263,20 @@ public class SyncMaster extends Activity {
                                 String Discount = soap_result1.getProperty(
                                         "Discount").toString();
 
+                                float dis = Float.parseFloat(Discount);
+                                int d = (int) dis;
+                                Discount = String.valueOf(d);
+
                                 if (Discount == null) {
                                     Discount = "";
 
                                 }
                                 String NetAmount = soap_result1.getProperty(
                                         "NetAmount").toString();
+
+                                float net = Float.parseFloat(NetAmount);
+                                int n = (int) net;
+                                NetAmount = String.valueOf(n);
 
                                 if (NetAmount == null) {
                                     NetAmount = "";
@@ -5609,12 +5635,20 @@ public class SyncMaster extends Activity {
                             String Discount = soap_result_boc_day1.getProperty(
                                     "Discount").toString();
 
+                            float dis = Float.parseFloat(Discount);
+                            int d = (int) dis;
+                            Discount = String.valueOf(d);
+
                             if (Discount == null) {
                                 Discount = "";
 
                             }
                             String NetAmount = soap_result_boc_day1
                                     .getProperty("NetAmount").toString();
+
+                            float net = Float.parseFloat(NetAmount);
+                            int n = (int) net;
+                            NetAmount = String.valueOf(n);
 
                             if (NetAmount == null) {
                                 NetAmount = "";
@@ -6128,12 +6162,20 @@ public class SyncMaster extends Activity {
                             String Discount = soap_result_monthwise1
                                     .getProperty("Discount").toString();
 
+                            float dis = Float.parseFloat(Discount);
+                            int d = (int) dis;
+                            Discount = String.valueOf(d);
+
                             if (Discount == null) {
                                 Discount = "";
 
                             }
                             String NetAmount = soap_result_monthwise1
                                     .getProperty("NetAmount").toString();
+
+                            float net = Float.parseFloat(NetAmount);
+                            int n = (int) net;
+                            NetAmount = String.valueOf(n);
 
                             if (NetAmount == null) {
                                 NetAmount = "";
@@ -7198,12 +7240,20 @@ public class SyncMaster extends Activity {
                                 }
                                 String Discount = soap_result1.getProperty("Discount").toString();
 
+                                float dis = Float.parseFloat(Discount);
+                                int d = (int) dis;
+                                Discount = String.valueOf(d);
+
                                 if (Discount == null) {
                                     Discount = "";
 
                                 }
                                 String NetAmount = soap_result1.getProperty(
                                         "NetAmount").toString();
+
+                                float net = Float.parseFloat(NetAmount);
+                                int n = (int) net;
+                                NetAmount = String.valueOf(n);
 
                                 if (NetAmount == null) {
                                     NetAmount = "";
@@ -7689,6 +7739,96 @@ public class SyncMaster extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public class ClearDataLog extends AsyncTask<Void, Void, SoapObject> {
+
+        private SoapPrimitive soap_result = null;
+
+        String Flag = "";
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+
+            pd1.setMessage("Please Wait....");
+            pd1.show();
+            pd1.setCancelable(false);
+
+        }
+
+        @Override
+        protected SoapObject doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+
+            Calendar cal2 = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat(
+                    "yyyy-MM-dd HH:mm:ss");
+            String insert_timestamp = sdf.format(cal2.getTime());
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    soap_result = service.ClearDataLog("Doing Clear Data", username, insert_timestamp);
+
+                    if (soap_result != null) {
+
+                        if (soap_result.toString().equalsIgnoreCase("True")) {
+                            Flag = "1";
+                        } else {
+                            Flag = "2";
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+
+            if (pd1 != null && pd1.isShowing() && !SyncMaster.this.isFinishing()) {
+                pd1.dismiss();
+            }
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Connectivity Error, Please check Internet connection!!",
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Clear Data Complete Successfully",
+                        Toast.LENGTH_SHORT).show();
+
+                clearAppData();
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Soap Response getting False!!",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
+
+
     }
 
 

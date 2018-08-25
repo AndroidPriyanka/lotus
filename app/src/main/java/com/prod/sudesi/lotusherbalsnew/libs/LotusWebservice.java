@@ -1606,15 +1606,16 @@ public class LotusWebservice {
 		return result;
 	}
 
-	public SoapPrimitive FLROutletAttendance(String aid, String outletcode) {
+	public SoapPrimitive ClearDataLog(String msg, String username,String Clear_Date) {
 		SoapPrimitive result = null;
 		try {
 			Log.v("", "sync stock service called");
 			SoapObject request = new SoapObject("http://tempuri.org/",
-					"FLROutletAttendance");
+					"log_forandroid");
 			// /// send link
-			request.addProperty("ID", aid);
-			request.addProperty("Outletcode", outletcode);
+			request.addProperty("sMessage", msg);
+			request.addProperty("username", username);
+			request.addProperty("Clear_Date", Clear_Date);
 			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
 					SoapEnvelope.VER11);// soap envelop with version
 			envelope.setOutputSoapObject(request); // set request object
@@ -1624,10 +1625,10 @@ public class LotusWebservice {
 			// transport
 			// call
 			androidHttpTransport.call(
-					"http://tempuri.org/IService1/FLROutletAttendance", envelope);
+					"http://tempuri.org/IService1/log_forandroid", envelope);
 
 			result = (SoapPrimitive) envelope.getResponse();
-			Log.e("FLROutletAttendance=", result.toString());
+			Log.e("log_forandroid=", result.toString());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1767,6 +1768,35 @@ public class LotusWebservice {
 
 			result = (SoapObject) envelope.getResponse();
 			Log.e("DataDownloadDubai=", result.toString());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public SoapPrimitive FLROutletAttendance(String aid, String outletcode) {
+		SoapPrimitive result = null;
+		try {
+			Log.v("", "sync stock service called");
+			SoapObject request = new SoapObject("http://tempuri.org/",
+					"FLROutletAttendance");
+			// /// send link
+			request.addProperty("ID", aid);
+			request.addProperty("Outletcode", outletcode);
+			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+					SoapEnvelope.VER11);// soap envelop with version
+			envelope.setOutputSoapObject(request); // set request object
+			envelope.dotNet = true;
+
+			HttpTransportSE androidHttpTransport = new HttpTransportSE(url,60000);// http
+			// transport
+			// call
+			androidHttpTransport.call(
+					"http://tempuri.org/IService1/FLROutletAttendance", envelope);
+
+			result = (SoapPrimitive) envelope.getResponse();
+			Log.e("FLROutletAttendance=", result.toString());
 
 		} catch (Exception e) {
 			e.printStackTrace();
