@@ -2066,7 +2066,7 @@ public class SaleCalculation extends Activity {
                                     i_net_amt = Integer.parseInt(str_price) * soldstock;
                                 }
 
-                                float net_amt = Float.parseFloat(String.valueOf(i_net_amt)) - disss;
+                                int net_amt = Integer.parseInt(String.valueOf(i_net_amt)) - disss;
 
 
                                 if (mCursor.getCount() == 0) {

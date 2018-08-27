@@ -118,12 +118,12 @@ public class LoginActivity extends Activity {
     String[] values;
 
     //Production India
-    /*public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
-    public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production*/
+    public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
+    public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production
 
     //UAT India
-    public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
-    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT India
+   /* public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
+    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT India*/
 
     //Production Dubai
      /*public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Dubai_Pro.apk"; //production
@@ -2335,7 +2335,7 @@ public class LoginActivity extends Activity {
         }
     }
 
-    private class GetAttendance extends AsyncTask<String, Void, SoapObject> {
+    private class GetAttendance extends AsyncTask<Void, Void, String> {
 
 
         SoapObject soap_result_attendance = null;
@@ -2361,7 +2361,7 @@ public class LoginActivity extends Activity {
         }
 
         @Override
-        protected SoapObject doInBackground(String... params) {
+        protected String doInBackground(Void... params) {
             // TODO Auto-generated method stub
 
             final String[] columns = new String[]{"emp_id", "Adate",
@@ -2388,24 +2388,34 @@ public class LoginActivity extends Activity {
 
                             SoapObject soapObject = (SoapObject) soap_result_attendance.getProperty(i);
 
-                            ADate = cd.getNonNullValues(soapObject.getProperty("ADate").toString());
+                            if(soapObject.getProperty("status") != null) {
 
-                            AbsentType = cd.getNonNullValues(soapObject.getProperty("AbsentType").toString());
+                                attstatus = cd.getNonNullValues(soapObject.getProperty("status").toString());
 
-                            attstatus = cd.getNonNullValues(soapObject.getProperty("status").toString());
+                                if (attstatus.equalsIgnoreCase("TRUE")) {
 
-                            Aid = cd.getNonNullValues(soapObject.getProperty("ID").toString());
+                                    ADate = cd.getNonNullValues(soapObject.getProperty("ADate").toString());
 
-                            AttendanceValue = cd.getNonNullValues(soapObject.getProperty("AttendanceValue").toString());
+                                    AbsentType = cd.getNonNullValues(soapObject.getProperty("AbsentType").toString());
+
+                                    Aid = cd.getNonNullValues(soapObject.getProperty("ID").toString());
+
+                                    spe.putString("AttendAid", Aid);
+                                    spe.commit();
+
+                                    AttendanceValue = cd.getNonNullValues(soapObject.getProperty("AttendanceValue").toString());
 
 
-                            attendanceModel = new AttendanceModel();
-                            attendanceModel.setADate(ADate);
-                            attendanceModel.setAttendanceValue(AttendanceValue);
-                            attendanceModel.setAbsentType(AbsentType);
-                            attendanceModel.setAid(Aid);
+                                    attendanceModel = new AttendanceModel();
+                                    attendanceModel.setADate(ADate);
+                                    attendanceModel.setAttendanceValue(AttendanceValue);
+                                    attendanceModel.setAbsentType(AbsentType);
+                                    attendanceModel.setAid(Aid);
 
-                            presentList.add(attendanceModel);
+                                    presentList.add(attendanceModel);
+                                }
+                            }
+
                         }
 
                         Log.v("", "soap_result_attendance=" + attstatus);
@@ -2463,20 +2473,11 @@ public class LoginActivity extends Activity {
                             }
 
                         } else if (attstatus.equalsIgnoreCase("FAIL")) {
-                            ErroFlag = "0";
-                            final Calendar calendar1 = Calendar
-                                    .getInstance();
-                            SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                    "MM/dd/yyyy HH:mm:ss");
-                            String Createddate = formatter1.format(calendar1
-                                    .getTime());
-
-                            int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
-                            db.insertSyncLog("SaveAttendace_SE", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
+                            ErroFlag = "1";
 
                         }
                     } else {
-                        ErroFlag = "3";
+                        ErroFlag = "0";
                         //String errors = "Soap in giving null while 'Attendance' and 'checkSyncFlag = 2' in  data Sync";
                         //we.writeToSD(errors.toString());
                         final Calendar calendar1 = Calendar
@@ -2487,13 +2488,13 @@ public class LoginActivity extends Activity {
                                 .getTime());
 
                         int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
-                        db.insertSyncLog("Internet Connection Lost, Soap in giving null while 'SaveAttendace'", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
+                        db.insertSyncLog("Internet Connection Lost, Soap in giving null while 'GetSaveAttendace'", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
 
                     }
 
 
                 } catch (Exception e) {
-                    //ErroFlag = "3";
+                    ErroFlag = "3";
                     Erro_function = "Attendance";
                     e.printStackTrace();
                     String Error = e.toString();
@@ -2506,18 +2507,18 @@ public class LoginActivity extends Activity {
                             .getTime());
 
                     int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
-                    db.insertSyncLog(Error, String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
+                    db.insertSyncLog(Error, String.valueOf(n), "GetSaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
 
 
                 }
                 //}
             }
 
-            return null;
+            return ErroFlag;
         }
 
         @Override
-        protected void onPostExecute(SoapObject result) {
+        protected void onPostExecute(String result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
 
