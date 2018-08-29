@@ -2,6 +2,7 @@ package com.prod.sudesi.lotusherbalsnew.dbConfig;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -17,7 +18,7 @@ public class Dbhelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "sudesi.sqlite";
 
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     public static final String KEY_PRODUCT_TYPE = "ProductType";
     public static final String KEY_PRODUCT_Category = "ProductCategory";
@@ -66,7 +67,7 @@ public class Dbhelper extends SQLiteOpenHelper {
 
     private static final String TABLE_DASHBOARD_DETAILS = "create table dashboard_details(id integer primary key autoincrement, BOC text,AndroidCreatedDate text,COLOR text,ColorSoldQty text,ColorSoldValue text,SKIN text,SkinSoldQty text,SkinSoldValue text,TOTAL text,TotalQty text,TotalValue text)";
 
-    private static final String TABLE_CREATE_SUPERVISOR = "create table supervisor_attendance(id integer primary key autoincrement,BDE_CODE text,BA_id text,Adate text,Actual_date text,lat text,lon text,savedServer integer);";
+    private static final String TABLE_CREATE_SUPERVISOR = "create table if not exists supervisor_attendance(id integer primary key autoincrement,BDE_CODE text,BA_id text,Adate text,Actual_date text,lat text,lon text,savedServer integer);";
 
     private static final String TABLE_ALTER_LOGIN1 = "alter table login add column bde_Code text";
     private static final String TABLE_ALTER_LOGIN2 = "alter table login add column bde_Name text";
@@ -79,9 +80,8 @@ public class Dbhelper extends SQLiteOpenHelper {
     private static final String TABLE_ALTER_ATTENDANCE1 = "alter table attendance add column logout_status text;";
     private static final String TABLE_ALTER_ATTENDANCE2 = "alter table attendance add column logout_date text;";
 
-    private static final String TABLE_CREATE_FLOTEROUTLET = "create table floteroutlet(id integer primary key autoincrement,baCodeOutlet text,banameOutlet text,outletname text,flotername text);";
+    private static final String TABLE_CREATE_FLOTEROUTLET = "create table if not exists floteroutlet(id integer primary key autoincrement,baCodeOutlet text,banameOutlet text,outletname text,flotername text);";
     private static final String TABLE_DASHBOARD_DETAILS_DUBAI = "create table dashboard_details_dubai(id integer primary key autoincrement, BOC text,AndroidCreatedDate text,SoldQty text,Soldvalue text)";
-
 
 
     private static Dbhelper dbInstance = null;
@@ -174,22 +174,34 @@ public class Dbhelper extends SQLiteOpenHelper {
             database.execSQL(TABLE_ALTER_LOGIN2);
             database.execSQL(TABLE_ALTER_ATTENDANCE1);
             database.execSQL(TABLE_ALTER_ATTENDANCE2);
-        } else if (newVersion == 7) {
-            database.execSQL("ALTER TABLE stock ADD flag varchar(50);");
+        } else if (newVersion == 8) {
+            if (!isColumnExists("stock", "flag"))
+                database.execSQL("ALTER TABLE stock ADD flag varchar(50);");
             database.execSQL(TABLE_CREATE_SUPERVISOR);
-            database.execSQL(TABLE_ALTER_LOGIN1);
-            database.execSQL(TABLE_ALTER_LOGIN2);
-            database.execSQL(TABLE_ALTER_ATTENDANCE1);
-            database.execSQL(TABLE_ALTER_ATTENDANCE2);
-            database.execSQL(TABLE_ALTER_LOGIN3);
+
+            if (!isColumnExists("login", "bde_Code"))
+                database.execSQL(TABLE_ALTER_LOGIN1);
+            if (!isColumnExists("login", "bde_Name"))
+                database.execSQL(TABLE_ALTER_LOGIN2);
+            if (!isColumnExists("attendance", "logout_status"))
+                database.execSQL(TABLE_ALTER_ATTENDANCE1);
+            if (!isColumnExists("attendance", "logout_date"))
+                database.execSQL(TABLE_ALTER_ATTENDANCE2);
+            if (!isColumnExists("login", "Role"))
+                database.execSQL(TABLE_ALTER_LOGIN3);
+
             database.execSQL(TABLE_CREATE_FLOTEROUTLET);
-            database.execSQL(TABLE_CREATE_STOCK1);
-            database.execSQL(TABLE_CREATE_STOCK2);
-            database.execSQL(TABLE_PRODUCT_MASTER1);
+            if (!isColumnExists("stock", "FLRCode"))
+                database.execSQL(TABLE_CREATE_STOCK1);
+            if (!isColumnExists("stock", "SingleOffer"))
+                database.execSQL(TABLE_CREATE_STOCK2);
+            if (!isColumnExists("product_master", "SingleOffer"))
+                database.execSQL(TABLE_PRODUCT_MASTER1);
             database.execSQL(TABLE_DASHBOARD_DETAILS_DUBAI);
         }
 
     }
+
 
     public void dropandcreate(SQLiteDatabase database) {
         database.execSQL("DROP TABLE IF EXISTS scan");
@@ -203,5 +215,23 @@ public class Dbhelper extends SQLiteOpenHelper {
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_CREATE_SYNC_LOG);
 
         onCreate(database);
+    }
+
+    public boolean isColumnExists(String table, String column) {
+        try {
+            Cursor cursor = database.rawQuery("PRAGMA table_info(" + table + ")", null);
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    String name = cursor.getString(cursor.getColumnIndex("name"));
+                    if (column.equalsIgnoreCase(name)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }

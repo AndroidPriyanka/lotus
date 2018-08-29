@@ -74,6 +74,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static android.content.ContentValues.TAG;
 
@@ -118,11 +119,11 @@ public class LoginActivity extends Activity {
     String[] values;
 
     //Production India
-    public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
+    public static final String downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
     public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production
 
     //UAT India
-   /* public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
+    /*public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
     public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT India*/
 
     //Production Dubai
@@ -747,6 +748,7 @@ public class LoginActivity extends Activity {
                 pd.dismiss();
             }
 
+
             try {
                 if (soap_result != null) {
                     if (!Flag.equalsIgnoreCase("0")) {
@@ -825,6 +827,7 @@ public class LoginActivity extends Activity {
 
                                         //SetClosingISOpeningOnlyOnce();
                                         // checkAndSaveMonthly();
+
                                         checkpresentornot(todaydate1);
 
 //                                        Toast.makeText(
@@ -2301,6 +2304,8 @@ public class LoginActivity extends Activity {
                     if (systemdate != null && serverdd != null
                             && systemdate.equalsIgnoreCase(serverdd)) {
                         new GetAttendance().execute();
+
+                        //LoginUser();
                     } else {
                         Toast.makeText(LoginActivity.this, "Please Check your Handset Date", Toast.LENGTH_LONG).show();
                     }
@@ -2342,10 +2347,13 @@ public class LoginActivity extends Activity {
 
         String ErroFlag;
         String Erro_function = "";
+        String Error;
+        int n;
 
         Cursor attendance_array;
 
         String Flag;
+        String log;
 
         String attendance_flag = "";
         String leavetype_flag = "";
@@ -2383,17 +2391,18 @@ public class LoginActivity extends Activity {
                     soap_result_attendance = service.GetAttendanceList(username);
 
                     if (soap_result_attendance != null) {
+                        log = "soap not null";
                         presentList = new ArrayList<AttendanceModel>();
                         for (int i = 0; i < soap_result_attendance.getPropertyCount(); i++) {
 
                             SoapObject soapObject = (SoapObject) soap_result_attendance.getProperty(i);
 
-                            if(soapObject.getProperty("status") != null) {
-
+                            if (soapObject.getProperty("status") != null) {
+                                log = log + "-status not null";
                                 attstatus = cd.getNonNullValues(soapObject.getProperty("status").toString());
 
                                 if (attstatus.equalsIgnoreCase("TRUE")) {
-
+                                    log = log + "-attstatus true";
                                     ADate = cd.getNonNullValues(soapObject.getProperty("ADate").toString());
 
                                     AbsentType = cd.getNonNullValues(soapObject.getProperty("AbsentType").toString());
@@ -2413,51 +2422,57 @@ public class LoginActivity extends Activity {
                                     attendanceModel.setAid(Aid);
 
                                     presentList.add(attendanceModel);
+                                    log = log + "-list add";
                                 }
                             }
 
                         }
 
                         Log.v("", "soap_result_attendance=" + attstatus);
+
                         if (attstatus.equalsIgnoreCase("TRUE")) {
                             ErroFlag = "1";
-
+                            log = log + "-attstatus true 1";
                             for (int j = 0; j < presentList.size(); j++) {
                                 attendanceModel = presentList.get(j);
 
-                                SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
+                                SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a", Locale.US);
                                 Date date = df.parse(attendanceModel.getADate());
 
-                                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.US);
                                 savedate = form.format(date);
 
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd",Locale.US);
                                 String adate = sdf.format(date.getTime());
 
-                                /*String sld[] = adate.split(" ");
-                                final String sld1 = sld[0];*/
+                                String sld[] = adate.split(" ");
+                                final String sld1 = sld[0];
 
                                 String ddd[] = adate.split("-");
                                 final String year = ddd[0];
-
+                                log = log + "-attstatus true 2";
                                 String attendmonth1 = getmonthNo1(ddd[1]);
-
+                                log = log + "-" + attendmonth1;
                                 db.open();
                                 Cursor c = db.getuniquedataAttendance(username, adate);
-
+//                                String sql = "select * from attendance where emp_id = " + "'" + username + "'" + " AND Adate like " + "'%" + adate + "%'";
+//                                log = log + "-" + sql;
+//
+//                                Cursor c = db.rawQuery(sql);
+//                                log = log + "-getuniquedataAttendance true";
                                 int count = c.getCount();
                                 Log.v("", "" + count);
                                 db.close();
                                 if (count > 0) {
-
+                                    log = log + "-getuniquedataAttendance 0";
                                 } else {
                                     db.open();
 
                                     values = new String[]{username,
                                             savedate,
                                             attendanceModel.getAttendanceValue(),
-                                           attendanceModel.getAbsentType(),
-                                           "0.0",
+                                            attendanceModel.getAbsentType(),
+                                            "0.0",
                                             "0.0",
                                             "1",
                                             attendmonth1,
@@ -2465,7 +2480,7 @@ public class LoginActivity extends Activity {
                                             year};
 
                                     db.insert(values, columns, "attendance");
-
+                                    log = log + "-insert true";
                                     db.close();
 
                                 }
@@ -2474,7 +2489,7 @@ public class LoginActivity extends Activity {
 
                         } else if (attstatus.equalsIgnoreCase("FAIL")) {
                             ErroFlag = "1";
-
+                            log = log + "-status fail";
                         }
                     } else {
                         ErroFlag = "0";
@@ -2486,8 +2501,8 @@ public class LoginActivity extends Activity {
                                 "MM/dd/yyyy HH:mm:ss");
                         String Createddate = formatter1.format(calendar1
                                 .getTime());
-
-                        int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                        log = log + "-attendance null";
+                        n = Thread.currentThread().getStackTrace()[2].getLineNumber();
                         db.insertSyncLog("Internet Connection Lost, Soap in giving null while 'GetSaveAttendace'", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
 
                     }
@@ -2497,8 +2512,8 @@ public class LoginActivity extends Activity {
                     ErroFlag = "3";
                     Erro_function = "Attendance";
                     e.printStackTrace();
-                    String Error = e.toString();
-
+                    Error = e.toString();
+                    log = log + "-exception null";
                     final Calendar calendar1 = Calendar
                             .getInstance();
                     SimpleDateFormat formatter1 = new SimpleDateFormat(
@@ -2506,7 +2521,7 @@ public class LoginActivity extends Activity {
                     String Createddate = formatter1.format(calendar1
                             .getTime());
 
-                    int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                    n = Thread.currentThread().getStackTrace()[2].getLineNumber();
                     db.insertSyncLog(Error, String.valueOf(n), "GetSaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
 
 
@@ -2523,6 +2538,9 @@ public class LoginActivity extends Activity {
             super.onPostExecute(result);
 
             mProgress.dismiss();
+
+            //Toast.makeText(getApplicationContext(), Error, Toast.LENGTH_SHORT).show();
+
             if (Flag.equalsIgnoreCase("3")) {
 
                 Toast.makeText(getApplicationContext(), "Connectivity Error Please check internet ", Toast.LENGTH_SHORT).show();

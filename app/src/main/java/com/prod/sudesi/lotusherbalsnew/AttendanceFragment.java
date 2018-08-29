@@ -914,7 +914,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
                                         try {
                                             // Production live now
-                                            /*if(role.equalsIgnoreCase("DUB")){
+                                           /* if(role.equalsIgnoreCase("DUB")){
                                                 new SaveAttendanceForDubai().execute(attendance_flag, leavetype_flag);
                                             }else if(role.equalsIgnoreCase("FLR")){
                                                 new SaveAttendanceForDubai().execute(attendance_flag, leavetype_flag);
@@ -1469,7 +1469,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                             }*/
 
 
-                        } else if (status.equalsIgnoreCase("FAIL")) {
+                        } else if (status.equalsIgnoreCase("SE")) {
                             ErroFlag = "0";
                             final Calendar calendar1 = Calendar
                                     .getInstance();
@@ -1536,7 +1536,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
             if (ErroFlag.equalsIgnoreCase("0")) {
 
-                Toast.makeText(getApplicationContext(), "Please Enter Today Date", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Soap response null", Toast.LENGTH_SHORT).show();
             }
             if (ErroFlag.equalsIgnoreCase("1")) {
 
@@ -1639,7 +1639,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
     }
 
     // production live now this method
-    /*private class SaveAttendance extends AsyncTask<String, Void, SoapPrimitive> {
+   /* private class SaveAttendance extends AsyncTask<String, Void, SoapPrimitive> {
 
 
         SoapPrimitive soap_attendance = null;
