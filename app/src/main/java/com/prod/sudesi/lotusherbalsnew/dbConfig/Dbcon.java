@@ -125,7 +125,7 @@ public class Dbcon {
     }
 
     public Cursor fetchonefordubai(String fValue, String tbl, String names[],
-                           String fName) throws SQLException {
+                                   String fName) throws SQLException {
         Cursor mCursor = database.query(true, tbl, names, fName + "='" + fValue
                 + "'", null, null, null, null, null);
         if (mCursor != null) {
@@ -380,13 +380,10 @@ public class Dbcon {
 /*
     @SuppressLint("ShowToast")
 	public ArrayList<String> getproductcategory() {
-
 		// TODO Auto-generated method stub
 		Log.e("", "chch");
-
 		String selectQuery = "SELECT  category FROM stock_product_category";
 		Log.e("", "chch");
-
 		Cursor cursor = database.rawQuery(selectQuery, null);
 		Log.e("", "chch");
 		ArrayList<String> data = new ArrayList<String>();
@@ -399,42 +396,32 @@ public class Dbcon {
 					Log.e("", "chch");
 					// get the data into array,or class variable
 					data.add(cursor.getString(cursor.getColumnIndex("category")));
-
 					Log.e("", "data inserted=" + data);
 				} while (cursor.moveToNext());
 			}
 		} else {
-
 			Toast.makeText(context, "No data available", Toast.LENGTH_LONG);
 		}
 		database.close();
 		return data;
-
 	}*/
 
 	/*@SuppressLint("ShowToast")
 	public ArrayList<String> getproductype(String prodctcategory) {
 		// TODO Auto-generated method stub
 		ArrayList<String> product_type_data = new ArrayList<String>();
-
 		String selectquery = " select product_type from stock_product_category_product_type_mapping where product_category_id = "
 				+ prodctcategory;
-
 		Cursor cursor = database.rawQuery(selectquery, null);
 		if (cursor != null) {
 			if (cursor.moveToFirst()) {
-
 				do {
 					product_type_data.add(cursor.getString(cursor
 							.getColumnIndex(Dbhelper.KEY_PRODUCT_TYPE)));
-
 					Log.e("", "data product_type=" + product_type_data);
-
 				} while (cursor.moveToNext());
-
 			}
 		} else {
-
 			Toast.makeText(context, "No data available", Toast.LENGTH_LONG);
 		}
 		database.close();
@@ -445,25 +432,18 @@ public class Dbcon {
 	public ArrayList<String> getproducts(String selected_product_type1) {
 		// TODO Auto-generated method stub
 		ArrayList<String> product_data = new ArrayList<String>();
-
 		String selectquery = " select products from stock_product_type_products_mapping where product_type = "
 				+ "'" + selected_product_type1 + "'";
-
 		Cursor cursor = database.rawQuery(selectquery, null);
 		if (cursor != null) {
 			if (cursor.moveToFirst()) {
-
 				do {
 					product_data.add(cursor.getString(cursor
 							.getColumnIndex(Dbhelper.KEY_PRODUCTS)));
-
 					Log.e("", "data product_type=" + product_data);
-
 				} while (cursor.moveToNext());
-
 			}
 		} else {
-
 			Toast.makeText(context, "No data available", Toast.LENGTH_LONG);
 		}
 		database.close();
@@ -482,13 +462,13 @@ public class Dbcon {
         ContentValues values = new ContentValues();
         // for (int i = 0; i < count1; i++) {
 
-        Log.e("vlaue inserting into stock==", "");
+        Log.e("inserting into stock==", "");
 
         //values.put("product_id", product_id);
         values.put("product_category", product_cat);
         values.put("product_type", product_type);
         values.put("product_name", product_name);
-        Log.e("vlaue inserting into stock==", "emp_id==" + emp_id);
+        Log.e("inserting into stock==", "emp_id==" + emp_id);
         values.put("emp_id", emp_id);
 
 
@@ -554,7 +534,7 @@ public class Dbcon {
         ContentValues values = new ContentValues();
 
 
-        Log.e("vlaue inserting into stock==", "");
+        Log.e("inserting into stock==", "");
 
 
         values.put("product_category", product_cat);
@@ -682,13 +662,11 @@ public class Dbcon {
     // new changes for attendance 24 jan 2018
    /* public void updateAttendance_P_A(String attendance,String id) {
         // TODO Auto-generated method stub
-
         String sql = "UPDATE attendance SET attendance = '' WHERE attendance = 'P' AND id= '" + id + "'";
         database.execSQL(sql);
         Log.e("local database", "UPDATE attendance present or update data");
-
     }*/
-   /*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     @SuppressLint("ShowToast")
     public ArrayList<String> getproductcategory1() {
@@ -732,6 +710,34 @@ public class Dbcon {
 
         String selectquery = " select DISTINCT ProductType from product_master where ProductCategory = "
                 + "'" + ProductCategory + "'";
+
+        Cursor cursor = database.rawQuery(selectquery, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                product_type_data.add("Select");
+                do {
+                    product_type_data.add(cursor.getString(cursor
+                            .getColumnIndex(Dbhelper.KEY_PRODUCT_TYPE)));
+
+                    Log.e("", "data product_type=" + product_type_data);
+
+                } while (cursor.moveToNext());
+
+            }
+        } else {
+
+            //Toast.makeText(context, "No data available", Toast.LENGTH_LONG);
+        }
+        database.close();
+        return product_type_data;
+    }
+
+    public ArrayList<String> getproductypeforBabyProduct(String ProductCategory) {
+        // TODO Auto-generated method stub
+        ArrayList<String> product_type_data = new ArrayList<String>();
+
+
+        String selectquery = " select DISTINCT ProductType from product_master where ProductCategory = " + "'" + ProductCategory + "'" + " AND ProductType = " + "'BABY CARE'";
 
         Cursor cursor = database.rawQuery(selectquery, null);
         if (cursor != null) {
@@ -869,7 +875,7 @@ public class Dbcon {
         ContentValues values = new ContentValues();
         // for (int i = 0; i < count1; i++) {
 
-        Log.e("vlaue inserting into stock==", "");
+        Log.e("inserting into stock==", "");
 
         values.put("ProductCategory", product_category);
         values.put("ProductType", product_type);
@@ -943,9 +949,9 @@ public class Dbcon {
         //String selectquery = "select * from stock order by cast(db_id as int)";
 
         String selectquery = "SELECT Customers.id, Orders.CategoryId ,Orders.db_id, Orders.EANCode, Orders.ProductCategory ," +
-                "Orders.ProductType ,Orders.ProductName ,Orders.Size ,Orders.MRP,Customers.emp_id, Customers.opening_stock ," +
-                "Customers.stock_received,Customers.stock_in_hand,Customers.close_bal,Customers.return_saleable," +
-                "Customers.return_non_saleable,Customers.sold_stock ,Customers.total_gross_amount,Customers.total_net_amount," +
+                "Orders.ProductType ,Orders.ProductName ,Orders.Size ,Orders.MRP,Customers.emp_id, Customers.opening_stock ,Customers.opening_amt ," +
+                "Customers.stock_received,Customers.stock_in_hand,Customers.close_bal,Customers.close_amt,Customers.return_saleable," +
+                "Customers.return_non_saleable,Customers.sold_stock ,Customers.sold_amt,Customers.total_gross_amount,Customers.total_net_amount," +
                 "Customers.discount,Customers.savedServer,Customers. insert_date ,Customers.shadeNo ,Customers.FLRCode FROM product_master Orders," +
                 "stock Customers where Orders.db_id=Customers.db_id and Orders.ProductCategory = '" + ProdCategory + "' order by Orders.order_flag";  // new join query with Product Master table 11.05.2015//04.07.2015
 
@@ -956,7 +962,7 @@ public class Dbcon {
 							"Customers.return_non_saleable,Customers.sold_stock ,Customers.total_gross_amount,Customers.total_net_amount," +
 							"Customers.discount,Customers.savedServer,Customers. insert_date ,Customers.shadeNo FROM product_master Orders," +
 							"stock Customers where "+ *//*Orders.db_id=Customers.db_id and*//* " Orders.ProductCategory = '"+ProdCategory+"' order by Orders.order_flag";
-*/
+         */
         Cursor cursor = database.rawQuery(selectquery, null);
 
         Log.e("", "checkrrr2");
@@ -990,20 +996,13 @@ public class Dbcon {
 
 	/*public Cursor getReportforSale( ) {
 		// TODO Auto-generated method stub
-
-
 		Log.e("","checkrrr1");
 			//String selectquery = "select *  from stock where opening_stock IS NOT NULL AND opening_stock !=' '";
 	//	String selectquery = "select *  from stock where sold_stock  IS NOT NULL AND sold_stock  !=' ' OR opening_stock IS NOT NULL AND opening_stock !=' '";//28.04.2015
 		String selectquery = "select *  from stock ";
-
 			Cursor cursor = database.rawQuery(selectquery, null);
 			Log.e("","checkrrr2");
-
-
-
 			return cursor;
-
 		}*/
 
 
@@ -1442,7 +1441,7 @@ public class Dbcon {
     }
 
     public Cursor fetchproductslistforproductMaster(String selected_brand,
-                                                String selected_offer) {
+                                                    String selected_offer) {
         // TODO Auto-generated method stub
 //		String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"' ORDER BY order_flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
 
@@ -1494,7 +1493,7 @@ public class Dbcon {
 
         if (flag.equalsIgnoreCase("s")) {
 
-            Log.e("vlaue inserting into login==", "");
+            Log.e("inserting into login==", "");
 
             values.put("bde_Name", bdename);
             values.put("bde_Code", bdecode);
@@ -1508,7 +1507,7 @@ public class Dbcon {
             database.update("login", values, "username = '" + username + "'", null);
         } else {
 
-            Log.e("vlaue inserting into login==", "");
+            Log.e("inserting into login==", "");
 
             values.put("username", username);
             values.put("password", password);
@@ -1535,14 +1534,14 @@ public class Dbcon {
 
         ContentValues values = new ContentValues();
 
-            values.put("baCodeOutlet", baCodeOutlet);
-            values.put("banameOutlet", banameOutlet);
-            values.put("outletname", outletname);
-            values.put("flotername", flotername);
+        values.put("baCodeOutlet", baCodeOutlet);
+        values.put("banameOutlet", banameOutlet);
+        values.put("outletname", outletname);
+        values.put("flotername", flotername);
 
 
-            database.insert("floteroutlet", null, values);
-            Log.e("", "values==" + values);
+        database.insert("floteroutlet", null, values);
+        Log.e("", "values==" + values);
 
         database.close();
 
@@ -1597,20 +1596,14 @@ public class Dbcon {
 
    /* public String check_bacode_outlet(String username, String baCodeOutlet) {
         // TODO Auto-generated method stub
-
         Cursor c;
         String count = "0";
-
         String sql = "select * from floteroutlet where flotername = '" + username + "' and  baCodeOutlet= '" + baCodeOutlet + "'";
         c = database.rawQuery(sql, null);
         if (c != null)
             if (c.getCount() > 0 && c.moveToFirst()) {
-
-
                 count = "1";
-
             }
-
         return count;
     }*/
 
@@ -1629,9 +1622,9 @@ public class Dbcon {
     public void insertProductMasterFirsttime(String db_stock_id, String id, String productId,
                                              String catCodeId, String eANCode, String empId,
                                              String productCategory, String productType, String productName,
-                                             String opening_Stock, String freshStock, String stock_inhand,
-                                             String soldStock, String s_Return_NonSaleable,
-                                             String s_Return_Saleable, String closingBal, String grossAmount,
+                                             String opening_Stock, String opening_amt, String freshStock, String freshamt, String stock_inhand,
+                                             String soldStock, String soldamt,String s_Return_NonSaleable,
+                                             String s_Return_Saleable, String closingBal,String closingamt, String grossAmount,
                                              String discount, String netAmount, String size, String price,
                                              String lMD, String androidCreatedDate, String month, String year) {
         // TODO Auto-generated method stub
@@ -1639,7 +1632,7 @@ public class Dbcon {
         ContentValues values = new ContentValues();
         // for (int i = 0; i < count1; i++) {
 
-        Log.e("vlaue inserting into stock==", "");
+        Log.e("inserting into stock==", "");
 
         values.put("product_category", productCategory);
         values.put("product_type", productType);
@@ -1655,16 +1648,20 @@ public class Dbcon {
         values.put("price", price);
 
         values.put("opening_stock", opening_Stock);
+        values.put("opening_amt", opening_amt);
 
         values.put("stock_received", freshStock);
+        values.put("received_amt", freshamt);
 
         values.put("stock_in_hand", stock_inhand);
 
         values.put("sold_stock", soldStock);
+        values.put("sold_amt", soldamt);
 
         values.put("return_non_saleable", s_Return_NonSaleable);
         values.put("return_saleable", s_Return_Saleable);
         values.put("close_bal", closingBal);
+        values.put("close_amt", closingamt);
         values.put("total_gross_amount", grossAmount);
         values.put("discount", discount);
         values.put("emp_id", empId);
@@ -1695,13 +1692,13 @@ public class Dbcon {
     }
 
     public void insertProductMasterFirsttimefordubai(String db_stock_id, String id, String productId,
-                                             String catCodeId, String eANCode, String empId,
-                                             String productCategory, String productType, String productName,
-                                             String opening_Stock, String freshStock, String stock_inhand,
-                                             String soldStock, String s_Return_NonSaleable,
-                                             String s_Return_Saleable, String closingBal, String grossAmount,
-                                             String discount, String netAmount, String size, String price,
-                                             String lMD, String androidCreatedDate, String month, String year,
+                                                     String catCodeId, String eANCode, String empId,
+                                                     String productCategory, String productType, String productName,
+                                                     String opening_Stock, String freshStock, String stock_inhand,
+                                                     String soldStock, String s_Return_NonSaleable,
+                                                     String s_Return_Saleable, String closingBal, String grossAmount,
+                                                     String discount, String netAmount, String size, String price,
+                                                     String lMD, String androidCreatedDate, String month, String year,
                                                      String outletcode, String singleoffer) {
         // TODO Auto-generated method stub
 
@@ -1996,33 +1993,37 @@ public class Dbcon {
     }
 
     public void UpdateStockSync1(//String product_id,
-                                String product_category,
-                                String product_type1,
-                                String product_name,
-                                String emp_id,
-                                String op_stk,
+                                 String product_category,
+                                 String product_type1,
+                                 String product_name,
+                                 String emp_id,
+                                 String op_stk,
+                                 String op_amt,
                                  String stk_hand,
-                                String cl_stk,
-                                String fresh_stock1,
-                                String ttl_amount,
-                                String sold_stk,
-                                String price,
-                                String size,
-                                String db_id1,
-                                String update_timestamp,
-                                String disc,
-                                String ttnamt,
-                                String new_retn,
-                                String new_rtn_n_sold) {
+                                 String cl_stk,
+                                 String cl_amt,
+                                 String fresh_stock1,
+                                 String fresh_amt,
+                                 String ttl_amount,
+                                 String sold_stk,
+                                 String sold_amt,
+                                 String price,
+                                 String size,
+                                 String db_id1,
+                                 String update_timestamp,
+                                 String disc,
+                                 String ttnamt,
+                                 String new_retn,
+                                 String new_rtn_n_sold) {
 
         // TODO Auto-generated method stub
 
 
         Log.e("", "inside update stock");
 
-        String sql = "update stock set close_bal = " + "'" + cl_stk + "'" + " ,opening_stock = " + "'" + op_stk + "'" + ", stock_in_hand = " + "'" + stk_hand + "'" +
+        String sql = "update stock set close_bal = " + "'" + cl_stk + "'" + " ,close_amt = " + "'" + cl_amt + "'" + " ,opening_stock = " + "'" + op_stk + "'" + ",opening_amt = " + "'" + op_amt + "'" + ", stock_in_hand = " + "'" + stk_hand + "'" +
                 " ,return_saleable = " + "'" + new_retn + "'" + " ,return_non_saleable = " + "'" + new_rtn_n_sold + "'" +
-                ",stock_received = " + "'" + fresh_stock1 + "'" + ",sold_stock = " + "'" + sold_stk + "'" + ",total_gross_amount = " + "'" + ttl_amount + "'" +
+                ",stock_received = " + "'" + fresh_stock1 + "'" + ",received_amt = " + "'" + fresh_amt + "'" + ",sold_stock = " + "'" + sold_stk + "'" + ",sold_amt = " + "'" + sold_amt + "'" + ",total_gross_amount = " + "'" + ttl_amount + "'" +
                 ",total_net_amount = " + "'" + ttnamt + "'" + ",discount = " + "'" + disc + "'" +
                 ",last_modified_date = " + "'" + update_timestamp + "'" +
                 ", savedServer='1' where db_id = " + "'" + db_id1 + "'" + "";
@@ -2032,24 +2033,24 @@ public class Dbcon {
     }
 
     public void UpdateStockSyncfordubai(//String product_id,
-                                 String product_category,
-                                 String product_type1,
-                                 String product_name,
-                                 String emp_id,
-                                 String op_stk,
-                                 String stk_hand,
-                                 String cl_stk,
-                                 String fresh_stock1,
-                                 String ttl_amount,
-                                 String sold_stk,
-                                 String price,
-                                 String size,
-                                 String db_id1,
-                                 String update_timestamp,
-                                 String disc,
-                                 String ttnamt,
-                                 String new_retn,
-                                 String new_rtn_n_sold, String outletcode) {
+                                        String product_category,
+                                        String product_type1,
+                                        String product_name,
+                                        String emp_id,
+                                        String op_stk,
+                                        String stk_hand,
+                                        String cl_stk,
+                                        String fresh_stock1,
+                                        String ttl_amount,
+                                        String sold_stk,
+                                        String price,
+                                        String size,
+                                        String db_id1,
+                                        String update_timestamp,
+                                        String disc,
+                                        String ttnamt,
+                                        String new_retn,
+                                        String new_rtn_n_sold, String outletcode) {
 
         // TODO Auto-generated method stub
 
@@ -2211,7 +2212,7 @@ public class Dbcon {
         ContentValues values = new ContentValues();
 
 
-        Log.e("vlaue inserting into tester data download==", "");
+        Log.e("insert testdatadownload", "");
 
         values.put("product_category", productCategory);
         values.put("product_type", productType);
@@ -2279,7 +2280,7 @@ public class Dbcon {
     public void Insertstock_new(
             String product_cat,
             String product_type, String product_name, String emp_id,
-            String stockinhand, String cl_stk, String fresher_stock,
+            String stockinhand, String cl_stk,String cl_amt, String fresher_stock,String fresher_amt,
             String price, String size, String eancode, String db_id1, String cat_id,
             String date,String return_saleable, String return_non_saleable,String discount,
             String shadno,String updateDate, String month_name, String year_name) {
@@ -2294,6 +2295,7 @@ public class Dbcon {
         values.put("emp_id", emp_id);
         values.put("stock_in_hand", stockinhand);
         values.put("close_bal", cl_stk);
+        values.put("close_amt", cl_amt);
 
         values.put("savedServer", "0");
         values.put("price", price);
@@ -2304,6 +2306,7 @@ public class Dbcon {
 
 
         values.put("stock_received", fresher_stock);
+        values.put("received_amt", fresher_amt);
         values.put("return_non_saleable", return_non_saleable);
         values.put("return_saleable", return_saleable);
         values.put("discount", discount);
@@ -2326,9 +2329,9 @@ public class Dbcon {
     public void Insertstock_Customer_Company(
             String product_cat,
             String product_type, String product_name, String emp_id,
-            String stockinhand, String cl_stk, String fresher_stock,
+            String stockinhand, String cl_stk,String cl_amt, String fresher_stock,String fresher_amt,
             String price, String size, String eancode, String db_id1, String cat_id,
-            String date,String soldstock,
+            String date,String soldstock,String soldamt,
             String return_saleable, String return_non_saleable, String i_netamt, String netamt,String discount,
             String shadno,String updateDate, String month_name, String year_name) {
         // TODO Auto-generated method stub
@@ -2342,6 +2345,7 @@ public class Dbcon {
         values.put("emp_id", emp_id);
         values.put("stock_in_hand", stockinhand);
         values.put("close_bal", cl_stk);
+        values.put("close_amt", cl_amt);
 
         values.put("savedServer", "0");
         values.put("price", price);
@@ -2352,7 +2356,9 @@ public class Dbcon {
 
 
         values.put("stock_received", fresher_stock);
+        values.put("received_amt", fresher_amt);
         values.put("sold_stock", soldstock);
+        values.put("sold_amt", soldamt);
         values.put("return_non_saleable", return_non_saleable);
         values.put("return_saleable", return_saleable);
         values.put("total_gross_amount", i_netamt);
@@ -2427,7 +2433,8 @@ public class Dbcon {
                                 String emp_id,
                                 String stockinhand,
                                 String cl_stk,
-                                String fresher_stock,
+                                String cl_amt,
+                                String fresher_stock,String fresher_amt,
                                 String price, String size, String eancode, String db_id1, String cat_id,
                                 String date,String return_saleable, String return_non_saleable,
                                 String discount,String shadno, String updateDate, String month_name, String year_name) {
@@ -2443,7 +2450,9 @@ public class Dbcon {
                 " ,return_non_saleable = " + "'" + return_non_saleable + "'" +
                 " ,discount = " + "'" + discount + "'" +
                 ",stock_received = " + "'" + fresher_stock + "'" + "," +
+                "received_amt = " + "'" + fresher_amt + "'" + "," +
                 "close_bal = " + "'" + cl_stk + "'" + "," +
+                "close_amt = " + "'" + cl_amt + "'" + "," +
                 "shadeNo = " + "'" + shadno + "'" + "," +
                 "insert_date = " + "'" + date + "'" +
                 ", flag = " + "'s'" +
@@ -2454,15 +2463,16 @@ public class Dbcon {
     }
 
     public void UpdateStock_Customer_Company(String product_cat,
-                                String product_type, String product_name,
-                                String emp_id,
-                                String stockinhand,
-                                String cl_stk,
-                                String fresher_stock,
-                                String price, String size, String eancode, String db_id1, String cat_id,
-                                String date,String soldstock,
-                                String return_saleable, String return_non_saleable, String i_netamt,String netamt,
-                                String discount,String shadno, String updateDate, String month_name, String year_name) {
+                                             String product_type, String product_name,
+                                             String emp_id,
+                                             String stockinhand,
+                                             String cl_stk,
+                                             String cl_amt,
+                                             String fresher_stock,String fresher_amt,
+                                             String price, String size, String eancode, String db_id1, String cat_id,
+                                             String date,String soldstock,String soldamt,
+                                             String return_saleable, String return_non_saleable, String i_netamt,String netamt,
+                                             String discount,String shadno, String updateDate, String month_name, String year_name) {
 
         // TODO Auto-generated method stub
 
@@ -2472,13 +2482,16 @@ public class Dbcon {
 
         String sql = "update stock set  stock_in_hand = " + "'" + stockinhand + "'" +
                 " ,sold_stock = " + "'" + soldstock + "'" +
+                " ,sold_amt = " + "'" + soldamt + "'" +
                 " ,return_saleable = " + "'" + return_saleable + "'" +
                 " ,return_non_saleable = " + "'" + return_non_saleable + "'" +
                 " ,total_gross_amount = " + "'" + i_netamt + "'" +
                 " ,total_net_amount = " + "'" + netamt + "'" +
                 " ,discount = " + "'" + discount + "'" +
                 ",stock_received = " + "'" + fresher_stock + "'" + "," +
+                "received_amt = " + "'" + fresher_amt + "'" + "," +
                 "close_bal = " + "'" + cl_stk + "'" + "," +
+                "close_amt = " + "'" + cl_amt + "'" + "," +
                 "shadeNo = " + "'" + shadno + "'" + "," +
                 "insert_date = " + "'" + date + "'" +
                 ", flag = " + "'s'" +
@@ -2489,15 +2502,15 @@ public class Dbcon {
     }
 
     public void UpdateStock_newforDubai(String product_cat,
-                                String product_type, String product_name,
-                                String emp_id,
-                                String stockinhand,
-                                String cl_stk,
-                                String fresher_stock,
-                                String price, String size, String eancode, String db_id1, String cat_id,
-                                String date,String soldstock,
-                                String return_saleable, String return_non_saleable, String i_netamt,String netamt,
-                                String discount,String shadno, String updateDate, String month_name, String year_name,String flrcode, String singleoffer) {
+                                        String product_type, String product_name,
+                                        String emp_id,
+                                        String stockinhand,
+                                        String cl_stk,
+                                        String fresher_stock,
+                                        String price, String size, String eancode, String db_id1, String cat_id,
+                                        String date,String soldstock,
+                                        String return_saleable, String return_non_saleable, String i_netamt,String netamt,
+                                        String discount,String shadno, String updateDate, String month_name, String year_name,String flrcode, String singleoffer) {
 
         // TODO Auto-generated method stub
 
@@ -2525,9 +2538,9 @@ public class Dbcon {
 
 
     public boolean UpdateSale_forDubai(String shaddd,
-                                        String cl_stk,
-                                        String gross,
-                                        String discount, String i_netamt,
+                                       String cl_stk,
+                                       String gross,
+                                       String discount, String i_netamt,
                                        String soldstock, String month_name, String year_name,
                                        String updateDate,String insert_timestamp,
                                        String db_id1, String flrcode) {
@@ -2673,7 +2686,7 @@ public class Dbcon {
 
             String date,
             //String discount,
-			/*String total_net_amt,*/
+            /*String total_net_amt,*/
             String previous_stock,
             String return_saleable,
             String return_non_saleable,
@@ -2683,13 +2696,13 @@ public class Dbcon {
         ContentValues values = new ContentValues();
 
 
-        Log.e("vlaue inserting into stock==", "");
+        Log.e("inserting into stock==", "");
 
 
         values.put("product_category", product_cat);
         values.put("product_type", product_type);
         values.put("product_name", product_name);
-        Log.e("vlaue inserting into stock==", "emp_id==" + emp_id);
+        Log.e("inserting into stock==", "emp_id==" + emp_id);
         values.put("emp_id", emp_id);
 
 
@@ -2738,11 +2751,11 @@ public class Dbcon {
                                     String product_category,
                                     String product_type1, String product_name, String emp_id,
                                     String op_stk/*, String cl_stk*/, String fresh_stock1,
-				/*String ttl_amount, String sold_stk,*/
+            /*String ttl_amount, String sold_stk,*/
                                     String price, String size,
                                     String eancode, String db_id1, String cat_id,
                                     String insert_timestamp,//String disc,
-				/*String ttnamt,*/
+            /*String ttnamt,*/
                                     String p_balance, String new_retn, String new_rtn_n_sold,
                                     String updateDate, String month_name, String year_name, String check_timestamp, String boc) {
 
@@ -2911,7 +2924,7 @@ public class Dbcon {
         ContentValues values = new ContentValues();
 
 
-        Log.e("vlaue inserting into boc_wise_stock==", "");
+        Log.e("insert intobocwisestock", "");
 
         values.put("product_id", product_id);
         values.put("db_id", db_id);
@@ -3072,13 +3085,10 @@ public class Dbcon {
 						/*for(int i=0; i<31 - c.getCount();i++)
 						{
 							map = new HashMap<String, String>();
-
 							map.put("Total","");
 							map.put("Type","");
 							map.put("Date","");
-
 							liveLIST.add(map);
-
 						}*/
 
 
@@ -3338,7 +3348,7 @@ public class Dbcon {
         ContentValues values = new ContentValues();
 
 
-        Log.e("vlaue inserting into tester master==", "");
+        Log.e("inserting testermaster", "");
 
         values.put("ProductCategory", product_category);
         values.put("ProductType", product_type);
@@ -3497,7 +3507,7 @@ public class Dbcon {
         ContentValues values = new ContentValues();
         // for (int i = 0; i < count1; i++) {
 
-        Log.e("vlaue inserting into boc_wise_stok==", "");
+        Log.e("insert into bocwisestok", "");
 
         values.put("product_category", productCategory);
         values.put("product_type", productType);
@@ -3601,7 +3611,7 @@ public class Dbcon {
         ContentValues values = new ContentValues();
         // for (int i = 0; i < count1; i++) {
 
-        Log.e("vlaue inserting into month_wise_stok==", "");
+        Log.e("insert monthwisestok", "");
 
         values.put("product_category", productCategory);
         values.put("product_type", productType);
@@ -3947,8 +3957,8 @@ public class Dbcon {
     public void InsertstockForFLR(
             String cat_id, String db_id1,String eancode,String product_cat,
             String product_type, String product_name, String size, String price,String emp_id,
-            String stropening,String fresher_stock,String stockinhand, String cl_stk,
-            String return_saleable, String return_non_saleable,String soldstock,
+            String stropening,String openingamt,String fresher_stock,String fresher_amt,String stockinhand, String cl_stk,String cl_amt,
+            String return_saleable, String return_non_saleable,String soldstock,String soldamt,
             String i_netamt, String netamt,String discount,
             String date,String shadno,String month_name, String year_name,
             String updateDate, String FLRCode) {
@@ -3966,12 +3976,16 @@ public class Dbcon {
         values.put("price", price);
         values.put("emp_id", emp_id);
         values.put("opening_stock", stropening);
+        values.put("opening_amt", openingamt);
         values.put("stock_received", fresher_stock);
+        values.put("received_amt", fresher_amt);
         values.put("stock_in_hand", stockinhand);
         values.put("close_bal", cl_stk);
+        values.put("close_amt", cl_amt);
         values.put("return_saleable", return_saleable);
         values.put("return_non_saleable", return_non_saleable);
         values.put("sold_stock", soldstock);
+        values.put("sold_amt", soldamt);
         values.put("total_gross_amount", i_netamt);
         values.put("total_net_amount", netamt);
         values.put("discount", discount);
@@ -3993,11 +4007,11 @@ public class Dbcon {
     }
 
     public void UpdateStockForFLR(String stockinhand,
-                                String cl_stk,
-                                String fresher_stock,String db_id1,
-                                String date,String soldstock,
-                                String return_saleable, String return_non_saleable, String i_netamt,String netamt,
-                                String discount,String shadno, String updateDate, String month_name, String year_name) {
+                                  String cl_stk,String cl_amt,
+                                  String fresher_stock,String fresher_amt,String db_id1,
+                                  String date,String soldstock,String soldamt,
+                                  String return_saleable, String return_non_saleable, String i_netamt,String netamt,
+                                  String discount,String shadno, String updateDate, String month_name, String year_name) {
 
         // TODO Auto-generated method stub
 
@@ -4007,13 +4021,16 @@ public class Dbcon {
 
         String sql = "update stock set  stock_in_hand = " + "'" + stockinhand + "'" +
                 " ,sold_stock = " + "'" + soldstock + "'" +
+                " ,sold_amt = " + "'" + soldamt + "'" +
                 " ,return_saleable = " + "'" + return_saleable + "'" +
                 " ,return_non_saleable = " + "'" + return_non_saleable + "'" +
                 " ,total_gross_amount = " + "'" + i_netamt + "'" +
                 " ,total_net_amount = " + "'" + netamt + "'" +
                 " ,discount = " + "'" + discount + "'" +
                 ",stock_received = " + "'" + fresher_stock + "'" + "," +
+                "received_amt = " + "'" + fresher_amt + "'" + "," +
                 "close_bal = " + "'" + cl_stk + "'" + "," +
+                "close_amt = " + "'" + cl_amt + "'" + "," +
                 "shadeNo = " + "'" + shadno + "'" + "," +
                 "insert_date = " + "'" + date + "'" +
                 ", flag = " + "'s'" +
@@ -4023,4 +4040,51 @@ public class Dbcon {
 
     }
 
+    public int getReportSum(String ProdCategory) {
+
+        int sum = 0;
+
+        String selectquery = "SELECT sum(Customers.total_net_amount)" +
+                "                 FROM product_master Orders," +
+                "                stock Customers where Orders.db_id=Customers.db_id and Orders.ProductCategory = '" + ProdCategory + "' order by Orders.order_flag";  // new join query with Product Master table 11.05.2015//04.07.2015
+
+
+        Cursor cursor = database.rawQuery(selectquery,null);
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            if (cursor.getString(0) != null)
+                sum = Integer.parseInt(cursor.getString(0));
+            else
+                sum = 0;
+        }
+        else
+        {
+            sum = 0;
+        }
+
+        return sum;
+     }
+
+    public Cursor getReportTotalSum(String ProdCategory) {
+
+        String selectquery = "SELECT sum(Customers.total_net_amount),sum(Customers.total_gross_amount)" +
+                ",sum(Customers.opening_amt),sum(Customers.close_amt),sum(Customers.sold_amt)"+
+                " FROM product_master Orders," +
+                " stock Customers where Orders.db_id=Customers.db_id and Orders.ProductCategory = '" + ProdCategory + "' order by Orders.order_flag";  // new join query with Product Master table 11.05.2015//04.07.2015
+
+
+        Cursor cursor = database.rawQuery(selectquery,null);
+
+        return cursor;
+    }
+
+    public Cursor getReportCategorydata(String Category) {
+
+        String selectquery = "select  product_type, sum(opening_stock),sum(stock_received),sum(close_bal),sum(opening_amt),sum(received_amt),sum(close_amt) from stock where product_category = '" + Category + "' Group BY product_type";  // new join query with Product Master table 11.05.2015//04.07.2015
+
+
+        Cursor cursor = database.rawQuery(selectquery,null);
+
+        return cursor;
+    }
 }

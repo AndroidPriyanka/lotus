@@ -7,7 +7,7 @@
 
     <RelativeLayout
         android:layout_width="@dimen/_210sdp"
-        android:layout_height="@dimen/_180sdp"
+        android:layout_height="@dimen/_210sdp"
         android:background="@drawable/pop3"
         android:orientation="vertical" >
 
@@ -29,7 +29,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_30sdp"
            	android:visibility="visible"
             android:background="@drawable/abs1" />
 

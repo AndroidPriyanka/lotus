@@ -1639,7 +1639,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
     }
 
     // production live now this method
-   /* private class SaveAttendance extends AsyncTask<String, Void, SoapPrimitive> {
+    private class SaveAttendance extends AsyncTask<String, Void, SoapPrimitive> {
 
 
         SoapPrimitive soap_attendance = null;
@@ -1747,7 +1747,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                             }
 
 
-                        } else if (t.equalsIgnoreCase("FAIL")) {
+                        } else if (t.equalsIgnoreCase("SE")) {
                             ErroFlag = "0";
                             final Calendar calendar1 = Calendar
                                     .getInstance();
@@ -1838,11 +1838,11 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
         }
 
-    }*/
+    }
 
     // using for testing UAT India and dubai
 
-    private class SaveAttendance extends AsyncTask<String, Void, SoapObject> {
+   /* private class SaveAttendance extends AsyncTask<String, Void, SoapObject> {
 
 
         SoapObject soap_result_attendance = null;
@@ -1969,7 +1969,26 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                 Log.v("", "" + count);
                                 db.close();
                                 if (count > 0) {
-
+                                    db.open();
+                                    db.update(adate,
+                                            new String[]{
+                                                    username,
+                                                    savedate,
+                                                    attendanceModel.getAttendanceValue(),
+                                                    attendanceModel.getAbsentType(),
+                                                    "0.0",
+                                                    "0.0",
+                                                    "1",
+                                                    attendmonth1,
+                                                    "",
+                                                    year},
+                                            new String[]{
+                                                    "emp_id", "Adate",
+                                                    "attendance", "absent_type",
+                                                    "lat", "lon", "savedServer", "month",
+                                                    "holiday_desc", "year"},
+                                            "attendance", "Adate");
+                                    db.close();
                                 } else {
                                     db.open();
 
@@ -2105,7 +2124,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
         }
 
-    }
+    }*/
 
 
 

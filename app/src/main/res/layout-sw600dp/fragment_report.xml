@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/report_include" />
+    <include layout="@layout/report_include1" />
 
     <HorizontalScrollView
         android:id="@+id/horizantal_scrollview_stock_report"
@@ -284,14 +284,6 @@
 
             </TableRow>
 
-            <ListView
-                android:id="@+id/stock_list"
-                android:layout_width="1875dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:divider="@color/gray"
-                android:dividerHeight="1dp"></ListView>
-
             <TableRow
                 android:id="@+id/tr_label_tester"
                 android:layout_width="wrap_content"
@@ -349,13 +341,118 @@
 
             </TableRow>
 
-            <ListView
-                android:id="@+id/testerlist"
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:divider="@color/gray"
-                android:dividerHeight="1dp"></ListView>
+            <RelativeLayout
+                android:layout_width="1875dp"
+                android:layout_height="match_parent">
+
+                <TableRow
+                    android:id="@+id/tr_total_stock"
+                    android:layout_width="1875dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+                    <TextView
+                        style="@style/report_textview"
+                        android:layout_width="955dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="Total" />
+
+
+                    <TextView
+                        android:id="@+id/op_total"
+                        style="@style/report_textview"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="op" />
+
+
+                    <TextView
+                        style="@style/report_textview"
+                        android:layout_width="165dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="" />
+
+                    <TextView
+                        android:id="@+id/sold_total"
+                        style="@style/report_textview"
+                        android:layout_width="115dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="Sold" />
+
+                    <TextView
+                        android:id="@+id/Closing_total"
+                        style="@style/report_textview"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="Cl-Bal" />
+
+
+                    <TextView
+                        android:id="@+id/gross_total"
+                        style="@style/report_textview"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="Total" />
+
+                    <TextView
+                        style="@style/report_textview"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="" />
+
+                    <TextView
+                        android:id="@+id/net_total"
+                        style="@style/report_textview"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="Nett" />
+
+
+                    <TextView
+                        style="@style/report_textview"
+                        android:layout_width="165dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="" />
+
+                </TableRow>
+
+                <ListView
+                    android:id="@+id/stock_list"
+                    android:layout_width="1875dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:divider="@color/gray"
+                    android:dividerHeight="1dp"></ListView>
+
+
+                <ListView
+                    android:id="@+id/testerlist"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:divider="@color/gray"
+                    android:dividerHeight="1dp"></ListView>
+
+            </RelativeLayout>
 
         </LinearLayout>
     </HorizontalScrollView>

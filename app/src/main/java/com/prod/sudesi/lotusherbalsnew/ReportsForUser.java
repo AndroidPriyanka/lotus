@@ -52,7 +52,7 @@ public class ReportsForUser extends Activity {
 
 
     RadioButton rb_s;
-    RadioButton rb_t;
+    //RadioButton rb_t;
     RadioButton rb_attendance;
 
     RadioGroup rg_lhm_choice;
@@ -73,7 +73,7 @@ public class ReportsForUser extends Activity {
     SharedPreferences shp;
     SharedPreferences.Editor shpeditor;
 
-    TableRow table_row_stock, table_row_tester, table_row_attend;
+    TableRow table_row_stock, table_row_tester, table_row_attend,tr_total_stock;
     //,table_row_sale;
 
     HorizontalScrollView horizantalscrollviewforstock;
@@ -84,17 +84,20 @@ public class ReportsForUser extends Activity {
 
     private ProgressDialog mProgress = null;
 
-    TextView tv_h_username;
+    TextView tv_h_username, txt_lh, txt_lhm, txt_net_title;//txt_lh_clo, txt_lhm_clo,txt_closing_title
     Button btn_home, btn_logout;
     AutoCompleteTextView sp_outletName;
     CardView outletcardview;
     String username;
-    String displayCategory, role, flotername,outletstring,outletName,outletCode;
+    String displayCategory, role, flotername, outletstring, outletName, outletCode;
 
     ShowReportofAttendance report_attendance;
     private ArrayList<OutletModel> outletDetailsArraylist;
     OutletModel outletModel;
     String[] strOutletArray = null;
+
+    TextView op_total, sold_total, Closing_total, gross_total, net_total;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,8 +124,8 @@ public class ReportsForUser extends Activity {
         username = shp.getString("username", "");
         if (role.equalsIgnoreCase("DUB")) {
             setContentView(R.layout.fragment_report_dubai);
-            sp_outletName=(AutoCompleteTextView)findViewById(R.id.spin_outletname);
-            outletcardview=(CardView) findViewById(R.id.outletcardview);
+            sp_outletName = (AutoCompleteTextView) findViewById(R.id.spin_outletname);
+            outletcardview = (CardView) findViewById(R.id.outletcardview);
 
             fetchOutletDetails();
 
@@ -174,7 +177,7 @@ public class ReportsForUser extends Activity {
                     if (strOutletArray != null && strOutletArray.length > 0) {
                         reportlist.clear();
                         outletstring = parent.getItemAtPosition(position).toString();
-                        String text = null,outletcode;
+                        String text = null, outletcode;
                         for (int i = 0; i < outletDetailsArraylist.size(); i++) {
                             text = outletDetailsArraylist.get(i).getOutletname();
                             outletcode = outletDetailsArraylist.get(i).getBACodeOutlet();
@@ -187,7 +190,7 @@ public class ReportsForUser extends Activity {
                         if (text != null && text.length() > 0) {
                             new ShowReportofStock().execute();
 
-                        }else{
+                        } else {
                             Toast.makeText(getApplicationContext(), "Please Select Outlet", Toast.LENGTH_SHORT).show();
                         }
 
@@ -205,8 +208,21 @@ public class ReportsForUser extends Activity {
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
         if (!role.equalsIgnoreCase("DUB")) {
-            rb_t = (RadioButton) findViewById(R.id.rb_tester);
+            //rb_t = (RadioButton) findViewById(R.id.rb_tester);
             rg_lhm_choice = (RadioGroup) findViewById(R.id.rg_lhm_choice);
+            txt_lh = (TextView) findViewById(R.id.txt_lh);
+            txt_lhm = (TextView) findViewById(R.id.txt_lhm);
+            //txt_lh_clo = (TextView) findViewById(R.id.txt_lh_clo);
+            //txt_lhm_clo = (TextView) findViewById(R.id.txt_lhm_clo);
+            txt_net_title = (TextView) findViewById(R.id.txt_net_title);
+            //txt_closing_title = (TextView) findViewById(R.id.txt_closing_title);
+
+            tr_total_stock = (TableRow) findViewById(R.id.tr_total_stock);
+            op_total = (TextView) findViewById(R.id.op_total);
+            sold_total = (TextView) findViewById(R.id.sold_total);
+            Closing_total = (TextView) findViewById(R.id.Closing_total);
+            gross_total = (TextView) findViewById(R.id.gross_total);
+            net_total = (TextView) findViewById(R.id.net_total);
         }
         rb_s = (RadioButton) findViewById(R.id.rb_stock);
         //
@@ -285,15 +301,25 @@ public class ReportsForUser extends Activity {
 
                         rg_lhm_choice.setVisibility(View.VISIBLE);
                         rg_lhm_choice.clearCheck();
+                        reportlist.clear();
+                        tr_total_stock.setVisibility(View.GONE);
+                        listview.setVisibility(View.GONE);
                         table_row_attend.setVisibility(View.GONE);
                         attendancelist.setVisibility(View.GONE);
                         rb_attendance.setChecked(false);
+                        getNetAmountSum();
+                        txt_lh.setVisibility(View.VISIBLE);
+                        txt_lhm.setVisibility(View.VISIBLE);
+                        //txt_lh_clo.setVisibility(View.VISIBLE);
+                        //txt_lhm_clo.setVisibility(View.VISIBLE);
+                        txt_net_title.setVisibility(View.VISIBLE);
+                        //txt_closing_title.setVisibility(View.VISIBLE);
 
 
                     }
                 }
             });
-        }else {
+        } else {
             rb_s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 
@@ -314,7 +340,7 @@ public class ReportsForUser extends Activity {
             });
         }
         if (!role.equalsIgnoreCase("DUB")) {
-            rb_t.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+           /* rb_t.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -331,9 +357,11 @@ public class ReportsForUser extends Activity {
                         attendancelist.setVisibility(View.GONE);
                         rb_attendance.setChecked(false);
                         new ShowReportofTester().execute();
+                        txt_lh.setVisibility(View.GONE);
+                        txt_lhm.setVisibility(View.GONE);
                     }
                 }
-            });
+            });*/
 
             rg_lhm_choice.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
@@ -341,8 +369,9 @@ public class ReportsForUser extends Activity {
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     // TODO Auto-generated method stub
                     RadioButton rb = (RadioButton) findViewById(checkedId);
-                    rb_t.setChecked(false);
+                    //rb_t.setChecked(false);
                     table_row_tester.setVisibility(View.GONE);
+                    tr_total_stock.setVisibility(View.VISIBLE);
                     table_row_stock.setVisibility(View.VISIBLE);
                     listview_t.setVisibility(View.GONE);
                     reportlist.clear();
@@ -353,10 +382,12 @@ public class ReportsForUser extends Activity {
 
                             displayCategory = "SKIN";
                             new ShowReportofStock().execute();
+                            ShowingReportTotalSum(displayCategory);
                         } else if (s.equalsIgnoreCase("LHM")) {
 
                             displayCategory = "COLOR";
                             new ShowReportofStock().execute();
+                            ShowingReportTotalSum(displayCategory);
                         }
 
                     }
@@ -374,23 +405,31 @@ public class ReportsForUser extends Activity {
                     if (isChecked) {
                         table_row_stock.setVisibility(View.GONE);
                         table_row_tester.setVisibility(View.GONE);
+                        tr_total_stock.setVisibility(View.GONE);
                         table_row_attend.setVisibility(View.VISIBLE);
                         listview.setVisibility(View.GONE);
                         listview_t.setVisibility(View.GONE);
                         attendancelist.setVisibility(View.VISIBLE);
                         rb_s.setChecked(false);
-                        rb_t.setChecked(false);
+                        //rb_t.setChecked(false);
                         rg_lhm_choice.setVisibility(View.GONE);
+                        reportlist.clear();
                         reportlist1.clear();
                         report_attendance = new ShowReportofAttendance();
                         report_attendance.execute();
+                        txt_lh.setVisibility(View.GONE);
+                        txt_lhm.setVisibility(View.GONE);
+                        //txt_lh_clo.setVisibility(View.GONE);
+                        //txt_lhm_clo.setVisibility(View.GONE);
+                        txt_net_title.setVisibility(View.GONE);
+                        //txt_closing_title.setVisibility(View.GONE);
                     } else {
 
                         attendancelist.setVisibility(View.GONE);
                     }
                 }
             });
-        }else {
+        } else {
             rb_attendance.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
                 @Override
@@ -548,8 +587,8 @@ public class ReportsForUser extends Activity {
                 db.open();
                 if (!role.equalsIgnoreCase("DUB")) {
                     cursor_stock = db.getReportforStock(displayCategory);
-                }else {
-                    cursor_stock=db.getReportforStockDubai(outletCode);
+                } else {
+                    cursor_stock = db.getReportforStockDubai(outletCode);
                 }
                 if (cursor_stock != null && cursor_stock.moveToFirst()) {
                     cursor_stock.moveToFirst();
@@ -571,32 +610,35 @@ public class ReportsForUser extends Activity {
                         map.put("price", cursor_stock.getString(8));
                         map.put("emp_id", cursor_stock.getString(9));
                         map.put("opening_stock", cursor_stock.getString(10));
-                        map.put("stock_received", cursor_stock.getString(11));
-                        map.put("stock_in_hand", cursor_stock.getString(12));
-                        map.put("close_bal", cursor_stock.getString(13));
-                        map.put("return_saleable", cursor_stock.getString(14));
-                        map.put("return_non_saleable", cursor_stock.getString(15));
-                        map.put("sold_stock", cursor_stock.getString(16));
-                        String gross = cursor_stock.getString(17);
-                        if(gross == null){
+                        map.put("opening_amt", cursor_stock.getString(11));
+                        map.put("stock_received", cursor_stock.getString(12));
+                        map.put("stock_in_hand", cursor_stock.getString(13));
+                        map.put("close_bal", cursor_stock.getString(14));
+                        map.put("close_amt", cursor_stock.getString(15));
+                        map.put("return_saleable", cursor_stock.getString(16));
+                        map.put("return_non_saleable", cursor_stock.getString(17));
+                        map.put("sold_stock", cursor_stock.getString(18));
+                        map.put("sold_amt", cursor_stock.getString(19));
+                        String gross = cursor_stock.getString(20);
+                        if (gross == null) {
                             gross = "0";
-                        }else{
-                            gross = cursor_stock.getString(17);
+                        } else {
+                            gross = cursor_stock.getString(20);
                         }
                         map.put("total_gross_amount", gross);
-                        String netamt = cursor_stock.getString(18);
-                        if(netamt == null){
+                        String netamt = cursor_stock.getString(21);
+                        if (netamt == null) {
                             netamt = "0";
-                        }else{
-                            netamt = cursor_stock.getString(18);
+                        } else {
+                            netamt = cursor_stock.getString(21);
                         }
                         map.put("total_net_amount", netamt);
-                        map.put("discount", cursor_stock.getString(19));
-                        map.put("savedServer", cursor_stock.getString(20));
-                        map.put("insert_date", cursor_stock.getString(21));
-                        map.put("FLRCode", cursor_stock.getString(23));
+                        map.put("discount", cursor_stock.getString(22));
+                        map.put("savedServer", cursor_stock.getString(23));
+                        map.put("insert_date", cursor_stock.getString(24));
+                        map.put("FLRCode", cursor_stock.getString(26));
 
-                        Log.e("savedServer", cursor_stock.getString(20));
+                        Log.e("savedServer", cursor_stock.getString(23));
 
                         reportlist.add(map);
 
@@ -1029,4 +1071,71 @@ public class ReportsForUser extends Activity {
 
 
     }
+
+    private void getNetAmountSum() {
+        db.open();
+        int sum_lh = db.getReportSum("SKIN");
+        int sum_lhm = db.getReportSum("COLOR");
+
+        txt_lh.setText("= "+"\u20B9 " +String.valueOf(sum_lh));
+        txt_lhm.setText("= "+"\u20B9 " +String.valueOf(sum_lhm));
+
+    }
+
+    private void ShowingReportTotalSum(String category){
+        try {
+            db.open();
+
+            Cursor c = db.getReportTotalSum(category);
+            if (c != null && c.getCount() > 0) {
+                c.moveToFirst();
+                do {
+                    String opening = c.getString(2);
+                    String sold = c.getString(4);
+                    String closing = c.getString(3);
+                    String gross = c.getString(1);
+                    String net = c.getString(0);
+                    if(opening == null || opening.equalsIgnoreCase("null")){
+                        opening = "0";
+                    }else{
+                        opening = opening;
+                    }
+                    if(sold == null || sold.equalsIgnoreCase("null")){
+                        sold = "0";
+                    }else{
+                        sold = sold;
+                    }
+                    if(closing == null || closing.equalsIgnoreCase("null")){
+                        closing = "0";
+                    }else{
+                        closing = closing;
+                    }
+                    if(gross == null || gross.equalsIgnoreCase("null")){
+                        gross = "0";
+                    }else{
+                        gross = gross;
+                    }
+                    if(net == null || net.equalsIgnoreCase("null")){
+                        net = "0";
+                    }else{
+                        net = net;
+                    }
+
+                    op_total.setText("\u20B9 " + opening);
+                    sold_total.setText("\u20B9 "+ sold);
+                    Closing_total.setText("\u20B9 " + closing);
+                    gross_total.setText("\u20B9 " + gross);
+                    net_total.setText("\u20B9 " + net);
+
+                } while (c.moveToNext());
+            }
+
+            db.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+
 }

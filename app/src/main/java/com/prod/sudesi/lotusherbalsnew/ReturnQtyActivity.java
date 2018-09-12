@@ -1036,6 +1036,12 @@ public class ReturnQtyActivity extends Activity {
 
             Log.e("i_close", String.valueOf(i_close));
 
+            int closeamt = Integer.parseInt(price) * i_close;
+
+            int soldamt = Integer.parseInt(price) * soldstock;
+
+            int freshamt = Integer.parseInt(price) * new_fresh_stock;
+
             if (mCursor.getCount() == 0) {
 
                 db.open();
@@ -1046,7 +1052,9 @@ public class ReturnQtyActivity extends Activity {
                         username,
                         String.valueOf(i_stock_inand),
                         String.valueOf(i_close),
+                        String.valueOf(closeamt),
                         String.valueOf(new_fresh_stock),
+                        String.valueOf(freshamt),
                         price,
                         size1,
                         eancode,
@@ -1054,6 +1062,7 @@ public class ReturnQtyActivity extends Activity {
                         cat_id,
                         insert_timestamp,
                         String.valueOf(soldstock),
+                        String.valueOf(soldamt),
                         String.valueOf(new_retrn_sale),
                         String.valueOf(new_retrn_non_sale),
                         String.valueOf(i_net_amt),
@@ -1076,10 +1085,13 @@ public class ReturnQtyActivity extends Activity {
                         product_name, username,
                         String.valueOf(i_stock_inand),
                         String.valueOf(i_close),
+                        String.valueOf(closeamt),
                         String.valueOf(new_fresh_stock),
+                        String.valueOf(freshamt),
                         price, size1, eancode, db_id1,
                         cat_id, insert_timestamp,
                         String.valueOf(soldstock),
+                        String.valueOf(soldamt),
                         String.valueOf(new_retrn_sale),
                         String.valueOf(new_retrn_non_sale),
                         String.valueOf(i_net_amt),

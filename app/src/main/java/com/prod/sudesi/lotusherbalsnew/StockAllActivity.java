@@ -1451,6 +1451,9 @@ public class StockAllActivity extends Activity {
             //--------Old production apk use
             int i_close = i_stkinand - Integer.parseInt(solddd);
 
+            int closeamt = Integer.parseInt(price) * i_close;
+            int receiveamt = Integer.parseInt(price) * new_fresh_stock;
+
             Log.e("i_close", String.valueOf(i_close));
 
             if (mCursor.getCount() == 0) {
@@ -1463,7 +1466,9 @@ public class StockAllActivity extends Activity {
                         username,
                         String.valueOf(i_stock_inand),
                         String.valueOf(i_close),
+                        String.valueOf(closeamt),
                         String.valueOf(new_fresh_stock),
+                        String.valueOf(receiveamt),
                         price,
                         size1,
                         eancode,
@@ -1490,7 +1495,9 @@ public class StockAllActivity extends Activity {
                         product_name, username,
                         String.valueOf(i_stock_inand),
                         String.valueOf(i_close),
+                        String.valueOf(closeamt),
                         String.valueOf(new_fresh_stock),
+                        String.valueOf(receiveamt),
                         price, size1, eancode, db_id1,
                         cat_id, insert_timestamp,
                         String.valueOf(new_retrn_sale),

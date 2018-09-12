@@ -144,39 +144,37 @@ public class ReportAdapter extends BaseAdapter {
         viewHolder.product.setText(map.get("product_name"));
         viewHolder.size.setText(map.get("size"));
         viewHolder.price.setText(map.get("price"));
-        int openingstock;
-        if (String.valueOf(map.get("opening_stock")).equalsIgnoreCase("null")) {
-            openingstock = 0;
-        } else {
-            openingstock = Integer.parseInt(map.get("opening_stock"));
-        }
         int mrp = Integer.parseInt(map.get("price"));
-        String totalopeningamt = String.valueOf(openingstock * mrp);
-        viewHolder.tv_open_qty.setText(String.valueOf(openingstock));
-        viewHolder.tv_open_rs.setText("\u20B9 " + totalopeningamt);
+        //String totalopeningamt = String.valueOf(openingstock * mrp);
+        viewHolder.tv_open_qty.setText(map.get("opening_stock"));
+        String opening = map.get("opening_amt");
+        if(opening == null || opening.equalsIgnoreCase("null")){
+            opening = "0";
+        }else{
+            opening = opening;
+        }
+        viewHolder.tv_open_rs.setText("\u20B9 " + opening);
 
         viewHolder.stock_recieved.setText(map.get("stock_received"));
         //viewHolder.op.setText(map.get("stock_in_hand"));
-        int closingstock;
-        if (String.valueOf(map.get("close_bal")).equalsIgnoreCase("null")) {
-            closingstock = 0;
-        } else {
-            closingstock = Integer.parseInt(map.get("close_bal"));
+        viewHolder.closing_qty.setText(map.get("close_bal"));
+        String closing = map.get("close_amt");
+        if(closing == null || closing.equalsIgnoreCase("null")){
+            closing = "0";
+        }else{
+            closing = closing;
         }
-        String totalclosingamt = String.valueOf(closingstock * mrp);
-        viewHolder.closing_qty.setText(String.valueOf(closingstock));
-        viewHolder.closing_rs.setText("\u20B9 " + totalclosingamt);
+        viewHolder.closing_rs.setText("\u20B9 " + closing);
         viewHolder.rt.setText(map.get("return_saleable"));
         viewHolder.rtns.setText(map.get("return_non_saleable"));
-        int soldstock;
-        if (String.valueOf(map.get("sold_stock")).equalsIgnoreCase("null")) {
-            soldstock = 0;
-        } else {
-            soldstock = Integer.parseInt(map.get("sold_stock"));
+        viewHolder.sold_qty.setText(map.get("sold_stock"));
+        String sold = map.get("sold_amt");
+        if(sold == null || sold.equalsIgnoreCase("null")){
+            sold = "0";
+        }else{
+            sold = sold;
         }
-        String totalsoldamt = String.valueOf(soldstock * mrp);
-        viewHolder.sold_qty.setText(String.valueOf(soldstock));
-        viewHolder.sold_rs.setText("\u20B9 " + totalsoldamt);
+        viewHolder.sold_rs.setText("\u20B9 " + sold);
         viewHolder.totalamount.setText("\u20B9 " + map.get("total_gross_amount"));
         viewHolder.totalnetamount.setText("\u20B9 " + map.get("total_net_amount"));
         viewHolder.discount.setText(map.get("discount"));

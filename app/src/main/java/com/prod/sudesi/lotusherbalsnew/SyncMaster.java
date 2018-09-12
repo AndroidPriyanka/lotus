@@ -110,8 +110,8 @@ public class SyncMaster extends Activity {
     ArrayList<HashMap<String, String>> listofsyncerrorlog = new ArrayList<HashMap<String, String>>();
     ArrayList<HashMap<String, String>> listofimages = new ArrayList<HashMap<String, String>>();
 
-      //public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
-      public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
+      public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
+      //public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
     private JSONArray array = new JSONArray();
     String flag;
     String ErroFlag = "";
@@ -3026,6 +3026,8 @@ public class SyncMaster extends Activity {
                                         // contentvalues.put("LAST_SYNC",
                                         // date);
                                         contentvalues.put("FLAG", "U");
+                                        /*db.update("SYNC_LOG", "FLAG = ?", new String[]{"U"},
+                                                new String[]{"ID"}, new String[]{ eid});*/
                                         db.updatevalues("SYNC_LOG",
                                                 contentvalues, "ID", eid);
                                         db.delete_errorlog_data();
@@ -3986,6 +3988,12 @@ public class SyncMaster extends Activity {
                                     AndroidCreatedDate = " ";
                                 }
 
+                                String openingamt = String.valueOf(Integer.parseInt(Opening_Stock) * Integer.parseInt(Price));
+                                String closingamt = String.valueOf(Integer.parseInt(ClosingBal) * Integer.parseInt(Price));
+                                String Soldamt = String.valueOf(Integer.parseInt(SoldStock) * Integer.parseInt(Price));
+                                String Freshamt = String.valueOf(Integer.parseInt(FreshStock) * Integer.parseInt(Price));
+
+
                                 Log.e("pm", "pm5--");
                                 db.open();
 
@@ -4002,12 +4010,20 @@ public class SyncMaster extends Activity {
                                     db.open();
                                     db.UpdateStockSync1(ProductCategory,
                                             ProductType, ProductName, EmpId,
+                                            Opening_Stock,openingamt, Stock_inhand, ClosingBal,closingamt,
+                                            FreshStock, Freshamt, GrossAmount, SoldStock, Soldamt,
+                                            Price, Size, db_Id, LMD, Discount,
+                                            NetAmount,
+                                            S_Return_Saleable,
+                                            S_Return_NonSaleable);
+                                    /*db.UpdateStockSync1(ProductCategory,
+                                            ProductType, ProductName, EmpId,
                                             Opening_Stock, Stock_inhand, ClosingBal,
                                             FreshStock, GrossAmount, SoldStock,
                                             Price, Size, db_Id, LMD, Discount,
                                             NetAmount,
                                             S_Return_Saleable,
-                                            S_Return_NonSaleable);
+                                            S_Return_NonSaleable);*/
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","
@@ -4021,13 +4037,24 @@ public class SyncMaster extends Activity {
                                             db_stock_id, db_Id, ProductId,
                                             CatCodeId, EANCode, EmpId,
                                             ProductCategory, ProductType,
+                                            ProductName, Opening_Stock,openingamt,
+                                            FreshStock, Freshamt, Stock_inhand,
+                                            SoldStock,Soldamt, S_Return_NonSaleable,
+                                            S_Return_Saleable, ClosingBal,closingamt,
+                                            GrossAmount, Discount, NetAmount,
+                                            Size, Price, LMD,
+                                            AndroidCreatedDate, MONTH, YEAR);
+                                    /*db.insertProductMasterFirsttime(
+                                            db_stock_id, db_Id, ProductId,
+                                            CatCodeId, EANCode, EmpId,
+                                            ProductCategory, ProductType,
                                             ProductName, Opening_Stock,
                                             FreshStock, Stock_inhand,
                                             SoldStock, S_Return_NonSaleable,
                                             S_Return_Saleable, ClosingBal,
                                             GrossAmount, Discount, NetAmount,
                                             Size, Price, LMD,
-                                            AndroidCreatedDate, MONTH, YEAR);
+                                            AndroidCreatedDate, MONTH, YEAR);*/
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","
@@ -4464,6 +4491,11 @@ public class SyncMaster extends Activity {
                                     AndroidCreatedDate = " ";
                                 }
 
+                                String openingamt = String.valueOf(Integer.parseInt(Opening_Stock) * Integer.parseInt(Price));
+                                String closingamt = String.valueOf(Integer.parseInt(ClosingBal) * Integer.parseInt(Price));
+                                String Soldamt = String.valueOf(Integer.parseInt(SoldStock) * Integer.parseInt(Price));
+                                String Freshamt = String.valueOf(Integer.parseInt(FreshStock) * Integer.parseInt(Price));
+
                                 Log.e("pm", "pm5--");
                                 db.open();
 
@@ -4480,12 +4512,20 @@ public class SyncMaster extends Activity {
                                     db.open();
                                     db.UpdateStockSync1(ProductCategory,
                                             ProductType, ProductName, EmpId,
+                                            Opening_Stock,openingamt, Stock_inhand, ClosingBal,closingamt,
+                                            FreshStock, Freshamt, GrossAmount, SoldStock,Soldamt,
+                                            Price, Size, db_Id, LMD, Discount,
+                                            NetAmount,
+                                            S_Return_Saleable,
+                                            S_Return_NonSaleable);
+                                    /*db.UpdateStockSync1(ProductCategory,
+                                            ProductType, ProductName, EmpId,
                                             Opening_Stock, Stock_inhand, ClosingBal,
                                             FreshStock, GrossAmount, SoldStock,
                                             Price, Size, db_Id, LMD, Discount,
                                             NetAmount,
                                             S_Return_Saleable,
-                                            S_Return_NonSaleable);
+                                            S_Return_NonSaleable);*/
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","
@@ -4499,13 +4539,24 @@ public class SyncMaster extends Activity {
                                             db_stock_id, db_Id, ProductId,
                                             CatCodeId, EANCode, EmpId,
                                             ProductCategory, ProductType,
+                                            ProductName, Opening_Stock,openingamt,
+                                            FreshStock, Freshamt, Stock_inhand,
+                                            SoldStock,Soldamt, S_Return_NonSaleable,
+                                            S_Return_Saleable, ClosingBal,closingamt,
+                                            GrossAmount, Discount, NetAmount,
+                                            Size, Price, LMD,
+                                            AndroidCreatedDate, MONTH, YEAR);
+                                   /* db.insertProductMasterFirsttime(
+                                            db_stock_id, db_Id, ProductId,
+                                            CatCodeId, EANCode, EmpId,
+                                            ProductCategory, ProductType,
                                             ProductName, Opening_Stock,
                                             FreshStock, Stock_inhand,
                                             SoldStock, S_Return_NonSaleable,
                                             S_Return_Saleable, ClosingBal,
                                             GrossAmount, Discount, NetAmount,
                                             Size, Price, LMD,
-                                            AndroidCreatedDate, MONTH, YEAR);
+                                            AndroidCreatedDate, MONTH, YEAR);*/
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/report_include" />
+    <include layout="@layout/report_include1" />
 
 
     <HorizontalScrollView
@@ -71,8 +71,8 @@
                 <LinearLayout
                     android:layout_width="120dp"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
                     android:background="@layout/tableborder_header"
+                    android:orientation="vertical"
                     android:weightSum="2">
 
                     <LinearLayout
@@ -103,18 +103,18 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="0.4"
+                            android:background="@layout/tableborder_header"
                             android:gravity="center"
-                            android:text="Qty"
-                            android:background="@layout/tableborder_header"/>
+                            android:text="Qty" />
 
                         <TextView
                             style="@style/report_textview_heading"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="0.6"
+                            android:background="@layout/tableborder_header"
                             android:gravity="center"
-                            android:text="@string/Rs"
-                            android:background="@layout/tableborder_header"/>
+                            android:text="@string/Rs" />
 
                     </LinearLayout>
 
@@ -154,16 +154,16 @@
                 <LinearLayout
                     android:layout_width="115dp"
                     android:layout_height="match_parent"
+                    android:background="@layout/tableborder_header"
                     android:orientation="vertical"
-                    android:weightSum="2"
-                    android:background="@layout/tableborder_header">
+                    android:weightSum="2">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:orientation="horizontal"
-                        android:background="@layout/tableborder_header">
+                        android:background="@layout/tableborder_header"
+                        android:orientation="horizontal">
 
                         <TextView
                             style="@style/report_textview_heading"
@@ -186,18 +186,18 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="0.4"
+                            android:background="@layout/tableborder_header"
                             android:gravity="center"
-                            android:text="Qty"
-                            android:background="@layout/tableborder_header"/>
+                            android:text="Qty" />
 
                         <TextView
                             style="@style/report_textview_heading"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="0.6"
+                            android:background="@layout/tableborder_header"
                             android:gravity="center"
-                            android:text="@string/Rs"
-                            android:background="@layout/tableborder_header"/>
+                            android:text="@string/Rs" />
 
                     </LinearLayout>
 
@@ -208,16 +208,16 @@
                 <LinearLayout
                     android:layout_width="120dp"
                     android:layout_height="match_parent"
+                    android:background="@layout/tableborder_header"
                     android:orientation="vertical"
-                    android:weightSum="2"
-                    android:background="@layout/tableborder_header">
+                    android:weightSum="2">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:orientation="horizontal"
-                        android:background="@layout/tableborder_header">
+                        android:background="@layout/tableborder_header"
+                        android:orientation="horizontal">
 
                         <TextView
                             style="@style/report_textview_heading"
@@ -240,18 +240,18 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="0.4"
+                            android:background="@layout/tableborder_header"
                             android:gravity="center"
-                            android:text="Qty"
-                            android:background="@layout/tableborder_header"/>
+                            android:text="Qty" />
 
                         <TextView
                             style="@style/report_textview_heading"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="0.6"
+                            android:background="@layout/tableborder_header"
                             android:gravity="center"
-                            android:text="@string/Rs"
-                            android:background="@layout/tableborder_header"/>
+                            android:text="@string/Rs" />
 
                     </LinearLayout>
 
@@ -358,21 +358,121 @@
 
             </TableRow>
 
-            <ListView
-                android:id="@+id/stock_list"
+            <RelativeLayout
                 android:layout_width="1875dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:divider="@color/gray"
-                android:dividerHeight="1dp"></ListView>
+                android:layout_height="match_parent">
 
-            <ListView
-                android:id="@+id/testerlist"
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:divider="@color/gray"
-                android:dividerHeight="1dp"></ListView>
+                <TableRow
+                    android:id="@+id/tr_total_stock"
+                    android:layout_width="1875dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+                    <TextView
+                        style="@style/report_textview"
+                        android:layout_width="955dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="Total Value In Rupees" />
+
+
+                    <TextView
+                        android:id="@+id/op_total"
+                        style="@style/report_textview"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="op" />
+
+
+                    <TextView
+                        style="@style/report_textview"
+                        android:layout_width="165dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="" />
+
+                    <TextView
+                        android:id="@+id/sold_total"
+                        style="@style/report_textview"
+                        android:layout_width="115dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="Sold" />
+
+                    <TextView
+                        android:id="@+id/Closing_total"
+                        style="@style/report_textview"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="Cl-Bal" />
+
+
+                    <TextView
+                        android:id="@+id/gross_total"
+                        style="@style/report_textview"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="Total" />
+
+                    <TextView
+                        style="@style/report_textview"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="" />
+
+                    <TextView
+                        android:id="@+id/net_total"
+                        style="@style/report_textview"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="Nett" />
+
+
+                    <TextView
+                        style="@style/report_textview"
+                        android:layout_width="165dp"
+                        android:layout_height="wrap_content"
+                        android:background="@layout/tableborder_for_fields"
+                        android:gravity="center"
+                        android:text="" />
+
+                </TableRow>
+
+                <ListView
+                    android:id="@+id/stock_list"
+                    android:layout_width="1875dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_below="@+id/tr_total_stock"
+                    android:divider="@color/gray"
+                    android:dividerHeight="1dp"></ListView>
+
+                <ListView
+                    android:id="@+id/testerlist"
+                    android:layout_below="@+id/tr_total_stock"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:divider="@color/gray"
+                    android:dividerHeight="1dp"></ListView>
+
+
+            </RelativeLayout>
+
 
         </LinearLayout>
     </HorizontalScrollView>

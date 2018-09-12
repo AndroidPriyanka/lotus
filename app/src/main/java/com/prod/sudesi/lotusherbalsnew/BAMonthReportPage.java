@@ -102,7 +102,7 @@ public class BAMonthReportPage extends Activity {
 		tv_h_username.setText(username);
 		
 		db = new Dbcon(this);
-		
+
 		btn_logout.setOnClickListener(new OnClickListener() {
 			
 			@Override

@@ -349,7 +349,7 @@ public class SupervisorAttendance extends Activity implements OnClickListener {
 					startActivity(new Intent(SupervisorAttendance.this,
 							DashboardNewActivity.class));
 
-					dbcon.update("savedServer", new String[] { "1" },
+                    dbcon.update("savedServer", new String[] { "1" },
 							new String[] { "savedServer" },
 							"supervisor_attendance", "0");
 

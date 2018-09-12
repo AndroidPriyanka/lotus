@@ -119,12 +119,12 @@ public class LoginActivity extends Activity {
     String[] values;
 
     //Production India
-    public static final String downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
-    public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production
+    /*public static final String downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
+    public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production*/
 
     //UAT India
-    /*public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
-    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT India*/
+    public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
+    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT India
 
     //Production Dubai
      /*public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Dubai_Pro.apk"; //production
@@ -796,7 +796,7 @@ public class LoginActivity extends Activity {
 
                                     } else {
 
-                                        String[] serverdatearray = serverdate
+                                        /*String[] serverdatearray = serverdate
                                                 .split(" ");
 
                                         server_date = serverdatearray[0];
@@ -823,12 +823,12 @@ public class LoginActivity extends Activity {
                                         todaydate1 = sdf.format(curntdte);
 
                                         spe.putString("todaydate", todaydate1);
-                                        spe.commit();
+                                        spe.commit();*/
 
                                         //SetClosingISOpeningOnlyOnce();
                                         // checkAndSaveMonthly();
-
-                                        checkpresentornot(todaydate1);
+                                        new GetAttendance().execute();
+                                        //checkpresentornot(todaydate1);
 
 //                                        Toast.makeText(
 //                                                LoginActivity.this,
@@ -863,7 +863,7 @@ public class LoginActivity extends Activity {
                                 } else if (loginstaus
                                         .equalsIgnoreCase("success")) {
 
-                                    String[] serverdatearray = serverdate
+                                    /*String[] serverdatearray = serverdate
                                             .split(" ");
 
                                     server_date = serverdatearray[0];
@@ -890,16 +890,16 @@ public class LoginActivity extends Activity {
                                     todaydate1 = sdf.format(curntdte);
 
                                     spe.putString("todaydate", todaydate1);
-                                    spe.commit();
+                                    spe.commit();*/
 
                                     //SetClosingISOpeningOnlyOnce();
                                     // checkAndSaveMonthly();
-
-                                    checkpresentornot(todaydate1);
+                                    new GetAttendance().execute();
+                                    //checkpresentornot(todaydate1);
 
                                 } else {
 
-                                    String[] serverdatearray = serverdate
+                                    /*String[] serverdatearray = serverdate
                                             .split(" ");
 
                                     server_date = serverdatearray[0];
@@ -929,11 +929,12 @@ public class LoginActivity extends Activity {
                                     todaydate1 = sdf.format(curntdte);
 
                                     spe.putString("todaydate", todaydate1);
-                                    spe.commit();
+                                    spe.commit();*/
 
                                     //SetClosingISOpeningOnlyOnce();
                                     // checkAndSaveMonthly();
-                                    checkpresentornot(todaydate1);
+                                    new GetAttendance().execute();
+                                    //checkpresentornot(todaydate1);
 
                                 }
 
@@ -2303,9 +2304,9 @@ public class LoginActivity extends Activity {
 
                     if (systemdate != null && serverdd != null
                             && systemdate.equalsIgnoreCase(serverdd)) {
-                        new GetAttendance().execute();
+                        //new GetAttendance().execute();
 
-                        //LoginUser();
+                        LoginUser();
                     } else {
                         Toast.makeText(LoginActivity.this, "Please Check your Handset Date", Toast.LENGTH_LONG).show();
                     }
@@ -2465,6 +2466,28 @@ public class LoginActivity extends Activity {
                                 db.close();
                                 if (count > 0) {
                                     log = log + "-getuniquedataAttendance 0";
+                                    db.open();
+                                    db.update(adate,
+                                                    new String[]{
+                                                            username,
+                                                            savedate,
+                                                            attendanceModel.getAttendanceValue(),
+                                                            attendanceModel.getAbsentType(),
+                                                            "0.0",
+                                                            "0.0",
+                                                            "1",
+                                                            attendmonth1,
+                                                            "",
+                                                            year},
+                                                    new String[]{
+                                                            "emp_id", "Adate",
+                                                            "attendance", "absent_type",
+                                                            "lat", "lon", "savedServer", "month",
+                                                            "holiday_desc", "year"},
+                                                    "attendance", "Adate");
+
+                                    db.close();
+
                                 } else {
                                     db.open();
 
@@ -2554,7 +2577,46 @@ public class LoginActivity extends Activity {
 
                 //Toast.makeText(getApplicationContext(), "Attendance Successfully Sync", Toast.LENGTH_SHORT).show();
 
-                LoginUser();
+                //LoginUser();
+                String[] serverdatearray = serverdate
+                        .split(" ");
+
+                server_date = serverdatearray[0];
+
+                String[] serverdate1 = server_date
+                        .split("/");
+
+                spe.putString("current_year",serverdate1[2]);
+                spe.commit();
+
+                spe.putString("currentdate", serverdate);
+                spe.commit();
+
+                SimpleDateFormat sdf = new SimpleDateFormat(
+                        "MM/dd/yyyy");
+
+                Date curntdte = null;
+                try {
+                    curntdte = sdf.parse(server_date);
+                } catch (ParseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                }
+
+                sdf.applyPattern("yyyy-MM-dd");
+                todaydate1 = sdf.format(curntdte);
+
+                spe.putString("todaydate", todaydate1);
+                spe.commit();
+
+                checkpresentornot(todaydate1);
+
+            }
+            if (ErroFlag.equalsIgnoreCase("3")) {
+
+                Toast.makeText(getApplicationContext(), "Database getting null", Toast.LENGTH_SHORT).show();
 
             }
 

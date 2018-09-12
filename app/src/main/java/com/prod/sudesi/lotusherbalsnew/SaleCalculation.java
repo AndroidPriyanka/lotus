@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.prod.sudesi.lotusherbalsnew.R;
 import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
 import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
@@ -87,7 +86,6 @@ public class SaleCalculation extends Activity {
     LinearLayout discountlayout;
 
     String enacod[], catid[], pro_name[], show_pro_name[], size[], db_id[], mrp[], shadeno[], singleoffer[];
-
 
     // private ProgressDialog mProgress = null;
 
@@ -1451,6 +1449,12 @@ public class SaleCalculation extends Activity {
                                             i_return_customer = 0;
                                         }
 
+                                        int closeamt = Integer.parseInt(tv_mrp
+                                                .getText().toString()) * i_clstk;
+
+                                        int soldamt = Integer.parseInt(tv_mrp
+                                                .getText().toString()) * i_sold;
+
                                         boolean bool = db
                                                 .update(tv_dbID.getText()
                                                                 .toString(),
@@ -1458,10 +1462,12 @@ public class SaleCalculation extends Activity {
                                                                 shaddd,
                                                                 String.valueOf(i_return_customer),
                                                                 String.valueOf(i_clstk),
+                                                                String.valueOf(closeamt),
                                                                 String.valueOf(gross),
                                                                 String.valueOf(disss),
                                                                 String.valueOf(net1),
                                                                 String.valueOf(i_sold),
+                                                                String.valueOf(soldamt),
                                                                 "0",
                                                                 month_name,
                                                                 year_name,
@@ -1472,10 +1478,12 @@ public class SaleCalculation extends Activity {
                                                                 "shadeNo",
                                                                 "return_saleable",
                                                                 "close_bal",
+                                                                "close_amt",
                                                                 "total_gross_amount",
                                                                 "discount",
                                                                 "total_net_amount",
                                                                 "sold_stock",
+                                                                "sold_amt",
                                                                 "savedServer",
                                                                 "month",
                                                                 "year",
@@ -1483,7 +1491,6 @@ public class SaleCalculation extends Activity {
                                                                 "insert_date",
                                                                 "flag"},
                                                         "stock", "db_id");
-
                                         Cursor mCursor1;
                                         // db.open();
                                         mCursor1 = db.fetchone_Boc_wise(
@@ -2068,6 +2075,10 @@ public class SaleCalculation extends Activity {
 
                                 int net_amt = Integer.parseInt(String.valueOf(i_net_amt)) - disss;
 
+                                int soldamt = Integer.parseInt(price) * soldstock;
+                                int openingamt = Integer.parseInt(price) * Integer.parseInt(str_openingstock);
+                                int closingamt = Integer.parseInt(price) * 0;
+                                int freshamt = Integer.parseInt(price) * 0;
 
                                 if (mCursor.getCount() == 0) {
 
@@ -2083,12 +2094,16 @@ public class SaleCalculation extends Activity {
                                             price,
                                             emp_id,
                                             "0",
+                                            String.valueOf(openingamt),
                                             "0",
+                                            String.valueOf(freshamt),
                                             "0",
+                                            String.valueOf(closingamt),
                                             "0",
                                             "0",
                                             "0",
                                             String.valueOf(soldstock),
+                                            String.valueOf(soldamt),
                                             String.valueOf(i_net_amt),
                                             String.valueOf(net_amt),
                                             String.valueOf(disss),
@@ -2111,10 +2126,13 @@ public class SaleCalculation extends Activity {
                                     db.UpdateStockForFLR(
                                             "0",
                                             "0",
+                                            String.valueOf(closingamt),
                                             "0",
+                                            String.valueOf(freshamt),
                                             db_id1,
                                             insert_timestamp,
                                             String.valueOf(soldstock),
+                                            String.valueOf(soldamt),
                                             "0",
                                             "0",
                                             String.valueOf(i_net_amt),

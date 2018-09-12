@@ -1708,6 +1708,10 @@ public class BackgroundService extends Service {
                                         // contentvalues.put("LAST_SYNC",
                                         // date);
                                         contentvalues.put("FLAG", "U");
+
+                                        /*db.update("SYNC_LOG", "FLAG = ?", new String[]{"U"},
+                                                new String[]{"ID"}, new String[]{ eid});*/
+
                                         db.updatevalues("SYNC_LOG",
                                                 contentvalues,
 

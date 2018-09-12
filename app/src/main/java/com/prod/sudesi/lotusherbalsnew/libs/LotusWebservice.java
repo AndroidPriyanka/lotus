@@ -15,8 +15,8 @@ public class LotusWebservice {
 
 	// -----------------Mahi
 
-	String url = "http://lotusws.lotussmartforce.com/Service1.svc";// production lotus server
-	//String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
+	//String url = "http://lotusws.lotussmartforce.com/Service1.svc";// production lotus server
+	String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
 
 
 	public LotusWebservice(Context con) {
@@ -24,7 +24,7 @@ public class LotusWebservice {
 	}
 
 	//For current production using this method
-	/*public SoapPrimitive SaveAttendance(String empid, String date,
+	public SoapPrimitive SaveAttendance(String empid, String date,
 			String attend, String absent_type, String lat, String lon) {
 		SoapPrimitive result = null;
 		try {
@@ -60,7 +60,7 @@ public class LotusWebservice {
 			e.printStackTrace();
 		}
 		return result;
-	}*/
+	}
 
 	//For current production using this method for dubai
     public SoapObject SaveAttendanceForDubai(String empid, String date,
@@ -102,7 +102,7 @@ public class LotusWebservice {
     }
 
     //for using india and dubai UAT
-	public SoapObject SaveAttendance(String empid, String date,
+	/*public SoapObject SaveAttendance(String empid, String date,
 											 String attend, String absent_type, String lat, String lon) {
 		SoapObject result = null;
 		try {
@@ -138,7 +138,7 @@ public class LotusWebservice {
 			e.printStackTrace();
 		}
 		return result;
-	}
+	}*/
 
 	public SoapObject GetAttendanceList(String empid) {
 		SoapObject result = null;

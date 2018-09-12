@@ -113,6 +113,7 @@ public class SaleNewActivity extends Activity implements OnClickListener {
 
             db.open();
             productcategory = db.getproductcategory1(); // ------------
+            productcategory.add("BABY CARE");
             db.close();
             // System.out.println(productArray);
             Log.e("", "kkkklklk111");
@@ -122,6 +123,7 @@ public class SaleNewActivity extends Activity implements OnClickListener {
             productcategory.clear();
             productcategory.add("Select");
             productcategory.add("SKIN");
+            productcategory.add("BABY CARE");
 
         }
         if (div.equalsIgnoreCase("LM")) {
@@ -166,9 +168,17 @@ public class SaleNewActivity extends Activity implements OnClickListener {
                                 sp_product_type.setAdapter(adapter);
 
                             } else {
+
+                                if (selected_product_category.equalsIgnoreCase("BABY CARE")){
+                                    selected_product_category = "SKIN";
+                                }
+
                                 db.open();
-                                producttypeArray = db
-                                        .getproductype1(selected_product_category); // -------------
+                                if(sp_product_category.getItemAtPosition(position).toString().trim().equalsIgnoreCase("BABY CARE")){
+                                    producttypeArray = db.getproductypeforBabyProduct(selected_product_category);
+                                }else {
+                                    producttypeArray = db.getproductype1(selected_product_category); // -------------
+                                }
                                 System.out.println(producttypeArray);
 
                                 ArrayAdapter<String> product_adapter1 = new ArrayAdapter<String>(
@@ -215,8 +225,12 @@ public class SaleNewActivity extends Activity implements OnClickListener {
                             new String[]{});
 
                 } else {
-                    String selected_category = sp_product_category
-                            .getSelectedItem().toString();
+                    String selected_category;
+                    if (sp_product_category.getSelectedItem().toString().equalsIgnoreCase("BABY CARE")) {
+                        selected_category = "SKIN";
+                    } else {
+                        selected_category = sp_product_category.getSelectedItem().toString();
+                    }
                     selected_type = sp_product_type.getSelectedItem()
                             .toString();
 
@@ -317,11 +331,11 @@ public class SaleNewActivity extends Activity implements OnClickListener {
                                     if (txtmrp.getVisibility() == View.VISIBLE) {
                                         arr_selectedDBids.add(db.fetchDbID(cb.getText()
                                                 .toString(), txtmrp.getText()
-                                                .toString(), sp_product_category.getSelectedItem().toString()));
+                                                .toString(), selected_product_category));
                                     } else {
                                         if(!spin.getText().toString().equals("")) {
                                             arr_selectedDBids.add(db.fetchDbID(cb.getText()
-                                                    .toString(), spin.getText().toString(), sp_product_category.getSelectedItem().toString()));
+                                                    .toString(), spin.getText().toString(), selected_product_category));
                                         }else{
                                             spinvalue = false;
                                         }

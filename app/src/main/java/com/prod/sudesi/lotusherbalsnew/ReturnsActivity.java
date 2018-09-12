@@ -119,6 +119,7 @@ public class ReturnsActivity extends Activity implements View.OnClickListener {
 
             db.open();
             productcategory = db.getproductcategory1(); // ------------
+            productcategory.add("BABY CARE");
 
             // System.out.println(productArray);
             Log.e("", "kkkklklk111");
@@ -128,6 +129,7 @@ public class ReturnsActivity extends Activity implements View.OnClickListener {
             productcategory.clear();
             productcategory.add("Select");
             productcategory.add("SKIN");
+            productcategory.add("BABY CARE");
 
         }
         if (div.equalsIgnoreCase("LM")) {
@@ -181,9 +183,16 @@ public class ReturnsActivity extends Activity implements View.OnClickListener {
                                     columnname = "ShadeNo";
                                 }
 
+                                if (selected_product_category.equalsIgnoreCase("BABY CARE")){
+                                    selected_product_category = "SKIN";
+                                }
+
                                 db.open();
-                                producttypeArray = db
-                                        .getproductype1(selected_product_category); // -------------
+                                if(sp_prod_category.getItemAtPosition(position).toString().trim().equalsIgnoreCase("BABY CARE")){
+                                    producttypeArray = db.getproductypeforBabyProduct(selected_product_category);
+                                }else {
+                                    producttypeArray = db.getproductype1(selected_product_category); // -------------
+                                }
                                 System.out.println(producttypeArray);
 
                                 ArrayAdapter<String> product_adapter1 = new ArrayAdapter<String>(
@@ -229,8 +238,12 @@ public class ReturnsActivity extends Activity implements View.OnClickListener {
                             new String[]{});
 
                 } else {
-                    String selected_category = sp_prod_category
-                            .getSelectedItem().toString();
+                    String selected_category;
+                    if (sp_prod_category.getSelectedItem().toString().equalsIgnoreCase("BABY CARE")) {
+                        selected_category = "SKIN";
+                    } else {
+                        selected_category = sp_prod_category.getSelectedItem().toString();
+                    }
                     selected_type = sp_prod_type.getSelectedItem()
                             .toString();
 
@@ -544,7 +557,7 @@ public class ReturnsActivity extends Activity implements View.OnClickListener {
                                 if (cb.isChecked()) {
                                     if (!spin.getText().toString().equals("")) {
                                         arr_selectedDBids.add(db.fetchStockDbID(cb.getText().toString(), spin.getText().toString(),
-                                                sp_prod_category.getSelectedItem().toString()));
+                                                selected_product_category));
                                     } else {
                                         spinvalue = false;
                                     }
