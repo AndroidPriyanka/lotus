@@ -116,7 +116,9 @@ public class StockNewActivity extends Activity implements OnClickListener {
 
             db.open();
             productcategory = db.getproductcategory1(); // ------------
-            productcategory.add("BABY CARE");
+            if(productcategory.size()>0) {
+                productcategory.add("BABY CARE");
+            }
 
             // System.out.println(productArray);
             Log.e("", "kkkklklk111");

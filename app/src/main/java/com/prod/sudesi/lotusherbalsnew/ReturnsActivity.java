@@ -119,7 +119,9 @@ public class ReturnsActivity extends Activity implements View.OnClickListener {
 
             db.open();
             productcategory = db.getproductcategory1(); // ------------
-            productcategory.add("BABY CARE");
+            if(productcategory.size()>0) {
+                productcategory.add("BABY CARE");
+            }
 
             // System.out.println(productArray);
             Log.e("", "kkkklklk111");

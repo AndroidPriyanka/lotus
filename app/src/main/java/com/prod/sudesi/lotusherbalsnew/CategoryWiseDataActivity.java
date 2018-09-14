@@ -199,7 +199,7 @@ public class CategoryWiseDataActivity extends Activity{
 
             db.open();
             categoryDetailsArraylist = db.getproductcategory1(); // ------------
-            categoryDetailsArraylist.add("BABY CARE");
+            //categoryDetailsArraylist.add("BABY CARE");
 
             // System.out.println(productArray);
             Log.e("", "kkkklklk111");
@@ -209,13 +209,13 @@ public class CategoryWiseDataActivity extends Activity{
             categoryDetailsArraylist.clear();
             categoryDetailsArraylist.add("Select");
             categoryDetailsArraylist.add("SKIN");
-            categoryDetailsArraylist.add("BABY CARE");
+            //categoryDetailsArraylist.add("BABY CARE");
 
         }
         if (div.equalsIgnoreCase("LM")) {
             categoryDetailsArraylist.clear();
             categoryDetailsArraylist.add("Select");
-            categoryDetailsArraylist.add("COLOR");
+            //categoryDetailsArraylist.add("COLOR");
 
         }
     }

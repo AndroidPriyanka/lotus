@@ -81,6 +81,8 @@ public class ReportsForUser extends Activity {
     static public ArrayList<HashMap<String, String>> reportlist = new ArrayList<HashMap<String, String>>();
     static public ArrayList<HashMap<String, String>> reportlist1 = new ArrayList<HashMap<String, String>>();
     static public ArrayList<HashMap<String, String>> reportlist2 = new ArrayList<HashMap<String, String>>();
+    static public ArrayList<HashMap<String, String>> reportlisttotalsum = new ArrayList<HashMap<String, String>>();
+
 
     private ProgressDialog mProgress = null;
 
@@ -298,15 +300,15 @@ public class ReportsForUser extends Activity {
                                              boolean isChecked) {
                     // TODO Auto-generated method stub
                     if (rb_s.isChecked()) {
-
-                        rg_lhm_choice.setVisibility(View.VISIBLE);
-                        rg_lhm_choice.clearCheck();
-                        reportlist.clear();
-                        tr_total_stock.setVisibility(View.GONE);
-                        listview.setVisibility(View.GONE);
+                        //reportlist.clear();
+                        tr_total_stock.setVisibility(View.VISIBLE);
+                        listview.setVisibility(View.VISIBLE);
+                        table_row_stock.setVisibility(View.VISIBLE);
                         table_row_attend.setVisibility(View.GONE);
                         attendancelist.setVisibility(View.GONE);
                         rb_attendance.setChecked(false);
+                        rg_lhm_choice.setVisibility(View.VISIBLE);
+                        //rg_lhm_choice.clearCheck();
                         getNetAmountSum();
                         txt_lh.setVisibility(View.VISIBLE);
                         txt_lhm.setVisibility(View.VISIBLE);
@@ -406,15 +408,14 @@ public class ReportsForUser extends Activity {
                         table_row_stock.setVisibility(View.GONE);
                         table_row_tester.setVisibility(View.GONE);
                         tr_total_stock.setVisibility(View.GONE);
-                        table_row_attend.setVisibility(View.VISIBLE);
                         listview.setVisibility(View.GONE);
                         listview_t.setVisibility(View.GONE);
-                        attendancelist.setVisibility(View.VISIBLE);
                         rb_s.setChecked(false);
                         //rb_t.setChecked(false);
                         rg_lhm_choice.setVisibility(View.GONE);
-                        reportlist.clear();
                         reportlist1.clear();
+                        attendancelist.setVisibility(View.VISIBLE);
+                        table_row_attend.setVisibility(View.VISIBLE);
                         report_attendance = new ShowReportofAttendance();
                         report_attendance.execute();
                         txt_lh.setVisibility(View.GONE);
@@ -942,6 +943,7 @@ public class ReportsForUser extends Activity {
         }
 
     }
+
 
     @Override
     public void onBackPressed() {

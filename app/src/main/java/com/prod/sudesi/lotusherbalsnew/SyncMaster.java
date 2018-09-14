@@ -3643,7 +3643,7 @@ public class SyncMaster extends Activity {
                     SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd ");
                     String strDate = mdformat.format(calendar1.getTime());
 
-                    soap_result = service.DataDownload(
+                   /* soap_result = service.DataDownload(
                             username, strDate);//strDate
 
                     if (soap_result != null) {
@@ -4016,14 +4016,14 @@ public class SyncMaster extends Activity {
                                             NetAmount,
                                             S_Return_Saleable,
                                             S_Return_NonSaleable);
-                                    /*db.UpdateStockSync1(ProductCategory,
+                                    *//*db.UpdateStockSync1(ProductCategory,
                                             ProductType, ProductName, EmpId,
                                             Opening_Stock, Stock_inhand, ClosingBal,
                                             FreshStock, GrossAmount, SoldStock,
                                             Price, Size, db_Id, LMD, Discount,
                                             NetAmount,
                                             S_Return_Saleable,
-                                            S_Return_NonSaleable);*/
+                                            S_Return_NonSaleable);*//*
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","
@@ -4044,7 +4044,7 @@ public class SyncMaster extends Activity {
                                             GrossAmount, Discount, NetAmount,
                                             Size, Price, LMD,
                                             AndroidCreatedDate, MONTH, YEAR);
-                                    /*db.insertProductMasterFirsttime(
+                                    *//*db.insertProductMasterFirsttime(
                                             db_stock_id, db_Id, ProductId,
                                             CatCodeId, EANCode, EmpId,
                                             ProductCategory, ProductType,
@@ -4054,7 +4054,7 @@ public class SyncMaster extends Activity {
                                             S_Return_Saleable, ClosingBal,
                                             GrossAmount, Discount, NetAmount,
                                             Size, Price, LMD,
-                                            AndroidCreatedDate, MONTH, YEAR);*/
+                                            AndroidCreatedDate, MONTH, YEAR);*//*
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","
@@ -4145,7 +4145,7 @@ public class SyncMaster extends Activity {
                                 username, "Data Download",
                                 "Fail");
 
-                    }
+                    }*/
 
                     soap_result = service.DataDownloadForSale(
                             username, strDate);//strDate

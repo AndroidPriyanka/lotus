@@ -358,7 +358,7 @@
                         android:layout_height="wrap_content"
                         android:background="@layout/tableborder_for_fields"
                         android:gravity="center"
-                        android:text="Total" />
+                        android:text="Total Value In Rupees" />
 
 
                     <TextView
@@ -368,7 +368,7 @@
                         android:layout_height="wrap_content"
                         android:background="@layout/tableborder_for_fields"
                         android:gravity="center"
-                        android:text="op" />
+                        android:text="0" />
 
 
                     <TextView
@@ -386,7 +386,7 @@
                         android:layout_height="wrap_content"
                         android:background="@layout/tableborder_for_fields"
                         android:gravity="center"
-                        android:text="Sold" />
+                        android:text="0" />
 
                     <TextView
                         android:id="@+id/Closing_total"
@@ -395,7 +395,7 @@
                         android:layout_height="wrap_content"
                         android:background="@layout/tableborder_for_fields"
                         android:gravity="center"
-                        android:text="Cl-Bal" />
+                        android:text="0" />
 
 
                     <TextView
@@ -405,7 +405,7 @@
                         android:layout_height="wrap_content"
                         android:background="@layout/tableborder_for_fields"
                         android:gravity="center"
-                        android:text="Total" />
+                        android:text="0" />
 
                     <TextView
                         style="@style/report_textview"
@@ -422,7 +422,7 @@
                         android:layout_height="wrap_content"
                         android:background="@layout/tableborder_for_fields"
                         android:gravity="center"
-                        android:text="Nett" />
+                        android:text="0" />
 
 
                     <TextView
