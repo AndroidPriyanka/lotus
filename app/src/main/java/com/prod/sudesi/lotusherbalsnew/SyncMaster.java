@@ -109,10 +109,11 @@ public class SyncMaster extends Activity {
 
     ArrayList<HashMap<String, String>> listofsyncerrorlog = new ArrayList<HashMap<String, String>>();
     ArrayList<HashMap<String, String>> listofimages = new ArrayList<HashMap<String, String>>();
+    ArrayList<String> uploadidlist;
 
       public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
       //public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
-    private JSONArray array = new JSONArray();
+    private JSONArray array;
     String flag;
     String ErroFlag = "";
 
@@ -3266,7 +3267,8 @@ public class SyncMaster extends Activity {
             mProgress.dismiss();
             if (Flag.equalsIgnoreCase("3")) {
 
-                DisplayDialogMessage("Connectivity Error Please check internet");
+                Toast.makeText(getApplicationContext(),"Connectivity Error Please check internet",Toast.LENGTH_SHORT).show();
+                //DisplayDialogMessage("Connectivity Error Please check internet");
 
             }
             Log.d("Errr flag is", "" + ErroFlag);
@@ -4352,6 +4354,7 @@ public class SyncMaster extends Activity {
                                         .getProperty("AndroidCreatedDate")
                                         .toString();
 
+
                                 String MONTH = "", YEAR = "";
                                 if (AndroidCreatedDate == null) {
                                     AndroidCreatedDate = "";
@@ -4564,6 +4567,8 @@ public class SyncMaster extends Activity {
 
                                 }
 
+                                syncstockdata = 1;
+
                             } else if (soap_result1.getProperty("status")
                                     .toString().equalsIgnoreCase("E")) {
                                 Log.e("pm", "pm7");
@@ -4597,7 +4602,7 @@ public class SyncMaster extends Activity {
                                 Log.e("", "soap_update_stock_row= "
                                         + soap_update_stock_row.toString());
 
-                                syncstockdata = 1;
+                                syncstockdata = 2;
                             } else if (soap_result1.getProperty("status")
                                     .toString().equalsIgnoreCase("SE")) {
 
@@ -5473,7 +5478,7 @@ public class SyncMaster extends Activity {
                                 Log.e("", "soap_update_tester_row= "
                                         + soap_update_tester_row.toString());
                                 // Flag = "3";
-                                synctesterdata = 1;
+                                synctesterdata = 2;
                             } else if (soap_result_tester1
                                     .getProperty("status").toString()
                                     .equalsIgnoreCase("SE")) {
@@ -6003,7 +6008,7 @@ public class SyncMaster extends Activity {
                                     + soap_update_boc_day_row.toString());
 
                             // Flag = "3";
-                            syncbocdaywise = 1;
+                            syncbocdaywise = 2;
                         } else if (soap_result_boc_day1.getProperty("status")
                                 .toString().equalsIgnoreCase("SE")) {
 
@@ -6460,6 +6465,7 @@ public class SyncMaster extends Activity {
                             db_cumvalueid_array = db_cumvalueid_array + ","
                                     + db_stock_id;
 
+
                         } else if (soap_result_monthwise1.getProperty("status")
                                 .toString().equalsIgnoreCase("E")) {
                             Log.e("pm", "pm7");
@@ -6490,7 +6496,7 @@ public class SyncMaster extends Activity {
                             Log.e("", "soap_update_monthwise_row= "
                                     + soap_update_monthwise_row.toString());
 
-                            syncbocmonthwise = 1;
+                            syncbocmonthwise = 2;
                             // Flag = "3";
                         } else if (soap_result_monthwise1.getProperty("status")
                                 .toString().equalsIgnoreCase("SE")) {
@@ -6544,13 +6550,18 @@ public class SyncMaster extends Activity {
                     db.close();
                 }
 
-                if (syncbocdaywise == 1 && syncbocmonthwise == 1
-                        && syncstockdata == 1 && synctesterdata == 1) {
+                if (syncbocdaywise == 2 && syncbocmonthwise == 2
+                        && syncstockdata == 1 && synctesterdata == 2) {
 
                     Flag = "1";
-                } else {
+
+                } else  if (syncbocdaywise == 2 && syncbocmonthwise == 2
+                        && syncstockdata == 2 && synctesterdata == 2) {
 
                     Flag = "2";
+                }else{
+
+                    Flag = "3";
                 }
 
             } catch (Exception e) {
@@ -6632,22 +6643,16 @@ public class SyncMaster extends Activity {
 
                 } else if (Flag.equalsIgnoreCase("2")) {
 
-                    DisplayDialogMessage("Data Download Incomplete!!");
+                    DisplayDialogMessage("No Record found to Data Download");
 
 				/*Toast.makeText(context, "Data Download Incomplete!!",
 						Toast.LENGTH_SHORT).show();
 */
-                } /*
-                 * else if (Flag.equalsIgnoreCase("3")) {
-                 *
-                 *
-                 * Toast.makeText(context, "Sync Successfully!!",
-                 * Toast.LENGTH_SHORT).show(); startActivity(new
-                 * Intent(SyncMaster.this, DashboardNewActivity.class));
-                 *
-                 * }
-                 */
-                // }
+                } else if (Flag.equalsIgnoreCase("3")) {
+
+                    DisplayDialogMessage("Data Download Incomplete!!");
+
+                }
                 else if (Flag.equalsIgnoreCase("4")) {
 
                     DisplayDialogMessage("Data Download Incomplete!!,Please try again after some time");
@@ -6770,6 +6775,8 @@ public class SyncMaster extends Activity {
 
     private void uploaddata() {
 
+        array = new JSONArray();
+        uploadidlist = new ArrayList<>();
         db.open();
         stock_array = db.getStockdetails();
 
@@ -6817,6 +6824,8 @@ public class SyncMaster extends Activity {
                         obj.put("Price",  cd.getNonNullValues(stock_array.getString(8)));
                         obj.put("AndroidCreatedDate",  cd.getNonNullValues(stock_array.getString(21)));
                         obj.put("FLRCode",  cd.getNonNullValues(FLRCode));
+                        obj.put("flag",  cd.getNonNullValues(stock_array.getString(35)));
+
 
 
                     } catch (JSONException e) {
@@ -6825,7 +6834,7 @@ public class SyncMaster extends Activity {
                     array.put(obj);
 //                }
                 } while (stock_array.moveToNext());
-                stock_array.close();
+                //stock_array.close();
             }
 
             if (cd.isConnectingToInternet()) {
@@ -6900,6 +6909,39 @@ public class SyncMaster extends Activity {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
+                        }else{
+                            String db_id = "";
+                            if (stock_array != null && stock_array.getCount() > 0) {
+                                stock_array.moveToFirst();
+                                db_id = cd.getNonNullValues(stock_array.getString(2));
+                            }
+                            uploadidlist.add(db_id);
+
+                            for (int i = 0; i < uploadidlist.size(); i++) {
+
+                                String dbid = uploadidlist.get(i).toString();
+
+                                db.open();
+
+                                db.update_upload_flag(dbid);
+
+                                db.close();
+                            }
+
+                            ErroFlag = "0";
+                            final Calendar calendar1 = Calendar
+                                    .getInstance();
+                            SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                    "MM/dd/yyyy HH:mm:ss");
+                            String Createddate = formatter1
+                                    .format(calendar1.getTime());
+
+                            int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                            db.insertSyncLog("Getting Null response", String.valueOf(n), "uploaddata()", Createddate,
+                                    Createddate, username,
+                                    "SaveStock()", "Fail");
+                            Log.e("JSON_TRUE", flag + "_MSG_" + "Getting Null response");
+                            new syncAllData(ErroFlag).execute();
                         }
 
                     }
@@ -6957,6 +6999,7 @@ public class SyncMaster extends Activity {
             Log.e("NoStock dataupload",
                     String.valueOf(stock_array.getCount()));
         }
+
     }
 
 

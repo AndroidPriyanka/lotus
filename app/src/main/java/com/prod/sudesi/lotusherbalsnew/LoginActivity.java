@@ -827,6 +827,10 @@ public class LoginActivity extends Activity {
 
                                         //SetClosingISOpeningOnlyOnce();
                                         // checkAndSaveMonthly();
+
+                                        db.open();
+                                        db.deleteTables("attendance");
+                                        db.close();
                                         new GetAttendance().execute();
                                         //checkpresentornot(todaydate1);
 
@@ -894,6 +898,9 @@ public class LoginActivity extends Activity {
 
                                     //SetClosingISOpeningOnlyOnce();
                                     // checkAndSaveMonthly();
+                                    db.open();
+                                    db.deleteTables("attendance");
+                                    db.close();
                                     new GetAttendance().execute();
                                     //checkpresentornot(todaydate1);
 
@@ -933,6 +940,9 @@ public class LoginActivity extends Activity {
 
                                     //SetClosingISOpeningOnlyOnce();
                                     // checkAndSaveMonthly();
+                                    db.open();
+                                    db.deleteTables("attendance");
+                                    db.close();
                                     new GetAttendance().execute();
                                     //checkpresentornot(todaydate1);
 
@@ -2511,7 +2521,7 @@ public class LoginActivity extends Activity {
                             }
 
                         } else if (attstatus.equalsIgnoreCase("FAIL")) {
-                            ErroFlag = "1";
+                            ErroFlag = "0";
                             log = log + "-status fail";
                         }
                     } else {
@@ -2532,7 +2542,7 @@ public class LoginActivity extends Activity {
 
 
                 } catch (Exception e) {
-                    ErroFlag = "3";
+                    ErroFlag = "2";
                     Erro_function = "Attendance";
                     e.printStackTrace();
                     Error = e.toString();
@@ -2571,7 +2581,7 @@ public class LoginActivity extends Activity {
 
             if (ErroFlag.equalsIgnoreCase("0")) {
 
-                Toast.makeText(getApplicationContext(), "Getting null Response", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Attendance Sync Incomplete please try again!!", Toast.LENGTH_SHORT).show();
             }
             if (ErroFlag.equalsIgnoreCase("1")) {
 
@@ -2614,11 +2624,13 @@ public class LoginActivity extends Activity {
                 checkpresentornot(todaydate1);
 
             }
-            if (ErroFlag.equalsIgnoreCase("3")) {
+
+            if (ErroFlag.equalsIgnoreCase("2")) {
 
                 Toast.makeText(getApplicationContext(), "Database getting null", Toast.LENGTH_SHORT).show();
 
             }
+
 
         }
 

@@ -1718,6 +1718,7 @@ public class DashboardNewActivity extends Activity {
                                         .getProperty("AndroidCreatedDate")
                                         .toString();
 
+
                                 String MONTH = "", YEAR = "";
                                 if (AndroidCreatedDate == null) {
                                     AndroidCreatedDate = "";
@@ -1931,6 +1932,7 @@ public class DashboardNewActivity extends Activity {
                                             + db_Id;
 
                                 }
+                                syncstockdata = 1;
 
                             } else if (soap_result1.getProperty("status")
                                     .toString().equalsIgnoreCase("E")) {
@@ -1965,7 +1967,7 @@ public class DashboardNewActivity extends Activity {
                                 Log.e("", "soap_update_stock_row= "
                                         + soap_update_stock_row.toString());
 
-                                syncstockdata = 1;
+                                syncstockdata = 2;
                             } else if (soap_result1.getProperty("status")
                                     .toString().equalsIgnoreCase("SE")) {
 
@@ -2776,6 +2778,7 @@ public class DashboardNewActivity extends Activity {
                                             + "," + db_tester_id;// 10.10.2015
 
                                 }
+                                synctesterdata = 1;
 
                             } else if (soap_result_tester1
                                     .getProperty("status").toString()
@@ -2812,7 +2815,7 @@ public class DashboardNewActivity extends Activity {
                                 Log.e("", "soap_update_tester_row= "
                                         + soap_update_tester_row.toString());
                                 // Flag = "3";
-                                synctesterdata = 1;
+                                synctesterdata = 2;
                             } else if (soap_result_tester1
                                     .getProperty("status").toString()
                                     .equalsIgnoreCase("SE")) {
@@ -3272,6 +3275,8 @@ public class DashboardNewActivity extends Activity {
 
                             }
 
+                            syncbocdaywise = 1;
+
                         } else if (soap_result_boc_day1.getProperty("status")
                                 .toString().equalsIgnoreCase("E")) {
                             Log.e("pm", "pm7");
@@ -3301,7 +3306,7 @@ public class DashboardNewActivity extends Activity {
                                     + soap_update_boc_day_row.toString());
 
                             // Flag = "3";
-                            syncbocdaywise = 1;
+                            syncbocdaywise = 2;
                         } else if (soap_result_boc_day1.getProperty("status")
                                 .toString().equalsIgnoreCase("SE")) {
 
@@ -3726,6 +3731,8 @@ public class DashboardNewActivity extends Activity {
                             db_cumvalueid_array = db_cumvalueid_array + ","
                                     + db_stock_id;
 
+                            syncbocmonthwise = 1;
+
                         } else if (soap_result_monthwise1.getProperty("status")
                                 .toString().equalsIgnoreCase("E")) {
                             Log.e("pm", "pm7");
@@ -3756,7 +3763,7 @@ public class DashboardNewActivity extends Activity {
                             Log.e("", "soap_update_monthwise_row= "
                                     + soap_update_monthwise_row.toString());
 
-                            syncbocmonthwise = 1;
+                            syncbocmonthwise = 2;
                             // Flag = "3";
                         } else if (soap_result_monthwise1.getProperty("status")
                                 .toString().equalsIgnoreCase("SE")) {
@@ -3812,9 +3819,13 @@ public class DashboardNewActivity extends Activity {
                         && syncstockdata == 1 && synctesterdata == 1) {
 
                     Flag = "1";
-                } else {
+                } else if (syncbocdaywise == 2 && syncbocmonthwise == 2
+                        && syncstockdata == 2 && synctesterdata == 2) {
 
                     Flag = "2";
+                }else{
+
+                    Flag = "3";
                 }
 
             } catch (Exception e) {
@@ -3895,6 +3906,13 @@ public class DashboardNewActivity extends Activity {
 
 
             } else if (Flag.equalsIgnoreCase("2")) {
+
+                DisplayDialogMessage("No Record found to Data Download");
+
+				/*Toast.makeText(context, "Data Download Incomplete!!",
+						Toast.LENGTH_SHORT).show();
+*/
+            }else if (Flag.equalsIgnoreCase("3")) {
 
                /* boolean bocflag = true;
                 spe.putBoolean("Bocflag", bocflag);

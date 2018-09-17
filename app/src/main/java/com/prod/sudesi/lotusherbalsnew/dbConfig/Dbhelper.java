@@ -79,6 +79,7 @@ public class Dbhelper extends SQLiteOpenHelper {
     private static final String TABLE_CREATE_STOCK4 = "alter table stock add column close_amt text";
     private static final String TABLE_CREATE_STOCK5 = "alter table stock add column sold_amt text";
     private static final String TABLE_CREATE_STOCK6 = "alter table stock add column received_amt text";
+    private static final String TABLE_CREATE_STOCK7 = "alter table stock add column uploadflag text";
     private static final String TABLE_PRODUCT_MASTER1 = "alter table product_master add column SingleOffer text";
 
     private static final String TABLE_ALTER_ATTENDANCE1 = "alter table attendance add column logout_status text;";
@@ -240,6 +241,8 @@ public class Dbhelper extends SQLiteOpenHelper {
                 database.execSQL(TABLE_CREATE_STOCK5);
             if (!isColumnExists("stock", "received_amt"))
                 database.execSQL(TABLE_CREATE_STOCK6);
+            if (!isColumnExists("stock", "uploadflag"))
+                database.execSQL(TABLE_CREATE_STOCK7);
         }
 
 

@@ -597,6 +597,13 @@ public class Dbcon {
         Log.e("local database", "UPDATE stock table data");
     }
 
+    public void update_upload_flag(String id) {
+
+        String sql = "UPDATE stock SET uploadflag = '1' WHERE uploadflag = '0'AND db_id= '" + id + "'";
+        database.execSQL(sql);
+        Log.e("local database", "UPDATE stock table data");
+    }
+
     public void delete_stock_data() {
 
         String sql = "delete from stock where savedServer = '1'";
@@ -1672,6 +1679,7 @@ public class Dbcon {
         values.put("savedServer", "1");
         values.put("month", month);
         values.put("year", year);
+        values.put("uploadflag", "0");
 
 		/*values.put("MasterPackQty", masterpackqty);
 		values.put("MonoPackQty", monopackqty);
@@ -2317,7 +2325,8 @@ public class Dbcon {
         values.put("month", month_name);
         values.put("year", year_name);
         values.put("flag", "s");
-        Log.e("InsertStock", values.toString());
+        values.put("uploadflag", "0");
+        Log.e("InsertStock", "0");
 
         database.insert("stock", null, values);
 
@@ -2371,6 +2380,7 @@ public class Dbcon {
         values.put("month", month_name);
         values.put("year", year_name);
         values.put("flag", "s");
+        values.put("uploadflag", "0");
         Log.e("InsertStock", values.toString());
 
         database.insert("stock", null, values);
@@ -2456,6 +2466,7 @@ public class Dbcon {
                 "shadeNo = " + "'" + shadno + "'" + "," +
                 "insert_date = " + "'" + date + "'" +
                 ", flag = " + "'s'" +
+                ", uploadflag = " + "'0'" +
                 ", savedServer='0',updateDate ='" + updateDate + "' ,month='" + month_name + "', year='" + year_name + "' where db_id = " + "'" + db_id1 + "'" + "";
         Log.e("", "update stock sql==" + sql);
         database.execSQL(sql);
@@ -2495,6 +2506,7 @@ public class Dbcon {
                 "shadeNo = " + "'" + shadno + "'" + "," +
                 "insert_date = " + "'" + date + "'" +
                 ", flag = " + "'s'" +
+                ", uploadflag = " + "'0'" +
                 ", savedServer='0',updateDate ='" + updateDate + "' ,month='" + month_name + "', year='" + year_name + "' where db_id = " + "'" + db_id1 + "'" + "";
         Log.e("", "update stock sql==" + sql);
         database.execSQL(sql);
@@ -3996,6 +4008,7 @@ public class Dbcon {
         values.put("year", year_name);
         values.put("updateDate", updateDate);
         values.put("flag", "s");
+        values.put("uploadflag", "0");
         values.put("FLRCode",FLRCode);
         Log.e("InsertStock", values.toString());
 

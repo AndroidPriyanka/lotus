@@ -1473,7 +1473,8 @@ public class SaleCalculation extends Activity {
                                                                 year_name,
                                                                 insert_timestamp,
                                                                 insert_timestamp,
-                                                                "s"},
+                                                                "s",
+                                                        "0"},
                                                         new String[]{
                                                                 "shadeNo",
                                                                 "return_saleable",
@@ -1489,7 +1490,8 @@ public class SaleCalculation extends Activity {
                                                                 "year",
                                                                 "updateDate",
                                                                 "insert_date",
-                                                                "flag"},
+                                                                "flag",
+                                                        "uploadflag"},
                                                         "stock", "db_id");
                                         Cursor mCursor1;
                                         // db.open();

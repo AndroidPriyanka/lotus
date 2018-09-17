@@ -25,7 +25,7 @@ public class LotusWebservice {
 
 	//For current production using this method
 	public SoapPrimitive SaveAttendance(String empid, String date,
-			String attend, String absent_type, String lat, String lon) {
+			String attend, String absent_type, String lat, String lon,String flag) {
 		SoapPrimitive result = null;
 		try {
 			Log.v("", "attendace service called");
@@ -38,9 +38,10 @@ public class LotusWebservice {
 			request.addProperty("AbsentType", absent_type);
 			request.addProperty("lat", lat);
 			request.addProperty("lon", lon);
+			request.addProperty("flag", flag);
 
 			Log.e("AttendanceValues", empid + "---" + date + "---" + attend
-					+ "---" + absent_type + "---" + lat + "---" + lon);
+					+ "---" + absent_type + "---" + lat + "---" + lon + "---" + flag);
 
 			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
 					SoapEnvelope.VER11);// soap envelop with version

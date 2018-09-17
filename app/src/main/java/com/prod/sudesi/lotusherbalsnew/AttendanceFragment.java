@@ -17,11 +17,13 @@ import org.ksoap2.serialization.SoapPrimitive;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
@@ -101,6 +103,8 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
     String attendance_flag;
     String leavetype_flag;
+    String uploadflag;
+    boolean flag;
     private String attendanceDate1;
     private TextView currentMonth;
     private Button selectedDayMonthYearButton;
@@ -908,8 +912,13 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
                                     attendance_flag = "P";
                                     leavetype_flag = "";
+                                    if(flag==true){
+                                        uploadflag = "1";
+                                    }else {
+                                        uploadflag = "0";
+                                    }
                                     if (cd.isConnectingToInternet()) {
-                                        view.setBackgroundResource(R.drawable.green);
+                                        //view.setBackgroundResource(R.drawable.green);
                                         dialog.dismiss();
 
                                         try {
@@ -922,7 +931,8 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                                 new SaveAttendance().execute(attendance_flag, leavetype_flag);
                                             }*/
                                             //using below method for testing on UAT India and dubai
-                                            new SaveAttendance().execute(attendance_flag, leavetype_flag);
+                                            new SaveAttendance().execute(attendance_flag, leavetype_flag,uploadflag);
+                                            view.setBackgroundResource(R.drawable.green);
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -981,16 +991,22 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                                             RadioGroup group, int checkedId) {
                                                         // TODO Auto-generated method stub
                                                         attendance_flag = "A";
+                                                        if(flag==true){
+                                                            uploadflag = "1";
+                                                        }else {
+                                                            uploadflag = "0";
+                                                        }
                                                         if (rb_seek_leave.isChecked()) {
 
                                                             leavetype_flag = "Leave";
 
-                                                            view.setBackgroundResource(R.drawable.red);
+                                                            //view.setBackgroundResource(R.drawable.red);
                                                             d.dismiss();
                                                             dialog.dismiss();
 
                                                             try {
-                                                                new SaveAttendance().execute(attendance_flag, leavetype_flag);
+                                                                new SaveAttendance().execute(attendance_flag, leavetype_flag,uploadflag);
+                                                                view.setBackgroundResource(R.drawable.red);
                                                             } catch (Exception e) {
                                                                 e.printStackTrace();
                                                             }
@@ -1000,12 +1016,13 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                                         if (rb_weekly_off.isChecked()) {
                                                             leavetype_flag = "Weekly Off";
 
-                                                            view.setBackgroundResource(R.drawable.red);
+                                                            //view.setBackgroundResource(R.drawable.red);
                                                             d.dismiss();
                                                             dialog.dismiss();
 
                                                             try {
-                                                                new SaveAttendance().execute(attendance_flag, leavetype_flag);
+                                                                new SaveAttendance().execute(attendance_flag, leavetype_flag,uploadflag);
+                                                                view.setBackgroundResource(R.drawable.red);
                                                             } catch (Exception e) {
                                                                 e.printStackTrace();
                                                             }
@@ -1014,12 +1031,13 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                                         if (rb_holiday.isChecked()) {
                                                             leavetype_flag = "Holiday";
 
-                                                            view.setBackgroundResource(R.drawable.red);
+                                                            //view.setBackgroundResource(R.drawable.red);
                                                             d.dismiss();
                                                             dialog.dismiss();
 
                                                             try {
-                                                                new SaveAttendance().execute(attendance_flag, leavetype_flag);
+                                                                new SaveAttendance().execute(attendance_flag, leavetype_flag,uploadflag);
+                                                                view.setBackgroundResource(R.drawable.red);
                                                             } catch (Exception e) {
                                                                 e.printStackTrace();
                                                             }
@@ -1670,6 +1688,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
             attendance_flag = params[0];
             leavetype_flag = params[1];
+            uploadflag = params[2];
 
             final String[] columns = new String[]{"emp_id", "Adate",
                     "attendance", "absent_type", "lat", "lon", "savedServer", "month",
@@ -1689,10 +1708,10 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                     if (attendance_flag.equalsIgnoreCase("P") &&
                             attendance_flag.length() > 0 && attendance_flag != null) {
                         soap_attendance = service.SaveAttendance(username, attendanceDate1,
-                                attendance_flag, "", String.valueOf(lat), String.valueOf(lon));
+                                attendance_flag, "", String.valueOf(lat), String.valueOf(lon),uploadflag);
                     } else {
                         soap_attendance = service.SaveAttendance(username, attendanceDate1,
-                                attendance_flag, leavetype_flag, String.valueOf(lat), String.valueOf(lon));
+                                attendance_flag, leavetype_flag, String.valueOf(lat), String.valueOf(lon),uploadflag);
                     }
 
                     if (soap_attendance != null) {
@@ -1761,7 +1780,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
                         }
                     } else {
-                        ErroFlag = "3";
+                        ErroFlag = "0";
                         //String errors = "Soap in giving null while 'Attendance' and 'checkSyncFlag = 2' in  data Sync";
                         //we.writeToSD(errors.toString());
                         final Calendar calendar1 = Calendar
@@ -1777,7 +1796,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                     }
 
                 } catch (Exception e) {
-                    ErroFlag = "3";
+                    ErroFlag = "2";
                     Erro_function = "Attendance";
                     e.printStackTrace();
                     String Error = e.toString();
@@ -1813,10 +1832,14 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
             if (ErroFlag.equalsIgnoreCase("0")) {
 
-                Toast.makeText(getApplicationContext(), "Please Enter Today Date", Toast.LENGTH_SHORT).show();
+                DisplayDialogMessage("Attendance Sync Incomplete, Please try again!!");
+/*
+                Toast.makeText(getApplicationContext(), "Attendance Sync Incomplete please try again!!", Toast.LENGTH_SHORT).show();
+*/
             }
             if (ErroFlag.equalsIgnoreCase("1")) {
 
+                flag = false;
                 Toast.makeText(getApplicationContext(), "Attendance Successfully Sync", Toast.LENGTH_SHORT).show();
 
                 if (attendance_flag.equalsIgnoreCase("A")) {
@@ -1835,6 +1858,13 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                 }
 
             }
+
+            if (ErroFlag.equalsIgnoreCase("2")) {
+
+                Toast.makeText(getApplicationContext(), "Database getting null", Toast.LENGTH_SHORT).show();
+
+            }
+
 
         }
 
@@ -2253,6 +2283,24 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                         }
                     }
                 });
+    }
+
+    private void DisplayDialogMessage(String msg) {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceFragment.this);
+        builder.setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //do things
+                        flag = true;
+                        dialog.dismiss();
+                        //new SaveAttendance().execute(attendance_flag, leavetype_flag,uploadflag);
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
 }
