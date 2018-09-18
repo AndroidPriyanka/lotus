@@ -47,7 +47,9 @@ import org.json.JSONObject;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -111,8 +113,8 @@ public class SyncMaster extends Activity {
     ArrayList<HashMap<String, String>> listofimages = new ArrayList<HashMap<String, String>>();
     ArrayList<String> uploadidlist;
 
-      public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
-      //public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
+      //public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
+      public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
     private JSONArray array;
     String flag;
     String ErroFlag = "";
@@ -6704,11 +6706,16 @@ public class SyncMaster extends Activity {
 
         InputStream in = null;
         OutputStream out = null;
-        File file = new File(getFilesDir(), "sample.pdf");
+        String strDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+ File.separator + "Pdfs";
+        File fileDir = new File(strDir);
+        fileDir.mkdirs();   // crear la ruta si no existe
+        File file = new File(fileDir, "sample.pdf");
+        //File file = new File(getFilesDir(), "sample.pdf");
         Log.v("", "u1");
         try {
             in = assetManager.open("sample.pdf");
-            out = openFileOutput(file.getName(), Context.MODE_WORLD_READABLE);
+            out = new BufferedOutputStream(new FileOutputStream(file));
+            //out = openFileOutput(file.getName(), Context.MODE_WORLD_READABLE);
             Log.v("", "u1");
             copyFile(in, out);
             Log.v("", "u1");
@@ -6728,8 +6735,12 @@ public class SyncMaster extends Activity {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(
-                    Uri.parse("file://" + getFilesDir() + "/sample.pdf"),
+                    Uri.parse("file://" + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + "Pdfs" + "/sample.pdf"),
                     "application/pdf");
+
+            /*intent.setDataAndType(
+                    Uri.parse("file://" + getFilesDir() + "/sample.pdf"),
+                    "application/pdf");*/
 
             startActivity(intent);
 
@@ -6867,7 +6878,7 @@ public class SyncMaster extends Activity {
 
                                         db.open();
                                         db.update_stock_data(stockid);
-                                        Log.d("Data is Updating here ",
+                                        Log.e("Data is Updating here ",
                                                 stockid);
                                         db.close();
 
@@ -6884,7 +6895,7 @@ public class SyncMaster extends Activity {
 
                                         db.open();
                                         db.update_stock_data(stockid);
-                                        Log.d("Data is Updating here ",
+                                        Log.e("Data is Updating false",
                                                 stockid);
                                         db.close();
 
@@ -6902,7 +6913,7 @@ public class SyncMaster extends Activity {
                                     db.insertSyncLog(message, String.valueOf(n), "SaveStock()", Createddate,
                                             Createddate, username,
                                             "SaveStock()", "Fail");
-                                    Log.e("JSON_TRUE", flag + "_MSG_" + message);
+                                    Log.e("JSON_FALSE", flag + "_MSG_" + message);
                                     new syncAllData(ErroFlag).execute();
                                 }
                                 dissmissDialog();
@@ -6940,7 +6951,7 @@ public class SyncMaster extends Activity {
                             db.insertSyncLog("Getting Null response", String.valueOf(n), "uploaddata()", Createddate,
                                     Createddate, username,
                                     "SaveStock()", "Fail");
-                            Log.e("JSON_TRUE", flag + "_MSG_" + "Getting Null response");
+                            Log.e("JSON_NULL", flag + "_MSG_" + "Getting Null response");
                             new syncAllData(ErroFlag).execute();
                         }
 
@@ -6968,7 +6979,7 @@ public class SyncMaster extends Activity {
                                 "SaveStock()", "Fail");
 
 //                        Toast.makeText(context,"Stock Data not upload", Toast.LENGTH_SHORT).show();
-                        Log.e("JSON_ERROR", "ERROR");
+                        Log.e("JSON_ERROR", error.getMessage());
                         new syncAllData(ErroFlag).execute();
 
                     }

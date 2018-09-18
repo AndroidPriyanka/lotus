@@ -716,7 +716,7 @@ public class Dbcon {
         ArrayList<String> product_type_data = new ArrayList<String>();
 
         String selectquery = " select DISTINCT ProductType from product_master where ProductCategory = "
-                + "'" + ProductCategory + "'";
+                + "'" + ProductCategory + "'" + " AND ProductType != " + "'BABY CARE'";
 
         Cursor cursor = database.rawQuery(selectquery, null);
         if (cursor != null) {

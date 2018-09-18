@@ -29,7 +29,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/_30sdp"
+            android:layout_marginTop="@dimen/_20sdp"
            	android:visibility="visible"
             android:background="@drawable/abs1" />
 

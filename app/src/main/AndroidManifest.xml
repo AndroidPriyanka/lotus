@@ -25,14 +25,14 @@
         android:name=".TestApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name2"
+        android:label="@string/app_name_pro_curr"
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:manageSpaceActivity=".LotusMainActivity">
         <activity
             android:name="com.prod.sudesi.lotusherbalsnew.LotusMainActivity"
-            android:label="@string/app_name2">
+            android:label="@string/app_name_pro_curr">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
