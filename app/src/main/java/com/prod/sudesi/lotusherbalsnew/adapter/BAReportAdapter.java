@@ -50,17 +50,15 @@ public class BAReportAdapter extends BaseAdapter {
 
 	static class ViewHolder {
 
-		TextView tv_MonthsP;
-		TextView tv_skinbalP;
-		TextView tv_colorbalP;
-		TextView tv_growthP_skin;
-		TextView tv_growthP_color;
-
-		TextView tv_MonthsC;
-		TextView tv_skinbalC;
-		TextView tv_colorbalC;
-		TextView tv_growthC_skin;
-		TextView tv_growthC_color;
+		TextView tv_bar_month;
+		TextView tv_bar_AchivlhP;
+		TextView tv_bar_AchivlmP;
+		TextView tv_bar_targetLH;
+		TextView tv_bar_targetLM;
+		TextView tv_bar_AchivlhC;
+		TextView tv_bar_AchivlmC;
+		TextView tv_bar_GrowlhC;
+		TextView tv_bar_GrowlmC;
 
 	}
 
@@ -69,42 +67,19 @@ public class BAReportAdapter extends BaseAdapter {
 		// TODO Auto-generated method stub
 		if (convertView == null) {
 			viewHolder = new ViewHolder();// create new holder
-			convertView = inflater.inflate(R.layout.layout_ba_year_wise_report,
+			convertView = inflater.inflate(R.layout.layout_ba_year_wise_report_new,
 					null);// inflater for view
-			viewHolder.tv_MonthsP = (TextView) convertView
-					.findViewById(R.id.tv_bar_monthP);
-			viewHolder.tv_skinbalP = (TextView) convertView
-					.findViewById(R.id.tv_bar_SkinbalP);
-			viewHolder.tv_colorbalP = (TextView) convertView
-					.findViewById(R.id.tv_bar_ColorbalP);
-			viewHolder.tv_growthP_skin = (TextView) convertView
-					.findViewById(R.id.tv_bar_growthP_skin);
-			viewHolder.tv_growthP_color = (TextView) convertView
-					.findViewById(R.id.tv_bar_growthP_color);
-
-			viewHolder.tv_MonthsC = (TextView) convertView
-					.findViewById(R.id.tv_bar_monthC);
-			viewHolder.tv_skinbalC = (TextView) convertView
-					.findViewById(R.id.tv_bar_SkinbalC);
-
-			viewHolder.tv_colorbalC = (TextView) convertView
-					.findViewById(R.id.tv_bar_ColorbalC);
-
-			viewHolder.tv_growthC_skin = (TextView) convertView
-					.findViewById(R.id.tv_bar_growthC_skin);
-			viewHolder.tv_growthC_color = (TextView) convertView
-					.findViewById(R.id.tv_bar_growthC_color);
+			viewHolder.tv_bar_month = (TextView) convertView.findViewById(R.id.tv_bar_month);
+			viewHolder.tv_bar_AchivlhP = (TextView) convertView.findViewById(R.id.tv_bar_AchivlhP);
+			viewHolder.tv_bar_AchivlmP = (TextView) convertView.findViewById(R.id.tv_bar_AchivlmP);
+			viewHolder.tv_bar_targetLH = (TextView) convertView.findViewById(R.id.tv_bar_targetLH);
+			viewHolder.tv_bar_targetLM = (TextView) convertView.findViewById(R.id.tv_bar_targetLM);
+			viewHolder.tv_bar_AchivlhC = (TextView) convertView.findViewById(R.id.tv_bar_AchivlhC);
+			viewHolder.tv_bar_AchivlmC = (TextView) convertView.findViewById(R.id.tv_bar_AchivlmC);
+			viewHolder.tv_bar_GrowlhC = (TextView) convertView.findViewById(R.id.tv_bar_GrowlhC);
+			viewHolder.tv_bar_GrowlmC = (TextView) convertView.findViewById(R.id.tv_bar_GrowlmC);
 
 			convertView.setTag(viewHolder);
-
-			/*
-			 * viewHolder.browse.setOnClickListener(new OnClickListener() {
-			 * 
-			 * @Override public void onClick(View v) { // TODO Auto-generated
-			 * method stub
-			 * 
-			 * } });
-			 */
 
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
@@ -114,23 +89,24 @@ public class BAReportAdapter extends BaseAdapter {
 		HashMap<String, String> map = new HashMap<String, String>();
 		map = data.get(position);
 
-		String py = map.get("PreviousYearP");
-		String samtp = map.get("SkinAmountP");
-		String camtp = map.get("ColorAmountP");
-		String gp_skin = map.get("GrowthPSkin");
-		String gp_color = map.get("GrowthPColor");
+		String MONTH = map.get("MONTH");
+		String samtp = map.get("NetAmountPSkin");
+		String camtp = map.get("NetAmountPColor");
+		String TargetSkin = map.get("TargetAmountCSkin");
+		String TargetColor = map.get("TargetAmountCColor");
 		
-		String cy = map.get("CurrentYearC");
-		String samtc = map.get("SkinAmountC");
-		String camtc = map.get("ColorAmountC");
-		String gc_skin = map.get("GrowthCSkin");
-		String gc_color = map.get("GrowthCColor");
+		String samtc = map.get("NetAmountCSkin");
+		String camtc = map.get("NetAmountCColor");
+		String GrowthSkin = map.get("GrowthSkin");
+		String GrowthColor = map.get("GrowthColor");
+
+
 		
 		
 
-		if (py.equalsIgnoreCase("anyType{}") || py==null ||py.equalsIgnoreCase("null") ) {
+		if (MONTH.equalsIgnoreCase("anyType{}") || MONTH==null ||MONTH.equalsIgnoreCase("null") ) {
 
-			py = "0";
+			MONTH = "0";
 		}
 
 		if (samtp.equalsIgnoreCase("anyType{}")|| samtp==null|| samtp.equalsIgnoreCase("null")) {
@@ -143,20 +119,15 @@ public class BAReportAdapter extends BaseAdapter {
 			camtp = "0";
 		}
 
-		if (gp_skin.equalsIgnoreCase("anyType{}") ||gp_skin ==null||gp_skin.equalsIgnoreCase("null")) {
+		if (TargetSkin.equalsIgnoreCase("anyType{}") ||TargetSkin ==null||TargetSkin.equalsIgnoreCase("null")) {
 
-			gp_skin = "0";
+			TargetSkin = "0";
 		}
-		if (gp_color.equalsIgnoreCase("anyType{}") ||gp_color ==null||gp_color.equalsIgnoreCase("null")) {
+		if (TargetColor.equalsIgnoreCase("anyType{}") ||TargetColor ==null||TargetColor.equalsIgnoreCase("null")) {
 
-			gp_color = "0";
+			TargetColor = "0";
 		}
-		
-		
-		if (cy.equalsIgnoreCase("anyType{}")|| cy==null||cy.equalsIgnoreCase("null")) {
 
-			cy = "0";
-		}
 		if (samtc.equalsIgnoreCase("anyType{}") || samtc==null||samtc.equalsIgnoreCase("null")) {
 
 			samtc = "0";
@@ -166,40 +137,26 @@ public class BAReportAdapter extends BaseAdapter {
 
 			camtc = "0";
 		}
-		if (gc_skin.equalsIgnoreCase("anyType{}")|| gc_skin==null||gc_skin.equalsIgnoreCase("null")) {
+		if (GrowthSkin.equalsIgnoreCase("anyType{}")|| GrowthSkin==null||GrowthSkin.equalsIgnoreCase("null")) {
 
-			gc_skin = "0";
+			GrowthSkin = "0";
 		}
-		if (gc_color.equalsIgnoreCase("anyType{}")|| gc_color==null||gc_color.equalsIgnoreCase("null")) {
+		if (GrowthColor.equalsIgnoreCase("anyType{}")|| GrowthColor==null||GrowthColor.equalsIgnoreCase("null")) {
 
-			gc_color = "0";
+			GrowthColor = "0";
 		}
-		
-		
 
-		/*viewHolder.tv_MonthsP.setText(map.get("PreviousYearP"));
-		viewHolder.tv_netbalP.setText(map.get("NetAmountP"));
-		viewHolder.tv_growthP.setText(map.get("GrowthP"));
-		viewHolder.tv_MonthsC.setText(map.get("CurrentYearC"));
-		viewHolder.tv_netbalC.setText(map.get("NetAmountC"));
-		viewHolder.tv_growthC.setText(map.get("GrowthC"));*/
-		
-		viewHolder.tv_MonthsP.setText(py);
-		viewHolder.tv_skinbalP.setText(samtp);
-		viewHolder.tv_colorbalP.setText(camtp);
-		
-		viewHolder.tv_growthP_skin.setText(gp_skin);
-		viewHolder.tv_growthP_color.setText(gp_color);
-		
-		viewHolder.tv_MonthsC.setText(cy);
-		viewHolder.tv_skinbalC.setText(samtc);
-		viewHolder.tv_colorbalC.setText(camtc);
-		viewHolder.tv_growthC_skin.setText(gc_skin);
-		viewHolder.tv_growthC_color.setText(gc_color);
 
-		// RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-		// 70, 70);
-		// params.setMargins(5,15,0, 0);
+		viewHolder.tv_bar_month.setText(MONTH);
+		viewHolder.tv_bar_AchivlhP.setText(samtp);
+		viewHolder.tv_bar_AchivlmP.setText(camtp);
+		viewHolder.tv_bar_targetLH.setText(TargetSkin);
+		viewHolder.tv_bar_targetLM.setText(TargetColor);
+		viewHolder.tv_bar_AchivlhC.setText(samtc);
+		viewHolder.tv_bar_AchivlmC.setText(camtc);
+		viewHolder.tv_bar_GrowlhC.setText(GrowthSkin);
+		viewHolder.tv_bar_GrowlmC.setText(GrowthColor);
+
 
 		return convertView;
 

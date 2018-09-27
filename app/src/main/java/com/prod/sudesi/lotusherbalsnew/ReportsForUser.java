@@ -86,7 +86,7 @@ public class ReportsForUser extends Activity {
 
     private ProgressDialog mProgress = null;
 
-    TextView tv_h_username, txt_lh, txt_lhm, txt_net_title;//txt_lh_clo, txt_lhm_clo,txt_closing_title
+    TextView tv_h_username;//, txt_lh, txt_lhm, txt_net_title;//txt_lh_clo, txt_lhm_clo,txt_closing_title
     Button btn_home, btn_logout;
     AutoCompleteTextView sp_outletName;
     CardView outletcardview;
@@ -212,11 +212,11 @@ public class ReportsForUser extends Activity {
         if (!role.equalsIgnoreCase("DUB")) {
             //rb_t = (RadioButton) findViewById(R.id.rb_tester);
             rg_lhm_choice = (RadioGroup) findViewById(R.id.rg_lhm_choice);
-            txt_lh = (TextView) findViewById(R.id.txt_lh);
-            txt_lhm = (TextView) findViewById(R.id.txt_lhm);
+            //txt_lh = (TextView) findViewById(R.id.txt_lh);
+            //txt_lhm = (TextView) findViewById(R.id.txt_lhm);
             //txt_lh_clo = (TextView) findViewById(R.id.txt_lh_clo);
             //txt_lhm_clo = (TextView) findViewById(R.id.txt_lhm_clo);
-            txt_net_title = (TextView) findViewById(R.id.txt_net_title);
+            //txt_net_title = (TextView) findViewById(R.id.txt_net_title);
             //txt_closing_title = (TextView) findViewById(R.id.txt_closing_title);
 
             tr_total_stock = (TableRow) findViewById(R.id.tr_total_stock);
@@ -309,12 +309,12 @@ public class ReportsForUser extends Activity {
                         rb_attendance.setChecked(false);
                         rg_lhm_choice.setVisibility(View.VISIBLE);
                         //rg_lhm_choice.clearCheck();
-                        getNetAmountSum();
-                        txt_lh.setVisibility(View.VISIBLE);
-                        txt_lhm.setVisibility(View.VISIBLE);
+                        //getNetAmountSum();
+                        //txt_lh.setVisibility(View.VISIBLE);
+                        //txt_lhm.setVisibility(View.VISIBLE);
                         //txt_lh_clo.setVisibility(View.VISIBLE);
                         //txt_lhm_clo.setVisibility(View.VISIBLE);
-                        txt_net_title.setVisibility(View.VISIBLE);
+                        //txt_net_title.setVisibility(View.VISIBLE);
                         //txt_closing_title.setVisibility(View.VISIBLE);
 
 
@@ -383,13 +383,15 @@ public class ReportsForUser extends Activity {
                         if (s.equalsIgnoreCase("LH")) {
 
                             displayCategory = "SKIN";
-                            new ShowReportofStock().execute();
                             ShowingReportTotalSum(displayCategory);
+                            new ShowReportofStock().execute();
+
                         } else if (s.equalsIgnoreCase("LHM")) {
 
                             displayCategory = "COLOR";
-                            new ShowReportofStock().execute();
                             ShowingReportTotalSum(displayCategory);
+                            new ShowReportofStock().execute();
+
                         }
 
                     }
@@ -418,11 +420,11 @@ public class ReportsForUser extends Activity {
                         table_row_attend.setVisibility(View.VISIBLE);
                         report_attendance = new ShowReportofAttendance();
                         report_attendance.execute();
-                        txt_lh.setVisibility(View.GONE);
-                        txt_lhm.setVisibility(View.GONE);
+                        //txt_lh.setVisibility(View.GONE);
+                        //txt_lhm.setVisibility(View.GONE);
                         //txt_lh_clo.setVisibility(View.GONE);
                         //txt_lhm_clo.setVisibility(View.GONE);
-                        txt_net_title.setVisibility(View.GONE);
+                        //txt_net_title.setVisibility(View.GONE);
                         //txt_closing_title.setVisibility(View.GONE);
                     } else {
 
@@ -1079,8 +1081,8 @@ public class ReportsForUser extends Activity {
         int sum_lh = db.getReportSum("SKIN");
         int sum_lhm = db.getReportSum("COLOR");
 
-        txt_lh.setText("= "+"\u20B9 " +String.valueOf(sum_lh));
-        txt_lhm.setText("= "+"\u20B9 " +String.valueOf(sum_lhm));
+        //txt_lh.setText("= "+"\u20B9 " +String.valueOf(sum_lh));
+        //txt_lhm.setText("= "+"\u20B9 " +String.valueOf(sum_lhm));
 
     }
 

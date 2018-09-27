@@ -70,7 +70,7 @@ public class BAYearWiseReport extends Activity {
 
     ConnectionDetector cd;
 
-    LinearLayout colorskinlayout;
+    //LinearLayout colorskinlayout;
     TableRow yearlayoutdubai, yearlayout;
 
     String PreviousYear,CurrentYear;
@@ -81,7 +81,7 @@ public class BAYearWiseReport extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_bayear_wise_report);
+        setContentView(R.layout.activity_bayear_wise_report_new);
         //////////Crash Report
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
@@ -104,12 +104,12 @@ public class BAYearWiseReport extends Activity {
         btn_logout = (Button) findViewById(R.id.btn_logout);
 
         yearlayoutdubai = (TableRow) findViewById(R.id.yearlayoutdubai);
-        colorskinlayout = (LinearLayout) findViewById(R.id.colorskinlayout);
+        //colorskinlayout = (LinearLayout) findViewById(R.id.colorskinlayout);
         yearlayout = (TableRow) findViewById(R.id.yearlayout);
 
         if (role.equalsIgnoreCase("DUB")) {
             yearlayout.setVisibility(View.GONE);
-            colorskinlayout.setVisibility(View.GONE);
+            //colorskinlayout.setVisibility(View.GONE);
             yearlayoutdubai.setVisibility(View.VISIBLE);
         }
 
@@ -339,7 +339,7 @@ public class BAYearWiseReport extends Activity {
 
             // //soap call
             Log.e("", "not2==" + username);
-            resultsRequestSOAP = service.GetBAOutletSales(username);
+            resultsRequestSOAP = service.GetAchievementReport(username);
             //Log.e("","resultsRequestSOAP=="+resultsRequestSOAP.toString());
 
             if (resultsRequestSOAP != null) {
@@ -359,38 +359,24 @@ public class BAYearWiseReport extends Activity {
                     //		.equals("false")) {
                     if (getmessaage != null) {
 
-//						map.put("PreviousYearP", String.valueOf(getmessaage.getProperty("PreviousYearP")));
-//						
-//						map.put("NetAmountP", String.valueOf(getmessaage.getProperty("NetAmountP")));
-//						
-//						map.put("GrowthP",String.valueOf(getmessaage.getProperty("GrowthP")));
-//						
-//						map.put("CurrentYearC",String.valueOf(getmessaage.getProperty("CurrentYearC")));
-//						
-//						map.put("NetAmountC",String.valueOf(getmessaage.getProperty("NetAmountC")));
-//						
-//						map.put("GrowthC",String.valueOf(getmessaage.getProperty("GrowthC")));
 
-                        map.put("PreviousYearP", String.valueOf(getmessaage.getProperty("PreviousYearP")));
+                        map.put("MONTH", String.valueOf(getmessaage.getProperty("MONTH")));
 
-                        map.put("SkinAmountP", String.valueOf(getmessaage.getProperty("SkinAmountP")));
+                        map.put("NetAmountPSkin", String.valueOf(getmessaage.getProperty("NetAmountPSkin")));
 
-                        map.put("ColorAmountP", String.valueOf(getmessaage.getProperty("ColorAmountP")));
+                        map.put("NetAmountPColor", String.valueOf(getmessaage.getProperty("NetAmountPColor")));
 
-                        //map.put("GrowthP",String.valueOf(getmessaage.getProperty("GrowthP")));
-                        map.put("GrowthPSkin", String.valueOf(getmessaage.getProperty("GrowthPSkin")));
+                        map.put("NetAmountCSkin", String.valueOf(getmessaage.getProperty("NetAmountCSkin")));
 
-                        map.put("GrowthPColor", String.valueOf(getmessaage.getProperty("GrowthPColor")));
+                        map.put("NetAmountCColor", String.valueOf(getmessaage.getProperty("NetAmountCColor")));
 
-                        map.put("CurrentYearC", String.valueOf(getmessaage.getProperty("CurrentYearC")));
+                        map.put("TargetAmountCSkin", String.valueOf(getmessaage.getProperty("TargetAmountCSkin")));
 
-                        map.put("SkinAmountC", String.valueOf(getmessaage.getProperty("SkinAmountC")));
+                        map.put("TargetAmountCColor", String.valueOf(getmessaage.getProperty("TargetAmountCColor")));
 
-                        map.put("ColorAmountC", String.valueOf(getmessaage.getProperty("ColorAmountC")));
+                        map.put("GrowthSkin", String.valueOf(getmessaage.getProperty("GrowthSkin")));
 
-                        //map.put("GrowthC",String.valueOf(getmessaage.getProperty("GrowthC")));
-                        map.put("GrowthCSkin", String.valueOf(getmessaage.getProperty("GrowthCSkin")));
-                        map.put("GrowthCColor", String.valueOf(getmessaage.getProperty("GrowthCColor")));
+                        map.put("GrowthColor", String.valueOf(getmessaage.getProperty("GrowthColor")));
 
 
                         todaymessagelist.add(map);
@@ -495,8 +481,7 @@ public class BAYearWiseReport extends Activity {
 
     private void loadReports() {
         adapter = new BAReportAdapter(BAYearWiseReport.this, todaymessagelist);
-        lv_ba_report.setAdapter(adapter);// add custom adapter to
-        // listview
+        lv_ba_report.setAdapter(adapter);// add custom adapter to listview
     }
 
     private void loadReportsforDubai() {

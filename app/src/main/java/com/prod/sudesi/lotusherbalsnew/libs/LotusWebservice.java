@@ -15,8 +15,8 @@ public class LotusWebservice {
 
 	// -----------------Mahi
 
-	String url = "http://lotusws.lotussmartforce.com/Service1.svc";// production lotus server
-	//String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
+	//String url = "http://lotusws.lotussmartforce.com/Service1.svc";// production lotus server
+	String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
 
 
 	public LotusWebservice(Context con) {
@@ -644,6 +644,38 @@ public class LotusWebservice {
 			e.printStackTrace();
 		}
 		Log.e("GetBAOutletSales==", result.toString());
+		return result;
+	}
+
+	public SoapObject GetAchievementReport(String EmpID) {
+
+		SoapObject result = null;
+		try {
+
+			SoapObject request = new SoapObject("http://tempuri.org/",
+					"GetAchievementReport");
+
+			request.addProperty("EmpId", EmpID);
+
+			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+					SoapEnvelope.VER11);// soap envelop with version
+			envelope.setOutputSoapObject(request); // set request object
+			envelope.dotNet = true;
+
+			HttpTransportSE androidHttpTransport = new HttpTransportSE(url,60000);// http
+			// transport
+			// call
+			androidHttpTransport.call("http://tempuri.org/IService1/GetAchievementReport", envelope);
+
+			androidHttpTransport.getServiceConnection().disconnect();  //23.04.2015
+
+			result = (SoapObject) envelope.getResponse();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Log.e("GetAchievementReport==", result.toString());
 		return result;
 	}
 
@@ -1805,6 +1837,66 @@ public class LotusWebservice {
 		return result;
 	}
 
+	public SoapPrimitive SaveBocTarget(String Boc, String empid, String productcategory,String amount) {
+		SoapPrimitive result = null;
+		try {
+			Log.v("", "sync stock service called");
+			SoapObject request = new SoapObject("http://tempuri.org/",
+					"SaveBocTarget");
+			// /// send link
+			request.addProperty("Boc", Boc);
+			request.addProperty("empid", empid);
+			request.addProperty("productcategory", productcategory);
+			request.addProperty("amount", amount);
+			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+					SoapEnvelope.VER11);// soap envelop with version
+			envelope.setOutputSoapObject(request); // set request object
+			envelope.dotNet = true;
+
+			HttpTransportSE androidHttpTransport = new HttpTransportSE(url,60000);// http
+			// transport
+			// call
+			androidHttpTransport.call(
+					"http://tempuri.org/IService1/SaveBocTarget", envelope);
+
+			result = (SoapPrimitive) envelope.getResponse();
+			Log.e("SaveBocTarget=", result.toString());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public SoapPrimitive GetBocTarget(String Boc, String empid, String productcategory) {
+		SoapPrimitive result = null;
+		try {
+			Log.v("", "sync stock service called");
+			SoapObject request = new SoapObject("http://tempuri.org/",
+					"GetBocTarget");
+			// /// send link
+			request.addProperty("Boc", Boc);
+			request.addProperty("empid", empid);
+			request.addProperty("productcategory", productcategory);
+			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+					SoapEnvelope.VER11);// soap envelop with version
+			envelope.setOutputSoapObject(request); // set request object
+			envelope.dotNet = true;
+
+			HttpTransportSE androidHttpTransport = new HttpTransportSE(url,60000);// http
+			// transport
+			// call
+			androidHttpTransport.call(
+					"http://tempuri.org/IService1/GetBocTarget", envelope);
+
+			result = (SoapPrimitive) envelope.getResponse();
+			Log.e("GetBocTarget=", result.toString());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 	//------------------------------END--------------------------------------
 	
 }

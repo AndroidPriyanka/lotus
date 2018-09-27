@@ -710,6 +710,39 @@ public class Dbcon {
 
     }
 
+    public ArrayList<String> getproductcategoryforTarget() {
+
+        // TODO Auto-generated method stub
+        Log.e("", "chch");
+
+        String selectQuery = "SELECT  DISTINCT ProductCategory FROM product_master";
+        Log.e("", "chch");
+
+        Cursor cursor = database.rawQuery(selectQuery, null);
+        Log.e("", "chch");
+        ArrayList<String> data = new ArrayList<String>();
+        Log.e("", "chch");
+        if (cursor != null) {
+            Log.e("", "chch");
+            if (cursor.moveToFirst()) {
+                Log.e("", "chch");
+                do {
+                    Log.e("", "chch");
+                    // get the data into array,or class variable
+                    data.add(cursor.getString(cursor.getColumnIndex("ProductCategory")));
+
+                    Log.e("", "data inserted=" + data);
+                } while (cursor.moveToNext());
+            }
+        } else {
+
+            //Toast.makeText(context, "No data available", Toast.LENGTH_LONG);
+        }
+        database.close();
+        return data;
+
+    }
+
     @SuppressLint("ShowToast")
     public ArrayList<String> getproductype1(String ProductCategory) {
         // TODO Auto-generated method stub
@@ -4094,6 +4127,16 @@ public class Dbcon {
     public Cursor getReportCategorydata(String Category) {
 
         String selectquery = "select  product_type, sum(opening_stock),sum(stock_received),sum(close_bal),sum(opening_amt),sum(received_amt),sum(close_amt) from stock where product_category = '" + Category + "' Group BY product_type";  // new join query with Product Master table 11.05.2015//04.07.2015
+
+
+        Cursor cursor = database.rawQuery(selectquery,null);
+
+        return cursor;
+    }
+
+    public Cursor getReportCategorydatatotal(String Category) {
+
+        String selectquery = "select sum(opening_amt),sum(received_amt),sum(close_amt) from stock where product_category = '" + Category + "'";  // new join query with Product Master table 11.05.2015//04.07.2015
 
 
         Cursor cursor = database.rawQuery(selectquery,null);

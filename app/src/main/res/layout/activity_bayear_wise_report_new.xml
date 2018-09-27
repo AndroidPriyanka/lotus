@@ -1,0 +1,494 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include layout="@layout/headernew" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+      <!--  <LinearLayout
+            android:id="@+id/colorskinlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <View
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="@dimen/_10sdp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:background="#ebb0d0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="COLOR" />
+
+            <View
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="@dimen/_10sdp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:background="#FFE4E1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="SKIN" />
+
+        </LinearLayout>-->
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/report_textview_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_stock"
+                android:gravity="center"
+                android:text="BA TARGET VS ACHIVEMENT" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/yearlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="3"
+            >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:background="@layout/tableborder_new"
+                android:gravity="center"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/tv_bar_Previous_year_p1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:textSize="@dimen/_14sdp"
+                    android:textColor="#FFEBCD"
+                    android:text="2017" />
+
+                <TextView
+                    android:textSize="@dimen/_14sdp"
+                    android:textColor="#FFEBCD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="-" />
+
+                <TextView
+                    android:id="@+id/tv_bar_Previous_year_p2"
+                    android:textSize="@dimen/_14sdp"
+                    android:textColor="#FFEBCD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="2018" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:background="@layout/tableborder_stock"
+                >
+
+                <TextView
+                    android:id="@+id/tv_bar_Current_year_n1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_14sdp"
+                    android:textColor="#FFEBCD"
+                    android:gravity="right"
+                    android:text="2018" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_14sdp"
+                    android:textColor="#FFEBCD"
+                    android:gravity="center"
+                    android:text="-" />
+
+                <TextView
+                    android:id="@+id/tv_bar_Current_year_n2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_14sdp"
+                    android:textColor="#FFEBCD"
+                    android:gravity="left"
+                    android:text="2019" />
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/yearlayoutdubai"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_20sdp"
+            android:weightSum="2"
+            android:visibility="gone">
+
+
+            <TextView
+                android:id="@+id/tvPreviousyear"
+                style="@style/report_textview_heading"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="#841F55"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="2016" />
+
+            <TextView
+                android:id="@+id/tvCurrentyear"
+                style="@style/report_textview_heading"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="#841F55"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:text="2017" />
+
+
+        </TableRow>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp">
+
+            <TableRow
+                android:id="@+id/tr_stock_report"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="3">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:background="#841F55"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        style="@style/report_textview_heading"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.7"
+                        android:background="@layout/tableborder_new"
+                        android:gravity="center"
+                        android:text="BOC" />
+
+
+                    <!--<TextView
+                        style="@style/report_textview_heading"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2.3"
+                        android:background="@layout/tableborder_stock"
+                        android:gravity="center"
+                        android:text="ACHIVEMENT" />-->
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:background="@layout/tableborder_header"
+                        android:orientation="vertical"
+                        android:layout_weight="2.3"
+                        android:gravity="center"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:background="@layout/tableborder_new"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                style="@style/report_textview_heading"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="Achievement" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:weightSum="1">
+
+                            <TextView
+                                style="@style/report_textview_heading"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.5"
+                                android:background="@layout/tableborder_new"
+                                android:gravity="center"
+                                android:text="LH" />
+
+                            <TextView
+                                style="@style/report_textview_heading"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.5"
+                                android:background="@layout/tableborder_new"
+                                android:gravity="center"
+                                android:text="LM" />
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                    <!--<TextView
+                        style="@style/report_textview_heading"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@layout/tableborder_stock"
+                        android:gravity="center"
+                        android:text="Growth" />-->
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="2"
+                    android:background="#841F55"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <!--<TextView
+                        style="@style/report_textview_heading"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@layout/tableborder_stock"
+                        android:gravity="center"
+                        android:text="TARGET" />-->
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:background="@layout/tableborder_header"
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:background="@layout/tableborder_header"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                style="@style/report_textview_heading"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="Target" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:weightSum="1">
+
+                            <TextView
+                                style="@style/report_textview_heading"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.5"
+                                android:background="@layout/tableborder_header"
+                                android:gravity="center"
+                                android:text="LH" />
+
+                            <TextView
+                                style="@style/report_textview_heading"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.5"
+                                android:background="@layout/tableborder_header"
+                                android:gravity="center"
+                                android:text="LM" />
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                    <!--<TextView
+                        style="@style/report_textview_heading"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@layout/tableborder_stock"
+                        android:gravity="center"
+                        android:text="ACHIVEMENT" />-->
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:background="@layout/tableborder_header"
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:background="@layout/tableborder_header"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                style="@style/report_textview_heading"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="Achievement" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:weightSum="1">
+
+                            <TextView
+                                style="@style/report_textview_heading"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.5"
+                                android:background="@layout/tableborder_header"
+                                android:gravity="center"
+                                android:text="LH" />
+
+                            <TextView
+                                style="@style/report_textview_heading"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.5"
+                                android:background="@layout/tableborder_header"
+                                android:gravity="center"
+                                android:text="LM" />
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                   <!-- <TextView
+                        style="@style/report_textview_heading"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@layout/tableborder_stock"
+                        android:gravity="center"
+                        android:text="Growth" />-->
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:background="@layout/tableborder_header"
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:background="@layout/tableborder_header"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                style="@style/report_textview_heading"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="Growth" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:weightSum="1">
+
+                            <TextView
+                                style="@style/report_textview_heading"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.5"
+                                android:background="@layout/tableborder_header"
+                                android:gravity="center"
+                                android:text="LH" />
+
+                            <TextView
+                                style="@style/report_textview_heading"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.5"
+                                android:background="@layout/tableborder_header"
+                                android:gravity="center"
+                                android:text="LM" />
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                </LinearLayout>
+
+            </TableRow>
+        </TableLayout>
+
+        <ListView
+            android:id="@+id/listView_ba_year_report"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            ></ListView>
+    </LinearLayout>
+
+</LinearLayout>

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -58,7 +60,8 @@ public class DashboardNewActivity extends Activity {
     SharedPreferences.Editor spe;
     private double lon = 0.0, lat = 0.0;
     String attendanceDate = "", attendmonth;
-    String yesterdaydate1 = "";
+    String yesterdaydate1 = "",strCategory;
+    String skincategory, colorcategory;
 
     Button btn_attendance, btn_stock, btn_return, btn_visibility,
             btn_notification, btn_reports, btn_datasync, btn_BAreport,
@@ -73,6 +76,8 @@ public class DashboardNewActivity extends Activity {
     public static ProgressDialog mProgress;
     public static AlertDialog.Builder alertDialogBuilder = null;
     public static AlertDialog.Builder alertDialogBuilder1 = null;
+
+    private ArrayList<String> categoryDetailsArraylist;
 
 
     private AlarmManagerBroadcastReceiver alarm;
@@ -380,8 +385,7 @@ public class DashboardNewActivity extends Activity {
                 if (role.equalsIgnoreCase("FLR")) {
                     Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
                } else {
-                    Intent i = new Intent(getApplicationContext(),
-                            BAYearWiseReport.class);
+                    Intent i = new Intent(getApplicationContext(),BAYearWiseReport.class);
                     startActivity(i);
                 }
 
@@ -480,10 +484,56 @@ public class DashboardNewActivity extends Activity {
 
                 /*startActivity(new Intent(getApplicationContext(),
                         SupervisorAttendance.class));*/
-                Toast.makeText(mContext,
-                        "Coming Soon...!",
-                        Toast.LENGTH_LONG).show();
+                //Toast.makeText(mContext,"Coming Soon...!",Toast.LENGTH_LONG).show();
 
+                Intent i = new Intent(getApplicationContext(), TargetActivity.class);
+                startActivity(i);
+
+                /*fetchCategoryDetails();
+
+                String div = sp.getString("div", "");
+                if (div.equalsIgnoreCase("LH & LHM") || div.equalsIgnoreCase("LH & LM")) {
+
+                    if(skincategory != null && skincategory.length()>0 &&
+                            colorcategory != null && colorcategory.length()>0) {
+                        if (skincategory.equalsIgnoreCase("True") && colorcategory.equalsIgnoreCase("True")) {
+
+                            Toast.makeText(getApplicationContext(), "Already Insert Your Target", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Intent i = new Intent(getApplicationContext(), TargetActivity.class);
+                            startActivity(i);
+                        }
+                    }
+                }
+
+                if (div.equalsIgnoreCase("LH")) {
+
+                    if(skincategory != null && skincategory.length()>0) {
+                        if (skincategory.equalsIgnoreCase("True")) {
+
+                            Toast.makeText(getApplicationContext(), "Already Insert Your Target", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Intent i = new Intent(getApplicationContext(), TargetActivity.class);
+                            startActivity(i);
+                        }
+                    }
+                }
+
+                if (div.equalsIgnoreCase("LM")) {
+
+                    if(colorcategory != null && colorcategory.length()>0) {
+                        if (colorcategory.equalsIgnoreCase("True")) {
+
+                            Toast.makeText(getApplicationContext(), "Already Insert Your Target", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Intent i = new Intent(getApplicationContext(), TargetActivity.class);
+                            startActivity(i);
+                        }
+                    }
+                }*/
 
             }
         });
@@ -543,6 +593,182 @@ public class DashboardNewActivity extends Activity {
 
             e.printStackTrace();
         }
+
+    }
+
+    public void fetchCategoryDetails() {
+        //new changes
+        categoryDetailsArraylist = new ArrayList<String>();
+        String div = sp.getString("div", "");
+
+        if (div.equalsIgnoreCase("LH & LHM") || div.equalsIgnoreCase("LH & LM")) {
+
+            db.open();
+            categoryDetailsArraylist = db.getproductcategoryforTarget(); // ------------
+
+            Log.e("", "kkkklklk111");
+
+        }
+        if (div.equalsIgnoreCase("LH")) {
+            categoryDetailsArraylist.clear();
+            categoryDetailsArraylist.add("SKIN");
+
+        }
+        if (div.equalsIgnoreCase("LM")) {
+            categoryDetailsArraylist.clear();
+            categoryDetailsArraylist.add("COLOR");
+
+        }
+
+        if (categoryDetailsArraylist.size() > 0) {
+            strCategory = "";
+            for (int i = 0; i < categoryDetailsArraylist.size(); i++) {
+                strCategory = categoryDetailsArraylist.get(i);
+
+                try {
+                    new GetBocTarget().execute();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    public String getBocName() {
+        String bocname = "";
+        String BOC = "";
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+            String oeStartDateStr = "26/";
+            String oeEndDateStr = "25/";
+
+            Calendar cal = Calendar.getInstance();
+            Integer year = cal.get(Calendar.YEAR);
+            Integer month1 = cal.get(Calendar.MONTH) + 1;
+
+            oeStartDateStr = oeStartDateStr.concat(month1.toString()) + "/";
+            oeEndDateStr = oeEndDateStr.concat(month1.toString()) + "/";
+
+            oeStartDateStr = oeStartDateStr.concat(year.toString());
+            oeEndDateStr = oeEndDateStr.concat(year.toString());
+
+            Date startDate = sdf.parse(oeStartDateStr);
+            Date endDate = sdf.parse(oeEndDateStr);
+            Date d = new Date();
+            String currDt = sdf.format(d);
+
+            if ((d.after(startDate) && (d.before(endDate))) || (currDt.equals(sdf.format(startDate)) || currDt.equals(sdf.format(endDate)))) {
+                if(String.valueOf(month1).equalsIgnoreCase("1")){
+                    bocname = "BOC11";
+                }else if(String.valueOf(month1).equalsIgnoreCase("2")){
+                    bocname = "BOC12";
+                }else {
+                    bocname = "BOC" + String.valueOf(month1 - 2);
+                }
+            } else {
+                //System.out.println("Date is not between 1st april to 14th nov...");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return bocname;
+    }
+
+    public class GetBocTarget extends AsyncTask<Void, Void, SoapObject> {
+
+        ContentValues contentvalues = new ContentValues();
+        private SoapPrimitive soap_result = null;
+
+        String Flag = "";
+
+        String bocname = "";
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+
+            //pd.setMessage("Please Wait....");
+            //pd.show();
+            //pd.setCancelable(false);
+
+        }
+
+        @Override
+        protected SoapObject doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+
+            String boc = getBocName();
+
+            bocname = "Target_" + boc;
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    soap_result = service.GetBocTarget(bocname, username, strCategory);
+
+                    if (soap_result != null) {
+
+                        if (soap_result.toString().equalsIgnoreCase("TRUE")) {
+                            Flag = "1";
+                        } else if (soap_result.toString().equalsIgnoreCase("FALSE")){
+                            Flag = "2";
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+
+//            if (pd != null && pd.isShowing() && !TargetActivity.this.isFinishing()) {
+//                pd.dismiss();
+//            }
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(getApplicationContext(),
+                        "Connectivity Error, Please check Internet connection!!",
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                if(strCategory.equalsIgnoreCase("SKIN")){
+                    skincategory = "True";
+                }else{
+                    colorcategory = "True";
+                }
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+
+                if(strCategory.equalsIgnoreCase("SKIN")){
+                    skincategory = "False";
+                }else{
+                    colorcategory = "False";
+                }
+
+            }
+
+
+        }
+
 
     }
 
@@ -3815,8 +4041,8 @@ public class DashboardNewActivity extends Activity {
                     db.close();
                 }
 
-                if (syncbocdaywise == 1 && syncbocmonthwise == 1
-                        && syncstockdata == 1 && synctesterdata == 1) {
+                if (syncbocdaywise == 2 && syncbocmonthwise == 2
+                        && syncstockdata == 1 && synctesterdata == 2) {
 
                     Flag = "1";
                 } else if (syncbocdaywise == 2 && syncbocmonthwise == 2

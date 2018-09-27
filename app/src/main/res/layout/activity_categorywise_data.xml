@@ -287,6 +287,60 @@
 
             </TableRow>
 
+            <TableRow
+                android:id="@+id/tr_total_categoryamt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:weightSum="4"
+                android:visibility="visible">
+
+                <TextView
+                    style="@style/report_textview"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@layout/tableborder_for_fields"
+                    android:gravity="center"
+                    android:textSize="@dimen/_7sdp"
+                    android:text="Total Value in Rupees" />
+
+
+                <TextView
+                    android:id="@+id/op_total"
+                    style="@style/report_textview"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@layout/tableborder_for_fields"
+                    android:gravity="center"
+                    android:text="0" />
+
+
+                <TextView
+                    android:id="@+id/receive_total"
+                    style="@style/report_textview"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@layout/tableborder_for_fields"
+                    android:gravity="center"
+                    android:text="0" />
+
+                <TextView
+                    android:id="@+id/close_total"
+                    style="@style/report_textview"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@layout/tableborder_for_fields"
+                    android:gravity="center"
+                    android:text="0" />
+
+
+
+            </TableRow>
+
             <ListView
                 android:id="@+id/categorytypelist"
                 android:layout_width="fill_parent"

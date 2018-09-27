@@ -1767,7 +1767,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
 
                         } else if (t.equalsIgnoreCase("SE")) {
-                            ErroFlag = "0";
+                            ErroFlag = "1";
                             final Calendar calendar1 = Calendar
                                     .getInstance();
                             SimpleDateFormat formatter1 = new SimpleDateFormat(
@@ -1832,7 +1832,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
             if (ErroFlag.equalsIgnoreCase("0")) {
 
-                DisplayDialogMessage("Attendance Sync Incomplete, Please try again!!");
+                DisplayDialogMessage(" Save Attendance Incomplete, Please try again!!");
 /*
                 Toast.makeText(getApplicationContext(), "Attendance Sync Incomplete please try again!!", Toast.LENGTH_SHORT).show();
 */
@@ -1842,19 +1842,41 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                 flag = false;
                 Toast.makeText(getApplicationContext(), "Attendance Successfully Sync", Toast.LENGTH_SHORT).show();
 
-                if (attendance_flag.equalsIgnoreCase("A")) {
+                if (role.equalsIgnoreCase("FLR")) {
+                    if (attendance_flag.equalsIgnoreCase("A")) {
+                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
 
+                    } else {
+                        spe.putString("FLROutletSelect", "False");
+                        spe.commit();
+                        Intent i = new Intent(getApplicationContext(), OutletActivity.class);
+                        //i.putExtra("FromAttendancefloter", "AF");
+                        startActivity(i);
+                    }
+                } else if (role.equalsIgnoreCase("DUB")) {
+                    if (attendance_flag.equalsIgnoreCase("A")) {
+                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
 
-                    Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);
-
+                    } else {
+                        Intent i = new Intent(getApplicationContext(), OutletActivity.class);
+                        startActivity(i);
+                    }
                 } else {
+                    if (attendance_flag.equalsIgnoreCase("A")) {
+                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
 
-                    Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
-                    i.putExtra("FROM", "LOGIN");
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);
+                    } else {
+                        Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
+                        i.putExtra("FROM", "LOGIN");
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                    }
                 }
 
             }

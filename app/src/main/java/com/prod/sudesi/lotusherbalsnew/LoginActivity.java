@@ -20,12 +20,14 @@ import android.location.LocationManager;
 import android.net.ParseException;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
@@ -119,19 +121,19 @@ public class LoginActivity extends Activity {
     String[] values;
 
     //Production India
-    public static final String downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
-    public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production
+    /*public static final String downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
+    public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production*/
 
     //UAT India
-    /*public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
-    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT India*/
+    public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
+    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT India
 
     //Production Dubai
      /*public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Dubai_Pro.apk"; //production
     public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config_dubai.txt";//production*/
 
     //UAT Dubai
-    /*public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_Dubai_UAT.apk"; //UAT Dubai
+   /* public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_Dubai_UAT.apk"; //UAT Dubai
     public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config_dubai.txt";//UAT Dubai*/
 
     private boolean checkPermission() {
@@ -255,7 +257,7 @@ public class LoginActivity extends Activity {
 
                             if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(pass) && !TextUtils.isEmpty(VERSION_NAME)) {
                                 // TODO check apk version
-                                new SyncApkCheck().execute();
+                                new DownloadNewVersion().execute();
 
                             } else {
                                 Toast.makeText(getApplicationContext(), "Fields Cannot be Empty", Toast.LENGTH_SHORT).show();
@@ -1961,7 +1963,7 @@ public class LoginActivity extends Activity {
         return str_BOC;
     }*/
 
-    public class SyncApkCheck extends AsyncTask<Void, Void, Boolean> {
+    public class SyncApkCheck extends AsyncTask<Void, Integer, Boolean> {
 
         boolean result = false;
 
@@ -1975,13 +1977,13 @@ public class LoginActivity extends Activity {
 
             mprogress = new ProgressDialog(LoginActivity.this);
             mprogress.setTitle("Checking / Downloading APK");
-            mprogress.setMessage("Please Wait..!");
+            mProgress.setMessage("Please Wait");
+            mprogress.setIndeterminate(true);
             mprogress.setCancelable(false);
             mprogress.show();
 
 
         }
-
 
         @Override
         protected Boolean doInBackground(Void... params) {
@@ -2028,6 +2030,151 @@ public class LoginActivity extends Activity {
         }
 
     }
+
+
+    public class DownloadNewVersion extends AsyncTask<String, Integer, Boolean> {
+
+        ProgressDialog mprogress;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            mprogress = new ProgressDialog(LoginActivity.this);
+            mprogress.setCancelable(false);
+            mprogress.setTitle("Checking / Downloading APK");
+            mProgress.setMessage("Downloading...");
+            mprogress.setIndeterminate(true);
+            mprogress.setCanceledOnTouchOutside(false);
+            mprogress.show();
+
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+
+            mprogress.setIndeterminate(false);
+            mprogress.setMax(100);
+            mprogress.setProgress(progress[0]);
+            String msg = "";
+            if (progress[0] > 99) {
+
+                msg = "Finishing... ";
+
+            } else {
+
+                msg = "Downloading... " + progress[0] + "%";
+            }
+            mprogress.setMessage(msg);
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... arg0) {
+            Boolean flag = false;
+
+            CheckServerApkVersionDownloadFile(downloadConfigFile);
+            String version = ReadVersionFromSDCardFile();
+
+            if (!version.equalsIgnoreCase("")) {
+                if (!VERSION_NAME.trim().equalsIgnoreCase(version.trim())) {
+
+                    try {
+
+                        URL url = new URL(downloadURL);
+
+                        HttpURLConnection c = (HttpURLConnection) url.openConnection();
+                       /* c.setRequestMethod("GET");
+                        c.setDoOutput(true);*/
+                        c.setRequestMethod("GET");
+                        c.setDoOutput(false);
+                        c.setReadTimeout(6000);
+                        c.setConnectTimeout(6000);
+                        c.connect();
+
+
+                        String PATH = Environment.getExternalStorageDirectory() + "/download/";
+                        File file = new File(PATH);
+                        file.mkdirs();
+
+                        File outputFile = new File(file, "Lotus.apk");
+
+                        if (outputFile.exists()) {
+                            outputFile.delete();
+                        }
+
+                        FileOutputStream fos = new FileOutputStream(outputFile);
+                        InputStream is = c.getInputStream();
+
+                        int total_size = 5994577 ;//size of apk
+
+                        byte[] buffer = new byte[1024];
+                        int len1 = 0;
+                        int per = 0;
+                        int downloaded = 0;
+                        while ((len1 = is.read(buffer)) != -1) {
+                            fos.write(buffer, 0, len1);
+                            downloaded += len1;
+                            per = (int) (downloaded * 100 / total_size);
+                            publishProgress(per);
+                        }
+                        fos.close();
+                        is.close();
+
+                        OpenNewVersion(PATH);
+
+                        flag = true;
+                    } catch (Exception e) {
+                        Log.e(TAG, "Update Error: " + e.getMessage());
+                        flag = false;
+                    }
+                } else {
+                    flag = false;
+                }
+            } else {
+                flag = false;
+            }
+
+            return flag;
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+
+            if (mprogress != null && mprogress.isShowing() && !LoginActivity.this.isFinishing()) {
+                mprogress.dismiss();
+            }
+
+            if (result != null) {
+                if (result) {
+                    Toast.makeText(LoginActivity.this, "New Apk Version has been Installed..!", Toast.LENGTH_SHORT).show();
+                } else {
+                    //LoginUser();
+                    new GetServerDate().execute();
+                }
+            } else {
+                //LoginUser();
+                new GetServerDate().execute();
+
+            }
+
+        }
+
+    }
+
+    void OpenNewVersion(String location) {
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(new File(location + "Lotus.apk")),
+                "application/vnd.android.package-archive");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+
+    }
+
 
     public void LoginUser() {
 
@@ -2205,6 +2352,11 @@ public class LoginActivity extends Activity {
             File file = new File(PATH);
             file.mkdirs();
             File outputFile = new File(file, "app1.apk");
+
+            if (outputFile.exists()) {
+                outputFile.delete();
+            }
+
             FileOutputStream fos = new FileOutputStream(outputFile);
 
             InputStream is = c.getInputStream();
@@ -2224,6 +2376,7 @@ public class LoginActivity extends Activity {
                             + "/download/"
                             + "app1.apk")),
                     "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
 
             // mProgress.dismiss();
@@ -2450,10 +2603,10 @@ public class LoginActivity extends Activity {
                                 SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a", Locale.US);
                                 Date date = df.parse(attendanceModel.getADate());
 
-                                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.US);
+                                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                                 savedate = form.format(date);
 
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd",Locale.US);
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                                 String adate = sdf.format(date.getTime());
 
                                 String sld[] = adate.split(" ");
@@ -2478,23 +2631,23 @@ public class LoginActivity extends Activity {
                                     log = log + "-getuniquedataAttendance 0";
                                     db.open();
                                     db.update(adate,
-                                                    new String[]{
-                                                            username,
-                                                            savedate,
-                                                            attendanceModel.getAttendanceValue(),
-                                                            attendanceModel.getAbsentType(),
-                                                            "0.0",
-                                                            "0.0",
-                                                            "1",
-                                                            attendmonth1,
-                                                            "",
-                                                            year},
-                                                    new String[]{
-                                                            "emp_id", "Adate",
-                                                            "attendance", "absent_type",
-                                                            "lat", "lon", "savedServer", "month",
-                                                            "holiday_desc", "year"},
-                                                    "attendance", "Adate");
+                                            new String[]{
+                                                    username,
+                                                    savedate,
+                                                    attendanceModel.getAttendanceValue(),
+                                                    attendanceModel.getAbsentType(),
+                                                    "0.0",
+                                                    "0.0",
+                                                    "1",
+                                                    attendmonth1,
+                                                    "",
+                                                    year},
+                                            new String[]{
+                                                    "emp_id", "Adate",
+                                                    "attendance", "absent_type",
+                                                    "lat", "lon", "savedServer", "month",
+                                                    "holiday_desc", "year"},
+                                            "attendance", "Adate");
 
                                     db.close();
 
@@ -2521,7 +2674,7 @@ public class LoginActivity extends Activity {
                             }
 
                         } else if (attstatus.equalsIgnoreCase("FAIL")) {
-                            ErroFlag = "0";
+                            ErroFlag = "1";
                             log = log + "-status fail";
                         }
                     } else {
@@ -2596,7 +2749,7 @@ public class LoginActivity extends Activity {
                 String[] serverdate1 = server_date
                         .split("/");
 
-                spe.putString("current_year",serverdate1[2]);
+                spe.putString("current_year", serverdate1[2]);
                 spe.commit();
 
                 spe.putString("currentdate", serverdate);

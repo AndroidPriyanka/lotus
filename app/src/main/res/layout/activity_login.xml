@@ -84,7 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="(Lotus_India_Pro_v3.1)"
+                android:text="(Lotus_India_UAT_v3.3)"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#B6B6B4"
                 android:textStyle="italic" />

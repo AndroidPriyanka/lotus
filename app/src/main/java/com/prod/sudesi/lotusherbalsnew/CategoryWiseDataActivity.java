@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.prod.sudesi.lotusherbalsnew.Models.OutletModel;
@@ -55,6 +56,11 @@ public class CategoryWiseDataActivity extends Activity{
     Context context;
     ListView categorytypelist;
 
+    TableRow tr_total_categoryamt;
+
+    TextView op_total, receive_total, close_total;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +79,11 @@ public class CategoryWiseDataActivity extends Activity{
         tv_h_username = (TextView) findViewById(R.id.tv_h_username);
         category = (AutoCompleteTextView) findViewById(R.id.spin_category);
         categorytypelist = (ListView) findViewById(R.id.categorytypelist);
+
+        tr_total_categoryamt = (TableRow) findViewById(R.id.tr_total_categoryamt);
+        op_total = (TextView) findViewById(R.id.op_total);
+        receive_total = (TextView) findViewById(R.id.receive_total);
+        close_total = (TextView) findViewById(R.id.close_total);
 
         pd = new ProgressDialog(this);
         service = new LotusWebservice(this);
@@ -182,6 +193,7 @@ public class CategoryWiseDataActivity extends Activity{
                         }
                     }
                     if (categorystring != null && categorystring.length() > 0) {
+                        ShowingReportTotalSum(categoryname);
                         new ShowCategoryWiseData().execute(categoryname);
 
                     }
@@ -192,7 +204,8 @@ public class CategoryWiseDataActivity extends Activity{
     }
 
     public void fetchCategoryDetails() {
-
+        //new changes
+        categoryDetailsArraylist = new ArrayList<String>();
         String div = shp.getString("div", "");
 
         if (div.equalsIgnoreCase("LH & LHM") || div.equalsIgnoreCase("LH & LM")) {
@@ -215,7 +228,7 @@ public class CategoryWiseDataActivity extends Activity{
         if (div.equalsIgnoreCase("LM")) {
             categoryDetailsArraylist.clear();
             categoryDetailsArraylist.add("Select");
-            //categoryDetailsArraylist.add("COLOR");
+            categoryDetailsArraylist.add("COLOR");
 
         }
     }
@@ -271,5 +284,47 @@ public class CategoryWiseDataActivity extends Activity{
 
         }
 
+    }
+
+    private void ShowingReportTotalSum(String category){
+        try {
+            db.open();
+
+            Cursor c = db.getReportCategorydatatotal(category);
+            if (c != null && c.getCount() > 0) {
+                c.moveToFirst();
+                do {
+                    String opening = c.getString(0);
+                    String receive = c.getString(1);
+                    String closing = c.getString(2);
+
+                    if(opening == null || opening.equalsIgnoreCase("null")){
+                        opening = "0";
+                    }else{
+                        opening = opening;
+                    }
+                    if(receive == null || receive.equalsIgnoreCase("null")){
+                        receive = "0";
+                    }else{
+                        receive = receive;
+                    }
+                    if(closing == null || closing.equalsIgnoreCase("null")){
+                        closing = "0";
+                    }else{
+                        closing = closing;
+                    }
+
+
+                    op_total.setText("\u20B9 " + opening);
+                    receive_total.setText("\u20B9 "+ receive);
+                    close_total.setText("\u20B9 " + closing);
+
+                } while (c.moveToNext());
+            }
+
+            db.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

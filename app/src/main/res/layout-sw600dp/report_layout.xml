@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="1875dp"
+    android:layout_width="1740dp"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -31,7 +31,7 @@
             <TextView
                 android:id="@+id/tv_category"
                 style="@style/report_textview"
-                android:layout_width="70dp"
+                android:layout_width="45dp"
                 android:layout_height="wrap_content"
                 android:background="@layout/tableborder_for_fields"
                 android:gravity="left"
@@ -54,7 +54,7 @@
             <TextView
                 android:id="@+id/tv_product"
                 style="@style/report_textview"
-                android:layout_width="525dp"
+                android:layout_width="415dp"
                 android:layout_height="wrap_content"
                 android:background="@layout/tableborder_for_fields"
                 android:gravity="left"
