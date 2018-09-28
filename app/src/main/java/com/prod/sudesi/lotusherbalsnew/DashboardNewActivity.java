@@ -60,7 +60,7 @@ public class DashboardNewActivity extends Activity {
     SharedPreferences.Editor spe;
     private double lon = 0.0, lat = 0.0;
     String attendanceDate = "", attendmonth;
-    String yesterdaydate1 = "",strCategory;
+    String yesterdaydate1 = "", strCategory;
     String skincategory, colorcategory;
 
     Button btn_attendance, btn_stock, btn_return, btn_visibility,
@@ -384,8 +384,8 @@ public class DashboardNewActivity extends Activity {
                 // TODO Auto-generated method stub
                 if (role.equalsIgnoreCase("FLR")) {
                     Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
-               } else {
-                    Intent i = new Intent(getApplicationContext(),BAYearWiseReport.class);
+                } else {
+                    Intent i = new Intent(getApplicationContext(), BAYearWiseReport.class);
                     startActivity(i);
                 }
 
@@ -486,54 +486,7 @@ public class DashboardNewActivity extends Activity {
                         SupervisorAttendance.class));*/
                 //Toast.makeText(mContext,"Coming Soon...!",Toast.LENGTH_LONG).show();
 
-                Intent i = new Intent(getApplicationContext(), TargetActivity.class);
-                startActivity(i);
-
-                /*fetchCategoryDetails();
-
-                String div = sp.getString("div", "");
-                if (div.equalsIgnoreCase("LH & LHM") || div.equalsIgnoreCase("LH & LM")) {
-
-                    if(skincategory != null && skincategory.length()>0 &&
-                            colorcategory != null && colorcategory.length()>0) {
-                        if (skincategory.equalsIgnoreCase("True") && colorcategory.equalsIgnoreCase("True")) {
-
-                            Toast.makeText(getApplicationContext(), "Already Insert Your Target", Toast.LENGTH_SHORT).show();
-
-                        } else {
-                            Intent i = new Intent(getApplicationContext(), TargetActivity.class);
-                            startActivity(i);
-                        }
-                    }
-                }
-
-                if (div.equalsIgnoreCase("LH")) {
-
-                    if(skincategory != null && skincategory.length()>0) {
-                        if (skincategory.equalsIgnoreCase("True")) {
-
-                            Toast.makeText(getApplicationContext(), "Already Insert Your Target", Toast.LENGTH_SHORT).show();
-
-                        } else {
-                            Intent i = new Intent(getApplicationContext(), TargetActivity.class);
-                            startActivity(i);
-                        }
-                    }
-                }
-
-                if (div.equalsIgnoreCase("LM")) {
-
-                    if(colorcategory != null && colorcategory.length()>0) {
-                        if (colorcategory.equalsIgnoreCase("True")) {
-
-                            Toast.makeText(getApplicationContext(), "Already Insert Your Target", Toast.LENGTH_SHORT).show();
-
-                        } else {
-                            Intent i = new Intent(getApplicationContext(), TargetActivity.class);
-                            startActivity(i);
-                        }
-                    }
-                }*/
+                fetchCategoryDetails();
 
             }
         });
@@ -598,41 +551,42 @@ public class DashboardNewActivity extends Activity {
 
     public void fetchCategoryDetails() {
         //new changes
-        categoryDetailsArraylist = new ArrayList<String>();
+        //categoryDetailsArraylist = new ArrayList<String>();
         String div = sp.getString("div", "");
 
         if (div.equalsIgnoreCase("LH & LHM") || div.equalsIgnoreCase("LH & LM")) {
 
-            db.open();
+            /*db.open();
             categoryDetailsArraylist = db.getproductcategoryforTarget(); // ------------
 
-            Log.e("", "kkkklklk111");
+            Log.e("", "kkkklklk111");*/
+            skincategory = "";
+            strCategory = "SKIN,COLOR";
 
         }
         if (div.equalsIgnoreCase("LH")) {
-            categoryDetailsArraylist.clear();
-            categoryDetailsArraylist.add("SKIN");
+            /*categoryDetailsArraylist.clear();
+            categoryDetailsArraylist.add("SKIN");*/
+            skincategory = "";
+            strCategory = "SKIN";
 
         }
         if (div.equalsIgnoreCase("LM")) {
-            categoryDetailsArraylist.clear();
-            categoryDetailsArraylist.add("COLOR");
+            /*categoryDetailsArraylist.clear();
+            categoryDetailsArraylist.add("COLOR");*/
+            skincategory = "";
+            strCategory = "COLOR";
 
         }
 
-        if (categoryDetailsArraylist.size() > 0) {
-            strCategory = "";
-            for (int i = 0; i < categoryDetailsArraylist.size(); i++) {
-                strCategory = categoryDetailsArraylist.get(i);
 
-                try {
-                    new GetBocTarget().execute();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
+        try {
+            new GetBocTarget().execute(strCategory);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+
     }
 
     public String getBocName() {
@@ -650,7 +604,13 @@ public class DashboardNewActivity extends Activity {
             Integer month1 = cal.get(Calendar.MONTH) + 1;
 
             oeStartDateStr = oeStartDateStr.concat(month1.toString()) + "/";
-            oeEndDateStr = oeEndDateStr.concat(month1.toString()) + "/";
+            Integer nextmonth;
+            if (month1.toString().equalsIgnoreCase("12")) {
+                nextmonth = 1;
+            } else {
+                nextmonth = month1 + 1;
+            }
+            oeEndDateStr = oeEndDateStr.concat(nextmonth.toString()) + "/";
 
             oeStartDateStr = oeStartDateStr.concat(year.toString());
             oeEndDateStr = oeEndDateStr.concat(year.toString());
@@ -661,11 +621,11 @@ public class DashboardNewActivity extends Activity {
             String currDt = sdf.format(d);
 
             if ((d.after(startDate) && (d.before(endDate))) || (currDt.equals(sdf.format(startDate)) || currDt.equals(sdf.format(endDate)))) {
-                if(String.valueOf(month1).equalsIgnoreCase("1")){
+                if (String.valueOf(month1).equalsIgnoreCase("1")) {
                     bocname = "BOC11";
-                }else if(String.valueOf(month1).equalsIgnoreCase("2")){
+                } else if (String.valueOf(month1).equalsIgnoreCase("2")) {
                     bocname = "BOC12";
-                }else {
+                } else {
                     bocname = "BOC" + String.valueOf(month1 - 2);
                 }
             } else {
@@ -680,7 +640,7 @@ public class DashboardNewActivity extends Activity {
         return bocname;
     }
 
-    public class GetBocTarget extends AsyncTask<Void, Void, SoapObject> {
+    public class GetBocTarget extends AsyncTask<String, Void, SoapObject> {
 
         ContentValues contentvalues = new ContentValues();
         private SoapPrimitive soap_result = null;
@@ -700,9 +660,10 @@ public class DashboardNewActivity extends Activity {
         }
 
         @Override
-        protected SoapObject doInBackground(Void... params) {
+        protected SoapObject doInBackground(String... params) {
             // TODO Auto-generated method stub
 
+            String category = params[0];
             String boc = getBocName();
 
             bocname = "Target_" + boc;
@@ -714,13 +675,13 @@ public class DashboardNewActivity extends Activity {
             } else {
                 try {
 
-                    soap_result = service.GetBocTarget(bocname, username, strCategory);
+                    soap_result = service.GetBocTarget(bocname, username, category);
 
                     if (soap_result != null) {
 
                         if (soap_result.toString().equalsIgnoreCase("TRUE")) {
                             Flag = "1";
-                        } else if (soap_result.toString().equalsIgnoreCase("FALSE")){
+                        } else if (soap_result.toString().equalsIgnoreCase("FALSE")) {
                             Flag = "2";
                         }
                     }
@@ -750,19 +711,12 @@ public class DashboardNewActivity extends Activity {
 
             } else if (Flag.equalsIgnoreCase("1")) {
 
-                if(strCategory.equalsIgnoreCase("SKIN")){
-                    skincategory = "True";
-                }else{
-                    colorcategory = "True";
-                }
+                Toast.makeText(getApplicationContext(), "Already Insert Your Target", Toast.LENGTH_SHORT).show();
 
             } else if (Flag.equalsIgnoreCase("2")) {
 
-                if(strCategory.equalsIgnoreCase("SKIN")){
-                    skincategory = "False";
-                }else{
-                    colorcategory = "False";
-                }
+                Intent i = new Intent(getApplicationContext(), TargetActivity.class);
+                startActivity(i);
 
             }
 
@@ -2105,8 +2059,8 @@ public class DashboardNewActivity extends Activity {
                                     db.open();
                                     db.UpdateStockSync1(ProductCategory,
                                             ProductType, ProductName, EmpId,
-                                            Opening_Stock,openingamt, Stock_inhand, ClosingBal,closingamt,
-                                            FreshStock, Freshamt, GrossAmount, SoldStock,Soldamt,
+                                            Opening_Stock, openingamt, Stock_inhand, ClosingBal, closingamt,
+                                            FreshStock, Freshamt, GrossAmount, SoldStock, Soldamt,
                                             Price, Size, db_Id, LMD, Discount,
                                             NetAmount,
                                             S_Return_Saleable,
@@ -2133,10 +2087,10 @@ public class DashboardNewActivity extends Activity {
                                             db_stock_id, db_Id, ProductId,
                                             CatCodeId, EANCode, EmpId,
                                             ProductCategory, ProductType,
-                                            ProductName, Opening_Stock,openingamt,
+                                            ProductName, Opening_Stock, openingamt,
                                             FreshStock, Freshamt, Stock_inhand,
-                                            SoldStock,Soldamt, S_Return_NonSaleable,
-                                            S_Return_Saleable, ClosingBal,closingamt,
+                                            SoldStock, Soldamt, S_Return_NonSaleable,
+                                            S_Return_Saleable, ClosingBal, closingamt,
                                             GrossAmount, Discount, NetAmount,
                                             Size, Price, LMD,
                                             AndroidCreatedDate, MONTH, YEAR);
@@ -4049,7 +4003,7 @@ public class DashboardNewActivity extends Activity {
                         && syncstockdata == 2 && synctesterdata == 2) {
 
                     Flag = "2";
-                }else{
+                } else {
 
                     Flag = "3";
                 }
@@ -4138,7 +4092,7 @@ public class DashboardNewActivity extends Activity {
 				/*Toast.makeText(context, "Data Download Incomplete!!",
 						Toast.LENGTH_SHORT).show();
 */
-            }else if (Flag.equalsIgnoreCase("3")) {
+            } else if (Flag.equalsIgnoreCase("3")) {
 
                /* boolean bocflag = true;
                 spe.putBoolean("Bocflag", bocflag);

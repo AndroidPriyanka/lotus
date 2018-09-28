@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="1740dp"
+    android:layout_width="1700dp"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -15,27 +15,15 @@
 
 
             <TextView
-                android:id="@+id/tv_productid"
+                android:id="@+id/tv_status"
                 style="@style/report_textview"
-                android:layout_width="55dp"
-                android:layout_height="wrap_content"
-                android:background="@layout/tableborder_for_fields"
-                android:gravity="left"
-                android:paddingLeft="5dp"
-                android:text="id"
-                android:singleLine="true"
-                android:visibility="visible" />
-
-            <TextView
-                android:id="@+id/tv_category"
-                style="@style/report_textview"
-                android:layout_width="45dp"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:background="@layout/tableborder_for_fields"
                 android:gravity="left"
                 android:paddingLeft="5dp"
                 android:singleLine="true"
-                android:text="Category" />
+                android:text="Status" />
 
 
             <TextView
@@ -263,15 +251,16 @@
                 android:text="Total net Amount" />
 
             <TextView
-                android:id="@+id/tv_status"
+                android:id="@+id/tv_productid"
                 style="@style/report_textview"
-                android:layout_width="50dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:background="@layout/tableborder_for_fields"
                 android:gravity="left"
                 android:paddingLeft="5dp"
+                android:text="id"
                 android:singleLine="true"
-                android:text="Status" />
+                android:visibility="visible" />
 
             <TextView
                 android:id="@+id/tv_outlet"

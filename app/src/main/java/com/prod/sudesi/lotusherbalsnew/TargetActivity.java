@@ -350,6 +350,8 @@ public class TargetActivity extends Activity {
 
             } else if (Flag.equalsIgnoreCase("1")) {
 
+                Toast.makeText(getApplicationContext(),"Boc Target Amount Save Succesfully!!",
+                        Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
                 startActivity(i);
 
@@ -360,7 +362,6 @@ public class TargetActivity extends Activity {
 
 
         }
-
 
     }
 

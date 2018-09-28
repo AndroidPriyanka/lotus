@@ -18,7 +18,7 @@ public class Dbhelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "sudesi.sqlite";
 
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
 
     public static final String KEY_PRODUCT_TYPE = "ProductType";
     public static final String KEY_PRODUCT_Category = "ProductCategory";
@@ -87,6 +87,8 @@ public class Dbhelper extends SQLiteOpenHelper {
 
     private static final String TABLE_CREATE_FLOTEROUTLET = "create table if not exists floteroutlet(id integer primary key autoincrement,baCodeOutlet text,banameOutlet text,outletname text,flotername text);";
     private static final String TABLE_DASHBOARD_DETAILS_DUBAI = "create table if not exists dashboard_details_dubai(id integer primary key autoincrement, BOC text,AndroidCreatedDate text,SoldQty text,Soldvalue text)";
+    private static final String TABLE_FOCUS_DATA = "create table if not exists focus_data(id integer primary key autoincrement, Productid text,Type text,Category text,Empid text,ProName text,size text,MRP text,"
+            + "   Target_qty text,Target_amt text,AndroidCreateddate text)";
 
 
     private static Dbhelper dbInstance = null;
@@ -243,6 +245,41 @@ public class Dbhelper extends SQLiteOpenHelper {
                 database.execSQL(TABLE_CREATE_STOCK6);
             if (!isColumnExists("stock", "uploadflag"))
                 database.execSQL(TABLE_CREATE_STOCK7);
+        }else if (newVersion == 10) {
+            if (!isColumnExists("stock", "flag"))
+                database.execSQL("ALTER TABLE stock ADD flag varchar(50);");
+            database.execSQL(TABLE_CREATE_SUPERVISOR);
+
+            if (!isColumnExists("login", "bde_Code"))
+                database.execSQL(TABLE_ALTER_LOGIN1);
+            if (!isColumnExists("login", "bde_Name"))
+                database.execSQL(TABLE_ALTER_LOGIN2);
+            if (!isColumnExists("attendance", "logout_status"))
+                database.execSQL(TABLE_ALTER_ATTENDANCE1);
+            if (!isColumnExists("attendance", "logout_date"))
+                database.execSQL(TABLE_ALTER_ATTENDANCE2);
+            if (!isColumnExists("login", "Role"))
+                database.execSQL(TABLE_ALTER_LOGIN3);
+
+            database.execSQL(TABLE_CREATE_FLOTEROUTLET);
+            if (!isColumnExists("stock", "FLRCode"))
+                database.execSQL(TABLE_CREATE_STOCK1);
+            if (!isColumnExists("stock", "SingleOffer"))
+                database.execSQL(TABLE_CREATE_STOCK2);
+            if (!isColumnExists("product_master", "SingleOffer"))
+                database.execSQL(TABLE_PRODUCT_MASTER1);
+            database.execSQL(TABLE_DASHBOARD_DETAILS_DUBAI);
+            if (!isColumnExists("stock", "opening_amt"))
+                database.execSQL(TABLE_CREATE_STOCK3);
+            if (!isColumnExists("stock", "close_amt"))
+                database.execSQL(TABLE_CREATE_STOCK4);
+            if (!isColumnExists("stock", "sold_amt"))
+                database.execSQL(TABLE_CREATE_STOCK5);
+            if (!isColumnExists("stock", "received_amt"))
+                database.execSQL(TABLE_CREATE_STOCK6);
+            if (!isColumnExists("stock", "uploadflag"))
+                database.execSQL(TABLE_CREATE_STOCK7);
+            database.execSQL(TABLE_FOCUS_DATA);
         }
 
 

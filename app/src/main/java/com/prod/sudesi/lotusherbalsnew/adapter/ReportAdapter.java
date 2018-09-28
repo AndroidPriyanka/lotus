@@ -54,7 +54,7 @@ public class ReportAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-        TextView category;
+        //TextView category;
         TextView type;
         TextView product;
         //TextView op;
@@ -87,7 +87,7 @@ public class ReportAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.report_layout, null);//inflater for view
 
 
-            viewHolder.category = (TextView) convertView.findViewById(R.id.tv_category);
+            //viewHolder.category = (TextView) convertView.findViewById(R.id.tv_category);
             viewHolder.type = (TextView) convertView.findViewById(R.id.tv_type);
             viewHolder.product = (TextView) convertView.findViewById(R.id.tv_product);
             //viewHolder.op = (TextView) convertView.findViewById(R.id.tv_open);
@@ -139,7 +139,7 @@ public class ReportAdapter extends BaseAdapter {
         }else{
             category = "LHM";
         }
-        viewHolder.category.setText(category);
+        //viewHolder.category.setText(category);
         viewHolder.type.setText(map.get("product_type"));
         viewHolder.product.setText(map.get("product_name"));
         viewHolder.size.setText(map.get("size"));
