@@ -1545,8 +1545,9 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         protected void onPostExecute(SoapObject result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-
-            mProgress.dismiss();
+            if (mProgress != null && mProgress.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                mProgress.dismiss();
+            }
             if (Flag.equalsIgnoreCase("3")) {
 
                 Toast.makeText(getApplicationContext(), "Connectivity Error Please check internet ", Toast.LENGTH_SHORT).show();
@@ -1823,8 +1824,9 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         protected void onPostExecute(SoapPrimitive result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-
-            mProgress.dismiss();
+            if (mProgress != null && mProgress.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                mProgress.dismiss();
+            }
             if (Flag.equalsIgnoreCase("3")) {
 
                 Toast.makeText(getApplicationContext(), "Connectivity Error Please check internet ", Toast.LENGTH_SHORT).show();

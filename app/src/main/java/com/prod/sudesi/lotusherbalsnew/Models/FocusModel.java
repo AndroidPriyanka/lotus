@@ -12,6 +12,7 @@ public class FocusModel implements Serializable {
     String username;
     String target_qty;
     String target_amt;
+    String target_BOC;
     String android_created_date;
     String achievement_Unit;
     String achievement_value;
@@ -111,6 +112,15 @@ public class FocusModel implements Serializable {
     public void setAchievement_value(String achievement_value) {
         this.achievement_value = achievement_value;
     }
+
+    public String getTarget_BOC() {
+        return target_BOC;
+    }
+
+    public void setTarget_BOC(String target_BOC) {
+        this.target_BOC = target_BOC;
+    }
+
 
 
 }

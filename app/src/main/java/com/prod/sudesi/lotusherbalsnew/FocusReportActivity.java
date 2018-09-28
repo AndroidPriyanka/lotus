@@ -154,7 +154,7 @@ public class FocusReportActivity extends Activity {
             // TODO Auto-generated method stub
 
             final String[] columns = new String[]{"Productid", "Type", "Category", "Empid", "ProName", "size", "MRP",
-                    "Target_qty", "Target_amt", "AndroidCreateddate"};
+                    "Target_qty", "Target_amt", "AndroidCreateddate","BOC"};
 
             if (!cd.isConnectingToInternet()) {
 
@@ -216,6 +216,11 @@ public class FocusReportActivity extends Activity {
                                 Target_amount = "";
                             }
 
+                            String Target_BOC = soapObject.getProperty("Target_BOC").toString();
+                            if (Target_BOC == null || Target_BOC.equals("anyType{}")) {
+                                Target_BOC = "";
+                            }
+
                             String Achievement_Unit = soapObject.getProperty("Achievement_Unit").toString();
                             if (Achievement_Unit == null || Achievement_Unit.equals("anyType{}")) {
                                 Achievement_Unit = "";
@@ -245,6 +250,7 @@ public class FocusReportActivity extends Activity {
                             focusModel.setPrice(MRP);
                             focusModel.setTarget_qty(Target_qty);
                             focusModel.setTarget_amt(Target_amount);
+                            focusModel.setTarget_BOC(Target_BOC);
                             focusModel.setAchievement_Unit(Achievement_Unit);
                             focusModel.setAchievement_value(Achievement_value);
                             focusModel.setUsername(emp_id);
@@ -277,9 +283,10 @@ public class FocusReportActivity extends Activity {
                                                 focusModel.getPrice(),
                                                 focusModel.getTarget_qty(),
                                                 focusModel.getTarget_amt(),
-                                                focusModel.getAndroid_created_date()},
+                                                focusModel.getAndroid_created_date(),
+                                                focusModel.getTarget_BOC()},
                                         new String[]{"Productid", "Type", "Category", "Empid", "ProName", "size", "MRP",
-                                                "Target_qty", "Target_amt", "AndroidCreateddate"},
+                                                "Target_qty", "Target_amt", "AndroidCreateddate","BOC"},
                                         "focus_data", "Productid");
 
                                 db.close();
@@ -296,7 +303,8 @@ public class FocusReportActivity extends Activity {
                                         focusModel.getPrice(),
                                         focusModel.getTarget_qty(),
                                         focusModel.getTarget_amt(),
-                                        focusModel.getAndroid_created_date()};
+                                        focusModel.getAndroid_created_date(),
+                                        focusModel.getTarget_BOC()};
 
                                 db.insert(values, columns, "focus_data");
 
@@ -352,7 +360,9 @@ public class FocusReportActivity extends Activity {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
 
-            pd.dismiss();
+            if (pd != null && pd.isShowing() && !FocusReportActivity.this.isFinishing()) {
+                pd.dismiss();
+            }
             try {
                 if (Flag.equalsIgnoreCase("3")) {
 

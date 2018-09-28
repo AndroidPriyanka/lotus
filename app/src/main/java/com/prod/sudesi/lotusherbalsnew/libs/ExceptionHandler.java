@@ -127,9 +127,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
 
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
 
-        String[] strEmails = new String[]{
-                "tushar@adstringo.in","mahesh@sudesi.in",
-        };
+        String[] strEmails = new String[]{"mahesh@sudesi.in"};
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo);
 
         sendIntent.putExtra(Intent.EXTRA_EMAIL, strEmails);

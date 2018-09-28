@@ -4206,5 +4206,27 @@ public class Dbcon {
         return database.rawQuery(sql, null);
     }
 
+    public Cursor fetchAllproductsforFocus(String selected_category,
+                                               String selected_type, String username, String boc, String columnname) {
+        // TODO Auto-generated method stub
+//		String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"' ORDER BY order_flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
+
+        String selectquery;
+        if (columnname.equalsIgnoreCase("ShadeNo")
+                || columnname.equalsIgnoreCase("")) {
+            selectquery = "select distinct(ShadeNo),ProductName from product_master where ProductName not in(select ProName from focus_data where Empid = " + "'" + username + "'" + " AND BOC = " + "'" + boc + "'" + ") AND ProductCategory = " + "'" + selected_category + "'" + " AND ProductType = " + "'" + selected_type + "' ORDER BY order_flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
+        } else {
+            selectquery = "select distinct(CategoryId),ProductName from product_master where ProductName not in(select ProName from focus_data where Empid = " + "'" + username + "'" + "AND BOC = " + "'" + boc + "'" + ") AND ProductCategory = " + "'" + selected_category + "'" + " AND ProductType = " + "'" + selected_type + "' ORDER BY order_flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
+
+        }
+
+        //String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"'"+" AND price_type = "+"'"+flag+"'  AND db_id in (select db_id  from stock where close_bal > 0)";
+//		Log.e("selectquery distinct","=="+selectquery);
+        Cursor cursort = database.rawQuery(selectquery, null);
+
+
+        return cursort;
+
+    }
 
 }

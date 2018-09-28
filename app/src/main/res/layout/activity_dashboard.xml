@@ -339,7 +339,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:alpha="0.6"
-                    android:background="@drawable/visibility"
+                    android:background="@drawable/focus_report"
                     android:padding="@dimen/_5sdp"
                     />
 

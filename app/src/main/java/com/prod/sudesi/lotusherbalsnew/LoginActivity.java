@@ -2722,8 +2722,9 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(String result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-
-            mProgress.dismiss();
+            if (mProgress != null && mProgress.isShowing() && !LoginActivity.this.isFinishing()) {
+                mProgress.dismiss();
+            }
 
             //Toast.makeText(getApplicationContext(), Error, Toast.LENGTH_SHORT).show();
 

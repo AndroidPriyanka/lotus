@@ -29,7 +29,10 @@ import android.widget.Toast;
 import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import static android.content.ContentValues.TAG;
@@ -351,9 +354,10 @@ public class FocusActivity extends Activity implements View.OnClickListener {
     public void getallproducts(String selected_category, String selected_type,
                                String flag, String columnname) {
         productDetailsArray.clear();
+        String boc = getBocName();
         db.open();
-        Cursor cursor = db.fetchAllproductslistforstock(selected_category,
-                selected_type, flag, columnname);
+        Cursor cursor = db.fetchAllproductsforFocus(selected_category,
+                selected_type, username, boc,columnname);
         if (cursor != null && cursor.getCount() > 0) {
 
             cursor.moveToFirst();
@@ -615,5 +619,56 @@ public class FocusActivity extends Activity implements View.OnClickListener {
                     "Please select Category",
                     Toast.LENGTH_LONG).show();
         }
+    }
+
+    public String getBocName() {
+        String bocname = "";
+        String BOC = "";
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+            String oeStartDateStr = "26/";
+            String oeEndDateStr = "25/";
+
+            Calendar cal = Calendar.getInstance();
+            Integer year = cal.get(Calendar.YEAR);
+            Integer month1 = cal.get(Calendar.MONTH) + 1;
+
+            oeStartDateStr = oeStartDateStr.concat(month1.toString()) + "/";
+            Integer nextmonth;
+            if(month1.toString().equalsIgnoreCase("12")){
+                nextmonth = 1;
+            }else {
+                nextmonth = month1 + 1;
+            }
+            oeEndDateStr = oeEndDateStr.concat(nextmonth.toString()) + "/";
+
+            oeStartDateStr = oeStartDateStr.concat(year.toString());
+            oeEndDateStr = oeEndDateStr.concat(year.toString());
+
+            Date startDate = sdf.parse(oeStartDateStr);
+            Date endDate = sdf.parse(oeEndDateStr);
+            Date d = new Date();
+            String currDt = sdf.format(d);
+
+            if ((d.after(startDate) && (d.before(endDate))) || (currDt.equals(sdf.format(startDate)) || currDt.equals(sdf.format(endDate)))) {
+                if(String.valueOf(month1).equalsIgnoreCase("1")){
+                    bocname = "BOC11";
+                }else if(String.valueOf(month1).equalsIgnoreCase("2")){
+                    bocname = "BOC12";
+                }else {
+                    bocname = "BOC" + String.valueOf(month1 - 2);
+                }
+            } else {
+                //System.out.println("Date is not between 1st april to 14th nov...");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return bocname;
     }
 }

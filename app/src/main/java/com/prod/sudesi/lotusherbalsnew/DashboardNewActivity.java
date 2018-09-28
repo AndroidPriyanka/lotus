@@ -341,8 +341,14 @@ public class DashboardNewActivity extends Activity {
                /* startActivity(new Intent(getApplicationContext(),
                         VisibilityFragment.class));*/
 //                Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(getApplicationContext(),
-                        FocusActivity.class));
+                if (role.equalsIgnoreCase("FLR")) {
+                    Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
+                } else if (role.equalsIgnoreCase("DUB")) {
+                    Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+                } else {
+                    startActivity(new Intent(getApplicationContext(),
+                            FocusActivity.class));
+                }
 
             }
         });
@@ -487,8 +493,13 @@ public class DashboardNewActivity extends Activity {
                 /*startActivity(new Intent(getApplicationContext(),
                         SupervisorAttendance.class));*/
                 //Toast.makeText(mContext,"Coming Soon...!",Toast.LENGTH_LONG).show();
-
-                fetchCategoryDetails();
+                if (role.equalsIgnoreCase("FLR")) {
+                    Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
+                } else if (role.equalsIgnoreCase("DUB")) {
+                    Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+                } else {
+                    fetchCategoryDetails();
+                }
 
             }
         });
@@ -4041,7 +4052,9 @@ public class DashboardNewActivity extends Activity {
             // super.onPostExecute(result);
 
             db.close();
-            mProgress.dismiss();
+            if (mProgress != null && mProgress.isShowing() && !DashboardNewActivity.this.isFinishing()) {
+                mProgress.dismiss();
+            }
 
             if (Flag.equalsIgnoreCase("0")) {
 
@@ -5000,8 +5013,9 @@ public class DashboardNewActivity extends Activity {
 
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-
-            mProgress.dismiss();
+            if (mProgress != null && mProgress.isShowing() && !DashboardNewActivity.this.isFinishing()) {
+                mProgress.dismiss();
+            }
             if (Flag.equalsIgnoreCase("0")) {
 
                 // DisplayDialogMessage("Check Your Internet Connection!!!");

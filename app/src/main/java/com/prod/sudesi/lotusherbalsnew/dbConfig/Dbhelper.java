@@ -88,7 +88,7 @@ public class Dbhelper extends SQLiteOpenHelper {
     private static final String TABLE_CREATE_FLOTEROUTLET = "create table if not exists floteroutlet(id integer primary key autoincrement,baCodeOutlet text,banameOutlet text,outletname text,flotername text);";
     private static final String TABLE_DASHBOARD_DETAILS_DUBAI = "create table if not exists dashboard_details_dubai(id integer primary key autoincrement, BOC text,AndroidCreatedDate text,SoldQty text,Soldvalue text)";
     private static final String TABLE_FOCUS_DATA = "create table if not exists focus_data(id integer primary key autoincrement, Productid text,Type text,Category text,Empid text,ProName text,size text,MRP text,"
-            + "   Target_qty text,Target_amt text,AndroidCreateddate text)";
+            + "   Target_qty text,Target_amt text,AndroidCreateddate text, BOC text)";
 
 
     private static Dbhelper dbInstance = null;

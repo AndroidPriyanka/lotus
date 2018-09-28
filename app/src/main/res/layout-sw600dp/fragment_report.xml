@@ -19,18 +19,11 @@
 
             <TableRow
                 android:id="@+id/tr_label_stock"
-                android:layout_width="1700dp"
+                android:layout_width="1680dp"
                 android:layout_height="wrap_content"
                 android:background="@layout/tableborder_stock"
                 android:gravity="center"
                 android:visibility="visible">
-
-                <TextView
-                    style="@style/report_textview_heading"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Status" />
 
                 <TextView
                     style="@style/report_textview_heading"
@@ -56,7 +49,7 @@
 
                 <TextView
                     style="@style/report_textview_heading"
-                    android:layout_width="90dp"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Size" />
@@ -262,6 +255,13 @@
 
                 <TextView
                     style="@style/report_textview_heading"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Status" />
+
+                <TextView
+                    style="@style/report_textview_heading"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -334,19 +334,19 @@
             </TableRow>
 
             <RelativeLayout
-                android:layout_width="1700dp"
+                android:layout_width="1680dp"
                 android:layout_height="match_parent">
 
                 <TableRow
                     android:id="@+id/tr_total_stock"
-                    android:layout_width="1700dp"
+                    android:layout_width="1680dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:visibility="gone">
 
                     <TextView
                         style="@style/report_textview"
-                        android:layout_width="770dp"
+                        android:layout_width="700dp"
                         android:layout_height="wrap_content"
                         android:background="@layout/tableborder_for_fields"
                         android:gravity="center"
@@ -419,7 +419,7 @@
 
                     <TextView
                         style="@style/report_textview"
-                        android:layout_width="170dp"
+                        android:layout_width="220dp"
                         android:layout_height="wrap_content"
                         android:background="@layout/tableborder_for_fields"
                         android:gravity="center"
@@ -429,7 +429,7 @@
 
                 <ListView
                     android:id="@+id/stock_list"
-                    android:layout_width="1700dp"
+                    android:layout_width="1680dp"
                     android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
                     android:divider="@color/gray"

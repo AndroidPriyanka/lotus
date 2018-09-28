@@ -1276,8 +1276,9 @@ public class SyncMaster extends Activity {
 
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-
-            mProgress.dismiss();
+            if (mProgress != null && mProgress.isShowing() && !SyncMaster.this.isFinishing()) {
+                mProgress.dismiss();
+            }
             if (Flag.equalsIgnoreCase("0")) {
 
                 DisplayDialogMessage("Check Your Internet Connection!!!");
@@ -3265,8 +3266,9 @@ public class SyncMaster extends Activity {
         protected void onPostExecute(SoapObject result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-
-            mProgress.dismiss();
+            if (mProgress != null && mProgress.isShowing() && !SyncMaster.this.isFinishing()) {
+                mProgress.dismiss();
+            }
             if (Flag.equalsIgnoreCase("3")) {
 
                 Toast.makeText(getApplicationContext(),"Connectivity Error Please check internet",Toast.LENGTH_SHORT).show();
@@ -6597,7 +6599,9 @@ public class SyncMaster extends Activity {
             // super.onPostExecute(result);
 
             db.close();
-            mProgress.dismiss();
+            if (mProgress != null && mProgress.isShowing() && !SyncMaster.this.isFinishing()) {
+                mProgress.dismiss();
+            }
 
             if (Flag.equalsIgnoreCase("0")) {
 
@@ -7704,7 +7708,9 @@ public class SyncMaster extends Activity {
             // super.onPostExecute(result);
 
             db.close();
-            mProgress.dismiss();
+            if (mProgress != null && mProgress.isShowing() && !SyncMaster.this.isFinishing()) {
+                mProgress.dismiss();
+            }
 
             if (Flag.equalsIgnoreCase("0")) {
 
