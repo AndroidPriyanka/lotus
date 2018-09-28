@@ -340,7 +340,9 @@ public class DashboardNewActivity extends Activity {
 
                /* startActivity(new Intent(getApplicationContext(),
                         VisibilityFragment.class));*/
-                Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+//                Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(getApplicationContext(),
+                        FocusActivity.class));
 
             }
         });

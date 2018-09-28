@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0b5571">
+
+    <include
+        android:id="@+id/include_header"
+        layout="@layout/headernew"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/include_header">
+
+        <TableLayout
+            android:id="@+id/tl_spinlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp">
+
+            <TextView
+                android:id="@+id/txt_headr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="FOCUS"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="italic"
+                android:typeface="serif" />
+
+
+            <RadioGroup
+                android:id="@+id/radio_target_report"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <RadioButton
+                    android:id="@+id/radio_target"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/_40sdp"
+                    android:layout_weight="1"
+                    android:text="Target"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/_12sdp" />
+
+                <RadioButton
+                    android:id="@+id/radio_report"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/_40sdp"
+                    android:layout_weight="1"
+                    android:text="Report"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/_12sdp" />
+
+            </RadioGroup>
+
+        </TableLayout>
+
+        <LinearLayout
+            android:id="@+id/table_header"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/btn_returnproced"
+            android:layout_below="@+id/tl_spinlayout"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TableLayout
+                android:id="@+id/tl_spinlayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp">
+
+                <TableRow
+                    android:id="@+id/tr_cat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible">
+
+                    <TextView
+                        style="@style/label_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Category" />
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tr_sp_categry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:visibility="visible">
+
+                    <Spinner
+                        android:id="@+id/sp_prodt_category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_25sdp"
+                        android:background="@drawable/dropdown"
+                        android:prompt="@string/select_category" />
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tr_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible">
+
+                    <TextView
+                        style="@style/label_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Type" />
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tr_sp_prodType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible">
+
+                    <Spinner
+                        android:id="@+id/sp_prodt_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_25sdp"
+                        android:background="@drawable/dropdown"
+                        android:prompt="@string/select_type" />
+                </TableRow>
+            </TableLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TableLayout
+                    android:id="@+id/tl_returnprodctList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/_10sdp">
+
+                    <TableRow
+                        android:id="@+id/tr_headr"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:background="#F7DCB4"
+                        android:padding="3dp"
+                        android:weightSum="3">
+
+                        <TextView
+                            style="@style/list_heading"
+                            android:layout_width="0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2.3"
+                            android:gravity="left"
+                            android:text="PRODUCT" />
+
+                        <TextView
+                            style="@style/list_heading"
+                            android:layout_width="0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="0.7"
+                            android:gravity="center"
+                            android:text="MRP" />
+                    </TableRow>
+                </TableLayout>
+            </ScrollView>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_returnproced"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="left"
+            android:layout_marginBottom="@dimen/_7sdp"
+            android:background="@drawable/proceed"
+            android:visibility="visible" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
