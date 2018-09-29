@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="1680dp"
+    android:layout_width="1530dp"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -16,7 +16,7 @@
             <TextView
                 android:id="@+id/tv_type"
                 style="@style/report_textview"
-                android:layout_width="160dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:background="@layout/tableborder_for_fields"
                 android:gravity="left"
@@ -27,7 +27,7 @@
             <TextView
                 android:id="@+id/tv_product"
                 style="@style/report_textview"
-                android:layout_width="415dp"
+                android:layout_width="305dp"
                 android:layout_height="wrap_content"
                 android:background="@layout/tableborder_for_fields"
                 android:gravity="left"
@@ -38,7 +38,7 @@
             <TextView
                 android:id="@+id/tv_report_price"
                 style="@style/report_textview"
-                android:layout_width="55dp"
+                android:layout_width="35dp"
                 android:layout_height="wrap_content"
                 android:background="@layout/tableborder_for_fields"
                 android:gravity="left"
@@ -50,7 +50,7 @@
             <TextView
                 android:id="@+id/tv_report_size"
                 style="@style/report_textview"
-                android:layout_width="70dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:background="@layout/tableborder_for_fields"
                 android:gravity="left"

@@ -48,6 +48,8 @@ public class FocusAllActivity extends Activity {
     SharedPreferences.Editor shpeditor;
     static Context context;
     String enacod[], catid[], pro_name[], show_pro_name[], size[], db_id[], mrp[], shadeno[], singleoffer[];
+
+
     ScrollView scrv_sale;
     ConnectionDetector cd;
 
@@ -386,6 +388,16 @@ public class FocusAllActivity extends Activity {
 
     public int saveData() {
 
+        String product_category[] = new String[tl_sale_calculation.getChildCount() - 1];
+        String product_type1[] = new String[tl_sale_calculation.getChildCount() - 1];
+        String product_name[] = new String[tl_sale_calculation.getChildCount() - 1];
+        String price[] = new String[tl_sale_calculation.getChildCount() - 1];
+        String insert_timestamp[] = new String[tl_sale_calculation.getChildCount() - 1];
+        String db_id1[] = new String[tl_sale_calculation.getChildCount() - 1];
+        String size1[] = new String[tl_sale_calculation.getChildCount() - 1];
+        String target_qty[] = new String[tl_sale_calculation.getChildCount() - 1];
+        String target_amt[] = new String[tl_sale_calculation.getChildCount() - 1];
+
         int count = 0;
         for (int i = 0; i < tl_sale_calculation.getChildCount() - 1; i++) {
 
@@ -401,32 +413,30 @@ public class FocusAllActivity extends Activity {
             Calendar c = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat(
                     "yyyy-MM-dd HH:mm:ss");
-            String insert_timestamp = sdf.format(c
-                    .getTime());
+            insert_timestamp[i] = sdf.format(c.getTime());
 
-            String product_category = FocusActivity.selected_product_category;
+            product_category[i] = FocusActivity.selected_product_category;
 
-            String product_type1 = FocusActivity.selected_product_type;
+            product_type1[i] = FocusActivity.selected_product_type;
 
-            String product_name = pro_name[i];// changed
+            product_name[i] = pro_name[i];// changed
             // 06.12.2014
 
-            String price = tv_mrp.getText().toString()
-                    .trim();
+            price[i] = mrp[i];
 
-            if (price.equalsIgnoreCase("")) {
-                price = "0";
-            }
+            db_id1[i] = db_id[i];
 
-            String db_id1 = tv_dbID.getText().toString()
-                    .trim();
+            size1[i] = "" + size[i];
 
-            String size1 = "" + size[i];
+            String QTY = edt_qty.getText().toString();
+            String MRP = mrp[i];
 
-            String target_qty = edt_qty.getText().toString();
-            String target_amt = edt_target.getText().toString();
+            target_qty[i] = QTY;
+            target_amt[i] = String.valueOf(Integer.parseInt(QTY) * Integer.parseInt(MRP));
 
+            count++;
 
+        }
             startActivity(new Intent(FocusAllActivity.this,FocusReportActivity.class)
                     .putExtra("db_id", db_id1)
                     .putExtra("proname", product_name)
@@ -453,9 +463,9 @@ public class FocusAllActivity extends Activity {
                     insert_timestamp);
             db.close();
 */
-            count++;
 
-        }
+
+
 
         return count;
 

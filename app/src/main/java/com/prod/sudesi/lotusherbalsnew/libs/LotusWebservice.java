@@ -1821,7 +1821,7 @@ public class LotusWebservice {
         return result;
     }
 
-    public SoapPrimitive SaveBocTarget(String Boc, String empid, String productcategory, String amount) {
+    public SoapPrimitive SaveBocTarget(String Boc, String empid, String productcategory, String amount, String androidcreateddate) {
         SoapPrimitive result = null;
         try {
             Log.v("", "sync stock service called");
@@ -1832,6 +1832,7 @@ public class LotusWebservice {
             request.addProperty("empid", empid);
             request.addProperty("productcategory", productcategory);
             request.addProperty("amount", amount);
+            request.addProperty("androidcreateddate", androidcreateddate);
             SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
                     SoapEnvelope.VER11);// soap envelop with version
             envelope.setOutputSoapObject(request); // set request object

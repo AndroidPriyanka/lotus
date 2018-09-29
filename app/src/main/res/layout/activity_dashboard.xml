@@ -262,7 +262,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:alpha="0.6"
-                    android:background="@drawable/ba_out_sale"
+                    android:background="@drawable/tar_achive_report"
                     android:padding="@dimen/_5sdp"
                     />
 

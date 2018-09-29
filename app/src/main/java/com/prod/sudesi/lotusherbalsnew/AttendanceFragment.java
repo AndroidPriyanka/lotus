@@ -1784,7 +1784,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
 
                         } else if (t.equalsIgnoreCase("SE")) {
-                            ErroFlag = "1";
+                            ErroFlag = "0";
                             final Calendar calendar1 = Calendar
                                     .getInstance();
                             SimpleDateFormat formatter1 = new SimpleDateFormat(

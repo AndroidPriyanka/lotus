@@ -6924,7 +6924,7 @@ public class SyncMaster extends Activity {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        }else{
+                        }/*else{
                             String db_id = "";
                             if (stock_array != null && stock_array.getCount() > 0) {
                                 stock_array.moveToFirst();
@@ -6957,7 +6957,7 @@ public class SyncMaster extends Activity {
                                     "SaveStock()", "Fail");
                             Log.e("JSON_NULL", flag + "_MSG_" + "Getting Null response");
                             new syncAllData(ErroFlag).execute();
-                        }
+                        }*/
 
                     }
                 }, new Response.ErrorListener() {

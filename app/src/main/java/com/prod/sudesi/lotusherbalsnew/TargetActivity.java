@@ -314,7 +314,13 @@ public class TargetActivity extends Activity {
             } else {
                 try {
 
-                    soap_result = service.SaveBocTarget(bocname, username, categoryname, targetamt);
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat(
+                            "yyyy-MM-dd HH:mm:ss");
+                    String insert_timestamp = sdf.format(c
+                            .getTime());
+
+                    soap_result = service.SaveBocTarget(bocname, username, categoryname, targetamt, insert_timestamp);
 
                     if (soap_result != null) {
 

@@ -724,7 +724,7 @@ public class DashboardNewActivity extends Activity {
 
             } else if (Flag.equalsIgnoreCase("1")) {
 
-                Toast.makeText(getApplicationContext(), "Already Insert Your Target", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Already Insert Your Current BOC Target", Toast.LENGTH_SHORT).show();
 
             } else if (Flag.equalsIgnoreCase("2")) {
 

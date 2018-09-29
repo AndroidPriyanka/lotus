@@ -121,7 +121,7 @@ public class LoginActivity extends Activity {
     String[] values;
 
     //Production India
-    /*public static final String downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
+   /* public static final String downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro.apk"; //production
     public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production*/
 
     //UAT India
