@@ -73,7 +73,7 @@ public class ReportsForUser extends Activity {
     SharedPreferences shp;
     SharedPreferences.Editor shpeditor;
 
-    TableRow table_row_stock, table_row_tester, table_row_attend,tr_total_stock;
+    TableRow table_row_stock, table_row_tester, table_row_attend, tr_total_stock;
     //,table_row_sale;
 
     HorizontalScrollView horizantalscrollviewforstock;
@@ -492,7 +492,10 @@ public class ReportsForUser extends Activity {
                         String produ = db.getproductType123(ppid);
                         db.close();
 
-                        d2.dismiss();
+                        if (d2 != null && d2.isShowing() && !ReportsForUser.this.isFinishing()) {
+                            d2.dismiss();
+                        }
+
                         TextView text = (TextView) d.findViewById(R.id.textView1);
 
                         text.setText(produ);
@@ -513,8 +516,9 @@ public class ReportsForUser extends Activity {
                         String produ = db.getproductname123(ppid);
                         db.close();
 
-                        d.dismiss();
-
+                        if (d != null && d.isShowing() && !ReportsForUser.this.isFinishing()) {
+                            d.dismiss();
+                        }
 
                         TextView text = (TextView) d2.findViewById(R.id.textView1);
 
@@ -679,8 +683,9 @@ public class ReportsForUser extends Activity {
                     });
 
                 }
-                if (mProgress.isShowing())
+                if (mProgress != null && mProgress.isShowing() && !ReportsForUser.this.isFinishing()) {
                     mProgress.dismiss();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -761,7 +766,9 @@ public class ReportsForUser extends Activity {
             HashMap<String, String> map = new HashMap<String, String>();
 
             Log.e("", "check3");
-            mProgress.dismiss();
+            if (mProgress != null && mProgress.isShowing() && !ReportsForUser.this.isFinishing()) {
+                mProgress.dismiss();
+            }
             // TODO Auto-generated method stub
             listview_t.setVisibility(View.VISIBLE);
             adapter1 = new ReportTester(getApplicationContext(), result);
@@ -860,7 +867,10 @@ public class ReportsForUser extends Activity {
                             String produ = db.getproductType123(ppid);
                             db.close();
 
-                            d2.dismiss();
+                            if (d2 != null && d2.isShowing() && !ReportsForUser.this.isFinishing()) {
+                                d2.dismiss();
+                            }
+
                             TextView text = (TextView) d.findViewById(R.id.textView1);
                             Log.e("", "produ=" + produ);
                             text.setText(produ);
@@ -880,8 +890,9 @@ public class ReportsForUser extends Activity {
                             String produ = db.getproductname123(ppid);
                             db.close();
 
-                            d.dismiss();
-
+                            if (d != null && d.isShowing() && !ReportsForUser.this.isFinishing()) {
+                                d.dismiss();
+                            }
 
                             TextView text = (TextView) d2.findViewById(R.id.textView1);
                             Log.e("", "produ=" + produ);
@@ -1086,7 +1097,7 @@ public class ReportsForUser extends Activity {
 
     }
 
-    private void ShowingReportTotalSum(String category){
+    private void ShowingReportTotalSum(String category) {
         try {
             db.open();
 
@@ -1099,34 +1110,34 @@ public class ReportsForUser extends Activity {
                     String closing = c.getString(3);
                     String gross = c.getString(1);
                     String net = c.getString(0);
-                    if(opening == null || opening.equalsIgnoreCase("null")){
+                    if (opening == null || opening.equalsIgnoreCase("null")) {
                         opening = "0";
-                    }else{
+                    } else {
                         opening = opening;
                     }
-                    if(sold == null || sold.equalsIgnoreCase("null")){
+                    if (sold == null || sold.equalsIgnoreCase("null")) {
                         sold = "0";
-                    }else{
+                    } else {
                         sold = sold;
                     }
-                    if(closing == null || closing.equalsIgnoreCase("null")){
+                    if (closing == null || closing.equalsIgnoreCase("null")) {
                         closing = "0";
-                    }else{
+                    } else {
                         closing = closing;
                     }
-                    if(gross == null || gross.equalsIgnoreCase("null")){
+                    if (gross == null || gross.equalsIgnoreCase("null")) {
                         gross = "0";
-                    }else{
+                    } else {
                         gross = gross;
                     }
-                    if(net == null || net.equalsIgnoreCase("null")){
+                    if (net == null || net.equalsIgnoreCase("null")) {
                         net = "0";
-                    }else{
+                    } else {
                         net = net;
                     }
 
                     op_total.setText("\u20B9 " + opening);
-                    sold_total.setText("\u20B9 "+ sold);
+                    sold_total.setText("\u20B9 " + sold);
                     Closing_total.setText("\u20B9 " + closing);
                     gross_total.setText("\u20B9 " + gross);
                     net_total.setText("\u20B9 " + net);
@@ -1135,11 +1146,10 @@ public class ReportsForUser extends Activity {
             }
 
             db.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
 
 }

@@ -1098,9 +1098,10 @@ public class LoginActivity extends Activity {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
 
-            if ((pd != null) && pd.isShowing()) {
+            if (pd != null && pd.isShowing() && !LoginActivity.this.isFinishing()) {
                 pd.dismiss();
             }
+
             if (Flag.equalsIgnoreCase("0")) {
 
                 Toast.makeText(LoginActivity.this,
@@ -2106,7 +2107,7 @@ public class LoginActivity extends Activity {
                         FileOutputStream fos = new FileOutputStream(outputFile);
                         InputStream is = c.getInputStream();
 
-                        int total_size = 5994577 ;//size of apk
+                        int total_size = 5994577;//size of apk
 
                         byte[] buffer = new byte[1024];
                         int len1 = 0;

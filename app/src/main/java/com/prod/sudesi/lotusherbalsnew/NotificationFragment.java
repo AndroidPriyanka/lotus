@@ -200,7 +200,9 @@ public class NotificationFragment extends ListActivity {
         @Override
         protected void onPostExecute(String result) {
             // TODO Auto-generated method stub
-            mProgress.dismiss();
+            if (mProgress != null && mProgress.isShowing() && !NotificationFragment.this.isFinishing()) {
+                mProgress.dismiss();
+            }
             loadmessage();
         }
 

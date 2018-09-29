@@ -919,7 +919,9 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                     }
                                     if (cd.isConnectingToInternet()) {
                                         //view.setBackgroundResource(R.drawable.green);
-                                        dialog.dismiss();
+                                        if (dialog != null && dialog.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                                            dialog.dismiss();
+                                        }
 
                                         try {
                                             // Production live now
@@ -1001,8 +1003,12 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                                             leavetype_flag = "Leave";
 
                                                             //view.setBackgroundResource(R.drawable.red);
-                                                            d.dismiss();
-                                                            dialog.dismiss();
+                                                            if (d != null && d.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                                                                d.dismiss();
+                                                            }
+                                                            if (dialog != null && dialog.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                                                                dialog.dismiss();
+                                                            }
 
                                                             try {
                                                                 new SaveAttendance().execute(attendance_flag, leavetype_flag,uploadflag);
@@ -1017,8 +1023,12 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                                             leavetype_flag = "Weekly Off";
 
                                                             //view.setBackgroundResource(R.drawable.red);
-                                                            d.dismiss();
-                                                            dialog.dismiss();
+                                                            if (d != null && d.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                                                                d.dismiss();
+                                                            }
+                                                            if (dialog != null && dialog.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                                                                dialog.dismiss();
+                                                            }
 
                                                             try {
                                                                 new SaveAttendance().execute(attendance_flag, leavetype_flag,uploadflag);
@@ -1032,8 +1042,12 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                                             leavetype_flag = "Holiday";
 
                                                             //view.setBackgroundResource(R.drawable.red);
-                                                            d.dismiss();
-                                                            dialog.dismiss();
+                                                            if (d != null && d.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                                                                d.dismiss();
+                                                            }
+                                                            if (dialog != null && dialog.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                                                                dialog.dismiss();
+                                                            }
 
                                                             try {
                                                                 new SaveAttendance().execute(attendance_flag, leavetype_flag,uploadflag);
@@ -1638,7 +1652,9 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         protected void onPostExecute(SoapPrimitive result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-            progress.dismiss();
+            if (progress != null && progress.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                progress.dismiss();
+            }
             if (result != null) {
                 if (result.toString().equalsIgnoreCase("true")) {
                     Toast.makeText(AttendanceFragment.this, "Uploaded Succesfully", Toast.LENGTH_LONG).show();

@@ -7027,9 +7027,9 @@ public class SyncMaster extends Activity {
     }
 
     private void dissmissDialog() {
-        if (progressDialog.isShowing())
+        if (progressDialog != null && progressDialog.isShowing() && !SyncMaster.this.isFinishing()) {
             progressDialog.dismiss();
-
+        }
     }
 
 

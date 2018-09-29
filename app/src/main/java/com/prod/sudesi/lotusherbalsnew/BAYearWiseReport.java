@@ -58,7 +58,7 @@ public class BAYearWiseReport extends Activity {
 
     TextView tv_h_username;
     Button btn_home, btn_logout;
-    String username, bdename, role,outletcode;
+    String username, bdename, role, outletcode;
 
     TextView tv_current_year_n1, tv_current_year_n2, tv_previous_year_p1, tv_previous_year_p2, tvPreviousyear, tvCurrentyear;
 
@@ -73,7 +73,7 @@ public class BAYearWiseReport extends Activity {
     //LinearLayout colorskinlayout;
     TableRow yearlayoutdubai, yearlayout;
 
-    String PreviousYear,CurrentYear;
+    String PreviousYear, CurrentYear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +95,7 @@ public class BAYearWiseReport extends Activity {
         shpeditor = shp.edit();
 
         role = shp.getString("Role", "");
-        outletcode = shp.getString("FLRCode","");
+        outletcode = shp.getString("FLRCode", "");
 
         lv_ba_report = (ListView) findViewById(R.id.listView_ba_year_report);
 
@@ -282,9 +282,9 @@ public class BAYearWiseReport extends Activity {
 
                     returnMessage = "1";
                 } else {
-                    if(role.equalsIgnoreCase("DUB")){
+                    if (role.equalsIgnoreCase("DUB")) {
                         returnMessage = getBAreportfromWebserviceForDubai();
-                    }else{
+                    } else {
                         returnMessage = getBAreportfromWebservice();
                     }
                 }
@@ -313,15 +313,17 @@ public class BAYearWiseReport extends Activity {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
 
-            prgdialog.dismiss();
+            if (prgdialog != null && prgdialog.isShowing() && !BAYearWiseReport.this.isFinishing()) {
+                prgdialog.dismiss();
+            }
 
             if (result.equalsIgnoreCase("1")) {
 
                 Toast.makeText(BAYearWiseReport.this, "Connectivity Error!! Please try again", Toast.LENGTH_SHORT).show();
             } else {
-                if(role.equalsIgnoreCase("DUB")){
+                if (role.equalsIgnoreCase("DUB")) {
                     loadReportsforDubai();
-                }else{
+                } else {
                     loadReports();
                 }
             }
@@ -407,7 +409,7 @@ public class BAYearWiseReport extends Activity {
 
             // //soap call
             Log.e("", "not2==" + username);
-            resultsRequestSOAP = service.DubaiBAOutletSale(username,outletcode);
+            resultsRequestSOAP = service.DubaiBAOutletSale(username, outletcode);
             //Log.e("","resultsRequestSOAP=="+resultsRequestSOAP.toString());
 
             if (resultsRequestSOAP != null) {

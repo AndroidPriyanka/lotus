@@ -298,7 +298,9 @@ public class OutletWiseSalesCumulativeActivity extends Activity {
         protected void onPostExecute(SoapObject result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-            prgdialog.dismiss();
+            if (prgdialog != null && prgdialog.isShowing() && !OutletWiseSalesCumulativeActivity.this.isFinishing()) {
+                prgdialog.dismiss();
+            }
             if (result != null) {
                 adapter = new OutletWiseSalesAdapter(OutletWiseSalesCumulativeActivity.this, final_array);
                 listView_outletwisesales_report.setAdapter(adapter);// add custom adapter to

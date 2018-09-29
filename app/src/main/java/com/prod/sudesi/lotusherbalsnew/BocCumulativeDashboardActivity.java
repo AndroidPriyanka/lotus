@@ -97,27 +97,24 @@ public class BocCumulativeDashboardActivity extends Activity {
         prgdialog = new ProgressDialog(BocCumulativeDashboardActivity.this);
 
 
-
         Intent intent = getIntent();
         str_BOC = intent.getStringExtra("month");
         String y[] = intent.getStringExtra("year").split("-");
 
 //		str_year = intent.getStringExtra("");
         Log.e("str_BOC", str_BOC);
-        if(role.equalsIgnoreCase("DUB")){
+        if (role.equalsIgnoreCase("DUB")) {
             year = y[0];
 
             txt_boc.setText(str_BOC);
             txt_year.setText(year);
-        }else{
+        } else {
             year = y[0];
             year1 = y[1];
 
             txt_boc.setText(str_BOC);
             txt_year.setText(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
         }
-
-
 
 
         tv_h_username = (TextView) findViewById(R.id.tv_h_username);
@@ -145,7 +142,7 @@ public class BocCumulativeDashboardActivity extends Activity {
             }
         });
 
-        if(role.equalsIgnoreCase("DUB")){
+        if (role.equalsIgnoreCase("DUB")) {
             System.out.println("   startdate--" + getStartEndForDubai(str_BOC, year)[0]);
             System.out.println("   enddate--" + getStartEndForDubai(str_BOC, year)[1]);
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
@@ -179,7 +176,7 @@ public class BocCumulativeDashboardActivity extends Activity {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-        }else {
+        } else {
             System.out.println("   startdate--" + getStartEnd(str_BOC, year, year1)[0]);
             System.out.println("   enddate--" + getStartEnd(str_BOC, year, year1)[1]);
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
@@ -408,7 +405,9 @@ public class BocCumulativeDashboardActivity extends Activity {
         protected void onPostExecute(String result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-            prgdialog.dismiss();
+            if (prgdialog != null && prgdialog.isShowing() && !BocCumulativeDashboardActivity.this.isFinishing()) {
+                prgdialog.dismiss();
+            }
 
         /*    for (int i = 0; i < final_array.size(); i++) {
                 Log.d("In ginalk loop", "" + i);
@@ -497,10 +496,10 @@ public class BocCumulativeDashboardActivity extends Activity {
                     DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd");
 
                     String startdate[];
-                    if(role.equalsIgnoreCase("DUB")){
-                         startdate = getStartEndForDubai(str_BOC, year);
-                    }else{
-                         startdate = getStartEnd(str_BOC, year, year1);
+                    if (role.equalsIgnoreCase("DUB")) {
+                        startdate = getStartEndForDubai(str_BOC, year);
+                    } else {
+                        startdate = getStartEnd(str_BOC, year, year1);
                     }
 
 
@@ -515,28 +514,28 @@ public class BocCumulativeDashboardActivity extends Activity {
                             HashMap<String, String> map = new HashMap<String, String>();
                             map.put("DATE", dates_array.get(i));
 
-                            if(getmessaage.getProperty("Datenew")!=null &&
-                                    !getmessaage.getProperty("Datenew").toString().equalsIgnoreCase("anyType{}")){
+                            if (getmessaage.getProperty("Datenew") != null &&
+                                    !getmessaage.getProperty("Datenew").toString().equalsIgnoreCase("anyType{}")) {
 
                                 map.put("Datenew", String.valueOf(getmessaage.getProperty("Datenew")));
 
-                            }else{
+                            } else {
                                 map.put("Datenew", "0");
                             }
-                            if(getmessaage.getProperty("SoldQty")!=null &&
-                                    !getmessaage.getProperty("SoldQty").toString().equalsIgnoreCase("anyType{}")){
+                            if (getmessaage.getProperty("SoldQty") != null &&
+                                    !getmessaage.getProperty("SoldQty").toString().equalsIgnoreCase("anyType{}")) {
 
                                 map.put("SoldQty", String.valueOf(getmessaage.getProperty("SoldQty")));
 
-                            }else{
+                            } else {
                                 map.put("SoldQty", "0");
                             }
-                            if(getmessaage.getProperty("Soldvalue")!=null &&
-                                    !getmessaage.getProperty("Soldvalue").toString().equalsIgnoreCase("anyType{}")){
+                            if (getmessaage.getProperty("Soldvalue") != null &&
+                                    !getmessaage.getProperty("Soldvalue").toString().equalsIgnoreCase("anyType{}")) {
 
                                 map.put("Soldvalue", String.valueOf(getmessaage.getProperty("Soldvalue")));
 
-                            }else{
+                            } else {
                                 map.put("Soldvalue", "0");
                             }
 
@@ -605,7 +604,9 @@ public class BocCumulativeDashboardActivity extends Activity {
         protected void onPostExecute(String result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-            prgdialog.dismiss();
+            if (prgdialog != null && prgdialog.isShowing() && !BocCumulativeDashboardActivity.this.isFinishing()) {
+                prgdialog.dismiss();
+            }
 
             db.open();
 

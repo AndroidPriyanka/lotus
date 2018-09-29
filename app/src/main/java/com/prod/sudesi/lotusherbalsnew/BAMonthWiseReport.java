@@ -589,8 +589,9 @@ public class BAMonthWiseReport extends Activity {
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
-			
-			prgdialog.dismiss();
+			if (prgdialog != null && prgdialog.isShowing() && !BAMonthWiseReport.this.isFinishing()) {
+				prgdialog.dismiss();
+			}
 			loadMonthReports();
 		}
 	}
