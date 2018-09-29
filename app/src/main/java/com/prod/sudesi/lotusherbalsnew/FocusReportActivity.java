@@ -47,12 +47,14 @@ public class FocusReportActivity extends Activity {
     Dbcon db;
     FocusReportAdapter focusReportAdapter;
 
-    String flotername, bdename, role, check, currentdate;
+    String lhrname, bdename, role, check, currentdate;
 
     private ArrayList<String> FocusReportDetailsArraylist;
     String[] strFocusReportArray = null;
     Context context;
     ListView reportlist;
+
+    boolean reportclick;
 
     private ArrayList<FocusModel> focusReportList;
     FocusModel focusModel;
@@ -82,7 +84,7 @@ public class FocusReportActivity extends Activity {
         cd = new ConnectionDetector(this);
         db = new Dbcon(this);
 
-        flotername = shp.getString("username", "");
+        lhrname = shp.getString("username", "");
         bdename = shp.getString("BDEusername", "");
         role = shp.getString("Role", "");
         tv_h_username.setText(bdename);
@@ -123,7 +125,15 @@ public class FocusReportActivity extends Activity {
         target_amt = intent.getStringExtra("target_amt");
         android_created_date = intent.getStringExtra("androiddate");
 
+        reportclick = intent.getBooleanExtra("reportclick",false);
+
         new FocusReportData().execute();
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
 
     }
 
@@ -167,8 +177,13 @@ public class FocusReportActivity extends Activity {
                 Flag = "1";
 
                 try {
-                    soapresultfocus = service.SaveIntoFOCUSReport(db_id, product_type, product_category,
-                            pro_name, size, price, target_qty, target_amt, username, android_created_date);
+                    if(reportclick) {
+                        soapresultfocus = service.SaveIntoFOCUSReport("", "", "",
+                                "", "", "", "", "", lhrname, "");
+                    }else {
+                        soapresultfocus = service.SaveIntoFOCUSReport(db_id, product_type, product_category,
+                                pro_name, size, price, target_qty, target_amt, username, android_created_date);
+                    }
 
                     if (soapresultfocus != null) {
 

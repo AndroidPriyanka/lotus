@@ -293,11 +293,13 @@ public class FocusActivity extends Activity implements View.OnClickListener {
                         break;
 
                     case R.id.radio_report:
-                        Intent i = new Intent(getApplicationContext(), FocusReportActivity.class);
-                        startActivity(i);
 
                         report = true;
                         target = false;
+
+                        Intent i = new Intent(getApplicationContext(), FocusReportActivity.class);
+                        i.putExtra("reportclick", report);
+                        startActivity(i);
 
                         table_header.setVisibility(View.GONE);
                         break;

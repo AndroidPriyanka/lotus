@@ -380,7 +380,8 @@ public class FocusAllActivity extends Activity {
     @Override
     public void onBackPressed() {
         // TODO Auto-generated method stub
-
+        Intent i = new Intent(getApplicationContext(), FocusActivity.class);
+        startActivity(i);
     }
 
     public int saveData() {
