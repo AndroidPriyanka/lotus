@@ -615,13 +615,14 @@ public class DashboardNewActivity extends Activity {
             Calendar cal = Calendar.getInstance();
             Integer year = cal.get(Calendar.YEAR);
             Integer month1 = cal.get(Calendar.MONTH) + 1;
+            Integer pmonth = cal.get(Calendar.MONTH);
 
-            oeStartDateStr = oeStartDateStr.concat(month1.toString()) + "/";
+            oeStartDateStr = oeStartDateStr.concat(pmonth.toString()) + "/";
             Integer nextmonth;
             if (month1.toString().equalsIgnoreCase("12")) {
                 nextmonth = 1;
             } else {
-                nextmonth = month1 + 1;
+                nextmonth = pmonth + 1;
             }
             oeEndDateStr = oeEndDateStr.concat(nextmonth.toString()) + "/";
 
@@ -639,7 +640,7 @@ public class DashboardNewActivity extends Activity {
                 } else if (String.valueOf(month1).equalsIgnoreCase("2")) {
                     bocname = "BOC12";
                 } else {
-                    bocname = "BOC" + String.valueOf(month1 - 2);
+                    bocname = "BOC" + String.valueOf(pmonth - 2);
                 }
             } else {
                 //System.out.println("Date is not between 1st april to 14th nov...");

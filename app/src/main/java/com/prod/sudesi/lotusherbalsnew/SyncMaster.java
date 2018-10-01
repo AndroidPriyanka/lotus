@@ -113,8 +113,8 @@ public class SyncMaster extends Activity {
     ArrayList<HashMap<String, String>> listofimages = new ArrayList<HashMap<String, String>>();
     ArrayList<String> uploadidlist;
 
-      public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
-      //public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
+      //public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
+      public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
     private JSONArray array;
     String flag;
     String ErroFlag = "";
