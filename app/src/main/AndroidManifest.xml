@@ -146,6 +146,9 @@
             android:name="com.prod.sudesi.lotusherbalsnew.FocusReportActivity"
             android:screenOrientation="landscape"/>
 
+        <activity android:name="com.prod.sudesi.lotusherbalsnew.ReportActivityNew"
+            android:screenOrientation="landscape"/>
+
         <receiver android:name="com.prod.sudesi.lotusherbalsnew.UploadDataBrodcastReceiver" />
         <receiver android:name="com.prod.sudesi.lotusherbalsnew.MyScheduledReceiver">
             <intent-filter>

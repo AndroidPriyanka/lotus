@@ -4112,6 +4112,9 @@ public class Dbcon {
 
         String selectquery = "SELECT sum(Customers.total_net_amount),sum(Customers.total_gross_amount)" +
                 ",sum(Customers.opening_amt),sum(Customers.close_amt),sum(Customers.sold_amt)" +
+                ",sum(Customers.opening_stock),sum(Custo" +
+                "" +
+                "mers.close_bal),sum(Customers.sold_stock)"+
                 " FROM product_master Orders," +
                 " stock Customers where Orders.db_id=Customers.db_id and Orders.ProductCategory = '" + ProdCategory + "' order by Orders.order_flag";  // new join query with Product Master table 11.05.2015//04.07.2015
 

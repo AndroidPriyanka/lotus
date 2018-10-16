@@ -21,9 +21,10 @@
     <color name="pink">#fa97cd</color>
     <color name="Primaryred">#bc3a2f</color>
     <color name="colorPrimaryDark2">#c72c2c</color>
-    
-    
-   
 
+    <!--Sharmila-->
+    <color name="shadow_start">#80000000</color>
+    <color name="shadow_end">#00000000</color>
+    <color name="md_grey_300">#e0e0e0</color>
 
 </resources>

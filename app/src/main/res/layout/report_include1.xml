@@ -56,7 +56,7 @@
                     android:layout_height="@dimen/_50sdp"
                     android:layout_alignParentBottom="true"
                     android:gravity="bottom"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <RadioButton
                         android:id="@+id/radio0"

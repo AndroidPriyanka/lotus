@@ -313,7 +313,7 @@ public class DashboardNewActivity extends Activity {
                 // TODO Auto-generated method stub
 
                 startActivity(new Intent(getApplicationContext(),
-                        ReportsForUser.class));
+                        ReportActivityNew.class));
 
             }
         });

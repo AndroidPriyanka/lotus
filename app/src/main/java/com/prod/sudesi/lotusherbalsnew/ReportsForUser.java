@@ -48,7 +48,7 @@ import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
 
 public class ReportsForUser extends Activity {
 
-    Context context;
+    /*Context context;
 
 
     RadioButton rb_s;
@@ -109,10 +109,12 @@ public class ReportsForUser extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         context = ReportsForUser.this;
-        /*
+        */
+/*
          * public onCreateView(LayoutInflater inflater, ViewGroup container,
          * Bundle savedInstanceState) {
-         */
+         *//*
+
         // TODO Auto-generated method stub
         // return super.onCreateView(inflater, container, savedInstanceState);
 
@@ -342,7 +344,8 @@ public class ReportsForUser extends Activity {
             });
         }
         if (!role.equalsIgnoreCase("DUB")) {
-           /* rb_t.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+           */
+/* rb_t.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -363,7 +366,8 @@ public class ReportsForUser extends Activity {
                         txt_lhm.setVisibility(View.GONE);
                     }
                 }
-            });*/
+            });*//*
+
 
             rg_lhm_choice.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
@@ -527,14 +531,16 @@ public class ReportsForUser extends Activity {
                     }
                 });
 				
-				/*final Dialog d = new Dialog(ReportsForUser.this);
+				*/
+/*final Dialog d = new Dialog(ReportsForUser.this);
 				d.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				d.setContentView(R.layout.popup_report);
 
 				TextView text = (TextView)d.findViewById(R.id.textView1);
 				
 				text.setText(tv_type.getText().toString());
-				d.show();*/
+				d.show();*//*
+
 
                 Log.e("", "" + tv_type.getText().toString() + " " + tv_product.getText().toString());
 
@@ -692,14 +698,16 @@ public class ReportsForUser extends Activity {
 
 			
 
-			/*Log.e("", "reportlist==="+reportlist);
+			*/
+/*Log.e("", "reportlist==="+reportlist);
 			mProgress.dismiss();
 			// TODO Auto-generated method stub
 			listview.setVisibility(View.VISIBLE);
 			adapter = new ReportAdapter(getApplicationContext(), reportlist);
 			listview.setAdapter(adapter);
 			adapter.notifyDataSetChanged();
-			db.close();*/
+			db.close();*//*
+
 
             // }
         }
@@ -1150,6 +1158,7 @@ public class ReportsForUser extends Activity {
             e.printStackTrace();
         }
     }
+*/
 
 
 }

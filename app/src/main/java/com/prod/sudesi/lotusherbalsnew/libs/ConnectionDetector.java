@@ -71,4 +71,13 @@ public class ConnectionDetector {
             return str;
         }
     }
+
+    public String getNonNullValues_Integer(String str) {
+        if (str == null || str.isEmpty() || str.equalsIgnoreCase("null") || str.equalsIgnoreCase("")||
+                str.equalsIgnoreCase("anyType{}")) {
+            return "0";
+        } else {
+            return str;
+        }
+    }
 }
