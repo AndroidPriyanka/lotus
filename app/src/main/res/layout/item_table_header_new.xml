@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
-        android:textColor="@color/black"
+        android:textColor="@color/colorPrimaryDark2"
         android:paddingLeft="10dip" />
 
     <!--<View
