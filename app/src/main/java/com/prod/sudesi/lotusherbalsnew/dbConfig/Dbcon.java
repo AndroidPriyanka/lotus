@@ -4085,13 +4085,13 @@ public class Dbcon {
 
     }
 
-    public int getReportSum(String ProdCategory) {
+    public int getFocusStockSum(String prodtype) {
 
         int sum = 0;
+        //SELECT sum(sold_stock) FROM stock where product_type = 'BODY LOTION' and savedServer = 1
 
-        String selectquery = "SELECT sum(Customers.total_net_amount)" +
-                "                 FROM product_master Orders," +
-                "                stock Customers where Orders.db_id=Customers.db_id and Orders.ProductCategory = '" + ProdCategory + "' order by Orders.order_flag";  // new join query with Product Master table 11.05.2015//04.07.2015
+        String selectquery = "SELECT sum(sold_stock)" +
+                " FROM stock where product_type = '" + prodtype + "' and savedServer = '1'";  // new join query with Product Master table 11.05.2015//04.07.2015
 
 
         Cursor cursor = database.rawQuery(selectquery, null);
@@ -4126,7 +4126,14 @@ public class Dbcon {
 
     public Cursor getReportCategorydata(String Category) {
 
-        String selectquery = "select  product_type, sum(opening_stock),sum(stock_received),sum(close_bal),sum(opening_amt),sum(received_amt),sum(close_amt) from stock where product_category = '" + Category + "' Group BY product_type";  // new join query with Product Master table 11.05.2015//04.07.2015
+      /*  select  product_type, sum(opening_stock),sum(stock_received),sum(close_bal),sum(opening_amt),
+                sum(received_amt),sum(close_amt) from product_master Orders,
+                stock Customers where Orders.db_id=Customers.db_id and Customers.product_category = 'COLOR' and savedServer = '1' and Group BY product_type
+*/
+        String selectquery = "select  product_type, sum(opening_stock)," +
+                " sum(stock_received),sum(close_bal),sum(opening_amt),sum(received_amt),sum(close_amt) " +
+                " from product_master Orders, stock Customers where Orders.db_id = Customers.db_id " +
+                " and Customers.product_category = '" + Category + "' and savedServer = '1' Group BY product_type";  // new join query with Product Master table 11.05.2015//04.07.2015
 
 
         Cursor cursor = database.rawQuery(selectquery, null);
@@ -4136,7 +4143,9 @@ public class Dbcon {
 
     public Cursor getReportCategorydatatotal(String Category) {
 
-        String selectquery = "select sum(opening_amt),sum(received_amt),sum(close_amt) from stock where product_category = '" + Category + "'";  // new join query with Product Master table 11.05.2015//04.07.2015
+        String selectquery = "select sum(opening_amt),sum(received_amt),sum(close_amt) " +
+                "from product_master Orders, stock Customers where Orders.db_id = Customers.db_id" +
+                " and Customers.product_category = '" + Category + "' and savedServer = '1' ";  // new join query with Product Master table 11.05.2015//04.07.2015
 
 
         Cursor cursor = database.rawQuery(selectquery, null);
@@ -4212,7 +4221,6 @@ public class Dbcon {
     public Cursor fetchAllproductsforFocus(String selected_category,
                                                String selected_type, String username, String boc, String columnname) {
         // TODO Auto-generated method stub
-//		String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"' ORDER BY order_flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
 
         String selectquery;
         if (columnname.equalsIgnoreCase("ShadeNo")
@@ -4223,12 +4231,178 @@ public class Dbcon {
 
         }
 
-        //String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"'"+" AND price_type = "+"'"+flag+"'  AND db_id in (select db_id  from stock where close_bal > 0)";
-//		Log.e("selectquery distinct","=="+selectquery);
         Cursor cursort = database.rawQuery(selectquery, null);
 
 
         return cursort;
+
+    }
+
+    public Cursor getFocusReportAchivement(String username, String boc) {
+
+        String selectquery = "SELECT Orders.Type,Orders.Target_qty,sum(Customers.sold_stock),Orders.Category" +
+                " as sumstock FROM focus_data Orders" +
+                " left join stock Customers on Orders.Type=Customers.product_type and Customers.savedServer = '1' " +
+                " where Orders.BOC = '" + boc + "' and Orders.Empid = '" + username + "' group by Customers.product_type";
+
+
+        Cursor cursor = database.rawQuery(selectquery, null);
+
+        return cursor;
+    }
+
+    @SuppressLint("ShowToast")
+    public ArrayList<String> getproductypeforfocus(String ProductCategory, String Username, String boc) {
+        // TODO Auto-generated method stub
+        ArrayList<String> product_type_data = new ArrayList<String>();
+
+        String selectquery = " select DISTINCT ProductType from product_master where ProductCategory = "
+                + "'" + ProductCategory + "'" + " AND ProductType != " + "'BABY CARE'"
+                + " AND ProductType not in(select Type from focus_data where Empid = '" + Username + "' and Category = '" + ProductCategory + "' and BOC = '" + boc + "')";
+
+        Cursor cursor = database.rawQuery(selectquery, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                //product_type_data.add("Select");
+                do {
+                    product_type_data.add(cursor.getString(cursor
+                            .getColumnIndex(Dbhelper.KEY_PRODUCT_TYPE)));
+
+                    Log.e("", "data product_type=" + product_type_data);
+
+                } while (cursor.moveToNext());
+
+            }
+        } else {
+
+            //Toast.makeText(context, "No data available", Toast.LENGTH_LONG);
+        }
+        database.close();
+        return product_type_data;
+    }
+
+    public ArrayList<String> getproductypeforFocusBaby(String ProductCategory) {
+        // TODO Auto-generated method stub
+        ArrayList<String> product_type_data = new ArrayList<String>();
+
+
+        String selectquery = " select DISTINCT ProductType from product_master where ProductCategory = " + "'" + ProductCategory + "'" + " AND ProductType = " + "'BABY CARE'";
+
+        Cursor cursor = database.rawQuery(selectquery, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                //product_type_data.add("Select");
+                do {
+                    product_type_data.add(cursor.getString(cursor
+                            .getColumnIndex(Dbhelper.KEY_PRODUCT_TYPE)));
+
+                    Log.e("", "data product_type=" + product_type_data);
+
+                } while (cursor.moveToNext());
+
+            }
+        } else {
+
+            //Toast.makeText(context, "No data available", Toast.LENGTH_LONG);
+        }
+        database.close();
+        return product_type_data;
+    }
+
+    public int updateFocusData(String achievement, String type, String username) {
+
+        /*UPDATE focus_data SET Target_amt='4' WHERE Type = 'BODY LOTION' and Empid ='lhr-9998'*/
+
+        int status;
+
+        String sql = "UPDATE focus_data SET Target_amt = '" + achievement + "' where Type = '" + type + "' and Empid ='" + username + "'";
+
+        Cursor c = database.rawQuery(sql, null);
+        if (c != null && c.getCount() > 0) {
+            status = 1;
+        } else {
+            status = 0;
+        }
+        return status;
+
+
+    }
+
+    public Cursor fetchFocusAchivementDetails(String username, String boc) {
+
+        String selectquery = "select * from focus_data where BOC = '"+ boc +"' and Empid = '"+ username +"'";
+
+        Cursor cursor = database.rawQuery(selectquery, null);
+
+        return cursor;
+    }
+
+    public Cursor showFocusAchivementDetails(String username, String boc) {
+
+        String selectquery = "select Type,Category,Target_qty,Target_amt from focus_data where BOC = '"+ boc +"' and Empid = '"+ username +"'";
+
+        Cursor cursor = database.rawQuery(selectquery, null);
+
+        return cursor;
+    }
+
+    public void update_FocusFlag(String boc , String username) {
+        // TODO Auto-generated method stub
+
+        //update focus_data set Productid = 'U' where Productid = 'NU' and BOC = 'BOC7' and Empid = 'LHR-9998'
+        String sql = "UPDATE focus_data SET Productid = 'U' WHERE Productid = 'NU' AND BOC = '" + boc + "' AND Empid = '"+ username +"'";
+        database.execSQL(sql);
+        Log.e("local database", "UPDATE attendance table data");
+
+    }
+
+    public Cursor CheckFocusDataExist(String tablename, String type, String boc) {
+        // TODO Auto-generated method stub
+        String sql = "select * from  '" + tablename + "'  where  Type =" + "'" + type + "' and BOC = '"+ boc +"'";
+
+        Log.v("", "sql==" + sql);
+
+        Cursor c = database.rawQuery(sql, null);
+
+        return c;
+    }
+
+    public void UpdateFocusData( String Type, String Category, String Target_qty, String Target_BOC,
+                                 String Achievement_Unit,String emp_id,String android_created_date) {
+
+        // TODO Auto-generated method stub
+
+
+        Log.e("", "inside update stock");
+
+        String sql = "update focus_data set Type = '" + Type + "' ,Category = '" + Category + "'" +
+                " ,BOC = '" + Target_BOC + "'" +
+                " ,Target_amt = '" + Achievement_Unit + "',Empid = '" + emp_id + "'" +
+                " ,AndroidCreateddate = '" + android_created_date + "' where Type = '" + Type + "' and BOC = '"+ Target_BOC +"'";
+        Log.v("", "update focus_data sql==" + sql);
+        database.execSQL(sql);
+
+    }
+
+    public void insertFocusData(String Type, String Category, String Target_qty, String Target_BOC,
+                                String Achievement_Unit,String emp_id,String android_created_date) {
+        // TODO Auto-generated method stub
+
+        ContentValues values = new ContentValues();
+        values.put("Type", Type);
+        values.put("Category", Category);
+        values.put("Target_qty", Target_qty);
+        values.put("BOC", Target_BOC);
+        values.put("Target_amt", Achievement_Unit);
+        values.put("Empid", emp_id);
+        values.put("AndroidCreateddate", android_created_date);
+
+        Log.e("", "values==" + values);
+
+        database.insert("focus_data", null, values);
+
+        database.close();
+
 
     }
 

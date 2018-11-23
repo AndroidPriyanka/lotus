@@ -19,28 +19,28 @@ import java.util.List;
 public class FocusReportAdapter extends BaseAdapter {
 
     Context context1;
-    private List<FocusModel> focusModelList;
+    private ArrayList<HashMap<String, String>> data;
     private LayoutInflater inflater1 = null;
     String receiver;
 
     ViewHolder viewHolder;
 
-    public FocusReportAdapter(Context context, ArrayList d) {
+    public FocusReportAdapter(Context context, ArrayList<HashMap<String, String>> d) {
         context1 = context;
-        focusModelList = d;
+        data = d;
         inflater1 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     }
 
     @Override
     public int getCount() {
-        return focusModelList.size();
+        return data.size();
     }
 
     @Override
     public Object getItem(int i) {
 //        return i;
-        return focusModelList.get(i);
+        return data.get(i);
     }
 
     @Override
@@ -49,13 +49,13 @@ public class FocusReportAdapter extends BaseAdapter {
     }
 
     class ViewHolder {
-        TextView txt_prod_name;
-        TextView txt_size;
-        TextView txt_mrp;
-        TextView tv_target_qty;
-        TextView tv_target_rs;
-        TextView tv_achivmnt_qty;
-        TextView tv_achivmnt_rs;
+        TextView txt_categorytype;
+        TextView txt_target;
+        TextView txt_achiev;
+//        TextView tv_target_qty;
+//        TextView tv_target_rs;
+//        TextView tv_achivmnt_qty;
+//        TextView tv_achivmnt_rs;
 
     }
 
@@ -68,27 +68,29 @@ public class FocusReportAdapter extends BaseAdapter {
 
                 convertView = inflater1.inflate(R.layout.focusreport_row_item, null);
 
-                viewHolder.txt_prod_name = (TextView) convertView.findViewById(R.id.txt_prod_name);
-                viewHolder.txt_size = (TextView) convertView.findViewById(R.id.txt_size);
-                viewHolder.txt_mrp = (TextView) convertView.findViewById(R.id.txt_mrp);
-                viewHolder.tv_target_qty = (TextView) convertView.findViewById(R.id.tv_target_qty);
-                viewHolder.tv_target_rs = (TextView) convertView.findViewById(R.id.tv_target_rs);
-                viewHolder.tv_achivmnt_qty = (TextView) convertView.findViewById(R.id.tv_achivmnt_qty);
-                viewHolder.tv_achivmnt_rs = (TextView) convertView.findViewById(R.id.tv_achivmnt_rs);
+                viewHolder.txt_categorytype = (TextView) convertView.findViewById(R.id.txt_categorytype);
+                viewHolder.txt_target = (TextView) convertView.findViewById(R.id.txt_target);
+                viewHolder.txt_achiev = (TextView) convertView.findViewById(R.id.txt_achiev);
+//                viewHolder.tv_target_qty = (TextView) convertView.findViewById(R.id.tv_target_qty);
+//                viewHolder.tv_target_rs = (TextView) convertView.findViewById(R.id.tv_target_rs);
+//                viewHolder.tv_achivmnt_qty = (TextView) convertView.findViewById(R.id.tv_achivmnt_qty);
+//                viewHolder.tv_achivmnt_rs = (TextView) convertView.findViewById(R.id.tv_achivmnt_rs);
 
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-            final FocusModel focusModel = focusModelList.get(i);
 
-            viewHolder.txt_prod_name.setText(focusModel.getPro_name());
-            viewHolder.txt_size.setText(focusModel.getSize());
-            viewHolder.txt_mrp.setText(focusModel.getPrice());
-            viewHolder.tv_target_qty.setText(focusModel.getTarget_qty());
-            viewHolder.tv_target_rs.setText(focusModel.getTarget_amt());
-            viewHolder.tv_achivmnt_qty.setText(focusModel.getAchievement_Unit());
-            viewHolder.tv_achivmnt_rs.setText(focusModel.getAchievement_value());
+            HashMap<String, String> map = new HashMap<String, String>();
+            map = data.get(i);
+
+            viewHolder.txt_categorytype.setText(map.get("Type"));
+            viewHolder.txt_target.setText(map.get("Target"));
+            viewHolder.txt_achiev.setText(map.get("Achievement"));
+//            viewHolder.tv_target_qty.setText(focusModel.getTarget_qty());
+//            viewHolder.tv_target_rs.setText(focusModel.getTarget_amt());
+//            viewHolder.tv_achivmnt_qty.setText(focusModel.getAchievement_Unit());
+//            viewHolder.tv_achivmnt_rs.setText(focusModel.getAchievement_value());
 
         } catch (Exception e) {
             e.printStackTrace();

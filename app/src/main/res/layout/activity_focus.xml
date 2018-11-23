@@ -96,6 +96,7 @@
                     android:id="@+id/tr_cat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_5sdp"
                     android:visibility="visible">
 
                     <TextView
@@ -109,6 +110,7 @@
                     android:id="@+id/tr_sp_categry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_5sdp"
                     android:gravity="center"
                     android:visibility="visible">
 
@@ -120,71 +122,163 @@
                         android:prompt="@string/select_category" />
                 </TableRow>
 
-                <TableRow
-                    android:id="@+id/tr_type"
+                <!-- <TableRow
+                     android:id="@+id/tr_type"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:visibility="visible"
+                     android:layout_marginBottom="@dimen/_5sdp">
+
+                     <TextView
+                         style="@style/label_text"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:text="Type" />
+                 </TableRow>
+
+                 <TableRow
+                     android:id="@+id/tr_sp_prodType"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:visibility="visible"
+                     android:layout_marginBottom="@dimen/_5sdp">
+
+                     <Spinner
+                         android:id="@+id/sp_prodt_type"
+                         android:layout_width="wrap_content"
+                         android:layout_height="@dimen/_25sdp"
+                         android:background="@drawable/dropdown"
+                         android:prompt="@string/select_type" />
+                 </TableRow>-->
+            </TableLayout>
+
+            <!--<ScrollView
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/scrollViewlinear"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="visible">
 
-                    <TextView
-                        style="@style/label_text"
+                    <TableLayout
+                        android:id="@+id/tl_sale_calculation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Type" />
-                </TableRow>
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:stretchColumns="*"
+                        android:visibility="visible">
 
-                <TableRow
-                    android:id="@+id/tr_sp_prodType"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible">
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="#F7DCB4"
+                            android:padding="@dimen/_3sdp"
+                            android:weightSum="3">
 
-                    <Spinner
-                        android:id="@+id/sp_prodt_type"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/_25sdp"
-                        android:background="@drawable/dropdown"
-                        android:prompt="@string/select_type" />
-                </TableRow>
-            </TableLayout>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2.5"
+                                android:text="CategoryType"
+                                android:textStyle="bold"
+                                android:typeface="serif" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.5"
+                                android:gravity="center"
+                                android:text="Qty"
+                                android:textStyle="bold"
+                                android:typeface="serif" />
+
+                            &lt;!&ndash; <TextView
+                                 android:layout_width="0dp"
+                                 android:layout_height="wrap_content"
+                                 android:layout_weight="1"
+                                 android:gravity="center"
+                                 android:text="MRP"
+                                 android:textColor="@android:color/white"
+                                 android:textStyle="italic"
+                                 android:typeface="serif" />&ndash;&gt;
+
+                        </TableRow>
+                    </TableLayout>
+
+                </LinearLayout>
+
+            </ScrollView>-->
 
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <TableLayout
-                    android:id="@+id/tl_returnprodctList"
+                <LinearLayout
+                    android:id="@+id/scrollViewlinear"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/_10sdp">
+                    android:layout_height="wrap_content"
+                    android:visibility="visible">
 
-                    <TableRow
-                        android:id="@+id/tr_headr"
+                    <TableLayout
+                        android:id="@+id/tl_returnprodctList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="#F7DCB4"
-                        android:padding="3dp"
-                        android:weightSum="3">
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_marginTop="@dimen/_10sdp">
 
-                        <TextView
-                            style="@style/list_heading"
-                            android:layout_width="0dip"
+                        <TableRow
+                            android:id="@+id/tr_headr"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="2.3"
-                            android:gravity="left"
-                            android:text="PRODUCT" />
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="#F7DCB4"
+                            android:padding="3dp"
+                            android:weightSum="3">
 
-                        <TextView
-                            style="@style/list_heading"
-                            android:layout_width="0dip"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:layout_weight="0.7"
-                            android:gravity="center"
-                            android:text="MRP" />
-                    </TableRow>
-                </TableLayout>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2.5"
+                                android:text="CategoryType"
+                                android:textStyle="bold"
+                                android:typeface="serif" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.5"
+                                android:gravity="center"
+                                android:text="Qty"
+                                android:textStyle="bold"
+                                android:typeface="serif" />
+
+                           <!-- <TextView
+                                style="@style/list_heading"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2.3"
+                                android:gravity="left"
+                                android:text="PRODUCT" />
+
+                            <TextView
+                                style="@style/list_heading"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:layout_weight="0.7"
+                                android:gravity="center"
+                                android:text="MRP" />-->
+                        </TableRow>
+                    </TableLayout>
+                </LinearLayout>
             </ScrollView>
         </LinearLayout>
 
@@ -197,8 +291,8 @@
             android:layout_alignParentRight="true"
             android:layout_gravity="left"
             android:layout_marginBottom="@dimen/_7sdp"
-            android:background="@drawable/proceed"
-            android:visibility="visible" />
+            android:background="@drawable/save_new"
+            android:visibility="invisible" />
 
     </RelativeLayout>
 

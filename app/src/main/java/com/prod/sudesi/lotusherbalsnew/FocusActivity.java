@@ -4,19 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -26,27 +25,32 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.prod.sudesi.lotusherbalsnew.Models.FocusModel;
 import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
+import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
+import com.prod.sudesi.lotusherbalsnew.libs.LotusWebservice;
+
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 
 import static android.content.ContentValues.TAG;
 
 public class FocusActivity extends Activity implements View.OnClickListener {
 
 
-    Spinner sp_prodt_category, sp_prodt_type; //sp_product_mode;
+    Spinner sp_prodt_category;//, sp_prodt_type; //sp_product_mode;
 
     Button btn_returnproced, btn_home, btn_logout;
 
     TableLayout tl_returnproductList;
 
-    TableRow tr_cat, tr_sp_categry, tr_type, tr_sp_prodType;
+    TableRow tr_cat, tr_sp_categry;//, tr_type, tr_sp_prodType;
     LinearLayout table_header;
 
     TableRow tr_header;
@@ -60,17 +64,12 @@ public class FocusActivity extends Activity implements View.OnClickListener {
 
     ArrayList<String> productcategory = new ArrayList<String>();
     ArrayList<String> producttypeArray = new ArrayList<String>();
-    ArrayList<HashMap<String, String[]>> productDetailsArray = new ArrayList<HashMap<String, String[]>>();
+    //ArrayList<HashMap<String, String[]>> productDetailsArray = new ArrayList<HashMap<String, String[]>>();
 
-    ArrayList<String> arr_selectedDBids;
+    ArrayList<String> arr_selectedType;
+    ArrayList<String> arr_selectedQty;
 
-    public static String selected_product_category, selected_product_type,
-            selected_product_name, selected_product_id1;
-
-    private String[] arraySpinner;
-
-    //int modecounter = 0;
-    //public static String PMODE;
+    public static String selected_product_category, selected_product_type;
 
     String username, bdename;
 
@@ -80,6 +79,14 @@ public class FocusActivity extends Activity implements View.OnClickListener {
     RadioGroup radio_target_report;
     RadioButton radio_target, radio_report;
     boolean target = false, report = false;
+
+    String[] values;
+
+    LotusWebservice service;
+    ConnectionDetector cd;
+
+    private ArrayList<FocusModel> focusReportList;
+    FocusModel focusModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +100,8 @@ public class FocusActivity extends Activity implements View.OnClickListener {
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
         sp_prodt_category = (Spinner) findViewById(R.id.sp_prodt_category);
-        sp_prodt_type = (Spinner) findViewById(R.id.sp_prodt_type);
         tl_returnproductList = (TableLayout) findViewById(R.id.tl_returnprodctList);
+
         btn_returnproced = (Button) findViewById(R.id.btn_returnproced);
         btn_home = (Button) findViewById(R.id.btn_home);
         btn_logout = (Button) findViewById(R.id.btn_logout);
@@ -103,8 +110,6 @@ public class FocusActivity extends Activity implements View.OnClickListener {
 
         tr_cat = (TableRow) findViewById(R.id.tr_cat);
         tr_sp_categry = (TableRow) findViewById(R.id.tr_sp_categry);
-        tr_type = (TableRow) findViewById(R.id.tr_type);
-        tr_sp_prodType = (TableRow) findViewById(R.id.tr_sp_prodType);
         table_header = (LinearLayout) findViewById(R.id.table_header);
 
         radio_target_report = (RadioGroup) findViewById(R.id.radio_target_report);
@@ -118,6 +123,8 @@ public class FocusActivity extends Activity implements View.OnClickListener {
         shp = getSharedPreferences("Lotus", MODE_PRIVATE);
         shpeditor = shp.edit();
 
+        service = new LotusWebservice(this);
+        cd = new ConnectionDetector(this);
         db = new Dbcon(this);
         db.open();
 
@@ -126,6 +133,8 @@ public class FocusActivity extends Activity implements View.OnClickListener {
         tv_h_username.setText(bdename);
 
         String div = shp.getString("div", "");
+
+        final String BOC = cd.getBocName();
 
         if (div.equalsIgnoreCase("LH & LHM") || div.equalsIgnoreCase("LH & LM")) {
 
@@ -184,7 +193,7 @@ public class FocusActivity extends Activity implements View.OnClickListener {
                                         FocusActivity.this,
                                         android.R.layout.simple_spinner_dropdown_item,
                                         new String[]{});
-                                sp_prodt_type.setAdapter(adapter);
+                                //sp_prodt_type.setAdapter(adapter);
 
                             } else {
 
@@ -203,22 +212,18 @@ public class FocusActivity extends Activity implements View.OnClickListener {
 
                                 db.open();
                                 if (sp_prodt_category.getItemAtPosition(position).toString().trim().equalsIgnoreCase("BABY CARE")) {
-                                    producttypeArray = db.getproductypeforBabyProduct(selected_product_category);
+                                    producttypeArray.clear();
+                                    producttypeArray = db.getproductypeforFocusBaby(selected_product_category);
                                 } else {
-                                    producttypeArray = db.getproductype1(selected_product_category); // -------------
+                                    producttypeArray.clear();
+                                    producttypeArray = db.getproductypeforfocus(selected_product_category, username, BOC); // -------------
                                 }
                                 System.out.println(producttypeArray);
 
-                                ArrayAdapter<String> product_adapter1 = new ArrayAdapter<String>(
-                                        // context,
-                                        // android.R.layout.simple_spinner_item,
-                                        FocusActivity.this,
-                                        R.layout.custom_sp_item, producttypeArray);
+                                tl_returnproductList.removeAllViews();
+                                tl_returnproductList.addView(tr_header);
+                                getallproductsType();
 
-                                product_adapter1
-                                        // .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                        .setDropDownViewResource(R.layout.custom_spinner_dropdown_text);
-                                sp_prodt_type.setAdapter(product_adapter1);
                             }
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
@@ -234,50 +239,6 @@ public class FocusActivity extends Activity implements View.OnClickListener {
                     }
                 });
 
-        sp_prodt_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                       int arg2, long arg3) {
-
-                selected_product_type = sp_prodt_type.getItemAtPosition(arg2)
-                        .toString().trim();
-
-                if (selected_product_type.equalsIgnoreCase("Select")
-                        || selected_product_category.equalsIgnoreCase("")) {
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                            FocusActivity.this,
-                            android.R.layout.simple_spinner_dropdown_item,
-                            new String[]{});
-
-                } else {
-                    String selected_category;
-                    if (sp_prodt_category.getSelectedItem().toString().equalsIgnoreCase("BABY CARE")) {
-                        selected_category = "SKIN";
-                    } else {
-                        selected_category = sp_prodt_category.getSelectedItem().toString();
-                    }
-                    selected_type = sp_prodt_type.getSelectedItem()
-                            .toString();
-
-                    Log.v("", "" + selected_category + " " + selected_type);
-                    productDetailsArray.clear();
-                    tl_returnproductList.removeAllViews();
-                    tl_returnproductList.addView(tr_header);
-                    getallproducts(selected_category, selected_type, "N", columnname);
-
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // TODO Auto-generated method stub
-
-            }
-
-        });
 
         radio_target_report.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -289,6 +250,7 @@ public class FocusActivity extends Activity implements View.OnClickListener {
                         report = false;
 
                         table_header.setVisibility(View.VISIBLE);
+                        btn_returnproced.setVisibility(View.VISIBLE);
 
                         break;
 
@@ -302,6 +264,7 @@ public class FocusActivity extends Activity implements View.OnClickListener {
                         startActivity(i);
 
                         table_header.setVisibility(View.GONE);
+                        btn_returnproced.setVisibility(View.GONE);
                         break;
                 }
             }
@@ -353,158 +316,37 @@ public class FocusActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    public void getallproducts(String selected_category, String selected_type,
-                               String flag, String columnname) {
-        productDetailsArray.clear();
-        String boc = getBocName();
-        db.open();
-        Cursor cursor = db.fetchAllproductsforFocus(selected_category,
-                selected_type, username, boc,columnname);
-        if (cursor != null && cursor.getCount() > 0) {
+    public void getallproductsType() {
 
-            cursor.moveToFirst();
+        for (int i = 0; i < producttypeArray.size(); i++) {
 
-            do {
-                HashMap<String, String[]> map = new HashMap<String, String[]>();
-                db.open();
-                Cursor c = db.fetchallSpecifyMSelect("product_master", null,
-                        "ProductName = ? and ProductCategory = ? and ProductType = ?",
-                        new String[]{cursor.getString(cursor
-                                .getColumnIndex("ProductName")), selected_category, selected_type}, null);
+            View tr = (TableRow) View.inflate(FocusActivity.this, R.layout.inflate_focustype_row, null);
 
-                String comma_ids[] = new String[c.getCount()],
-                        comma_dbids[] = new String[c.getCount()],
-                        comma_mrps[] = new String[c.getCount()],
-                        comma_size[] = new String[c.getCount()],
-                        comma_catid[] = new String[c.getCount()],
-                        comma_eancode[] = new String[c.getCount()],
-                        comma_product[] = new String[c.getCount()],
-                        comma_product_show[] = new String[c.getCount()],
-                        comma_shade[] = new String[c.getCount()];
+            CheckBox cb = (CheckBox) tr.findViewById(R.id.chck_producttype);
 
-                if (c != null && c.getCount() > 0) {
-                    c.moveToFirst();
-
-                    for (int i = 0; i < c.getCount(); i++) {
-                        comma_ids[i] = c.getString(c.getColumnIndex("id"));
-                        comma_dbids[i] = c.getString(c.getColumnIndex("db_id"));
-                        comma_mrps[i] = c.getString(c.getColumnIndex("MRP"));
-                        comma_size[i] = c.getString(c.getColumnIndex("Size"));
-                        comma_catid[i] = c.getString(c.getColumnIndex("CategoryId"));
-                        comma_eancode[i] = c.getString(c.getColumnIndex("EANCode"));
-
-                        String productname = c.getString(c.getColumnIndex("ProductName")).trim();
-                        String[] arr = productname.split(" ", 2);
-                        String firstword = arr[0];
-                        String splitingword = arr[1];
-                        String ProductName = "";
-                        String firstword1 = firstword.replaceFirst("\\s++$", "");
-                        if (selected_type.trim().contains(firstword1.trim())) {
-                            ProductName = splitingword;
-                        }
-                        comma_product_show[i] = ProductName;
-
-                        comma_product[i] = c.getString(c.getColumnIndex("ProductName"));
-                        comma_shade[i] = c.getString(c.getColumnIndex("ShadeNo"));
-
-                        c.moveToNext();
-
-                    }
-
-                }
-                map.put("IDS", comma_ids);
-                map.put("SIZE", comma_size);
-                map.put("MRPS", comma_mrps);
-                map.put("DBIDS", comma_dbids);
-                map.put("CATID", comma_catid);
-                map.put("EANCODE", comma_eancode);
-                map.put("PRODUCT", comma_product);
-                map.put("PRODUCTSHOW", comma_product_show);
-                map.put("SHADENO", comma_shade);
-
-                productDetailsArray.add(map);
+            EditText edt = (EditText) tr.findViewById(R.id.edt_qty);
 
 
-            } while (cursor.moveToNext());
-
-            for (int i = 0; i < productDetailsArray.size(); i++) {
-
-                View tr = (TableRow) View.inflate(FocusActivity.this, R.layout.inflate_stocksale_row, null);
-
-                CheckBox cb = (CheckBox) tr.findViewById(R.id.chck_product);
-
-                final AutoCompleteTextView spin = (AutoCompleteTextView) tr.findViewById(R.id.spin_mrp);
-
-                TextView txtmrp = (TextView) tr.findViewById(R.id.txt_mrp);
-
-                if (productDetailsArray.get(i).get("PRODUCTSHOW")[0] != null &&
-                        !productDetailsArray.get(i).get("PRODUCTSHOW")[0].equalsIgnoreCase("")) {
-                    cb.setText(productDetailsArray.get(i).get("PRODUCTSHOW")[0]);
-                } else {
-                    cb.setText(productDetailsArray.get(i).get("PRODUCT")[0]);
-                }
-
-                final String mrps[] = productDetailsArray.get(i).get("MRPS");
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mrps) {
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                        View v = null;
-                        // If this is the initial dummy entry, make it hidden
-                        if (position == 0) {
-                            TextView tv = new TextView(getContext());
-                            tv.setHeight(0);
-                            tv.setVisibility(View.GONE);
-                            v = tv;
-                        } else {
-                            // Pass convertView as null to prevent reuse of special case views
-                            v = super.getDropDownView(position, null, parent);
-                        }
-                        // Hide scroll bar because it appears sometimes unnecessarily, this does not prevent scrolling
-                        parent.setVerticalScrollBarEnabled(false);
-                        return v;
-                    }
-                };
-
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spin.setAdapter(adapter);
-
-                spin.setOnTouchListener(new View.OnTouchListener() {
-
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        spin.showDropDown();
-                        return false;
-                    }
-                });
-
-                spin.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        if (mrps != null && mrps.length > 0) {
-
-                            mrpstring = parent.getItemAtPosition(position).toString();
-                        }
-                    }
-                });
-
-                tl_returnproductList.addView(tr);
-
+            if (producttypeArray.get(i) != null &&
+                    !producttypeArray.get(i).equalsIgnoreCase("")) {
+                cb.setText(producttypeArray.get(i));
             }
 
-            View tr1 = (TableRow) View.inflate(FocusActivity.this, R.layout.inflate_stocksale_row, null);
-            CheckBox cb = (CheckBox) tr1.findViewById(R.id.chck_product);
+            tl_returnproductList.addView(tr);
 
-            AutoCompleteTextView spin = (AutoCompleteTextView) tr1.findViewById(R.id.spin_mrp);
-
-            TextView txtmrp = (TextView) tr1.findViewById(R.id.txt_mrp);
-
-            tr1.setVisibility(View.INVISIBLE);
-
-            tl_returnproductList.addView(tr1);
         }
 
+        View tr1 = (TableRow) View.inflate(FocusActivity.this, R.layout.inflate_focustype_row, null);
+
+        CheckBox cb = (CheckBox) tr1.findViewById(R.id.chck_producttype);
+
+        EditText edt = (EditText) tr1.findViewById(R.id.edt_qty);
+
+        tr1.setVisibility(View.INVISIBLE);
+
+        tl_returnproductList.addView(tr1);
     }
+
 
     @Override
     public void onBackPressed() {
@@ -515,106 +357,105 @@ public class FocusActivity extends Activity implements View.OnClickListener {
     public void stockProceedData() {
 
         String check = "";
-        arr_selectedDBids = new ArrayList<String>();
+        arr_selectedType = new ArrayList<String>();
+        arr_selectedQty = new ArrayList<String>();
         int chckCount = 0;
 
         if (sp_prodt_category.getSelectedItemPosition() != 0) {
 
-            if (sp_prodt_type.getSelectedItemPosition() != 0) {
+            for (int i = 1; i < tl_returnproductList.getChildCount(); i++) {
+                TableRow tr = (TableRow) tl_returnproductList.getChildAt(i);
+                CheckBox cb = (CheckBox) tr.getChildAt(0);
+                if (cb.isChecked()) {
+                    chckCount++;
+                    // break;
+                }
+            }
 
+            if (chckCount == 0) {
+                Toast.makeText(getApplicationContext(),
+                        "Please select atleast 1 Product Type",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                boolean edtvalue = true;
+
+                EditText edt_qty = null;
                 for (int i = 1; i < tl_returnproductList.getChildCount(); i++) {
                     TableRow tr = (TableRow) tl_returnproductList.getChildAt(i);
                     CheckBox cb = (CheckBox) tr.getChildAt(0);
+                    edt_qty = (EditText) tr.getChildAt(1);
+
                     if (cb.isChecked()) {
-                        chckCount++;
-                        // break;
+
+                        arr_selectedType.add(cb.getText().toString());
+
+                        if (!edt_qty.getText().toString().equals("")) {
+
+                            arr_selectedQty.add(edt_qty.getText().toString());
+
+                        } else {
+                            edtvalue = false;
+                        }
                     }
                 }
 
-                if (chckCount == 0) {
-                    Toast.makeText(getApplicationContext(),
-                            "Please select atleast 1 product",
-                            Toast.LENGTH_LONG).show();
+                if (edtvalue == false) {
+                    Toast.makeText(getApplicationContext(), "Please Enter Target Quantity", Toast.LENGTH_SHORT).show();
                 } else {
-                    boolean spinvalue = true;
+                    String boc = cd.getBocName();
 
-                    for (int i = 1; i < tl_returnproductList.getChildCount(); i++) {
-                        TableRow tr = (TableRow) tl_returnproductList.getChildAt(i);
-                        CheckBox cb = (CheckBox) tr.getChildAt(0);
-                        TextView txtmrp = (TextView) tr.getChildAt(1);
-                        AutoCompleteTextView spin = (AutoCompleteTextView) tr.getChildAt(2);
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat(
+                            "yyyy-MM-dd HH:mm:ss");
+                    String insert_timestamp = sdf.format(c.getTime());
 
-                        if (cb.isChecked()) {
-                            if (!spin.getText().toString().equals("")) {
-                                arr_selectedDBids.add(db.fetchStockDbID(cb.getText().toString(), spin.getText().toString(),
-                                        selected_product_category));
-                            } else {
-                                spinvalue = false;
-                            }
-                        }
-                    }
+                    focusReportList = new ArrayList<FocusModel>();
+                    for (int i = 0; i < arr_selectedType.size(); i++) {
 
-                    if (spinvalue == false) {
-                        Toast.makeText(getApplicationContext(), "Please select MRP", Toast.LENGTH_SHORT).show();
-                    } else {
-                        String show_pro_name[] = new String[arr_selectedDBids.size()];
-                        String pro_name[] = new String[arr_selectedDBids.size()];
-                        String chck_db_id[] = new String[arr_selectedDBids.size()];
-                        String chck_mrp[] = new String[arr_selectedDBids.size()];
-                        String chck_size[] = new String[arr_selectedDBids.size()];
-                        String chck_cat_id[] = new String[arr_selectedDBids.size()];
-                        String enacode[] = new String[arr_selectedDBids.size()];
-                        String chck_shade[] = new String[arr_selectedDBids.size()];
+                        db.open();
+                        Integer achivement = db.getFocusStockSum(arr_selectedType.get(i));
+                        db.close();
 
-                        for (int i = 0; i < arr_selectedDBids.size(); i++) {
-                            Cursor cur = db.fetchallSpecifyMSelect("product_master", null, "db_id = ? ", new String[]{arr_selectedDBids.get(i)}, null);
-                            if (cur != null && cur.getCount() > 0) {
-                                cur.moveToFirst();
+                        final String[] columns = new String[]{"Productid", "Type", "Category", "Empid", "ProName", "size", "MRP",
+                                "Target_qty", "Target_amt", "AndroidCreateddate", "BOC"};
 
-                                String productname = cur.getString(cur.getColumnIndex("ProductName")).trim();
-                                String[] arr = productname.split(" ", 2);
-                                String firstword = arr[0];
-                                String splitingword = arr[1];
-                                String ProductName = "";
-                                String firstword1 = firstword.replaceFirst("\\s++$", "");
-                                if (selected_type.trim().contains(firstword1.trim())) {
-                                    ProductName = splitingword;
-                                }
-                                show_pro_name[i] = ProductName;
+                        db.open();
 
-                                pro_name[i] = cur.getString(cur.getColumnIndex("ProductName"));
-                                chck_db_id[i] = arr_selectedDBids.get(i);
-                                chck_mrp[i] = cur.getString(cur.getColumnIndex("MRP"));
-                                chck_size[i] = cur.getString(cur.getColumnIndex("Size"));
-                                chck_cat_id[i] = cur.getString(cur.getColumnIndex("CategoryId"));
-                                enacode[i] = cur.getString(cur.getColumnIndex("EANCode"));
-                                chck_shade[i] = cur.getString(cur.getColumnIndex("ShadeNo"));
+                        values = new String[]{
+                                "",
+                                arr_selectedType.get(i),
+                                selected_product_category,
+                                username,
+                                "",
+                                "",
+                                "",
+                                arr_selectedQty.get(i),
+                                String.valueOf(achivement),
+                                insert_timestamp,
+                                boc};
 
-                            }
-                        }
-                        startActivity(new Intent(FocusActivity.this,
-                                FocusAllActivity.class)
-                                .putExtra("db_id", chck_db_id)
-                                .putExtra("show_pro_name", show_pro_name)
-                                .putExtra("pro_name", pro_name)
-                                .putExtra("mrp", chck_mrp)
-                                .putExtra("encode", enacode)
-                                .putExtra("catid", chck_cat_id)
-                                .putExtra("shadeNo", chck_shade)
-                                .putExtra("CAT", chck_cat_id)
-                                .putExtra("Size", chck_size));
+                        db.insert(values, columns, "focus_data");
+
+                        db.close();
+
+                        focusModel = new FocusModel();
+                        focusModel.setProduct_type(arr_selectedType.get(i));
+                        focusModel.setProduct_category(selected_product_category);
+                        focusModel.setTarget_qty(arr_selectedQty.get(i));
+                        focusModel.setAchievement_Unit(String.valueOf(achivement));
+                        focusModel.setUsername(username);
+                        focusModel.setAndroid_created_date(insert_timestamp);
+                        focusModel.setBocname(boc);
+
+                        focusReportList.add(focusModel);
 
                     }
+
+                    new FocusReportData().execute(focusReportList);
 
                 }
 
-
-            } else {
-                Toast.makeText(getApplicationContext(),
-                        "Please select Type",
-                        Toast.LENGTH_LONG).show();
             }
-
 
         } else {
             Toast.makeText(getApplicationContext(),
@@ -623,54 +464,93 @@ public class FocusActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    public String getBocName() {
-        String bocname = "";
-        String BOC = "";
 
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    private class FocusReportData extends AsyncTask<ArrayList<FocusModel>, Void, SoapObject> {
 
-            String oeStartDateStr = "26/";
-            String oeEndDateStr = "25/";
 
-            Calendar cal = Calendar.getInstance();
-            Integer year = cal.get(Calendar.YEAR);
-            Integer month1 = cal.get(Calendar.MONTH) + 1;
+        String ErroFlag;
+        String Erro_function = "";
 
-            oeStartDateStr = oeStartDateStr.concat(month1.toString()) + "/";
-            Integer nextmonth;
-            if(month1.toString().equalsIgnoreCase("12")){
-                nextmonth = 1;
-            }else {
-                nextmonth = month1 + 1;
-            }
-            oeEndDateStr = oeEndDateStr.concat(nextmonth.toString()) + "/";
+        Cursor attendance_array;
 
-            oeStartDateStr = oeStartDateStr.concat(year.toString());
-            oeEndDateStr = oeEndDateStr.concat(year.toString());
+        String Flag;
 
-            Date startDate = sdf.parse(oeStartDateStr);
-            Date endDate = sdf.parse(oeEndDateStr);
-            Date d = new Date();
-            String currDt = sdf.format(d);
+        SoapPrimitive soapresultfocus = null;
 
-            if ((d.after(startDate) && (d.before(endDate))) || (currDt.equals(sdf.format(startDate)) || currDt.equals(sdf.format(endDate)))) {
-                if(String.valueOf(month1).equalsIgnoreCase("1")){
-                    bocname = "BOC11";
-                }else if(String.valueOf(month1).equalsIgnoreCase("2")){
-                    bocname = "BOC12";
-                }else {
-                    bocname = "BOC" + String.valueOf(month1 - 2);
-                }
-            } else {
-                //System.out.println("Date is not between 1st april to 14th nov...");
-            }
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
 
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
+        @Override
+        protected SoapObject doInBackground(ArrayList<FocusModel>... arrayLists) {
+            // TODO Auto-generated method stub
 
-        return bocname;
+            ArrayList<FocusModel> focuslist = arrayLists[0];
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    for (int i = 0; i < focuslist.size(); i++) {
+
+                        focusModel = focuslist.get(i);
+
+                        soapresultfocus = service.SaveIntoFOCUSReport(focusModel.getProduct_type(), focusModel.getProduct_category()
+                                ,focusModel.getTarget_qty(), focusModel.getBocname(), focusModel.getUsername()
+                                , focusModel.getAndroid_created_date(),focusModel.getAchievement_Unit());
+
+
+                        if (soapresultfocus != null) {
+
+                            if (soapresultfocus.toString().equalsIgnoreCase("TRUE")) {
+                                Flag = "1";
+                            } else {
+                                Flag = "2";
+                            }
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+
+            try {
+
+                if (Flag.equalsIgnoreCase("0")) {
+
+                    Toast.makeText(getApplicationContext(), "Connectivity Error, Please check Internet connection!!", Toast.LENGTH_SHORT).show();
+
+                } else if (Flag.equalsIgnoreCase("1")) {
+
+                    Toast.makeText(getApplicationContext(), "Focus Data Saved Succesfully!!", Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(getApplicationContext(), FocusReportActivity.class);
+                    startActivity(i);
+
+                } else if (Flag.equalsIgnoreCase("2")) {
+
+                    Toast.makeText(getApplicationContext(), "Soap Response getting False!!", Toast.LENGTH_SHORT).show();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }

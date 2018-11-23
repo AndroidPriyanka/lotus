@@ -50,31 +50,31 @@
                 <TextView
                     style="@style/report_textview_heading"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_weight="1.8"
+                    android:layout_height="match_parent"
+                    android:background="@layout/tableborder_header"
+                    android:layout_weight="2.5"
                     android:gravity="center"
-                    android:text="Product Name" />
+                    android:text="CategoryType" />
 
                 <TextView
                     style="@style/report_textview_heading"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_weight="0.5"
+                    android:layout_height="match_parent"
+                    android:background="@layout/tableborder_header"
+                    android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Size" />
+                    android:text="Target" />
 
                 <TextView
                     style="@style/report_textview_heading"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_weight="0.4"
+                    android:layout_height="match_parent"
+                    android:background="@layout/tableborder_header"
+                    android:layout_weight="1.5"
                     android:gravity="center"
-                    android:text="MRP" />
+                    android:text="Achievement" />
 
-                <LinearLayout
+               <!-- <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1.1"
@@ -180,7 +180,7 @@
                     </LinearLayout>
 
 
-                </LinearLayout>
+                </LinearLayout>-->
 
                 <!-- <TextView
                      style="@style/report_textview_heading"

@@ -19,7 +19,7 @@
         android:id="@+id/num_events_per_day"
         android:layout_width="20dip"
         android:layout_height="20dip"
-        android:layout_gravity="right" 
+        android:layout_gravity="right"
         android:textSize="20sp">
     </TextView>
 

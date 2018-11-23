@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -214,7 +216,34 @@ public class ReportActivityNew extends Activity {
 
             searchdata = (EditText) findViewById(R.id.searchdata);
 
+
         }
+       /* searchdata.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                searchdata.setFocusableInTouchMode(true);
+                searchdata.setCursorVisible(true);
+                return false;
+            }
+        });
+
+        searchdata.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                } else {
+                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
+            }
+        });*/
+       /* searchdata.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchdata,InputMethodManager.SHOW_IMPLICIT);
+            }
+        });*/
         rb_s = (RadioButton) findViewById(R.id.rb_stock);
         radio0 = (RadioButton) findViewById(R.id.radio0);
         radio1 = (RadioButton) findViewById(R.id.radio1);
@@ -291,7 +320,7 @@ public class ReportActivityNew extends Activity {
                         attendancelist.setVisibility(View.GONE);
                         rb_attendance.setChecked(false);
                         rg_lhm_choice.setVisibility(View.VISIBLE);
-                        searchlayout.setVisibility(View.VISIBLE);
+                        //searchlayout.setVisibility(View.VISIBLE);
                     }
                 }
             });
@@ -309,7 +338,7 @@ public class ReportActivityNew extends Activity {
                         rb_attendance.setChecked(false);
                         outletcardview.setVisibility(View.VISIBLE);
                         rg_lhm_choice.setVisibility(View.VISIBLE);
-                        searchlayout.setVisibility(View.VISIBLE);
+                        //searchlayout.setVisibility(View.VISIBLE);
 
 
                     }
@@ -348,6 +377,7 @@ public class ReportActivityNew extends Activity {
                     // TODO Auto-generated method stub
                     RadioButton rb = (RadioButton) findViewById(checkedId);
                     tableFixHeaders.setVisibility(View.VISIBLE);
+                    searchlayout.setVisibility(View.VISIBLE);
                     reportlist.clear();
 
                     ArrayList<ReportModel> reportModelArrayList;
@@ -404,17 +434,17 @@ public class ReportActivityNew extends Activity {
                                 reportModel.setPrice("");
                                 reportModel.setEmp_id("");
                                 reportModel.setOpening_stock(cd.getNonNullValues_Integer(openingStock));
-                                reportModel.setOpening_amt(cd.getNonNullValues_Integer("\u20B9" + opening));
+                                reportModel.setOpening_amt(cd.getNonNullValues_Integer("\u20B9" + cd.getNonNullValues_Integer(opening)));
                                 reportModel.setStock_received("");
                                 reportModel.setStock_in_hand("");
                                 reportModel.setClose_bal(cd.getNonNullValues_Integer(closeBal));
-                                reportModel.setClose_amt(cd.getNonNullValues_Integer("\u20B9" + closing));
+                                reportModel.setClose_amt(cd.getNonNullValues_Integer("\u20B9" + cd.getNonNullValues_Integer(closing)));
                                 reportModel.setReturn_saleable("");
                                 reportModel.setReturn_non_saleable("");
                                 reportModel.setSold_stock(cd.getNonNullValues_Integer(soldStock));
-                                reportModel.setSold_amt(cd.getNonNullValues_Integer("\u20B9" + sold));
-                                reportModel.setTotal_gross_amount(cd.getNonNullValues_Integer("\u20B9" + gross));
-                                reportModel.setTotal_net_amount(cd.getNonNullValues_Integer("\u20B9" + net));
+                                reportModel.setSold_amt(cd.getNonNullValues_Integer("\u20B9" + cd.getNonNullValues_Integer(sold)));
+                                reportModel.setTotal_gross_amount(cd.getNonNullValues_Integer("\u20B9" + cd.getNonNullValues_Integer(gross)));
+                                reportModel.setTotal_net_amount(cd.getNonNullValues_Integer("\u20B9" + cd.getNonNullValues_Integer(net)));
                                 reportModel.setDiscount("");
                                 reportModel.setSavedServer("");
                                 reportModel.setInsert_date("");
@@ -478,9 +508,9 @@ public class ReportActivityNew extends Activity {
 
                                 String status = cursor_stock.getString(23);
                                 if (status.equalsIgnoreCase("0")) {
-                                    status = "U";
-                                } else {
                                     status = "NU";
+                                } else {
+                                    status = "U";
                                 }
                                 reportModel.setSavedServer(status);
                                 reportModel.setInsert_date(cursor_stock.getString(24));
@@ -511,8 +541,8 @@ public class ReportActivityNew extends Activity {
                         list1.add(reportModel1.getOpening_stock());
                         list1.add(reportModel1.getOpening_amt());
                         list1.add(reportModel1.getStock_received());
-                        list1.add(reportModel1.getReturn_non_saleable());
                         list1.add(reportModel1.getReturn_saleable());
+                        list1.add(reportModel1.getReturn_non_saleable());
                         list1.add(reportModel1.getSold_stock());
                         list1.add(reportModel1.getSold_amt());
                         list1.add(reportModel1.getClose_bal());
@@ -752,19 +782,6 @@ public class ReportActivityNew extends Activity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-
-
-			/*Log.e("", "reportlist==="+reportlist);
-			mProgress.dismiss();
-			// TODO Auto-generated method stub
-			listview.setVisibility(View.VISIBLE);
-			adapter = new ReportAdapter(getApplicationContext(), reportlist);
-			listview.setAdapter(adapter);
-			adapter.notifyDataSetChanged();
-			db.close();*/
-
-            // }
         }
 
     }

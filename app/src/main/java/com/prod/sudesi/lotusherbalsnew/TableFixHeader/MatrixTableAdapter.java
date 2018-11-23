@@ -343,7 +343,7 @@ public class MatrixTableAdapter<T> extends BaseTableAdapter implements Filterabl
                             } else {
                                 results.count = searchdata.length;
                                 results.values = searchdata;
-                                showToastMessage("Entered value does not match with the CategoryType. Please Enter proper CategoryType", 1000);
+                                showToastMessage("Entered value does not match with the ProductType. Please Enter proper ProductType", 4000);
 
                             }
 

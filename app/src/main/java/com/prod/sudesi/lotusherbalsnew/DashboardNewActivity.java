@@ -602,57 +602,7 @@ public class DashboardNewActivity extends Activity {
 
     }
 
-    public String getBocName() {
-        String bocname = "";
-        String BOC = "";
 
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
-            String oeStartDateStr = "26/";
-            String oeEndDateStr = "25/";
-
-            Calendar cal = Calendar.getInstance();
-            Integer year = cal.get(Calendar.YEAR);
-            Integer month1 = cal.get(Calendar.MONTH) + 1;
-            Integer pmonth = cal.get(Calendar.MONTH);
-
-            oeStartDateStr = oeStartDateStr.concat(pmonth.toString()) + "/";
-            Integer nextmonth;
-            if (month1.toString().equalsIgnoreCase("12")) {
-                nextmonth = 1;
-            } else {
-                nextmonth = pmonth + 1;
-            }
-            oeEndDateStr = oeEndDateStr.concat(nextmonth.toString()) + "/";
-
-            oeStartDateStr = oeStartDateStr.concat(year.toString());
-            oeEndDateStr = oeEndDateStr.concat(year.toString());
-
-            Date startDate = sdf.parse(oeStartDateStr);
-            Date endDate = sdf.parse(oeEndDateStr);
-            Date d = new Date();
-            String currDt = sdf.format(d);
-
-            if ((d.after(startDate) && (d.before(endDate))) || (currDt.equals(sdf.format(startDate)) || currDt.equals(sdf.format(endDate)))) {
-                if (String.valueOf(month1).equalsIgnoreCase("1")) {
-                    bocname = "BOC11";
-                } else if (String.valueOf(month1).equalsIgnoreCase("2")) {
-                    bocname = "BOC12";
-                } else {
-                    bocname = "BOC" + String.valueOf(pmonth - 2);
-                }
-            } else {
-                //System.out.println("Date is not between 1st april to 14th nov...");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        return bocname;
-    }
 
     public class GetBocTarget extends AsyncTask<String, Void, SoapObject> {
 
@@ -678,7 +628,7 @@ public class DashboardNewActivity extends Activity {
             // TODO Auto-generated method stub
 
             String category = params[0];
-            String boc = getBocName();
+            String boc = cd.getBocName();
 
             bocname = "Target_" + boc;
 
@@ -5035,7 +4985,7 @@ public class DashboardNewActivity extends Activity {
                 } else if (soap_result1.getProperty("status").toString()
                         .equalsIgnoreCase("C")) {
 
-                    new InsertFirstTimeMaster().execute();
+                    new ClearDataLog().execute();
                     //DisplayDialogMessage("Master Data Completed Successfully!!");
 
 				/*	Toast.makeText(context,
@@ -5079,6 +5029,7 @@ public class DashboardNewActivity extends Activity {
             db.deleteTables("stock_monthwise");
             db.deleteTables("supervisor_attendance");
             db.deleteTables("tester");
+            db.deleteTables("focus_data");
 
             db.close();
 
@@ -5143,7 +5094,7 @@ public class DashboardNewActivity extends Activity {
                                     db.open();
                                     Cursor c = db.fetchallOrder("product_master", null, null);
                                     if (c.getCount() > 0) {
-                                        new InsertFirstTimeMaster().execute();
+                                        new ClearDataLog().execute();
                                     } else {
                                         new InsertProductMaster().execute();
                                     }
@@ -5160,6 +5111,91 @@ public class DashboardNewActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public class ClearDataLog extends AsyncTask<Void, Void, SoapObject> {
+
+        private SoapPrimitive soap_result = null;
+
+        String Flag = "";
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+
+            mProgress.setMessage("Please Wait....");
+            mProgress.show();
+            mProgress.setCancelable(false);
+
+        }
+
+        @Override
+        protected SoapObject doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+
+            Calendar cal2 = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat(
+                    "yyyy-MM-dd HH:mm:ss");
+            String insert_timestamp = sdf.format(cal2.getTime());
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    soap_result = service.ClearDataLog("Doing Clear Data", username, insert_timestamp);
+
+                    if (soap_result != null) {
+
+                        if (soap_result.toString().equalsIgnoreCase("True")) {
+                            Flag = "1";
+                        } else {
+                            Flag = "2";
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+
+            if (mProgress != null && mProgress.isShowing() && !DashboardNewActivity.this.isFinishing()) {
+                mProgress.dismiss();
+            }
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Connectivity Error, Please check Internet connection!!",
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                new InsertFirstTimeMaster().execute();
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Soap Response getting False!!",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
+
+
     }
 
 }

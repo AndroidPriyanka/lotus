@@ -75,7 +75,7 @@ public class SyncMaster extends Activity {
     Context context;
     private ProgressDialog progressDialog;
 
-    Button master_sync, data_sync, btn_first_time_sycn, btn_usermanual,btn_cleardata;
+    Button master_sync, data_sync, btn_first_time_sycn, btn_usermanual, btn_cleardata;
     // ,attendance, stock, tester, visibility;
 
     private Dbcon db;
@@ -88,7 +88,7 @@ public class SyncMaster extends Activity {
     int soapresultforvisibilityid;
 
     private double lon = 0.0, lat = 0.0;
-    String username, FLRCode, bdename, imgpth, producttype,role;
+    String username, FLRCode, bdename, imgpth, producttype, role;
 
     // shredpreference
     private SharedPreferences sharedpre = null;
@@ -113,15 +113,15 @@ public class SyncMaster extends Activity {
     ArrayList<HashMap<String, String>> listofimages = new ArrayList<HashMap<String, String>>();
     ArrayList<String> uploadidlist;
 
-      //public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
-      public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
+    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
+    //public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
     private JSONArray array;
     String flag;
     String ErroFlag = "";
 
     Date startdate, enddate;
     ArrayList<String> dates_array;
-    String str_BOC, year,current_year,year1;
+    String str_BOC, year, current_year, year1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,7 +171,7 @@ public class SyncMaster extends Activity {
 
         FLRCode = sp.getString("FLRCode", "");
 
-        role = sp.getString("Role","");
+        role = sp.getString("Role", "");
 
         bdename = sp.getString("BDEusername", "");
 
@@ -181,7 +181,7 @@ public class SyncMaster extends Activity {
 
         tv_h_username.setText(bdename);
 
-        if(role.equalsIgnoreCase("DUB")) {
+        if (role.equalsIgnoreCase("DUB")) {
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat(
                     "yyyy-MMMM-dd");
@@ -282,9 +282,9 @@ public class SyncMaster extends Activity {
                     Toast.makeText(context, "Data Download not use for Floter", Toast.LENGTH_LONG).show();
                 } else {
                     if (cd.isCurrentDateMatchDeviceDate()) {
-                        if(role.equalsIgnoreCase("DUB")){
+                        if (role.equalsIgnoreCase("DUB")) {
                             new DataDownloadForDubai().execute();
-                        }else {
+                        } else {
                             new InsertFirstTimeMaster().execute();
                         }
                     } else {
@@ -412,32 +412,32 @@ public class SyncMaster extends Activity {
                         "This includes all files, setting, accounts, databases, etc.")
                         .setCancelable(false)
 
-                        .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
-                                    public void onClick(
+                            public void onClick(
 
-                                            DialogInterface dialog,
-                                            int id) {
-                                        dialog.dismiss();
+                                    DialogInterface dialog,
+                                    int id) {
+                                dialog.dismiss();
 
-                                    }
-                                })
+                            }
+                        })
 
-                        .setPositiveButton("OK",new DialogInterface.OnClickListener() {
-                                    public void onClick(
-                                            DialogInterface dialog,
-                                            int id) {
-                                        dialog.dismiss();
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(
+                                    DialogInterface dialog,
+                                    int id) {
+                                dialog.dismiss();
 
-                                        try {
-                                            new ClearDataLog().execute();
-                                        }catch (Exception e){
-                                            e.printStackTrace();
-                                        }
+                                try {
+                                    new ClearDataLog().execute();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
 
 
-                                    }
-                                });
+                            }
+                        });
                 // create alert dialog
                 AlertDialog alertDialog = alertDialogBuilder
                         .create();
@@ -3271,7 +3271,7 @@ public class SyncMaster extends Activity {
             }
             if (Flag.equalsIgnoreCase("3")) {
 
-                Toast.makeText(getApplicationContext(),"Connectivity Error Please check internet",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Connectivity Error Please check internet", Toast.LENGTH_SHORT).show();
                 //DisplayDialogMessage("Connectivity Error Please check internet");
 
             }
@@ -4153,6 +4153,77 @@ public class SyncMaster extends Activity {
 
                     }*/
 
+
+                    String boc = cd.getBocName();
+                    soap_result = service.GetFOCUSReport(boc, username);//strDate
+
+                    if (soap_result != null) {
+
+                        for (int i = 0; i < soap_result.getPropertyCount(); i++) {
+
+                            soap_result1 = (SoapObject) soap_result.getProperty(i);
+
+                            String Type = cd.getNonNullValues(soap_result1.getProperty("Type").toString());
+
+                            String Category = cd.getNonNullValues(soap_result1.getProperty("Category").toString());
+
+                            String Target_qty = cd.getNonNullValues_Integer(soap_result1.getProperty("Target_qty").toString());
+
+                            String Target_BOC = cd.getNonNullValues(soap_result1.getProperty("Target_BOC").toString());
+
+                            String Achievement_Unit = cd.getNonNullValues_Integer(soap_result1.getProperty("Achievement_Unit").toString());
+
+                            String emp_id = cd.getNonNullValues(soap_result1.getProperty("emp_id").toString());
+
+                            String android_created_date = cd.getNonNullValues(soap_result1.getProperty("android_created_date").toString());
+
+                            db.open();
+
+                            Cursor c1 = db.CheckFocusDataExist("focus_data", Type, Target_BOC);
+
+                            int count = c1.getCount();
+                            Log.v("", "" + count);
+                            db.close();
+                            if (count > 0) {
+
+                                db.open();
+                                db.UpdateFocusData(Type,Category, Target_qty, Target_BOC,
+                                        Achievement_Unit, emp_id, android_created_date);
+
+                                db.close();
+
+                            } else {
+
+                                Log.e("pm", "pm5");
+                                db.open();
+                                db.insertFocusData(Type,Category, Target_qty, Target_BOC,
+                                        Achievement_Unit, emp_id, android_created_date);
+
+                                db.close();
+
+                            }
+                        }
+
+                    } else {
+                        Log.v("", "Soap result is null");
+
+                        final Calendar calendar = Calendar.getInstance();
+                        SimpleDateFormat formatter = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss");
+                        String Createddate = formatter.format(calendar
+                                .getTime());
+
+                        int n = Thread.currentThread().getStackTrace()[2]
+                                .getLineNumber();
+                        db.insertSyncLog("Soup is null - focusData()",
+                                String.valueOf(n), "focusData()",
+                                Createddate, Createddate,
+                                username, "Focus Data",
+                                "Fail");
+
+                    }
+
+
                     soap_result = service.DataDownloadForSale(
                             username, strDate);//strDate
 
@@ -4519,8 +4590,8 @@ public class SyncMaster extends Activity {
                                     db.open();
                                     db.UpdateStockSync1(ProductCategory,
                                             ProductType, ProductName, EmpId,
-                                            Opening_Stock,openingamt, Stock_inhand, ClosingBal,closingamt,
-                                            FreshStock, Freshamt, GrossAmount, SoldStock,Soldamt,
+                                            Opening_Stock, openingamt, Stock_inhand, ClosingBal, closingamt,
+                                            FreshStock, Freshamt, GrossAmount, SoldStock, Soldamt,
                                             Price, Size, db_Id, LMD, Discount,
                                             NetAmount,
                                             S_Return_Saleable,
@@ -4546,10 +4617,10 @@ public class SyncMaster extends Activity {
                                             db_stock_id, db_Id, ProductId,
                                             CatCodeId, EANCode, EmpId,
                                             ProductCategory, ProductType,
-                                            ProductName, Opening_Stock,openingamt,
+                                            ProductName, Opening_Stock, openingamt,
                                             FreshStock, Freshamt, Stock_inhand,
-                                            SoldStock,Soldamt, S_Return_NonSaleable,
-                                            S_Return_Saleable, ClosingBal,closingamt,
+                                            SoldStock, Soldamt, S_Return_NonSaleable,
+                                            S_Return_Saleable, ClosingBal, closingamt,
                                             GrossAmount, Discount, NetAmount,
                                             Size, Price, LMD,
                                             AndroidCreatedDate, MONTH, YEAR);
@@ -6559,11 +6630,11 @@ public class SyncMaster extends Activity {
 
                     Flag = "1";
 
-                } else  if (syncbocdaywise == 2 && syncbocmonthwise == 2
+                } else if (syncbocdaywise == 2 && syncbocmonthwise == 2
                         && syncstockdata == 2 && synctesterdata == 2) {
 
                     Flag = "2";
-                }else{
+                } else {
 
                     Flag = "3";
                 }
@@ -6658,8 +6729,7 @@ public class SyncMaster extends Activity {
 
                     DisplayDialogMessage("Data Download Incomplete!!");
 
-                }
-                else if (Flag.equalsIgnoreCase("4")) {
+                } else if (Flag.equalsIgnoreCase("4")) {
 
                     DisplayDialogMessage("Data Download Incomplete!!,Please try again after some time");
 
@@ -6710,7 +6780,7 @@ public class SyncMaster extends Activity {
 
         InputStream in = null;
         OutputStream out = null;
-        String strDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+ File.separator + "Pdfs";
+        String strDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + "Pdfs";
         File fileDir = new File(strDir);
         fileDir.mkdirs();   // crear la ruta si no existe
         File file = new File(fileDir, "sample.pdf");
@@ -6817,30 +6887,29 @@ public class SyncMaster extends Activity {
                         }
 
                         obj.put("id", cd.getNonNullValues(stock_array.getString(0)));
-                        obj.put("Pid",  cd.getNonNullValues(stock_array.getString(2)));
-                        obj.put("CatCodeId",  cd.getNonNullValues(stock_array.getString(1)));
-                        obj.put("EANCode",  cd.getNonNullValues(stock_array.getString(3)));
-                        obj.put("empId",  cd.getNonNullValues(username));
-                        obj.put("ProductCategory",  cd.getNonNullValues(stock_array.getString(4)));
-                        obj.put("product_type",  cd.getNonNullValues(stock_array.getString(5)));
-                        obj.put("product_name",  cd.getNonNullValues(stock_array.getString(6)));
-                        obj.put("shadeno",  cd.getNonNullValues(shad));
-                        obj.put("Opening_Stock",  cd.getNonNullValues(stock_array.getString(10)));
-                        obj.put("FreshStock",  cd.getNonNullValues(stock_array.getString(11)));
-                        obj.put("Stock_inhand",  cd.getNonNullValues(stock_array.getString(12)));
-                        obj.put("SoldStock",  cd.getNonNullValues(stock_array.getString(16)));
-                        obj.put("S_Return_Saleable",  cd.getNonNullValues(stock_array.getString(14)));
-                        obj.put("S_Return_NonSaleable",  cd.getNonNullValues(stock_array.getString(15)));
-                        obj.put("ClosingBal",  cd.getNonNullValues(stock_array.getString(13)));
-                        obj.put("GrossAmount",  cd.getNonNullValues(stock_array.getString(17)));
-                        obj.put("Discount",  cd.getNonNullValues(stock_array.getString(19)));
-                        obj.put("NetAmount",  cd.getNonNullValues(stock_array.getString(18)));
-                        obj.put("Size",  cd.getNonNullValues(stock_array.getString(7)));
-                        obj.put("Price",  cd.getNonNullValues(stock_array.getString(8)));
-                        obj.put("AndroidCreatedDate",  cd.getNonNullValues(stock_array.getString(21)));
-                        obj.put("FLRCode",  cd.getNonNullValues(FLRCode));
-                        obj.put("flag",  cd.getNonNullValues(stock_array.getString(35)));
-
+                        obj.put("Pid", cd.getNonNullValues(stock_array.getString(2)));
+                        obj.put("CatCodeId", cd.getNonNullValues(stock_array.getString(1)));
+                        obj.put("EANCode", cd.getNonNullValues(stock_array.getString(3)));
+                        obj.put("empId", cd.getNonNullValues(username));
+                        obj.put("ProductCategory", cd.getNonNullValues(stock_array.getString(4)));
+                        obj.put("product_type", cd.getNonNullValues(stock_array.getString(5)));
+                        obj.put("product_name", cd.getNonNullValues(stock_array.getString(6)));
+                        obj.put("shadeno", cd.getNonNullValues(shad));
+                        obj.put("Opening_Stock", cd.getNonNullValues(stock_array.getString(10)));
+                        obj.put("FreshStock", cd.getNonNullValues(stock_array.getString(11)));
+                        obj.put("Stock_inhand", cd.getNonNullValues(stock_array.getString(12)));
+                        obj.put("SoldStock", cd.getNonNullValues(stock_array.getString(16)));
+                        obj.put("S_Return_Saleable", cd.getNonNullValues(stock_array.getString(14)));
+                        obj.put("S_Return_NonSaleable", cd.getNonNullValues(stock_array.getString(15)));
+                        obj.put("ClosingBal", cd.getNonNullValues(stock_array.getString(13)));
+                        obj.put("GrossAmount", cd.getNonNullValues(stock_array.getString(17)));
+                        obj.put("Discount", cd.getNonNullValues(stock_array.getString(19)));
+                        obj.put("NetAmount", cd.getNonNullValues(stock_array.getString(18)));
+                        obj.put("Size", cd.getNonNullValues(stock_array.getString(7)));
+                        obj.put("Price", cd.getNonNullValues(stock_array.getString(8)));
+                        obj.put("AndroidCreatedDate", cd.getNonNullValues(stock_array.getString(21)));
+                        obj.put("FLRCode", cd.getNonNullValues(FLRCode));
+                        obj.put("flag", cd.getNonNullValues(stock_array.getString(35)));
 
 
                     } catch (JSONException e) {
@@ -7209,7 +7278,7 @@ public class SyncMaster extends Activity {
                         } else if (stock_array == null) {
 
                         } else {
-                            Log.e("NoStock dataupload",String.valueOf(stock_array.getCount()));
+                            Log.e("NoStock dataupload", String.valueOf(stock_array.getCount()));
                         }
 
                     } catch (Exception e) {
@@ -7243,7 +7312,7 @@ public class SyncMaster extends Activity {
 
                             soap_result1 = (SoapObject) soap_result.getProperty(i);
 
-                            Log.e("pm","status=" + soap_result1.getProperty("status").toString());
+                            Log.e("pm", "status=" + soap_result1.getProperty("status").toString());
 
                             if (soap_result1.getProperty("status").toString().equalsIgnoreCase("C")) {
 
@@ -7585,7 +7654,7 @@ public class SyncMaster extends Activity {
                                             Price, Size, db_Id, LMD, Discount,
                                             NetAmount,
                                             S_Return_Saleable,
-                                            S_Return_NonSaleable,FLRCode);
+                                            S_Return_NonSaleable, FLRCode);
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","
@@ -7605,7 +7674,7 @@ public class SyncMaster extends Activity {
                                             S_Return_Saleable, ClosingBal,
                                             GrossAmount, Discount, NetAmount,
                                             Size, Price, LMD,
-                                            AndroidCreatedDate, MONTH, YEAR,outletcode,singleoffer);
+                                            AndroidCreatedDate, MONTH, YEAR, outletcode, singleoffer);
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","
@@ -7673,7 +7742,7 @@ public class SyncMaster extends Activity {
                 if (syncstockdata == 1) {
 
                     Flag = "1";
-                } else if(syncstockdata == 2){
+                } else if (syncstockdata == 2) {
 
                     Flag = "2";
                 }
@@ -7716,37 +7785,35 @@ public class SyncMaster extends Activity {
 
                 DisplayDialogMessage("Check Your Internet Connection!!!");
 
-            } else
-
-                if (Flag.equalsIgnoreCase("1")) {
+            } else if (Flag.equalsIgnoreCase("1")) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(SyncMaster.this);
-                    builder.setMessage("Data Download Completed Successfully!!")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    //do things
-                                    dialog.dismiss();
-                                    Intent i = new Intent(SyncMaster.this, DashboardNewActivity.class);
-                                    startActivity(i);
-                                }
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
+                builder.setMessage("Data Download Completed Successfully!!")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                                dialog.dismiss();
+                                Intent i = new Intent(SyncMaster.this, DashboardNewActivity.class);
+                                startActivity(i);
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
 
-                } else if (Flag.equalsIgnoreCase("2")) {
+            } else if (Flag.equalsIgnoreCase("2")) {
 
-                    DisplayDialogMessage("No Record Found!!");
+                DisplayDialogMessage("No Record Found!!");
 
-                } else if (Flag.equalsIgnoreCase("3")) {
+            } else if (Flag.equalsIgnoreCase("3")) {
 
-                    DisplayDialogMessage("Data Download Incomplete!!,Please try again after some time");
+                DisplayDialogMessage("Data Download Incomplete!!,Please try again after some time");
 
-                } else {
+            } else {
 
-                    DisplayDialogMessage("Data Download Incomplete!!");
+                DisplayDialogMessage("Data Download Incomplete!!");
 
-                }
+            }
 
         }
 
@@ -7839,12 +7906,12 @@ public class SyncMaster extends Activity {
         try {
             // clearing app data
             if (Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT) {
-                ((ActivityManager)getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData(); // note: it has a return value!
+                ((ActivityManager) getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData(); // note: it has a return value!
 
             } else {
                 String packageName = getApplicationContext().getPackageName();
                 Runtime runtime = Runtime.getRuntime();
-                runtime.exec("pm clear "+packageName);
+                runtime.exec("pm clear " + packageName);
             }
 
         } catch (Exception e) {

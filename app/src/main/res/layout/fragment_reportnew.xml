@@ -36,8 +36,9 @@
                 android:id="@+id/searchdata"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
-                android:hint="Search"
-                android:inputType="textCapCharacters" />
+                android:hint="Search Product Type"
+                android:inputType="textCapCharacters"
+                android:imeOptions="flagNoExtractUi"/>
 
 
         </android.support.v7.widget.CardView>

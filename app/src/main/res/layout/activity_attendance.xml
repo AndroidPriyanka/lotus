@@ -92,7 +92,6 @@
         android:layout_marginLeft="@dimen/_1sdp"
         android:layout_marginRight="@dimen/_1sdp"
         android:gravity="center"
-        android:numColumns="7" >
-    </GridView>
+        android:numColumns="7"></GridView>
 
 </LinearLayout>

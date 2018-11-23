@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class ConnectionDetector {
  
@@ -79,5 +80,69 @@ public class ConnectionDetector {
         } else {
             return str;
         }
+    }
+
+    public String getBocName() {
+        String bocname = "";
+        String BOC = "";
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+            String oeStartDateStr = "26/";
+            String oeEndDateStr = "25/";
+
+            Calendar cal = Calendar.getInstance();
+            Integer year = cal.get(Calendar.YEAR);
+            Integer month1 = cal.get(Calendar.MONTH) + 1;
+            Integer pmonth = cal.get(Calendar.MONTH);
+
+            String stdate ="26/" +  month1.toString() + "/" + year.toString();
+            String eddate ="31/" +  month1.toString() + "/" + year.toString();
+
+            Date sDate = sdf.parse(stdate);
+            Date eDate = sdf.parse(eddate);
+            Date dat = new Date();
+
+            if((dat.after(sDate) && (dat.before(eDate)))){
+                pmonth = pmonth + 1;
+            }
+
+            oeStartDateStr = oeStartDateStr.concat(pmonth.toString()) + "/";
+            Integer nextmonth;
+            if(month1.toString().equalsIgnoreCase("12")){
+                nextmonth = 1;
+            }else {
+                nextmonth = pmonth + 1;
+            }
+            oeEndDateStr = oeEndDateStr.concat(nextmonth.toString()) + "/";
+
+            oeStartDateStr = oeStartDateStr.concat(year.toString());
+            oeEndDateStr = oeEndDateStr.concat(year.toString());
+
+            Date startDate = sdf.parse(oeStartDateStr);
+            Date endDate = sdf.parse(oeEndDateStr);
+            Date d = new Date();
+            String currDt = sdf.format(d);
+
+
+            if ((d.after(startDate) && (d.before(endDate))) || (currDt.equals(sdf.format(startDate)) || currDt.equals(sdf.format(endDate)))) {
+                if(String.valueOf(month1).equalsIgnoreCase("1")){
+                    bocname = "BOC11";
+                }else if(String.valueOf(month1).equalsIgnoreCase("2")){
+                    bocname = "BOC12";
+                }else {
+                    bocname = "BOC" + String.valueOf(pmonth - 2);
+                }
+            } else {
+                //System.out.println("Date is not between 1st april to 14th nov...");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return bocname;
     }
 }

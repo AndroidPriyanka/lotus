@@ -15,8 +15,8 @@ public class LotusWebservice {
 
     // -----------------Mahi
 
-    String url = "http://lotusws.lotussmartforce.com/Service1.svc";// production lotus server
-    //String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
+    //String url = "http://lotusws.lotussmartforce.com/Service1.svc";// production lotus server
+    String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
 
 
     public LotusWebservice(Context con) {
@@ -1883,25 +1883,21 @@ public class LotusWebservice {
         return result;
     }
 
-    public SoapObject SaveIntoFOCUSReport(String Product_id, String Type, String Category, String Name, String Size,
-                                          String MRP, String Target_qty, String Target_amount, String emp_id,
-                                          String android_created_date) {
-        SoapObject result = null;
+    public SoapPrimitive SaveIntoFOCUSReport(String Type, String Category, String Target_qty, String BOC,
+                                          String emp_id, String android_created_date, String Achievement_Unit) {
+        SoapPrimitive result = null;
         try {
             Log.v("", "attendace service called");
             SoapObject request = new SoapObject("http://tempuri.org/",
                     "SaveIntoFOCUSReport");
 
-            request.addProperty("Product_id", Product_id);
             request.addProperty("Type", Type);
             request.addProperty("Category", Category);
-            request.addProperty("Name", Name);
-            request.addProperty("Size", Size);
-            request.addProperty("MRP", MRP);
             request.addProperty("Target_qty", Target_qty);
-            request.addProperty("Target_amount", Target_amount);
+            request.addProperty("BOC", BOC);
             request.addProperty("emp_id", emp_id);
             request.addProperty("android_created_date", android_created_date);
+            request.addProperty("Achievement_Unit", Achievement_Unit);
 
             SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
                     SoapEnvelope.VER11);// soap envelop with version
@@ -1914,7 +1910,7 @@ public class LotusWebservice {
             androidHttpTransport.call(
                     "http://tempuri.org/IService1/SaveIntoFOCUSReport", envelope);
 
-            result = (SoapObject) envelope.getResponse();
+            result = (SoapPrimitive) envelope.getResponse();
             Log.e("SaveIntoFOCUSReport", result.toString());
 
         } catch (Exception e) {
@@ -1922,6 +1918,38 @@ public class LotusWebservice {
         }
         return result;
     }
+
+    public SoapObject GetFOCUSReport(String BOC, String empid) {
+        SoapObject result = null;
+        try {
+            Log.v("", "sync stock service called");
+            SoapObject request = new SoapObject("http://tempuri.org/",
+                    "getFOCUSReport");
+            Log.v("", "empid==" + empid);
+            request.addProperty("BOC", BOC);
+            request.addProperty("emp_id", empid);
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+                    SoapEnvelope.VER11);// soap envelop with version
+            envelope.setOutputSoapObject(request); // set request object
+            envelope.dotNet = true;
+
+            HttpTransportSE androidHttpTransport = new HttpTransportSE(url, 60000);// http
+            // transport call
+            androidHttpTransport.call(
+                    "http://tempuri.org/IService1/getFOCUSReport", envelope);
+
+            result = (SoapObject) envelope.getResponse();
+            Log.e("getFOCUSReport=", result.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     //------------------------------END--------------------------------------
+
+
+
 
 }

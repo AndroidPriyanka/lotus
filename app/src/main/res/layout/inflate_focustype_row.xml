@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:padding="3dp"
+    android:paddingBottom="@dimen/_10sdp"
+    android:weightSum="3">
+
+    <CheckBox
+        android:id="@+id/chck_producttype"
+        android:layout_width="0dip"
+        android:layout_height="match_parent"
+        android:layout_weight="2.5"
+        android:button="@drawable/checkbox_selection"
+        android:ems="7"
+        android:text="CheckBox"
+        android:textColor="#FFFFFF"
+        android:textSize="10dp" />
+
+    <EditText
+        android:id="@+id/edt_qty"
+        android:layout_width="0dip"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:gravity="center"
+        android:inputType="number"
+        android:padding="@dimen/_6sdp"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/_10sdp" />
+
+
+</TableRow>

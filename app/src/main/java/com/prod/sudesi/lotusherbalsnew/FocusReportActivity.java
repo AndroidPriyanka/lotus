@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,23 +16,22 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.prod.sudesi.lotusherbalsnew.Models.AttendanceModel;
 import com.prod.sudesi.lotusherbalsnew.Models.FocusModel;
 import com.prod.sudesi.lotusherbalsnew.adapter.FocusReportAdapter;
-import com.prod.sudesi.lotusherbalsnew.adapter.ReportCategoryTypeAdapter;
 import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
 import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.LotusWebservice;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.ksoap2.serialization.SoapObject;
 
-import java.io.IOException;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+
 
 public class FocusReportActivity extends Activity {
 
@@ -49,22 +47,16 @@ public class FocusReportActivity extends Activity {
 
     String lhrname, bdename, role, check, currentdate;
 
-    private ArrayList<String> FocusReportDetailsArraylist;
-    String[] strFocusReportArray = null;
     Context context;
     ListView reportlist;
 
-    boolean reportclick;
 
     private ArrayList<FocusModel> focusReportList;
     FocusModel focusModel;
     String[] values;
 
-    String db_id[], pro_name[], product_category[], product_type[], size[], price[], username,
-            target_qty[], target_amt[], android_created_date[];
-
-    String db_id1, pro_name1, product_category1, product_type1, size1, price1,
-            target_qty1, target_amt1, android_created_date1;
+    String product_type;
+    private ProgressDialog mProgress = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +69,8 @@ public class FocusReportActivity extends Activity {
 
         shp = getSharedPreferences("Lotus", MODE_PRIVATE);
         shpeditor = shp.edit();
+
+        mProgress = new ProgressDialog(FocusReportActivity.this);
 
         btn_home = (Button) findViewById(R.id.btn_home);
         btn_logout = (Button) findViewById(R.id.btn_logout);
@@ -92,6 +86,8 @@ public class FocusReportActivity extends Activity {
         bdename = shp.getString("BDEusername", "");
         role = shp.getString("Role", "");
         tv_h_username.setText(bdename);
+
+        String BOC = cd.getBocName();
 
         btn_logout.setOnClickListener(new View.OnClickListener() {
 
@@ -116,33 +112,21 @@ public class FocusReportActivity extends Activity {
             }
         });
 
-        Intent intent = getIntent();
 
-        db_id = intent.getStringArrayExtra("db_id");
-        pro_name = intent.getStringArrayExtra("proname");
-        product_category = intent.getStringArrayExtra("proCategory");
-        product_type = intent.getStringArrayExtra("protype");
-        size = intent.getStringArrayExtra("size");
-        price = intent.getStringArrayExtra("price");
-        username = intent.getStringExtra("username");
-        target_qty = intent.getStringArrayExtra("target_qty");
-        target_amt = intent.getStringArrayExtra("target_amt");
-        android_created_date = intent.getStringArrayExtra("androiddate");
+        fetchAchivementFocusData(BOC);
 
-        reportclick = intent.getBooleanExtra("reportclick", false);
-
-        new FocusReportData().execute();
-
+        new uploadFocusReportData().execute(BOC);
 
     }
 
     @Override
     public void onBackPressed() {
         // TODO Auto-generated method stub
-
+        startActivity(new Intent(FocusReportActivity.this, FocusActivity.class));
     }
 
-    private class FocusReportData extends AsyncTask<String, Void, SoapObject> {
+
+    private class uploadFocusReportData extends AsyncTask<String, Void, SoapObject> {
 
 
         String ErroFlag;
@@ -151,401 +135,86 @@ public class FocusReportActivity extends Activity {
         Cursor attendance_array;
 
         String Flag;
+        String boc = "";
+        ArrayList<FocusModel> focusReportList = new ArrayList<FocusModel>();
 
-        SoapObject soapresultfocus = null;
+        SoapPrimitive soapresultfocus = null;
 
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
+            mProgress.setMessage("Receiving.....");
+            mProgress.show();
+            mProgress.setCancelable(false);
 
-            pd.setMessage("Please Wait");
-            pd.show();
-            pd.setCancelable(false);
         }
 
         @Override
         protected SoapObject doInBackground(String... params) {
             // TODO Auto-generated method stub
 
-            final String[] columns = new String[]{"Productid", "Type", "Category", "Empid", "ProName", "size", "MRP",
-                    "Target_qty", "Target_amt", "AndroidCreateddate", "BOC"};
+            boc = params[0];
 
             if (!cd.isConnectingToInternet()) {
 
-                Flag = "3";
-                // stop executing code by return
+                Flag = "0";
 
             } else {
 
+                Calendar cal = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat(
+                        "yyyy-MM-dd HH:mm:ss");
+                String insert_timestamp = sdf.format(cal.getTime());
 
-                Flag = "1";
+                db.open();
+
+                Cursor c = db.fetchFocusAchivementDetails(lhrname, boc);
+                if (c != null && c.getCount() > 0) {
+                    c.moveToFirst();
+                    do {
+
+                        focusModel = new FocusModel();
+                        focusModel.setProduct_type(cd.getNonNullValues(c.getString(2)));
+                        focusModel.setProduct_category(cd.getNonNullValues(c.getString(3)));
+                        focusModel.setTarget_qty(cd.getNonNullValues_Integer(c.getString(8)));
+                        focusModel.setAchievement_Unit(cd.getNonNullValues_Integer(c.getString(9)));
+                        focusModel.setUsername(cd.getNonNullValues(c.getString(4)));
+                        focusModel.setAndroid_created_date(insert_timestamp);
+                        focusModel.setBocname(cd.getNonNullValues(c.getString(11)));
+
+                        focusReportList.add(focusModel);
+
+                    } while (c.moveToNext());
+                }
 
                 try {
+                    if (focusReportList.size() > 0) {
+                        for (int i = 0; i < focusReportList.size(); i++) {
 
-                    if (reportclick) {
+                            focusModel = focusReportList.get(i);
 
-                        soapresultfocus = service.SaveIntoFOCUSReport("", "", "",
-                                "", "", "", "", "", lhrname, "");
-
-                        if (soapresultfocus != null) {
-
-                            focusReportList = new ArrayList<FocusModel>();
-                            for (int i = 0; i < soapresultfocus.getPropertyCount(); i++) {
-
-                                SoapObject soapObject = (SoapObject) soapresultfocus.getProperty(i);
-
-                                String Product_id = soapObject.getProperty("Product_id").toString();
-                                if (Product_id == null || Product_id.equals("anyType{}")) {
-                                    Product_id = "";
-                                }
-                                String Type = soapObject.getProperty("Type").toString();
-                                if (Type == null || Type.equals("anyType{}")) {
-                                    Type = "";
-                                }
-
-                                String Category = soapObject.getProperty("Category").toString();
-                                if (Category == null || Category.equals("anyType{}")) {
-                                    Category = "";
-                                }
-
-                                String Name = soapObject.getProperty("Name").toString();
-                                if (Name == null || Name.equals("anyType{}")) {
-                                    Name = "";
-                                }
-
-                                String Size = soapObject.getProperty("Size").toString();
-                                if (Size == null || Size.equals("anyType{}")) {
-                                    Size = "";
-                                }
-
-                                String MRP = soapObject.getProperty("MRP").toString();
-                                if (MRP == null || MRP.equals("anyType{}")) {
-                                    MRP = "";
-                                }
-
-                                String Target_qty = soapObject.getProperty("Target_qty").toString();
-                                if (Target_qty == null || Target_qty.equals("anyType{}")) {
-                                    Target_qty = "";
-                                }
-
-                                String Target_amount = soapObject.getProperty("Target_amount").toString();
-                                if (Target_amount == null || Target_amount.equals("anyType{}")) {
-                                    Target_amount = "";
-                                }
-
-                                String Target_BOC = soapObject.getProperty("Target_BOC").toString();
-                                if (Target_BOC == null || Target_BOC.equals("anyType{}")) {
-                                    Target_BOC = "";
-                                }
-
-                                String Achievement_Unit = soapObject.getProperty("Achievement_Unit").toString();
-                                if (Achievement_Unit == null || Achievement_Unit.equals("anyType{}")) {
-                                    Achievement_Unit = "";
-                                }
-
-                                String Achievement_value = soapObject.getProperty("Achievement_value").toString();
-                                if (Achievement_value == null || Achievement_value.equals("anyType{}")) {
-                                    Achievement_value = "";
-                                }
-
-                                String emp_id = soapObject.getProperty("emp_id").toString();
-                                if (emp_id == null || emp_id.equals("anyType{}")) {
-                                    emp_id = "";
-                                }
-
-                                String android_created_date = soapObject.getProperty("android_created_date").toString();
-                                if (android_created_date == null || android_created_date.equals("anyType{}")) {
-                                    android_created_date = "";
-                                }
-
-                                focusModel = new FocusModel();
-                                focusModel.setDb_id(Product_id);
-                                focusModel.setProduct_type(Type);
-                                focusModel.setProduct_category(Category);
-                                focusModel.setPro_name(Name);
-                                focusModel.setSize(Size);
-                                focusModel.setPrice(MRP);
-                                focusModel.setTarget_qty(Target_qty);
-                                focusModel.setTarget_amt(Target_amount);
-                                focusModel.setTarget_BOC(Target_BOC);
-                                focusModel.setAchievement_Unit(Achievement_Unit);
-                                focusModel.setAchievement_value(Achievement_value);
-                                focusModel.setUsername(emp_id);
-                                focusModel.setAndroid_created_date(android_created_date);
-
-                                focusReportList.add(focusModel);
-                            }
+                            soapresultfocus = service.SaveIntoFOCUSReport(focusModel.getProduct_type(), focusModel.getProduct_category()
+                                    , focusModel.getTarget_qty(), focusModel.getBocname(), focusModel.getUsername()
+                                    , focusModel.getAndroid_created_date(), focusModel.getAchievement_Unit());
 
 
-                            for (int j = 0; j < focusReportList.size(); j++) {
-                                focusModel = focusReportList.get(j);
+                            if (soapresultfocus != null) {
 
-                                db.open();
-                                Cursor c = db.getuniquefocusdata(username, focusModel.getDb_id());
+                                if (soapresultfocus.toString().equalsIgnoreCase("TRUE")) {
+                                    Flag = "1";
 
-                                int count = c.getCount();
-                                Log.v("", "" + count);
-                                db.close();
-                                if (count > 0) {
-                                    db.open();
-
-                                    db.update(focusModel.getDb_id(),
-                                            new String[]{
-                                                    focusModel.getDb_id(),
-                                                    focusModel.getProduct_type(),
-                                                    focusModel.getProduct_category(),
-                                                    focusModel.getUsername(),
-                                                    focusModel.getPro_name(),
-                                                    focusModel.getSize(),
-                                                    focusModel.getPrice(),
-                                                    focusModel.getTarget_qty(),
-                                                    focusModel.getTarget_amt(),
-                                                    focusModel.getAndroid_created_date(),
-                                                    focusModel.getTarget_BOC()},
-                                            new String[]{"Productid", "Type", "Category", "Empid", "ProName", "size", "MRP",
-                                                    "Target_qty", "Target_amt", "AndroidCreateddate", "BOC"},
-                                            "focus_data", "Productid");
-
-                                    db.close();
                                 } else {
-                                    db.open();
-
-                                    values = new String[]{
-                                            focusModel.getDb_id(),
-                                            focusModel.getProduct_type(),
-                                            focusModel.getProduct_category(),
-                                            focusModel.getUsername(),
-                                            focusModel.getPro_name(),
-                                            focusModel.getSize(),
-                                            focusModel.getPrice(),
-                                            focusModel.getTarget_qty(),
-                                            focusModel.getTarget_amt(),
-                                            focusModel.getAndroid_created_date(),
-                                            focusModel.getTarget_BOC()};
-
-                                    db.insert(values, columns, "focus_data");
-
-                                    db.close();
-
+                                    Flag = "2";
                                 }
-
-                            }
-                            ErroFlag = "1";
-                        } else {
-                            ErroFlag = "0";
-                            //String errors = "Soap in giving null while 'Attendance' and 'checkSyncFlag = 2' in  data Sync";
-                            //we.writeToSD(errors.toString());
-                            final Calendar calendar1 = Calendar
-                                    .getInstance();
-                            SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                    "MM/dd/yyyy HH:mm:ss");
-                            String Createddate = formatter1.format(calendar1
-                                    .getTime());
-
-                            int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
-                            db.insertSyncLog("Internet Connection Lost, Soap in giving null while 'Focus Report'", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, shp.getString("username", ""), "Transaction Upload", "Fail");
-
-                        }
-                    } else {
-                        if (db_id.length > 0 && db_id != null) {
-                            for (int i = 0; i < db_id.length; i++) {
-                                db_id1 = db_id[i];
-                                pro_name1 = pro_name[i];
-                                product_category1 = product_category[i];
-                                product_type1 = product_type[i];
-                                size1 = size[i];
-                                price1 = price[i];
-                                target_qty1 = target_qty[i];
-                                target_amt1 = target_amt[i];
-                                android_created_date1 = android_created_date[i];
-
-                                soapresultfocus = service.SaveIntoFOCUSReport(db_id1, product_type1, product_category1,
-                                        pro_name1, size1, price1, target_qty1, target_amt1, username, android_created_date1);
-
-                                if (soapresultfocus != null) {
-
-                                    focusReportList = new ArrayList<FocusModel>();
-                                    for (int j = 0; j < soapresultfocus.getPropertyCount(); j++) {
-
-                                        SoapObject soapObject = (SoapObject) soapresultfocus.getProperty(j);
-
-                                        String Product_id = soapObject.getProperty("Product_id").toString();
-                                        if (Product_id == null || Product_id.equals("anyType{}")) {
-                                            Product_id = "";
-                                        }
-                                        String Type = soapObject.getProperty("Type").toString();
-                                        if (Type == null || Type.equals("anyType{}")) {
-                                            Type = "";
-                                        }
-
-                                        String Category = soapObject.getProperty("Category").toString();
-                                        if (Category == null || Category.equals("anyType{}")) {
-                                            Category = "";
-                                        }
-
-                                        String Name = soapObject.getProperty("Name").toString();
-                                        if (Name == null || Name.equals("anyType{}")) {
-                                            Name = "";
-                                        }
-
-                                        String Size = soapObject.getProperty("Size").toString();
-                                        if (Size == null || Size.equals("anyType{}")) {
-                                            Size = "";
-                                        }
-
-                                        String MRP = soapObject.getProperty("MRP").toString();
-                                        if (MRP == null || MRP.equals("anyType{}")) {
-                                            MRP = "";
-                                        }
-
-                                        String Target_qty = soapObject.getProperty("Target_qty").toString();
-                                        if (Target_qty == null || Target_qty.equals("anyType{}")) {
-                                            Target_qty = "";
-                                        }
-
-                                        String Target_amount = soapObject.getProperty("Target_amount").toString();
-                                        if (Target_amount == null || Target_amount.equals("anyType{}")) {
-                                            Target_amount = "";
-                                        }
-
-                                        String Target_BOC = soapObject.getProperty("Target_BOC").toString();
-                                        if (Target_BOC == null || Target_BOC.equals("anyType{}")) {
-                                            Target_BOC = "";
-                                        }
-
-                                        String Achievement_Unit = soapObject.getProperty("Achievement_Unit").toString();
-                                        if (Achievement_Unit == null || Achievement_Unit.equals("anyType{}")) {
-                                            Achievement_Unit = "";
-                                        }
-
-                                        String Achievement_value = soapObject.getProperty("Achievement_value").toString();
-                                        if (Achievement_value == null || Achievement_value.equals("anyType{}")) {
-                                            Achievement_value = "";
-                                        }
-
-                                        String emp_id = soapObject.getProperty("emp_id").toString();
-                                        if (emp_id == null || emp_id.equals("anyType{}")) {
-                                            emp_id = "";
-                                        }
-
-                                        String android_created_date = soapObject.getProperty("android_created_date").toString();
-                                        if (android_created_date == null || android_created_date.equals("anyType{}")) {
-                                            android_created_date = "";
-                                        }
-
-                                        focusModel = new FocusModel();
-                                        focusModel.setDb_id(Product_id);
-                                        focusModel.setProduct_type(Type);
-                                        focusModel.setProduct_category(Category);
-                                        focusModel.setPro_name(Name);
-                                        focusModel.setSize(Size);
-                                        focusModel.setPrice(MRP);
-                                        focusModel.setTarget_qty(Target_qty);
-                                        focusModel.setTarget_amt(Target_amount);
-                                        focusModel.setTarget_BOC(Target_BOC);
-                                        focusModel.setAchievement_Unit(Achievement_Unit);
-                                        focusModel.setAchievement_value(Achievement_value);
-                                        focusModel.setUsername(emp_id);
-                                        focusModel.setAndroid_created_date(android_created_date);
-
-                                        focusReportList.add(focusModel);
-                                    }
-
-
-                                    for (int j = 0; j < focusReportList.size(); j++) {
-                                        focusModel = focusReportList.get(j);
-
-                                        db.open();
-                                        Cursor c = db.getuniquefocusdata(username, focusModel.getDb_id());
-
-                                        int count = c.getCount();
-                                        Log.v("", "" + count);
-                                        db.close();
-                                        if (count > 0) {
-                                            db.open();
-
-                                            db.update(focusModel.getDb_id(),
-                                                    new String[]{
-                                                            focusModel.getDb_id(),
-                                                            focusModel.getProduct_type(),
-                                                            focusModel.getProduct_category(),
-                                                            focusModel.getUsername(),
-                                                            focusModel.getPro_name(),
-                                                            focusModel.getSize(),
-                                                            focusModel.getPrice(),
-                                                            focusModel.getTarget_qty(),
-                                                            focusModel.getTarget_amt(),
-                                                            focusModel.getAndroid_created_date(),
-                                                            focusModel.getTarget_BOC()},
-                                                    new String[]{"Productid", "Type", "Category", "Empid", "ProName", "size", "MRP",
-                                                            "Target_qty", "Target_amt", "AndroidCreateddate", "BOC"},
-                                                    "focus_data", "Productid");
-
-                                            db.close();
-                                        } else {
-                                            db.open();
-
-                                            values = new String[]{
-                                                    focusModel.getDb_id(),
-                                                    focusModel.getProduct_type(),
-                                                    focusModel.getProduct_category(),
-                                                    focusModel.getUsername(),
-                                                    focusModel.getPro_name(),
-                                                    focusModel.getSize(),
-                                                    focusModel.getPrice(),
-                                                    focusModel.getTarget_qty(),
-                                                    focusModel.getTarget_amt(),
-                                                    focusModel.getAndroid_created_date(),
-                                                    focusModel.getTarget_BOC()};
-
-                                            db.insert(values, columns, "focus_data");
-
-                                            db.close();
-
-                                        }
-
-                                    }
-                                    ErroFlag = "1";
-                                } else {
-                                    ErroFlag = "0";
-                                    //String errors = "Soap in giving null while 'Attendance' and 'checkSyncFlag = 2' in  data Sync";
-                                    //we.writeToSD(errors.toString());
-                                    final Calendar calendar1 = Calendar
-                                            .getInstance();
-                                    SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                            "MM/dd/yyyy HH:mm:ss");
-                                    String Createddate = formatter1.format(calendar1
-                                            .getTime());
-
-                                    int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
-                                    db.insertSyncLog("Internet Connection Lost, Soap in giving null while 'Focus Report'", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, shp.getString("username", ""), "Transaction Upload", "Fail");
-
-                                }
-
                             }
                         }
                     }
 
                 } catch (Exception e) {
-                    //ErroFlag = "3";
-                    Erro_function = "Attendance";
                     e.printStackTrace();
-                    String Error = e.toString();
-
-                    final Calendar calendar1 = Calendar
-                            .getInstance();
-                    SimpleDateFormat formatter1 = new SimpleDateFormat(
-                            "MM/dd/yyyy HH:mm:ss");
-                    String Createddate = formatter1.format(calendar1
-                            .getTime());
-
-                    int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
-                    db.insertSyncLog(Error, String.valueOf(n), "Focus Report", Createddate, Createddate, shp.getString("username", ""), "Transaction Upload", "Fail");
-
-
                 }
-                //}
+
             }
 
             return null;
@@ -555,29 +224,23 @@ public class FocusReportActivity extends Activity {
         protected void onPostExecute(SoapObject result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-
-            if (pd != null && pd.isShowing() && !FocusReportActivity.this.isFinishing()) {
-                pd.dismiss();
+            if (mProgress != null && mProgress.isShowing() && !FocusReportActivity.this.isFinishing()) {
+                mProgress.dismiss();
             }
+
             try {
-                if (Flag.equalsIgnoreCase("3")) {
 
-                    Toast.makeText(getApplicationContext(), "Connectivity Error Please check internet ", Toast.LENGTH_SHORT).show();
-                }
+                if (Flag.equalsIgnoreCase("0")) {
 
-                if (ErroFlag.equalsIgnoreCase("0")) {
+                    Toast.makeText(getApplicationContext(), "Connectivity Error, Please check Internet connection!!", Toast.LENGTH_SHORT).show();
 
-                    Toast.makeText(getApplicationContext(), "Getting null Response", Toast.LENGTH_SHORT).show();
-                }
-                if (ErroFlag.equalsIgnoreCase("1")) {
+                } else if (Flag.equalsIgnoreCase("1")) {
 
-                    if (!reportclick) {
+                    new FetchFocusData().execute(boc);
 
-                        Toast.makeText(getApplicationContext(), "Focus Data Saved Succesfully!!", Toast.LENGTH_SHORT).show();
+                } else if (Flag.equalsIgnoreCase("2")) {
 
-                    }
-                    focusReportAdapter = new FocusReportAdapter(context, focusReportList);
-                    reportlist.setAdapter(focusReportAdapter);
+                    new FetchFocusData().execute(boc);
                 }
 
             } catch (Exception e) {
@@ -585,6 +248,113 @@ public class FocusReportActivity extends Activity {
             }
         }
 
+    }
+
+    public class FetchFocusData extends AsyncTask<String, String, ArrayList<HashMap<String, String>>> {
+
+        ArrayList<HashMap<String, String>> arr_category = new ArrayList<HashMap<String, String>>();
+
+        String boc = "";
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+        }
+
+        @Override
+        protected ArrayList<HashMap<String, String>> doInBackground(String... params) {
+            // TODO Auto-generated method stub
+
+            boc = params[0];
+            db.open();
+
+            Cursor c = db.showFocusAchivementDetails(lhrname, boc);
+            if (c != null && c.getCount() > 0) {
+                c.moveToFirst();
+                do {
+
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    String protype = cd.getNonNullValues_Integer(c.getString(0));
+                    String procategory = cd.getNonNullValues_Integer(c.getString(1));
+                    String div = "";
+                    if(procategory.equalsIgnoreCase("SKIN")){
+                        div = "LH";
+                    }else{
+                        div = "LM";
+                    }
+
+                    map.put("Type", protype + " (" + div + " )");
+                    map.put("Target", cd.getNonNullValues_Integer(c.getString(2)));
+                    map.put("Achievement", cd.getNonNullValues_Integer(c.getString(3)));
+
+
+                    arr_category.add(map);
+
+                } while (c.moveToNext());
+            }
+
+            return arr_category;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<HashMap<String, String>> result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+
+            focusReportAdapter = new FocusReportAdapter(context, arr_category);
+            reportlist.setAdapter(focusReportAdapter);
+
+        }
+
+    }
+
+
+    private void fetchAchivementFocusData(String boc) {
+
+        focusReportList = new ArrayList<FocusModel>();
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss");
+        String insert_timestamp = sdf.format(cal.getTime());
+
+        db.open();
+
+        Cursor c = db.getFocusReportAchivement(lhrname, boc);
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+            do {
+
+                focusModel = new FocusModel();
+
+                focusModel.setProduct_type(cd.getNonNullValues_Integer(c.getString(0)));
+                focusModel.setProduct_category(cd.getNonNullValues_Integer(c.getString(3)));
+                focusModel.setTarget_qty(cd.getNonNullValues_Integer(c.getString(1)));
+                focusModel.setAchievement_Unit(cd.getNonNullValues_Integer(c.getString(2)));
+                focusModel.setUsername(lhrname);
+                focusModel.setAndroid_created_date(insert_timestamp);
+                focusModel.setBocname(boc);
+
+                focusReportList.add(focusModel);
+
+            } while (c.moveToNext());
+        }
+
+        try {
+            if (focusReportList.size() > 0) {
+                for (int i = 0; i < focusReportList.size(); i++) {
+
+                    focusModel = focusReportList.get(i);
+
+                    db.open();
+                    db.updateFocusData(focusModel.getAchievement_Unit(), focusModel.getProduct_type(), lhrname);
+                    db.close();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

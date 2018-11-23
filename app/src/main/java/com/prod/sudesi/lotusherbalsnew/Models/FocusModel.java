@@ -16,6 +16,16 @@ public class FocusModel implements Serializable {
     String android_created_date;
     String achievement_Unit;
     String achievement_value;
+    String bocname;
+
+    public String getBocname() {
+        return bocname;
+    }
+
+    public void setBocname(String bocname) {
+        this.bocname = bocname;
+    }
+
 
     public String getDb_id() {
         return db_id;
@@ -120,7 +130,6 @@ public class FocusModel implements Serializable {
     public void setTarget_BOC(String target_BOC) {
         this.target_BOC = target_BOC;
     }
-
 
 
 }
