@@ -3,6 +3,7 @@ package com.prod.sudesi.lotusherbalsnew;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -32,12 +33,23 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
 import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -80,6 +92,17 @@ public class StockAllActivity extends Activity {
     ScrollView scrv_sale;
     //String rt_n_s_stk, rt_s_stk;
     ConnectionDetector cd;
+    private ProgressDialog progressDialog;
+    Cursor stock_array;
+    ArrayList<String> uploadidlist;
+    private JSONArray array;
+    SharedPreferences sp;
+    SharedPreferences.Editor spe;
+    String ErroFlag = "";
+
+
+    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
+    //public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +121,10 @@ public class StockAllActivity extends Activity {
 
         context = getApplicationContext();
         cd = new ConnectionDetector(context);
+
+        sp = context.getSharedPreferences("Lotus", context.MODE_PRIVATE);
+        spe = sp.edit();
+
         titel = (TextView) findViewById(R.id.textView1);
         titel.setText("Stock Received");
         edt_gross = (EditText) findViewById(R.id.edt_gross);
@@ -507,6 +534,9 @@ public class StockAllActivity extends Activity {
                                     count = saveDataforDubai();
                                 } else {
                                     count = saveData();
+                                    if(cd.isConnectingToInternet()) {
+                                        uploaddata();
+                                    }
                                 }
 
                             }
@@ -543,6 +573,9 @@ public class StockAllActivity extends Activity {
                                                                 count = saveDataforDubai();
                                                             } else {
                                                                 count = saveData();
+                                                                if(cd.isConnectingToInternet()) {
+                                                                    uploaddata();
+                                                                }
                                                             }
                                                             showAlertDialog(count);
                                                         }
@@ -2000,6 +2033,212 @@ public class StockAllActivity extends Activity {
             // show it
             alertDialog.show();
         }
+    }
+
+    private void uploaddata() {
+
+        array = new JSONArray();
+        uploadidlist = new ArrayList<>();
+        db.open();
+        stock_array = db.getStockdetails();
+
+        if (stock_array.getCount() > 0) {
+            if (stock_array != null && stock_array.moveToFirst()) {
+                stock_array.moveToFirst();
+
+                String shad;
+                do {
+
+                    JSONObject obj = new JSONObject();
+                    try {
+
+                        if (stock_array.getString(23) != null
+                                || !stock_array.getString(23).equalsIgnoreCase("null")) {
+
+                            Log.v("", "shadeno=" + stock_array.getString(23));
+                            shad = stock_array.getString(23).toString();
+
+                        } else {
+                            Log.v("", "shadeno=" + stock_array.getString(23));
+                            shad = "";
+                        }
+
+                        obj.put("id", cd.getNonNullValues(stock_array.getString(0)));
+                        obj.put("Pid", cd.getNonNullValues(stock_array.getString(2)));
+                        obj.put("CatCodeId", cd.getNonNullValues(stock_array.getString(1)));
+                        obj.put("EANCode", cd.getNonNullValues(stock_array.getString(3)));
+                        obj.put("empId", cd.getNonNullValues(username));
+                        obj.put("ProductCategory", cd.getNonNullValues(stock_array.getString(4)));
+                        obj.put("product_type", cd.getNonNullValues(stock_array.getString(5)));
+                        obj.put("product_name", cd.getNonNullValues(stock_array.getString(6)));
+                        obj.put("shadeno", cd.getNonNullValues(shad));
+                        obj.put("Opening_Stock", cd.getNonNullValues(stock_array.getString(10)));
+                        obj.put("FreshStock", cd.getNonNullValues(stock_array.getString(11)));
+                        obj.put("Stock_inhand", cd.getNonNullValues(stock_array.getString(12)));
+                        obj.put("SoldStock", cd.getNonNullValues(stock_array.getString(16)));
+                        obj.put("S_Return_Saleable", cd.getNonNullValues(stock_array.getString(14)));
+                        obj.put("S_Return_NonSaleable", cd.getNonNullValues(stock_array.getString(15)));
+                        obj.put("ClosingBal", cd.getNonNullValues(stock_array.getString(13)));
+                        obj.put("GrossAmount", cd.getNonNullValues(stock_array.getString(17)));
+                        obj.put("Discount", cd.getNonNullValues(stock_array.getString(19)));
+                        obj.put("NetAmount", cd.getNonNullValues(stock_array.getString(18)));
+                        obj.put("Size", cd.getNonNullValues(stock_array.getString(7)));
+                        obj.put("Price", cd.getNonNullValues(stock_array.getString(8)));
+                        obj.put("AndroidCreatedDate", cd.getNonNullValues(stock_array.getString(21)));
+                        obj.put("FLRCode", cd.getNonNullValues(outletcode));
+                        obj.put("flag", cd.getNonNullValues(stock_array.getString(35)));
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    array.put(obj);
+//                }
+                } while (stock_array.moveToNext());
+                //stock_array.close();
+            }
+
+            if (cd.isConnectingToInternet()) {
+
+                showProgreesDialog();
+                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, URL, array, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray jsonResponse) {
+
+                        Log.e("onResponse: ", jsonResponse.toString());
+                        int indexOfOpenBracket = jsonResponse.toString().indexOf("[");
+                        int indexOfLastBracket = jsonResponse.toString().lastIndexOf("]");
+
+                        String jsonStr = jsonResponse.toString().substring(indexOfOpenBracket + 1, indexOfLastBracket);
+
+                        if (jsonStr != null) {
+                            try {
+                                JSONObject jsonObj = new JSONObject(jsonStr);
+
+                                // Getting JSON Array node
+                                String flag = jsonObj.getString("Flag");
+                                String message = jsonObj.getString("errormsg");
+                                JSONArray id = jsonObj.getJSONArray("IdInserted");
+
+                                if (flag != null && flag.equalsIgnoreCase("TRUE")) {
+                                    for (int i = 0; i < id.length(); i++) {
+
+                                        String stockid = id.get(i).toString();
+
+                                        db.open();
+                                        db.update_stock_data(stockid);
+                                        Log.e("Data is Updating here ",
+                                                stockid);
+                                        db.close();
+
+
+                                    }
+
+                                    Log.e("JSON_TRUE", flag + "_MSG_" + message);
+
+                                } else {
+                                    ErroFlag = "0";
+                                    final Calendar calendar1 = Calendar
+                                            .getInstance();
+                                    SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                            "MM/dd/yyyy HH:mm:ss");
+                                    String Createddate = formatter1
+                                            .format(calendar1.getTime());
+
+                                    int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                                    db.insertSyncLog(message, String.valueOf(n), "SaveStock()", Createddate,
+                                            Createddate, username,
+                                            "SaveStock()", "Fail");
+                                    Log.e("JSON_FALSE", flag + "_MSG_" + message);
+                                }
+                                dissmissDialog();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        dissmissDialog();
+                        ErroFlag = "0";
+                        final Calendar calendar1 = Calendar
+                                .getInstance();
+                        SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss");
+                        String Createddate = formatter1
+                                .format(calendar1.getTime());
+
+                        int n = Thread.currentThread()
+                                .getStackTrace()[2]
+                                .getLineNumber();
+                        db.insertSyncLog(error.getMessage(),
+                                String.valueOf(n),
+                                "SaveStock()", Createddate,
+                                Createddate, sp.getString(
+                                        "username", ""),
+                                "SaveStock()", "Fail");
+
+//                        Toast.makeText(context,"Stock Data not upload", Toast.LENGTH_SHORT).show();
+                        Log.e("JSON_ERROR", error.getMessage());
+
+                    }
+                }) {
+                    @Override
+                    protected Response<JSONArray> parseNetworkResponse(NetworkResponse response) {
+                        return super.parseNetworkResponse(response);
+                    }
+
+                    @Override
+                    public String getBodyContentType() {
+                        return "application/json";
+                    }
+                };
+                jsonArrayRequest.setShouldCache(false);
+                jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        300000,
+                        0,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                TestApplication.getInstance().addToRequestQueue(jsonArrayRequest);
+
+            } else {
+                DisplayDialogMessage("Connectivity Error Please check internet");
+            }
+
+        } else {
+            Toast.makeText(this, "No Stock For Data Upload", Toast.LENGTH_SHORT).show();
+            Log.e("NoStock dataupload",String.valueOf(stock_array.getCount()));
+        }
+
+    }
+
+    private void showProgreesDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Please wait .."); // Setting Message
+        progressDialog.setTitle("Uploading Data."); // Setting Title
+        progressDialog.show(); // Display Progress Dialog
+        progressDialog.setCancelable(false);
+    }
+
+    private void dissmissDialog() {
+        if (progressDialog != null && progressDialog.isShowing() && !StockAllActivity.this.isFinishing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    private void DisplayDialogMessage(String msg) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(StockAllActivity.this);
+        builder.setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //do things
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
 }

@@ -56,12 +56,12 @@
                 android:layout_weight="1">
 
                 <Button
-                    android:id="@+id/btn_notifi"
+                    android:id="@+id/btn_checkout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:alpha="0.6"
-                    android:background="@drawable/noti"
+                    android:background="@drawable/checkout"
                     android:padding="@dimen/_5sdp"
                     />
 
@@ -78,12 +78,12 @@
                 android:layout_weight="1">
 
                 <Button
-                    android:id="@+id/btn_master_sync"
+                    android:id="@+id/btn_notifi"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:alpha="0.6"
-                    android:background="@drawable/master"
+                    android:background="@drawable/noti"
                     android:padding="@dimen/_5sdp"
                     />
 
@@ -361,10 +361,14 @@
             android:orientation="horizontal"
             >
 
-            <TextView
+            <Button
+                android:id="@+id/btn_master_sync"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="Master Sync"
+                android:alpha="0.6"
+                android:layout_margin="@dimen/_2sdp"
+                android:background="@color/white"
                 android:gravity="center"
                 android:textColor="#711a58"
                 android:textSize="@dimen/_20sdp"/>
