@@ -1947,6 +1947,61 @@ public class LotusWebservice {
         return result;
     }
 
+    //Sharmila - checkout
+    public SoapPrimitive GetCheckout(String empid) {
+        SoapPrimitive result = null;
+        try {
+            Log.v("", "checkout service called");
+            SoapObject request = new SoapObject("http://tempuri.org/", "GetCheckout");
+
+            Log.v("", "empid==" + empid);
+            request.addProperty("empid", empid);
+
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);// soap envelop with version
+            envelope.setOutputSoapObject(request); // set request object
+            envelope.dotNet = true;
+
+            HttpTransportSE androidHttpTransport = new HttpTransportSE(url, 60000);// http
+            // transport call
+            androidHttpTransport.call("http://tempuri.org/IService1/GetCheckout", envelope);
+
+            result = (SoapPrimitive) envelope.getResponse();
+            Log.e("GetCheckout=", result.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    //Sharmila - checkout
+    public SoapPrimitive ValidateSale(String empid, String Saledate) {
+        SoapPrimitive result = null;
+        try {
+            Log.v("", "checkout service called");
+            SoapObject request = new SoapObject("http://tempuri.org/", "ValidateSale");
+
+            Log.v("", "empid==" + empid);
+            request.addProperty("empid", empid);
+            request.addProperty("Saledate", Saledate);
+
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);// soap envelop with version
+            envelope.setOutputSoapObject(request); // set request object
+            envelope.dotNet = true;
+
+            HttpTransportSE androidHttpTransport = new HttpTransportSE(url, 60000);// http
+            // transport call
+            androidHttpTransport.call("http://tempuri.org/IService1/ValidateSale", envelope);
+
+            result = (SoapPrimitive) envelope.getResponse();
+            Log.e("ValidateSale=", result.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public SoapPrimitive InsertSaleRecord(String empid, String flag) {
         SoapPrimitive result = null;
         try {

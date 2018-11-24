@@ -65,7 +65,8 @@ public class DashboardNewActivity extends Activity {
 
     Button btn_attendance, btn_stock, btn_return, btn_visibility,
             btn_notification, btn_reports, btn_datasync, btn_BAreport,
-            btn_BAMonthreport, btn_sale, btn_dashboard, btn_super_atten, btn_stock_sale, btn_outletwise;
+            btn_BAMonthreport, btn_sale, btn_dashboard, btn_super_atten,
+            btn_stock_sale, btn_outletwise, btn_checkout;
 
     TextView tv_h_username;
     Button btn_home, btn_logout;
@@ -79,6 +80,7 @@ public class DashboardNewActivity extends Activity {
 
     private ArrayList<String> categoryDetailsArraylist;
 
+    private String attendanceDate1;//for logout time
 
     private AlarmManagerBroadcastReceiver alarm;
 
@@ -167,6 +169,7 @@ public class DashboardNewActivity extends Activity {
         btn_BAreport = (Button) findViewById(R.id.btn_ba_sale_yr);
         btn_sale = (Button) findViewById(R.id.btn_sale);
         btn_super_atten = (Button) findViewById(R.id.btn_super_atten);
+        btn_checkout = (Button) findViewById(R.id.btn_checkout);
 
         btn_outletwise = (Button) findViewById(R.id.btn_outletwise);
         btn_stock_sale = (Button) findViewById(R.id.btn_stock_sale);
@@ -382,6 +385,16 @@ public class DashboardNewActivity extends Activity {
                 i.putExtra("FromLoginpage", "");
                 startActivity(i);
 
+            }
+        });
+
+        btn_checkout.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+
+                new ValidateSale().execute();
             }
         });
 
@@ -601,7 +614,6 @@ public class DashboardNewActivity extends Activity {
 
 
     }
-
 
 
     public class GetBocTarget extends AsyncTask<String, Void, SoapObject> {
@@ -5195,6 +5207,175 @@ public class DashboardNewActivity extends Activity {
 
         }
 
+
+    }
+
+    //Check out async task - Sharmila
+    @SuppressLint("StaticFieldLeak")
+    public class ValidateSale extends AsyncTask<String, Void, SoapObject> {
+
+        ContentValues contentvalues = new ContentValues();
+        private SoapPrimitive soap_result = null;
+
+        String Flag = "";
+
+        // private WeakReference view;
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+
+            mProgress.setMessage("Please Wait....");
+            mProgress.show();
+            mProgress.setCancelable(false);
+
+        }
+
+
+        @Override
+        protected SoapObject doInBackground(String... params) {
+            // TODO Auto-generated method stub
+            Date date = new Date();
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            attendanceDate1 = form.format(date);
+            Log.v("", "attendanceDate1=" + attendanceDate1);
+
+            String sld[] = attendanceDate1.split(" ");
+            final String sld1 = sld[0];
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    soap_result = service.ValidateSale(username,sld1);
+
+                    if (soap_result != null) {
+
+                        if (soap_result.toString().equalsIgnoreCase("TRUE")) {
+                            Flag = "1";
+                        } else if (soap_result.toString().equalsIgnoreCase("FALSE")) {
+                            Flag = "2";
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+
+            if (mProgress != null && mProgress.isShowing() && !DashboardNewActivity.this.isFinishing()) {
+                mProgress.dismiss();
+            }
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(getApplicationContext(), "Connectivity Error, Please check Internet connection!!", Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+                Date date = new Date();
+                @SuppressLint("SimpleDateFormat")
+                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                attendanceDate1 = form.format(date);
+                Log.v("", "attendanceDate1=" + attendanceDate1);
+
+                String sld[] = attendanceDate1.split(" ");
+                final String sld1 = sld[0];
+
+//                db.updateAttendance(sld1, username, sld1);
+                new SaveLogoutTime().execute();
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
+                builder.setMessage("Please Punch your Previous Sale")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                                Intent i = new Intent(mContext, SaleNewActivity.class);
+                                startActivity(i);
+                                dialog.dismiss();
+
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+
+
+            }
+        }
+
+        private class SaveLogoutTime extends AsyncTask<Void, Void, SoapPrimitive> {
+
+            ProgressDialog progress;
+
+            SoapPrimitive soap_result;
+
+            @Override
+            protected SoapPrimitive doInBackground(Void... params) {
+                // TODO Auto-generated method stub
+
+                Date date = new Date();
+                SimpleDateFormat form = new SimpleDateFormat(
+                        "yyyy-MM-dd HH:mm:ss");
+
+                attendanceDate1 = form.format(date);
+                soap_result = service.SaveLogoutTime(username, attendanceDate1);
+
+                return soap_result;
+            }
+
+            @Override
+            protected void onPreExecute() {
+                // TODO Auto-generated method stub
+                super.onPreExecute();
+                progress = new ProgressDialog(DashboardNewActivity.this);
+                progress.setTitle("Uploading");
+                progress.setMessage("Please Wait.......");
+                progress.setCancelable(false);
+                progress.show();
+            }
+
+            @Override
+            protected void onPostExecute(SoapPrimitive result) {
+                // TODO Auto-generated method stub
+                super.onPostExecute(result);
+                if (progress != null && progress.isShowing() && !DashboardNewActivity.this.isFinishing()) {
+                    progress.dismiss();
+                }
+                if (result != null) {
+                    if (result.toString().equalsIgnoreCase("true")) {
+                        Toast.makeText(DashboardNewActivity.this, "Uploaded Succesfully", Toast.LENGTH_LONG).show();
+
+                        Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                    } else {
+                        Toast.makeText(DashboardNewActivity.this, "Data Not uploaded", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(DashboardNewActivity.this, "Please check internet Connectivity", Toast.LENGTH_LONG).show();
+                }
+            }
+
+
+        }
 
     }
 

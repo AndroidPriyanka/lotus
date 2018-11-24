@@ -1,5 +1,6 @@
 package com.prod.sudesi.lotusherbalsnew;
 
+import java.lang.ref.WeakReference;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -189,7 +191,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         btn_logout = (Button) findViewById(R.id.btn_logout);
 
         cd = new ConnectionDetector(context);
-        pd = new ProgressDialog(context);
+        pd = new ProgressDialog(AttendanceFragment.this);
         service = new LotusWebservice(context);
 
         _calendar = Calendar.getInstance(Locale.getDefault());
@@ -666,426 +668,8 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         @Override
         public void onClick(final View view) {
 
-            if (cd.isConnectingToInternet()) {
+            new GetCheckout(view).execute();
 
-                String serverddate = sp.getString("currentdate", "");
-                String[] parts = serverddate.split(" ");
-                String serverdd = parts[0];
-
-                String date_month_year = (String) view.getTag();
-
-                Calendar c = Calendar.getInstance();
-                year1 = c.get(Calendar.YEAR);
-                month1 = c.get(Calendar.MONTH);
-                day1 = c.get(Calendar.DAY_OF_MONTH);
-                String currentDate = String.valueOf(day1) + "-" + "0"
-                        + String.valueOf(month1 + 1) + "-" + String.valueOf(year1);
-                Log.e("Selected date", date_month_year);
-                Log.e("currentDate", currentDate);
-
-
-                if (date_month_year != null) {
-                    if (date_month_year.contains("-")) {
-                        String d[] = date_month_year.split("-");
-
-                        Log.v("checklength==", "" + d[0].length());
-                        if (d[0].length() < 2) {
-                            Log.v("", "checklength1==");
-                            attendanceDate = "0" + d[0] + "-" + getmonthNo(d[1])
-                                    + "-" + d[2];
-                            attendmonth = getmonthNo(d[1]);
-
-                        } else {
-                            attendanceDate = d[0] + "-" + getmonthNo(d[1]) + "-"
-                                    + d[2];
-                            attendmonth = getmonthNo(d[1]);
-
-                        }
-
-                    }
-                }
-                Log.e("attendanceDate", attendanceDate);
-
-
-                String d[] = date_month_year.split("-");
-                String daa = "";
-                if (d[0].length() > 0) {
-
-                    daa = "0" + d[0];
-                }
-                String aattddate = d[2] + "-" + getmonthNo(d[1]) + "-"
-                        + daa;
-                Log.e("aattddate==", aattddate);
-                // if(checkholiday(attendanceDate)){
-                db.open();
-                //	if ((db.isholiday(attendanceDate)).toString().length() > 0) {
-                if ((db.isholiday(aattddate)).toString().length() > 0) {
-
-                    Toast.makeText(context,
-                            "Its holliday for " + db.isholiday(aattddate),
-                            Toast.LENGTH_SHORT).show();
-                    db.close();
-                } else if (afterdateValidate(attendanceDate)) {
-                    db.close();
-                    Toast.makeText(context, "Select Current Date only",
-                            Toast.LENGTH_SHORT).show();
-
-                } else if (beforedatevalidate(attendanceDate, currentDate)) {
-                    db.close();
-                    Toast.makeText(context, "Select Current Date only",
-                            Toast.LENGTH_SHORT).show();
-
-                } else if (afterdateChangeValidate(serverdd)) {
-                    Toast.makeText(context, "Please Check your Handset Date",
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    db.close();
-
-                    final Button present;
-                    final Button absent;
-                    final Button out;
-                    Button cancel;
-                    try {
-
-                        Date date = new Date();
-                        SimpleDateFormat form = new SimpleDateFormat(
-                                "yyyy-MM-dd HH:mm:ss");
-
-                        attendanceDate1 = form.format(date);
-                        Log.v("", "attendanceDate1=" + attendanceDate1);
-
-                        String sld[] = attendanceDate1.split(" ");
-                        final String sld1 = sld[0];
-
-                        String ddd[] = sld1.split("-");
-                        final String year = ddd[0];
-
-                        Cursor c1 = null;
-                        db.open();
-                        c1 = db.getpreviousData1(sld1, username);
-
-                        Log.v("", "c.getcount=" + c1.getCount());
-
-                        if (c1 != null && c1.getCount() > 0) {
-//
-                            c1.moveToFirst();
-                            String logout_status = c1.getString(c1.getColumnIndex("logout_status"));
-                            if (logout_status != null) {
-
-                                Log.e("logout_status", logout_status);
-                                if (logout_status.equalsIgnoreCase("OUT")) {
-                                    Toast.makeText(AttendanceFragment.this, "Attendance is marked", Toast.LENGTH_LONG).show();
-                                } else {
-                                    final Dialog dialog = new Dialog(AttendanceFragment.this);
-                                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                    dialog.setCancelable(false);
-                                    dialog.setContentView(R.layout.layout_out_attendance);
-
-                                    out = (Button) dialog.findViewById(R.id.btn_out);
-                                    cancel = (Button) dialog.findViewById(R.id.btn_cancel);
-
-                                    out.setOnClickListener(new OnClickListener() {
-
-                                        @Override
-                                        public void onClick(View v) {
-                                            // TODO Auto-generated method stub
-                                            out.setEnabled(false);
-
-                                            new Handler().postDelayed(new Runnable() {
-
-                                                @Override
-                                                public void run() {
-                                                    // This method will be executed once the timer is over
-                                                    out.setEnabled(true);
-                                                    Log.d(TAG, "resend1");
-
-                                                }
-                                            }, 5000);// set time as per your requirement
-
-                                            db.updateAttendance(sld1, username, sld1);
-                                            savelogout = new SaveLogoutTime();
-                                            savelogout.execute();
-
-                                        }
-                                    });
-
-                                    cancel.setOnClickListener(new OnClickListener() {
-
-
-                                        @Override
-                                        public void onClick(View v) {
-
-                                            // TODO Auto-generated method stub
-
-                                            dialog.cancel();
-
-                                        }
-                                    });
-
-                                    dialog.show();
-
-                                }
-                            } else {
-                                final Dialog dialog = new Dialog(AttendanceFragment.this);
-                                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                dialog.setCancelable(false);
-                                dialog.setContentView(R.layout.layout_out_attendance);
-
-                                out = (Button) dialog.findViewById(R.id.btn_out);
-                                cancel = (Button) dialog.findViewById(R.id.btn_cancel);
-
-                                out.setOnClickListener(new OnClickListener() {
-
-                                    @Override
-                                    public void onClick(View v) {
-                                        // TODO Auto-generated method stub
-                                        out.setEnabled(false);
-
-                                        new Handler().postDelayed(new Runnable() {
-
-                                            @Override
-                                            public void run() {
-                                                // This method will be executed once the timer is over
-                                                out.setEnabled(true);
-                                                Log.d(TAG, "resend1");
-
-                                            }
-                                        }, 5000);// set time as per your requirement
-
-                                        db.updateAttendance(sld1, username, sld1);
-                                        dialog.cancel();
-                                        savelogout = new SaveLogoutTime();
-                                        savelogout.execute();
-                                    }
-                                });
-
-                                cancel.setOnClickListener(new OnClickListener() {
-
-
-                                    @Override
-                                    public void onClick(View v) {
-
-                                        // TODO Auto-generated method stub
-
-                                        dialog.cancel();
-
-                                    }
-                                });
-
-                                dialog.show();
-
-                            }
-
-
-                        } else {
-
-
-                            final Dialog dialog = new Dialog(AttendanceFragment.this);
-                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                            dialog.setContentView(R.layout.popup_attendance);
-
-                            present = (Button) dialog.findViewById(R.id.btn_present);
-                            absent = (Button) dialog.findViewById(R.id.btn_absent);
-                            final String[] columns = new String[]{"emp_id", "Adate",
-                                    "attendance", "absent_type", "lat", "lon", "savedServer", "month",
-                                    "holiday_desc", "year"};
-
-
-                            present.setOnClickListener(new OnClickListener() {
-
-                                @Override
-                                public void onClick(View v) {
-                                    // TODO Auto-generated method stub
-
-                                    present.setEnabled(false);
-
-                                    new Handler().postDelayed(new Runnable() {
-
-                                        @Override
-                                        public void run() {
-                                            // This method will be executed once the timer is over
-                                            present.setEnabled(true);
-                                            Log.d(TAG, "resend1");
-
-                                        }
-                                    }, 5000);// set time as per your requirement
-
-                                    attendance_flag = "P";
-                                    leavetype_flag = "";
-                                    if(flag==true){
-                                        uploadflag = "1";
-                                    }else {
-                                        uploadflag = "0";
-                                    }
-                                    if (cd.isConnectingToInternet()) {
-                                        //view.setBackgroundResource(R.drawable.green);
-                                        if (dialog != null && dialog.isShowing() && !AttendanceFragment.this.isFinishing()) {
-                                            dialog.dismiss();
-                                        }
-
-                                        try {
-                                            // Production live now
-                                           /* if(role.equalsIgnoreCase("DUB")){
-                                                new SaveAttendanceForDubai().execute(attendance_flag, leavetype_flag);
-                                            }else if(role.equalsIgnoreCase("FLR")){
-                                                new SaveAttendanceForDubai().execute(attendance_flag, leavetype_flag);
-                                            }else {
-                                                new SaveAttendance().execute(attendance_flag, leavetype_flag);
-                                            }*/
-                                            //using below method for testing on UAT India and dubai
-                                            new SaveAttendance().execute(attendance_flag, leavetype_flag,uploadflag);
-                                            view.setBackgroundResource(R.drawable.green);
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-
-                                    } else {
-                                        Toast.makeText(AttendanceFragment.this, "Please check internet Connectivity & Try Again", Toast.LENGTH_LONG).show();
-                                    }
-
-                                }
-                            });
-
-                            absent.setOnClickListener(new OnClickListener() {
-
-                                @Override
-                                public void onClick(View v) {
-
-                                    absent.setEnabled(false);
-
-                                    new Handler().postDelayed(new Runnable() {
-
-                                        @Override
-                                        public void run() {
-                                            // This method will be executed once the timer is over
-                                            absent.setEnabled(true);
-                                            Log.d(TAG, "resend1");
-
-                                        }
-                                    }, 5000);// set time as per your requirement
-
-                                    if (cd.isConnectingToInternet()) {
-
-                                        // TODO Auto-generated method stub
-
-                                        final Dialog d = new Dialog(AttendanceFragment.this);
-                                        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                        d.setContentView(R.layout.absent_popup);
-
-                                        RadioGroup rg_attendance_type = (RadioGroup) d
-                                                .findViewById(R.id.rg_absent_type);
-
-                                        final RadioButton rb_seek_leave = (RadioButton) d
-                                                .findViewById(R.id.rb_seek_leave);
-
-                                        final RadioButton rb_weekly_off = (RadioButton) d
-                                                .findViewById(R.id.rb_weekly_off);
-
-                                        final RadioButton rb_holiday = (RadioButton) d
-                                                .findViewById(R.id.rb_holiday);
-
-
-                                        rg_attendance_type
-                                                .setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-                                                    @Override
-                                                    public void onCheckedChanged(
-                                                            RadioGroup group, int checkedId) {
-                                                        // TODO Auto-generated method stub
-                                                        attendance_flag = "A";
-                                                        if(flag==true){
-                                                            uploadflag = "1";
-                                                        }else {
-                                                            uploadflag = "0";
-                                                        }
-                                                        if (rb_seek_leave.isChecked()) {
-
-                                                            leavetype_flag = "Leave";
-
-                                                            //view.setBackgroundResource(R.drawable.red);
-                                                            if (d != null && d.isShowing() && !AttendanceFragment.this.isFinishing()) {
-                                                                d.dismiss();
-                                                            }
-                                                            if (dialog != null && dialog.isShowing() && !AttendanceFragment.this.isFinishing()) {
-                                                                dialog.dismiss();
-                                                            }
-
-                                                            try {
-                                                                new SaveAttendance().execute(attendance_flag, leavetype_flag,uploadflag);
-                                                                view.setBackgroundResource(R.drawable.red);
-                                                            } catch (Exception e) {
-                                                                e.printStackTrace();
-                                                            }
-
-                                                        }
-
-                                                        if (rb_weekly_off.isChecked()) {
-                                                            leavetype_flag = "Weekly Off";
-
-                                                            //view.setBackgroundResource(R.drawable.red);
-                                                            if (d != null && d.isShowing() && !AttendanceFragment.this.isFinishing()) {
-                                                                d.dismiss();
-                                                            }
-                                                            if (dialog != null && dialog.isShowing() && !AttendanceFragment.this.isFinishing()) {
-                                                                dialog.dismiss();
-                                                            }
-
-                                                            try {
-                                                                new SaveAttendance().execute(attendance_flag, leavetype_flag,uploadflag);
-                                                                view.setBackgroundResource(R.drawable.red);
-                                                            } catch (Exception e) {
-                                                                e.printStackTrace();
-                                                            }
-                                                        }
-
-                                                        if (rb_holiday.isChecked()) {
-                                                            leavetype_flag = "Holiday";
-
-                                                            //view.setBackgroundResource(R.drawable.red);
-                                                            if (d != null && d.isShowing() && !AttendanceFragment.this.isFinishing()) {
-                                                                d.dismiss();
-                                                            }
-                                                            if (dialog != null && dialog.isShowing() && !AttendanceFragment.this.isFinishing()) {
-                                                                dialog.dismiss();
-                                                            }
-
-                                                            try {
-                                                                new SaveAttendance().execute(attendance_flag, leavetype_flag,uploadflag);
-                                                                view.setBackgroundResource(R.drawable.red);
-                                                            } catch (Exception e) {
-                                                                e.printStackTrace();
-                                                            }
-
-                                                        }
-
-
-                                                    }
-                                                });
-                                        d.show();
-
-                                    } else {
-                                        Toast.makeText(AttendanceFragment.this, "Please check internet Connectivity & Try Again", Toast.LENGTH_LONG).show();
-                                    }
-
-                                }
-
-
-                                /////
-                            });
-
-                            dialog.show();
-
-                        }
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
-                }
-
-            } else {
-                Toast.makeText(AttendanceFragment.this, "Please ON your Mobile Internet", Toast.LENGTH_LONG).show();
-            }
         }
 
         public int getCurrentDayOfMonth() {
@@ -1725,10 +1309,10 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                     if (attendance_flag.equalsIgnoreCase("P") &&
                             attendance_flag.length() > 0 && attendance_flag != null) {
                         soap_attendance = service.SaveAttendance(username, attendanceDate1,
-                                attendance_flag, "", String.valueOf(lat), String.valueOf(lon),uploadflag);
+                                attendance_flag, "", String.valueOf(lat), String.valueOf(lon), uploadflag);
                     } else {
                         soap_attendance = service.SaveAttendance(username, attendanceDate1,
-                                attendance_flag, leavetype_flag, String.valueOf(lat), String.valueOf(lon),uploadflag);
+                                attendance_flag, leavetype_flag, String.valueOf(lat), String.valueOf(lon), uploadflag);
                     }
 
                     if (soap_attendance != null) {
@@ -2197,7 +1781,6 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
     }*/
 
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -2300,16 +1883,16 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void getLastLocation() {
-        mFusedLocationClient.getLastLocation()
-                .addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            mLastLocation = task.getResult();
+        mFusedLocationClient.getLastLocation().addOnCompleteListener(this, new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    mLastLocation = task.getResult();
 
-                            lat = mLastLocation.getLatitude();
-                            lon = mLastLocation.getLongitude();
+                    lat = mLastLocation.getLatitude();
+                    lon = mLastLocation.getLongitude();
 
                            /* mLatitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
                                     mLatitudeLabel,
@@ -2317,12 +1900,12 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                             mLongitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
                                     mLongitudeLabel,
                                     mLastLocation.getLongitude()));*/
-                        } else {
-                            Log.w(TAG, "getLastLocation:exception", task.getException());
+                } else {
+                    Log.w(TAG, "getLastLocation:exception", task.getException());
 
-                        }
-                    }
-                });
+                }
+            }
+        });
     }
 
     private void DisplayDialogMessage(String msg) {
@@ -2343,4 +1926,527 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         alert.show();
     }
 
+    //Check out async task - Sharmila
+    @SuppressLint("StaticFieldLeak")
+    public class GetCheckout extends AsyncTask<String, Void, SoapObject> {
+
+        ContentValues contentvalues = new ContentValues();
+        private SoapPrimitive soap_result = null;
+
+        String Flag = "";
+
+       // private WeakReference view;
+
+         private View view;
+
+        public GetCheckout(View view){
+            this.view = view; // this you can use ahead wherever required
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+
+            pd.setMessage("Please Wait....");
+            pd.show();
+            pd.setCancelable(false);
+
+        }
+
+
+        @Override
+        protected SoapObject doInBackground(String... params) {
+            // TODO Auto-generated method stub
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    soap_result = service.GetCheckout(username);
+
+                    if (soap_result != null) {
+
+                        if (soap_result.toString().equalsIgnoreCase("TRUE")) {
+                            Flag = "1";
+                        } else if (soap_result.toString().equalsIgnoreCase("FALSE")) {
+                            Flag = "2";
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+
+            if (pd != null && pd.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                pd.dismiss();
+            }
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(getApplicationContext(), "Connectivity Error, Please check Internet connection!!", Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                showingPresentdialog(view);
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceFragment.this);
+                builder.setMessage("Please Punch your Checkout Time")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                                Intent i = new Intent(context, DashboardNewActivity.class);
+                                startActivity(i);
+                                dialog.dismiss();
+
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+
+
+
+            }
+        }
+
+
+    }
+
+    public void showingPresentdialog(final View view) {
+
+        if (cd.isConnectingToInternet()) {
+
+            String serverddate = sp.getString("currentdate", "");
+            String[] parts = serverddate.split(" ");
+            String serverdd = parts[0];
+
+            String date_month_year = (String) view.getTag();
+
+            Calendar c = Calendar.getInstance();
+            year1 = c.get(Calendar.YEAR);
+            month1 = c.get(Calendar.MONTH);
+            day1 = c.get(Calendar.DAY_OF_MONTH);
+            String currentDate = String.valueOf(day1) + "-" + "0"
+                    + String.valueOf(month1 + 1) + "-" + String.valueOf(year1);
+            Log.e("Selected date", date_month_year);
+            Log.e("currentDate", currentDate);
+
+
+            if (date_month_year != null) {
+                if (date_month_year.contains("-")) {
+                    String d[] = date_month_year.split("-");
+
+                    Log.v("checklength==", "" + d[0].length());
+                    if (d[0].length() < 2) {
+                        Log.v("", "checklength1==");
+                        attendanceDate = "0" + d[0] + "-" + getmonthNo(d[1])
+                                + "-" + d[2];
+                        attendmonth = getmonthNo(d[1]);
+
+                    } else {
+                        attendanceDate = d[0] + "-" + getmonthNo(d[1]) + "-"
+                                + d[2];
+                        attendmonth = getmonthNo(d[1]);
+
+                    }
+
+                }
+            }
+            Log.e("attendanceDate", attendanceDate);
+
+
+            String d[] = date_month_year.split("-");
+            String daa = "";
+            if (d[0].length() > 0) {
+
+                daa = "0" + d[0];
+            }
+            String aattddate = d[2] + "-" + getmonthNo(d[1]) + "-"
+                    + daa;
+            Log.e("aattddate==", aattddate);
+            // if(checkholiday(attendanceDate)){
+            db.open();
+            //	if ((db.isholiday(attendanceDate)).toString().length() > 0) {
+            if ((db.isholiday(aattddate)).toString().length() > 0) {
+
+                Toast.makeText(context,
+                        "Its holliday for " + db.isholiday(aattddate),
+                        Toast.LENGTH_SHORT).show();
+                db.close();
+            } else if (afterdateValidate(attendanceDate)) {
+                db.close();
+                Toast.makeText(context, "Select Current Date only",
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (beforedatevalidate(attendanceDate, currentDate)) {
+                db.close();
+                Toast.makeText(context, "Select Current Date only",
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (afterdateChangeValidate(serverdd)) {
+                Toast.makeText(context, "Please Check your Handset Date",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                db.close();
+
+                final Button present;
+                final Button absent;
+                final Button out;
+                Button cancel;
+                try {
+
+                    Date date = new Date();
+                    @SuppressLint("SimpleDateFormat") SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                    attendanceDate1 = form.format(date);
+                    Log.v("", "attendanceDate1=" + attendanceDate1);
+
+                    String sld[] = attendanceDate1.split(" ");
+                    final String sld1 = sld[0];
+
+                    String ddd[] = sld1.split("-");
+                    final String year = ddd[0];
+
+                    Cursor c1 = null;
+                    db.open();
+                    c1 = db.getpreviousData1(sld1, username);
+
+                    Log.v("", "c.getcount=" + c1.getCount());
+
+                    if (c1 != null && c1.getCount() > 0) {
+
+                        c1.moveToFirst();
+                        String attendance = c1.getString(c1.getColumnIndex("attendance"));
+                        if (attendance != null) {
+
+                            Log.e("attendance", attendance);
+                            if (attendance.equalsIgnoreCase("P")) {
+                                Toast.makeText(AttendanceFragment.this, "Attendance is marked already", Toast.LENGTH_LONG).show();
+                            }
+                        }/*else {
+                                    final Dialog dialog = new Dialog(AttendanceFragment.this);
+                                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                    dialog.setCancelable(false);
+                                    dialog.setContentView(R.layout.layout_out_attendance);
+
+                                    out = (Button) dialog.findViewById(R.id.btn_out);
+                                    cancel = (Button) dialog.findViewById(R.id.btn_cancel);
+
+                                    out.setOnClickListener(new OnClickListener() {
+
+                                        @Override
+                                        public void onClick(View v) {
+                                            // TODO Auto-generated method stub
+                                            out.setEnabled(false);
+
+                                            new Handler().postDelayed(new Runnable() {
+
+                                                @Override
+                                                public void run() {
+                                                    // This method will be executed once the timer is over
+                                                    out.setEnabled(true);
+                                                    Log.d(TAG, "resend1");
+
+                                                }
+                                            }, 5000);// set time as per your requirement
+
+                                            db.updateAttendance(sld1, username, sld1);
+                                            savelogout = new SaveLogoutTime();
+                                            savelogout.execute();
+
+                                        }
+                                    });
+
+                                    cancel.setOnClickListener(new OnClickListener() {
+
+
+                                        @Override
+                                        public void onClick(View v) {
+
+                                            // TODO Auto-generated method stub
+
+                                            dialog.cancel();
+
+                                        }
+                                    });
+
+                                    dialog.show();
+
+                                }
+                            }*/ /*else {
+                                final Dialog dialog = new Dialog(AttendanceFragment.this);
+                                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                dialog.setCancelable(false);
+                                dialog.setContentView(R.layout.layout_out_attendance);
+
+                                out = (Button) dialog.findViewById(R.id.btn_out);
+                                cancel = (Button) dialog.findViewById(R.id.btn_cancel);
+
+                                out.setOnClickListener(new OnClickListener() {
+
+                                    @Override
+                                    public void onClick(View v) {
+                                        // TODO Auto-generated method stub
+                                        out.setEnabled(false);
+
+                                        new Handler().postDelayed(new Runnable() {
+
+                                            @Override
+                                            public void run() {
+                                                // This method will be executed once the timer is over
+                                                out.setEnabled(true);
+                                                Log.d(TAG, "resend1");
+
+                                            }
+                                        }, 5000);// set time as per your requirement
+
+                                        db.updateAttendance(sld1, username, sld1);
+                                        dialog.cancel();
+                                        savelogout = new SaveLogoutTime();
+                                        savelogout.execute();
+                                    }
+                                });
+
+                                cancel.setOnClickListener(new OnClickListener() {
+
+
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        // TODO Auto-generated method stub
+
+                                        dialog.cancel();
+
+                                    }
+                                });
+
+                                dialog.show();
+
+                            }*/
+
+
+                    } else {
+                        final Dialog dialog = new Dialog(AttendanceFragment.this);
+                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.setContentView(R.layout.popup_attendance);
+
+                        present = (Button) dialog.findViewById(R.id.btn_present);
+                        absent = (Button) dialog.findViewById(R.id.btn_absent);
+                        final String[] columns = new String[]{"emp_id", "Adate",
+                                "attendance", "absent_type", "lat", "lon", "savedServer", "month",
+                                "holiday_desc", "year"};
+
+
+                        present.setOnClickListener(new OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                // TODO Auto-generated method stub
+
+                                present.setEnabled(false);
+
+                                new Handler().postDelayed(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        // This method will be executed once the timer is over
+                                        present.setEnabled(true);
+                                        Log.d(TAG, "resend1");
+
+                                    }
+                                }, 5000);// set time as per your requirement
+
+                                attendance_flag = "P";
+                                leavetype_flag = "";
+                                if (flag == true) {
+                                    uploadflag = "1";
+                                } else {
+                                    uploadflag = "0";
+                                }
+                                if (cd.isConnectingToInternet()) {
+                                    //view.setBackgroundResource(R.drawable.green);
+                                    if (dialog != null && dialog.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                                        dialog.dismiss();
+                                    }
+
+                                    try {
+                                        // Production live now
+                                           /* if(role.equalsIgnoreCase("DUB")){
+                                                new SaveAttendanceForDubai().execute(attendance_flag, leavetype_flag);
+                                            }else if(role.equalsIgnoreCase("FLR")){
+                                                new SaveAttendanceForDubai().execute(attendance_flag, leavetype_flag);
+                                            }else {
+                                                new SaveAttendance().execute(attendance_flag, leavetype_flag);
+                                            }*/
+                                        //using below method for testing on UAT India and dubai
+                                        new SaveAttendance().execute(attendance_flag, leavetype_flag, uploadflag);
+                                        view.setBackgroundResource(R.drawable.green);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                } else {
+                                    Toast.makeText(AttendanceFragment.this, "Please check internet Connectivity & Try Again", Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+                        });
+
+                        absent.setOnClickListener(new OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+
+                                absent.setEnabled(false);
+
+                                new Handler().postDelayed(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        // This method will be executed once the timer is over
+                                        absent.setEnabled(true);
+                                        Log.d(TAG, "resend1");
+
+                                    }
+                                }, 5000);// set time as per your requirement
+
+                                if (cd.isConnectingToInternet()) {
+
+                                    // TODO Auto-generated method stub
+
+                                    final Dialog d = new Dialog(AttendanceFragment.this);
+                                    d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                    d.setContentView(R.layout.absent_popup);
+
+                                    RadioGroup rg_attendance_type = (RadioGroup) d
+                                            .findViewById(R.id.rg_absent_type);
+
+                                    final RadioButton rb_seek_leave = (RadioButton) d
+                                            .findViewById(R.id.rb_seek_leave);
+
+                                    final RadioButton rb_weekly_off = (RadioButton) d
+                                            .findViewById(R.id.rb_weekly_off);
+
+                                    final RadioButton rb_holiday = (RadioButton) d
+                                            .findViewById(R.id.rb_holiday);
+
+
+                                    rg_attendance_type
+                                            .setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+                                                @Override
+                                                public void onCheckedChanged(
+                                                        RadioGroup group, int checkedId) {
+                                                    // TODO Auto-generated method stub
+                                                    attendance_flag = "A";
+                                                    if (flag == true) {
+                                                        uploadflag = "1";
+                                                    } else {
+                                                        uploadflag = "0";
+                                                    }
+                                                    if (rb_seek_leave.isChecked()) {
+
+                                                        leavetype_flag = "Leave";
+
+                                                        //view.setBackgroundResource(R.drawable.red);
+                                                        if (d != null && d.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                                                            d.dismiss();
+                                                        }
+                                                        if (dialog != null && dialog.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                                                            dialog.dismiss();
+                                                        }
+
+                                                        try {
+                                                            new SaveAttendance().execute(attendance_flag, leavetype_flag, uploadflag);
+                                                            view.setBackgroundResource(R.drawable.red);
+                                                        } catch (Exception e) {
+                                                            e.printStackTrace();
+                                                        }
+
+                                                    }
+
+                                                    if (rb_weekly_off.isChecked()) {
+                                                        leavetype_flag = "Weekly Off";
+
+                                                        //view.setBackgroundResource(R.drawable.red);
+                                                        if (d != null && d.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                                                            d.dismiss();
+                                                        }
+                                                        if (dialog != null && dialog.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                                                            dialog.dismiss();
+                                                        }
+
+                                                        try {
+                                                            new SaveAttendance().execute(attendance_flag, leavetype_flag, uploadflag);
+                                                            view.setBackgroundResource(R.drawable.red);
+                                                        } catch (Exception e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+
+                                                    if (rb_holiday.isChecked()) {
+                                                        leavetype_flag = "Holiday";
+
+                                                        //view.setBackgroundResource(R.drawable.red);
+                                                        if (d != null && d.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                                                            d.dismiss();
+                                                        }
+                                                        if (dialog != null && dialog.isShowing() && !AttendanceFragment.this.isFinishing()) {
+                                                            dialog.dismiss();
+                                                        }
+
+                                                        try {
+                                                            new SaveAttendance().execute(attendance_flag, leavetype_flag, uploadflag);
+                                                            view.setBackgroundResource(R.drawable.red);
+                                                        } catch (Exception e) {
+                                                            e.printStackTrace();
+                                                        }
+
+                                                    }
+
+
+                                                }
+                                            });
+                                    d.show();
+
+                                } else {
+                                    Toast.makeText(AttendanceFragment.this, "Please check internet Connectivity & Try Again", Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+
+
+                            /////
+                        });
+
+                        dialog.show();
+
+                    }
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
+
+        } else {
+            Toast.makeText(AttendanceFragment.this, "Please ON your Mobile Internet", Toast.LENGTH_LONG).show();
+        }
+    }
 }
