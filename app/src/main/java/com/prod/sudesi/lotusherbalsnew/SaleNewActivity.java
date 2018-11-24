@@ -1,9 +1,13 @@
 package com.prod.sudesi.lotusherbalsnew;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -19,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -26,7 +31,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
+import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
+import com.prod.sudesi.lotusherbalsnew.libs.LotusWebservice;
+
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,13 +48,14 @@ public class SaleNewActivity extends Activity implements OnClickListener {
 
     Spinner sp_product_category, sp_product_type; //sp_product_mode;
 
-    Button btn_proceed, btn_home, btn_logout;
+    Button btn_proceed, btn_home, btn_logout, btnsave;
 
     TableLayout tl_productList;
 
     TableRow tr_header;
 
-    TextView tv_h_username, txt_header; //txt_product_mode;
+    TextView tv_h_username, txt_header, typetxt; //txt_product_mode;
+    LinearLayout productlinearlayout;
 
     SharedPreferences shp;
     SharedPreferences.Editor shpeditor;
@@ -67,6 +78,9 @@ public class SaleNewActivity extends Activity implements OnClickListener {
     String selected_type;
 
     String username, bdename, mrpstring = "";
+    private ProgressDialog pd;
+    ConnectionDetector cd;
+    LotusWebservice service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,21 +93,29 @@ public class SaleNewActivity extends Activity implements OnClickListener {
         //////////Crash Report
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
+        pd = new ProgressDialog(this);
+        service = new LotusWebservice(this);
+        cd = new ConnectionDetector(this);
+
         sp_product_category = (Spinner) findViewById(R.id.sp_product_category);
         sp_product_type = (Spinner) findViewById(R.id.sp_product_type);
         //sp_product_mode = (Spinner) findViewById(R.id.sp_product_mode);
         tl_productList = (TableLayout) findViewById(R.id.tl_productList);
         btn_proceed = (Button) findViewById(R.id.btn_proceed);
+        btnsave = (Button) findViewById(R.id.btnsave);
         btn_home = (Button) findViewById(R.id.btn_home);
         btn_logout = (Button) findViewById(R.id.btn_logout);
         tr_header = (TableRow) findViewById(R.id.tr_header);
         tv_h_username = (TextView) findViewById(R.id.tv_h_username);
         txt_header = (TextView) findViewById(R.id.txt_header);
+        typetxt = (TextView) findViewById(R.id.typetxt);
+        productlinearlayout = (LinearLayout) findViewById(R.id.productlinearlayout);
         //txt_product_mode = (TextView) findViewById(R.id.txt_product_mode);
         //txt_product_mode.setVisibility(View.GONE);
         txt_header.setText("SALE");
 
         btn_proceed.setOnClickListener(this);
+        btnsave.setOnClickListener(this);
         btn_home.setOnClickListener(this);
         btn_logout.setOnClickListener(this);
         //sp_product_mode.setVisibility(View.GONE);
@@ -115,6 +137,7 @@ public class SaleNewActivity extends Activity implements OnClickListener {
             productcategory = db.getproductcategory1(); // ------------
             if(productcategory.size()>0) {
                 productcategory.add("BABY CARE");
+                productcategory.add("NO SALE");
             }
             db.close();
             // System.out.println(productArray);
@@ -126,12 +149,14 @@ public class SaleNewActivity extends Activity implements OnClickListener {
             productcategory.add("Select");
             productcategory.add("SKIN");
             productcategory.add("BABY CARE");
+            productcategory.add("NO SALE");
 
         }
         if (div.equalsIgnoreCase("LM")) {
             productcategory.clear();
             productcategory.add("Select");
             productcategory.add("COLOR");
+            productcategory.add("NO SALE");
 
         }
 
@@ -175,25 +200,34 @@ public class SaleNewActivity extends Activity implements OnClickListener {
                                     selected_product_category = "SKIN";
                                 }
 
-                                db.open();
-                                if(sp_product_category.getItemAtPosition(position).toString().trim().equalsIgnoreCase("BABY CARE")){
-                                    producttypeArray = db.getproductypeforBabyProduct(selected_product_category);
+                                if(selected_product_category.equalsIgnoreCase("NO SALE")){
+                                    btnsave.setVisibility(View.VISIBLE);
+                                    typetxt.setVisibility(View.GONE);
+                                    sp_product_type.setVisibility(View.GONE);
+                                    productlinearlayout.setVisibility(View.GONE);
+                                    btn_proceed.setVisibility(View.GONE);
                                 }else {
-                                    producttypeArray = db.getproductype1(selected_product_category); // -------------
+                                    db.open();
+                                    if (sp_product_category.getItemAtPosition(position).toString().trim().equalsIgnoreCase("BABY CARE")) {
+                                        producttypeArray = db.getproductypeforBabyProduct(selected_product_category);
+                                    } else {
+                                        producttypeArray = db.getproductype1(selected_product_category); // -------------
+                                    }
+
+                                    System.out.println(producttypeArray);
+
+                                    ArrayAdapter<String> product_adapter1 = new ArrayAdapter<String>(
+                                            // context,
+                                            // android.R.layout.simple_spinner_item,
+                                            SaleNewActivity.this,
+                                            R.layout.custom_sp_item,
+                                            producttypeArray);
+
+                                    product_adapter1
+                                            // .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                            .setDropDownViewResource(R.layout.custom_spinner_dropdown_text);
+                                    sp_product_type.setAdapter(product_adapter1);
                                 }
-                                System.out.println(producttypeArray);
-
-                                ArrayAdapter<String> product_adapter1 = new ArrayAdapter<String>(
-                                        // context,
-                                        // android.R.layout.simple_spinner_item,
-                                        SaleNewActivity.this,
-                                        R.layout.custom_sp_item,
-                                        producttypeArray);
-
-                                product_adapter1
-                                        // .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                        .setDropDownViewResource(R.layout.custom_spinner_dropdown_text);
-                                sp_product_type.setAdapter(product_adapter1);
                             }
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
@@ -275,6 +309,15 @@ public class SaleNewActivity extends Activity implements OnClickListener {
                 Intent i1 = new Intent(getApplicationContext(), LoginActivity.class);
                 i1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i1);
+
+                break;
+
+            case R.id.btnsave:
+
+                new InsertSaleRecord().execute();
+                /*Intent i1 = new Intent(getApplicationContext(), LoginActivity.class);
+                i1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i1);*/
 
                 break;
 
@@ -603,6 +646,86 @@ public class SaleNewActivity extends Activity implements OnClickListener {
 
             }
         }
+
+    }
+
+
+    public class InsertSaleRecord extends AsyncTask<String, Void, SoapObject> {
+
+        ContentValues contentvalues = new ContentValues();
+        private SoapPrimitive soap_result = null;
+
+        String Flag = "";
+
+        String bocname = "";
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+
+            pd.setMessage("Please Wait....");
+            pd.show();
+            pd.setCancelable(false);
+
+        }
+
+        @Override
+        protected SoapObject doInBackground(String... params) {
+            // TODO Auto-generated method stub
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    soap_result = service.InsertSaleRecord(username, selected_product_category);
+
+                    if (soap_result != null) {
+
+                        if (soap_result.toString().equalsIgnoreCase("TRUE")) {
+                            Flag = "1";
+                        } else if (soap_result.toString().equalsIgnoreCase("FALSE")) {
+                            Flag = "2";
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+
+            if (pd != null && pd.isShowing() && !SaleNewActivity.this.isFinishing()) {
+                pd.dismiss();
+            }
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(getApplicationContext(),
+                        "Connectivity Error, Please check Internet connection!!",
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                Toast.makeText(getApplicationContext(), "Data Save Succesfully", Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+
+
+            }
+
+
+        }
+
 
     }
 
