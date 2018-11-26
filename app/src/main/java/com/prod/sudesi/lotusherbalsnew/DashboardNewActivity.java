@@ -5297,7 +5297,9 @@ public class DashboardNewActivity extends Activity {
                 String sld[] = attendanceDate1.split(" ");
                 final String sld1 = sld[0];
 
-//                db.updateAttendance(sld1, username, sld1);
+                db.open();
+                db.updateAttendance(username, sld1);
+                db.close();
                 new SaveLogoutTime().execute();
 
             } else if (Flag.equalsIgnoreCase("2")) {
@@ -5332,8 +5334,8 @@ public class DashboardNewActivity extends Activity {
                 // TODO Auto-generated method stub
 
                 Date date = new Date();
-                SimpleDateFormat form = new SimpleDateFormat(
-                        "yyyy-MM-dd HH:mm:ss");
+                @SuppressLint("SimpleDateFormat")
+                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
                 attendanceDate1 = form.format(date);
                 soap_result = service.SaveLogoutTime(username, attendanceDate1);

@@ -3795,11 +3795,13 @@ public class Dbcon {
         return LastLoginTime;
     }
 
-    public int updateAttendance(String wheredate, String BA_id, String logoutDate) {
+    public int updateAttendance(String BA_id, String logoutDate) {
 
         int status;
 
-        String sql = "update attendance set logout_date = '" + logoutDate + "' ,logout_status ='OUT' where Adate LIKE '%" + wheredate + "%' and emp_id ='" + BA_id + "'";
+//        String sql = "update attendance set logout_date = '" + logoutDate + "' ,logout_status ='OUT' where Adate LIKE '%" + wheredate + "%' and emp_id ='" + BA_id + "'";
+
+        String sql = "update attendance set logout_date = '" + logoutDate + "' ,logout_status ='OUT' where Adate LIKE (SELECT MAX(Adate) FROM attendance where emp_id ='" + BA_id + "' GROUP BY emp_id) and emp_id ='" + BA_id +"'";
 
         Cursor c = database.rawQuery(sql, null);
         if (c != null && c.getCount() > 0) {
@@ -3811,7 +3813,6 @@ public class Dbcon {
 
 
     }
-
     public boolean CheckSupervisor(String ActualDate, String BA_id) {
         boolean check;
 
