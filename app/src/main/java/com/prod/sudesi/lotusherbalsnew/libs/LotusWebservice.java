@@ -24,9 +24,9 @@ public class LotusWebservice {
     }
 
     //For current production using this method
-    public SoapPrimitive SaveAttendance(String empid, String date,
+    public SoapObject SaveAttendance(String empid, String date,
                                         String attend, String absent_type, String lat, String lon, String flag) {
-        SoapPrimitive result = null;
+        SoapObject result = null;
         try {
             Log.v("", "attendace service called");
             SoapObject request = new SoapObject("http://tempuri.org/",
@@ -54,7 +54,7 @@ public class LotusWebservice {
             androidHttpTransport.call(
                     "http://tempuri.org/IService1/SaveAttendance", envelope);
 
-            result = (SoapPrimitive) envelope.getResponse();
+            result = (SoapObject) envelope.getResponse();
             Log.e("SaveAttendance", result.toString());
 
         } catch (Exception e) {

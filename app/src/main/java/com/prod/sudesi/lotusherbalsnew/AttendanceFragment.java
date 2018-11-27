@@ -668,7 +668,15 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         @Override
         public void onClick(final View view) {
 
-            new GetCheckout(view).execute();
+            if (role.equalsIgnoreCase("FLR")||
+                    role.equalsIgnoreCase("ADR")||
+                    role.equalsIgnoreCase("BP")) {
+
+                showingPresentdialog(view);
+
+            }else {
+                new GetCheckout(view).execute();
+            }
 
         }
 
@@ -1258,10 +1266,10 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
     }
 
     // production live now this method
-    private class SaveAttendance extends AsyncTask<String, Void, SoapPrimitive> {
+    private class SaveAttendance extends AsyncTask<String, Void, SoapObject> {
 
 
-        SoapPrimitive soap_attendance = null;
+        SoapObject soap_attendance = null;
 
         String ErroFlag;
         String Erro_function = "";
@@ -1284,7 +1292,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         }
 
         @Override
-        protected SoapPrimitive doInBackground(String... params) {
+        protected SoapObject doInBackground(String... params) {
             // TODO Auto-generated method stub
 
             attendance_flag = params[0];
@@ -1316,59 +1324,80 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                     }
 
                     if (soap_attendance != null) {
-                        String t = soap_attendance.toString();
-                        Log.v("", "soap_result_attendance=" + t);
-                        if (t.equalsIgnoreCase("TRUE")) {
-                            ErroFlag = "1";
+                        if (soap_attendance.getProperty("Flag") != null) {
+                            String t = cd.getNonNullValues(String.valueOf(soap_attendance.getProperty("Flag")));
+                            Log.v("", "soap_result_attendance=" + t);
+                            if (t.equalsIgnoreCase("True")) {
+                                ErroFlag = "1";
 
-                            String sld[] = attendanceDate1.split(" ");
-                            final String sld1 = sld[0];
+                                Aid = cd.getNonNullValues(String.valueOf(soap_attendance.getProperty("Id")));
 
-                            String ddd[] = sld1.split("-");
-                            final String year = ddd[0];
+                                spe.putString("AttendAid", Aid);
+                                spe.commit();
 
-                            String attendmonth1 = getmonthNo1(attendmonth);
+                                String sld[] = attendanceDate1.split(" ");
+                                final String sld1 = sld[0];
 
-                            if (attendance_flag.equalsIgnoreCase("P") &&
-                                    attendance_flag.length() > 0 && attendance_flag != null) {
-                                db.open();
+                                String ddd[] = sld1.split("-");
+                                final String year = ddd[0];
 
-                                values = new String[]{username,
-                                        attendanceDate1,
-                                        attendance_flag,
-                                        "",
-                                        String.valueOf(lat),
-                                        String.valueOf(lon),
-                                        "1",
-                                        attendmonth1,
-                                        "",
-                                        year};
+                                String attendmonth1 = getmonthNo1(attendmonth);
 
-                                db.insert(values, columns, "attendance");
+                                if (attendance_flag.equalsIgnoreCase("P") &&
+                                        attendance_flag.length() > 0 && attendance_flag != null) {
+                                    db.open();
 
-                                db.close();
-                            } else {
-                                db.open();
+                                    values = new String[]{username,
+                                            attendanceDate1,
+                                            attendance_flag,
+                                            "",
+                                            String.valueOf(lat),
+                                            String.valueOf(lon),
+                                            "1",
+                                            attendmonth1,
+                                            "",
+                                            year};
 
-                                values = new String[]{
-                                        username,
-                                        attendanceDate1,
-                                        attendance_flag,
-                                        leavetype_flag,
-                                        String.valueOf(lat),
-                                        String.valueOf(lon),
-                                        "1", attendmonth1,
-                                        "", year};
+                                    db.insert(values, columns, "attendance");
 
-                                db.insert(values, columns,
-                                        "attendance");
+                                    db.close();
+                                } else {
+                                    db.open();
 
-                                db.close();
+                                    values = new String[]{
+                                            username,
+                                            attendanceDate1,
+                                            attendance_flag,
+                                            leavetype_flag,
+                                            String.valueOf(lat),
+                                            String.valueOf(lon),
+                                            "1", attendmonth1,
+                                            "", year};
+
+                                    db.insert(values, columns,
+                                            "attendance");
+
+                                    db.close();
+                                }
+
+
+                            } else if (t.equalsIgnoreCase("SE")) {
+                                ErroFlag = "0";
+                                final Calendar calendar1 = Calendar
+                                        .getInstance();
+                                SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                        "MM/dd/yyyy HH:mm:ss");
+                                String Createddate = formatter1.format(calendar1
+                                        .getTime());
+
+                                int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                                db.insertSyncLog("SaveAttendace_SE", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
+
                             }
-
-
-                        } else if (t.equalsIgnoreCase("SE")) {
+                        } else {
                             ErroFlag = "0";
+                            //String errors = "Soap in giving null while 'Attendance' and 'checkSyncFlag = 2' in  data Sync";
+                            //we.writeToSD(errors.toString());
                             final Calendar calendar1 = Calendar
                                     .getInstance();
                             SimpleDateFormat formatter1 = new SimpleDateFormat(
@@ -1377,25 +1406,10 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                     .getTime());
 
                             int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
-                            db.insertSyncLog("SaveAttendace_SE", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
+                            db.insertSyncLog("Internet Connection Lost, Soap in giving null while 'SaveAttendace'", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
 
                         }
-                    } else {
-                        ErroFlag = "0";
-                        //String errors = "Soap in giving null while 'Attendance' and 'checkSyncFlag = 2' in  data Sync";
-                        //we.writeToSD(errors.toString());
-                        final Calendar calendar1 = Calendar
-                                .getInstance();
-                        SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss");
-                        String Createddate = formatter1.format(calendar1
-                                .getTime());
-
-                        int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
-                        db.insertSyncLog("Internet Connection Lost, Soap in giving null while 'SaveAttendace'", String.valueOf(n), "SaveAttendance()", Createddate, Createddate, sp.getString("username", ""), "Transaction Upload", "Fail");
-
                     }
-
                 } catch (Exception e) {
                     ErroFlag = "2";
                     Erro_function = "Attendance";
@@ -1421,7 +1435,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         }
 
         @Override
-        protected void onPostExecute(SoapPrimitive result) {
+        protected void onPostExecute(SoapObject result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
             if (mProgress != null && mProgress.isShowing() && !AttendanceFragment.this.isFinishing()) {

@@ -3,6 +3,7 @@ package com.prod.sudesi.lotusherbalsnew;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -12,15 +13,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +47,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.prod.sudesi.lotusherbalsnew.TestApplication.TAG;
+
 
 public class DashboardNewActivity extends Activity {
 
@@ -63,9 +69,9 @@ public class DashboardNewActivity extends Activity {
     String yesterdaydate1 = "", strCategory;
     String skincategory, colorcategory;
 
-    Button btn_attendance, btn_stock, btn_return, btn_visibility,
+    Button btn_attendance, btn_stock, btn_return, btn_focusreport,
             btn_notification, btn_reports, btn_datasync, btn_BAreport,
-            btn_BAMonthreport, btn_sale, btn_dashboard, btn_super_atten,
+            btn_BAMonthreport, btn_sale, btn_dashboard, btn_boctarget,
             btn_stock_sale, btn_outletwise, btn_checkout;
 
     TextView tv_h_username;
@@ -83,6 +89,8 @@ public class DashboardNewActivity extends Activity {
     private String attendanceDate1;//for logout time
 
     private AlarmManagerBroadcastReceiver alarm;
+
+    private LinearLayout checkout_layout, stock_layout, boc_layout, returns_layout, focusreprt_layout;
 
     @SuppressLint({"InflateParams", "WrongConstant"})
     @Override
@@ -160,7 +168,7 @@ public class DashboardNewActivity extends Activity {
         }
 
         btn_attendance = (Button) findViewById(R.id.btn_atten);
-        btn_visibility = (Button) findViewById(R.id.btn_visibility);
+        btn_focusreport = (Button) findViewById(R.id.btn_visibility);
         btn_stock = (Button) findViewById(R.id.btn_stock);
         btn_return = (Button) findViewById(R.id.btn_return);
         btn_reports = (Button) findViewById(R.id.btn_report);
@@ -168,7 +176,7 @@ public class DashboardNewActivity extends Activity {
         btn_datasync = (Button) findViewById(R.id.btn_master_sync);
         btn_BAreport = (Button) findViewById(R.id.btn_ba_sale_yr);
         btn_sale = (Button) findViewById(R.id.btn_sale);
-        btn_super_atten = (Button) findViewById(R.id.btn_super_atten);
+        btn_boctarget = (Button) findViewById(R.id.btn_super_atten);
         btn_checkout = (Button) findViewById(R.id.btn_checkout);
 
         btn_outletwise = (Button) findViewById(R.id.btn_outletwise);
@@ -184,6 +192,12 @@ public class DashboardNewActivity extends Activity {
         btn_home = (Button) findViewById(R.id.btn_home);
         btn_logout = (Button) findViewById(R.id.btn_logout);
 
+        checkout_layout = (LinearLayout) findViewById(R.id.checkout_layout);
+        stock_layout = (LinearLayout) findViewById(R.id.stock_layout);
+        boc_layout = (LinearLayout) findViewById(R.id.boc_layout);
+        returns_layout = (LinearLayout) findViewById(R.id.returns_layout);
+        focusreprt_layout = (LinearLayout) findViewById(R.id.focusreprt_layout);
+
         btn_home.setVisibility(View.INVISIBLE);
         Log.e("db.checkStockUploaded()", String.valueOf(db.checkStockUploaded()));
 
@@ -192,6 +206,17 @@ public class DashboardNewActivity extends Activity {
             btn_sale.setVisibility(View.GONE);
             btn_outletwise.setVisibility(View.VISIBLE);
             btn_stock_sale.setVisibility(View.VISIBLE);
+        }
+
+        if (role.equalsIgnoreCase("FLR") ||
+                role.equalsIgnoreCase("ADR") ||
+                role.equalsIgnoreCase("BP")) {
+            checkout_layout.setBackgroundColor(Color.parseColor("#808080"));
+            stock_layout.setBackgroundColor(Color.parseColor("#808080"));
+            boc_layout.setBackgroundColor(Color.parseColor("#808080"));
+            returns_layout.setBackgroundColor(Color.parseColor("#808080"));
+            focusreprt_layout.setBackgroundColor(Color.parseColor("#808080"));
+
         }
 
         if (db.checkStockUploaded()) {
@@ -220,11 +245,11 @@ public class DashboardNewActivity extends Activity {
             alertDialog.show();
 
 
-            btn_visibility.setClickable(false);
+            btn_focusreport.setClickable(false);
             btn_stock.setClickable(false);
             btn_sale.setClickable(false);
 
-            btn_visibility.setEnabled(false);
+            btn_focusreport.setEnabled(false);
             btn_stock.setEnabled(false);
             btn_sale.setEnabled(false);
 
@@ -247,8 +272,10 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR")) {
-                    Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
+                if (role.equalsIgnoreCase("FLR") ||
+                        role.equalsIgnoreCase("ADR") ||
+                        role.equalsIgnoreCase("BP")) {
+                    Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else if (role.equalsIgnoreCase("DUB")) {
                     Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
                 } else {
@@ -265,8 +292,10 @@ public class DashboardNewActivity extends Activity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                if (role.equalsIgnoreCase("FLR")) {
-                    Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
+                if (role.equalsIgnoreCase("FLR") ||
+                        role.equalsIgnoreCase("ADR") ||
+                        role.equalsIgnoreCase("BP")) {
+                    Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else {
                     Calendar calendar = Calendar.getInstance();
                     Calendar setcalendar = Calendar.getInstance();
@@ -335,7 +364,7 @@ public class DashboardNewActivity extends Activity {
             }
         });
 
-        btn_visibility.setOnClickListener(new OnClickListener() {
+        btn_focusreport.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -344,8 +373,10 @@ public class DashboardNewActivity extends Activity {
                /* startActivity(new Intent(getApplicationContext(),
                         VisibilityFragment.class));*/
 //                Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
-                if (role.equalsIgnoreCase("FLR")) {
-                    Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
+                if (role.equalsIgnoreCase("FLR") ||
+                        role.equalsIgnoreCase("ADR") ||
+                        role.equalsIgnoreCase("BP")) {
+                    Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else if (role.equalsIgnoreCase("DUB")) {
                     Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
                 } else {
@@ -393,8 +424,13 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-
-                new ValidateSale().execute();
+                if (role.equalsIgnoreCase("FLR") ||
+                        role.equalsIgnoreCase("ADR") ||
+                        role.equalsIgnoreCase("BP")) {
+                    Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
+                } else {
+                    new ValidateSale().execute();
+                }
             }
         });
 
@@ -403,8 +439,10 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR")) {
-                    Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
+                if (role.equalsIgnoreCase("FLR") ||
+                        role.equalsIgnoreCase("ADR") ||
+                        role.equalsIgnoreCase("BP")) {
+                    Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else {
                     Intent i = new Intent(getApplicationContext(), BAYearWiseReport.class);
                     startActivity(i);
@@ -418,8 +456,10 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR")) {
-                    Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
+                if (role.equalsIgnoreCase("FLR") ||
+                        role.equalsIgnoreCase("ADR") ||
+                        role.equalsIgnoreCase("BP")) {
+                    Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else if (role.equalsIgnoreCase("DUB")) {
                     Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
                 } else {
@@ -453,7 +493,9 @@ public class DashboardNewActivity extends Activity {
 
 
                 if (cd.isCurrentDateMatchDeviceDate()) {
-                    if (role.equalsIgnoreCase("FLR")) {
+                    if (role.equalsIgnoreCase("FLR") ||
+                            role.equalsIgnoreCase("ADR") ||
+                            role.equalsIgnoreCase("BP")) {
 
                         startActivity(new Intent(getApplicationContext(),
                                 SaleActivityForFloter.class));
@@ -497,7 +539,7 @@ public class DashboardNewActivity extends Activity {
             }
         });
 
-        btn_super_atten.setOnClickListener(new OnClickListener() {
+        btn_boctarget.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -506,8 +548,10 @@ public class DashboardNewActivity extends Activity {
                 /*startActivity(new Intent(getApplicationContext(),
                         SupervisorAttendance.class));*/
                 //Toast.makeText(mContext,"Coming Soon...!",Toast.LENGTH_LONG).show();
-                if (role.equalsIgnoreCase("FLR")) {
-                    Toast.makeText(mContext, "This page not use for Floter", Toast.LENGTH_LONG).show();
+                if (role.equalsIgnoreCase("FLR") ||
+                        role.equalsIgnoreCase("ADR") ||
+                        role.equalsIgnoreCase("BP")) {
+                    Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else if (role.equalsIgnoreCase("DUB")) {
                     Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
                 } else {
@@ -5253,7 +5297,7 @@ public class DashboardNewActivity extends Activity {
             } else {
                 try {
 
-                    soap_result = service.ValidateSale(username,sld1);
+                    soap_result = service.ValidateSale(username, sld1);
 
                     if (soap_result != null) {
 
@@ -5287,7 +5331,67 @@ public class DashboardNewActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "Connectivity Error, Please check Internet connection!!", Toast.LENGTH_SHORT).show();
 
             } else if (Flag.equalsIgnoreCase("1")) {
-                Date date = new Date();
+
+                final Dialog dialog = new Dialog(DashboardNewActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(false);
+                dialog.setContentView(R.layout.layout_out_attendance);
+
+                final Button out = (Button) dialog.findViewById(R.id.btn_out);
+                Button cancel = (Button) dialog.findViewById(R.id.btn_cancel);
+
+                out.setOnClickListener(new OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        // TODO Auto-generated method stub
+                        out.setEnabled(false);
+
+                        new Handler().postDelayed(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                // This method will be executed once the timer is over
+                                out.setEnabled(true);
+                                Log.d(TAG, "resend1");
+
+                            }
+                        }, 5000);// set time as per your requirement
+
+                        Date date = new Date();
+                        @SuppressLint("SimpleDateFormat")
+                        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                        attendanceDate1 = form.format(date);
+                        Log.v("", "attendanceDate1=" + attendanceDate1);
+
+                        String sld[] = attendanceDate1.split(" ");
+                        final String sld1 = sld[0];
+
+                        db.open();
+                        db.updateAttendance(username, sld1);
+                        db.close();
+                        new SaveLogoutTime().execute();
+
+                    }
+                });
+
+                cancel.setOnClickListener(new OnClickListener() {
+
+
+                    @Override
+                    public void onClick(View v) {
+
+                        // TODO Auto-generated method stub
+
+                        dialog.cancel();
+
+                    }
+                });
+
+                dialog.show();
+
+               /* Date date = new Date();
                 @SuppressLint("SimpleDateFormat")
                 SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -5300,7 +5404,7 @@ public class DashboardNewActivity extends Activity {
                 db.open();
                 db.updateAttendance(username, sld1);
                 db.close();
-                new SaveLogoutTime().execute();
+                new SaveLogoutTime().execute();*/
 
             } else if (Flag.equalsIgnoreCase("2")) {
 

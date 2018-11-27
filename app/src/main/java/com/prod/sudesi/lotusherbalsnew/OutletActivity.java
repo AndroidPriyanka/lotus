@@ -141,7 +141,8 @@ public class OutletActivity extends Activity {
                         String text;
                         if(role.equalsIgnoreCase("FLR")) {
                              text = outletDetailsArraylist.get(i).getOutletname() + "(" +
-                                    outletDetailsArraylist.get(i).getBAnameOutlet() + ")";
+                                    outletDetailsArraylist.get(i).getBAnameOutlet() + "-" +
+                                     outletDetailsArraylist.get(i).getBACodeOutlet() + ")";
                         }else{
                              text = outletDetailsArraylist.get(i).getOutletname();
                         }

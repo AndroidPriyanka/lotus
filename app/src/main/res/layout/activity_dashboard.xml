@@ -51,9 +51,11 @@
                 android:background="#C72C2C" />
 
             <LinearLayout
+                android:id="@+id/checkout_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                >
 
                 <Button
                     android:id="@+id/btn_checkout"
@@ -106,6 +108,7 @@
             android:weightSum="3">
 
             <LinearLayout
+                android:id="@+id/stock_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
@@ -285,6 +288,7 @@
             android:weightSum="3">
 
             <LinearLayout
+                android:id="@+id/boc_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
@@ -307,6 +311,7 @@
                 android:background="#C72C2C" />
 
             <LinearLayout
+                android:id="@+id/returns_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
@@ -329,6 +334,7 @@
                 android:background="#C72C2C" />
 
             <LinearLayout
+                android:id="@+id/focusreprt_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
