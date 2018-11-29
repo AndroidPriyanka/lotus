@@ -2035,7 +2035,7 @@ public class LotusWebservice {
             Log.v("", "CheckNoSale service called");
             SoapObject request = new SoapObject("http://tempuri.org/", "CheckNoSale");
             Log.v("", "empid==" + empid);
-            request.addProperty("empid", empid);
+            request.addProperty("EmpId", empid);
             request.addProperty("SaleDate", currdate);
             SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);// soap envelop with version
             envelope.setOutputSoapObject(request); // set request object
