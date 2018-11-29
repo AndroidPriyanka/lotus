@@ -48,9 +48,9 @@ public class SaleNewActivity extends Activity implements OnClickListener {
 
     Spinner sp_product_category, sp_product_type; //sp_product_mode;
 
-    Button btn_proceed, btn_home, btn_logout, btnsave;
+    Button btn_proceed, btn_home, btn_logout, btnsave, btnback;
 
-    TableLayout tl_productList;
+    TableLayout tl_productList,tlsaveback;
 
     TableRow tr_header;
 
@@ -101,8 +101,10 @@ public class SaleNewActivity extends Activity implements OnClickListener {
         sp_product_type = (Spinner) findViewById(R.id.sp_product_type);
         //sp_product_mode = (Spinner) findViewById(R.id.sp_product_mode);
         tl_productList = (TableLayout) findViewById(R.id.tl_productList);
+        tlsaveback = (TableLayout) findViewById(R.id.tlsaveback);
         btn_proceed = (Button) findViewById(R.id.btn_proceed);
-        btnsave = (Button) findViewById(R.id.btnsave);
+        btnsave = (Button) findViewById(R.id.bt_save);
+        btnback = (Button) findViewById(R.id.bt_back);
         btn_home = (Button) findViewById(R.id.btn_home);
         btn_logout = (Button) findViewById(R.id.btn_logout);
         tr_header = (TableRow) findViewById(R.id.tr_header);
@@ -116,6 +118,7 @@ public class SaleNewActivity extends Activity implements OnClickListener {
 
         btn_proceed.setOnClickListener(this);
         btnsave.setOnClickListener(this);
+        btnback.setOnClickListener(this);
         btn_home.setOnClickListener(this);
         btn_logout.setOnClickListener(this);
         //sp_product_mode.setVisibility(View.GONE);
@@ -201,14 +204,14 @@ public class SaleNewActivity extends Activity implements OnClickListener {
                                 }
 
                                 if(selected_product_category.equalsIgnoreCase("NO SALE")){
-                                    btnsave.setVisibility(View.VISIBLE);
+                                    tlsaveback.setVisibility(View.VISIBLE);
                                     typetxt.setVisibility(View.GONE);
                                     sp_product_type.setVisibility(View.GONE);
                                     productlinearlayout.setVisibility(View.GONE);
                                     btn_proceed.setVisibility(View.GONE);
                                 }else {
 
-                                    btnsave.setVisibility(View.GONE);
+                                    tlsaveback.setVisibility(View.GONE);
                                     typetxt.setVisibility(View.VISIBLE);
                                     sp_product_type.setVisibility(View.VISIBLE);
                                     productlinearlayout.setVisibility(View.VISIBLE);
@@ -319,12 +322,19 @@ public class SaleNewActivity extends Activity implements OnClickListener {
 
                 break;
 
-            case R.id.btnsave:
+            case R.id.bt_save:
 
                 new InsertSaleRecord().execute();
                 /*Intent i1 = new Intent(getApplicationContext(), LoginActivity.class);
                 i1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i1);*/
+
+                break;
+
+            case R.id.bt_back:
+
+                Intent intent = new Intent(getApplicationContext(), DashboardNewActivity.class);
+                startActivity(intent);
 
                 break;
 

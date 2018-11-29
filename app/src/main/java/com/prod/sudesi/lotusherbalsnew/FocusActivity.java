@@ -213,7 +213,7 @@ public class FocusActivity extends Activity implements View.OnClickListener {
                                 db.open();
                                 if (sp_prodt_category.getItemAtPosition(position).toString().trim().equalsIgnoreCase("BABY CARE")) {
                                     producttypeArray.clear();
-                                    producttypeArray = db.getproductypeforFocusBaby(selected_product_category);
+                                    producttypeArray = db.getproductypeforFocusBaby(selected_product_category, username, BOC);
                                 } else {
                                     producttypeArray.clear();
                                     producttypeArray = db.getproductypeforfocus(selected_product_category, username, BOC); // -------------
@@ -420,23 +420,54 @@ public class FocusActivity extends Activity implements View.OnClickListener {
                                 "Target_qty", "Target_amt", "AndroidCreateddate", "BOC"};
 
                         db.open();
-
-                        values = new String[]{
-                                "",
-                                arr_selectedType.get(i),
+                        Cursor cur = db.getuniquedataFocusData(arr_selectedType.get(i),
                                 selected_product_category,
-                                username,
-                                "",
-                                "",
-                                "",
-                                arr_selectedQty.get(i),
-                                String.valueOf(achivement),
-                                insert_timestamp,
-                                boc};
+                                username,boc, "focus_data");
 
-                        db.insert(values, columns, "focus_data");
-
+                        int count = cur.getCount();
+                        Log.v("", "" + count);
                         db.close();
+                        if (count > 0) {
+                            db.open();
+                            db.update( arr_selectedType.get(i),
+                                    new String[]{
+                                            "",
+                                            arr_selectedType.get(i),
+                                            selected_product_category,
+                                            username,
+                                            "",
+                                            "",
+                                            "",
+                                            arr_selectedQty.get(i),
+                                            String.valueOf(achivement),
+                                            insert_timestamp,
+                                            boc},
+                                    new String[]{
+                                            "Productid", "Type", "Category", "Empid", "ProName", "size", "MRP",
+                                            "Target_qty", "Target_amt", "AndroidCreateddate", "BOC"},
+                                    "focus_data", "Type");
+
+                            db.close();
+                        } else {
+                            db.open();
+
+                            values = new String[]{
+                                    "",
+                                    arr_selectedType.get(i),
+                                    selected_product_category,
+                                    username,
+                                    "",
+                                    "",
+                                    "",
+                                    arr_selectedQty.get(i),
+                                    String.valueOf(achivement),
+                                    insert_timestamp,
+                                    boc};
+
+                            db.insert(values, columns, "focus_data");
+
+                            db.close();
+                        }
 
                         focusModel = new FocusModel();
                         focusModel.setProduct_type(arr_selectedType.get(i));
@@ -502,8 +533,8 @@ public class FocusActivity extends Activity implements View.OnClickListener {
                         focusModel = focuslist.get(i);
 
                         soapresultfocus = service.SaveIntoFOCUSReport(focusModel.getProduct_type(), focusModel.getProduct_category()
-                                ,focusModel.getTarget_qty(), focusModel.getBocname(), focusModel.getUsername()
-                                , focusModel.getAndroid_created_date(),focusModel.getAchievement_Unit());
+                                , focusModel.getTarget_qty(), focusModel.getBocname(), focusModel.getUsername()
+                                , focusModel.getAndroid_created_date(), focusModel.getAchievement_Unit());
 
 
                         if (soapresultfocus != null) {

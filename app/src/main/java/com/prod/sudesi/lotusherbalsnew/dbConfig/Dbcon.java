@@ -1135,6 +1135,19 @@ public class Dbcon {
         return c;
     }
 
+    public Cursor getuniquedataFocusData(String type, String category, String empid,String boc, String TableName) {
+        // TODO Auto-generated method stub
+        Log.v("", "check id available or not frm product_master");
+
+        String sql = "select * from  " + TableName + "  where  Type = " + "'" + type + "'" + " AND Category = " + "'" + category + "'" + " AND Empid = " + "'" + empid + "'" + " AND BOC = " + "'" + boc + "'";
+        //String sql = "select * from product_master where CategoryId = "+"'"+categoryid +"'"+" and EANCode = "+"'"+eancode+"'"+" and db_id ="+"'"+d_id+"'";
+        //String sql = "select * from product_master";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        return c;
+    }
+
     public Cursor getuniquedata1(String categoryid, String eancode, String d_id, String chk_date) {
         // TODO Auto-generated method stub
 
@@ -4282,12 +4295,13 @@ public class Dbcon {
         return product_type_data;
     }
 
-    public ArrayList<String> getproductypeforFocusBaby(String ProductCategory) {
+    public ArrayList<String> getproductypeforFocusBaby(String ProductCategory, String Username, String boc) {
         // TODO Auto-generated method stub
         ArrayList<String> product_type_data = new ArrayList<String>();
 
 
-        String selectquery = " select DISTINCT ProductType from product_master where ProductCategory = " + "'" + ProductCategory + "'" + " AND ProductType = " + "'BABY CARE'";
+        String selectquery = " select DISTINCT ProductType from product_master where ProductCategory = " + "'" + ProductCategory + "'" + " AND ProductType = " + "'BABY CARE'"
+                + " AND ProductType not in(select Type from focus_data where Empid = '" + Username + "' and Category = '" + ProductCategory + "' and BOC = '" + boc + "')";
 
         Cursor cursor = database.rawQuery(selectquery, null);
         if (cursor != null) {

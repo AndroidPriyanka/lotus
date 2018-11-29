@@ -2029,6 +2029,31 @@ public class LotusWebservice {
         return result;
     }
 
+    public SoapObject CheckNoSale(String empid, String currdate) {
+        SoapObject result = null;
+        try {
+            Log.v("", "CheckNoSale service called");
+            SoapObject request = new SoapObject("http://tempuri.org/", "CheckNoSale");
+            Log.v("", "empid==" + empid);
+            request.addProperty("empid", empid);
+            request.addProperty("SaleDate", currdate);
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);// soap envelop with version
+            envelope.setOutputSoapObject(request); // set request object
+            envelope.dotNet = true;
+
+            HttpTransportSE androidHttpTransport = new HttpTransportSE(url, 60000);// http
+            // transport call
+            androidHttpTransport.call("http://tempuri.org/IService1/CheckNoSale", envelope);
+
+            result = (SoapObject) envelope.getResponse();
+            Log.e("CheckNoSale=", result.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     //------------------------------END--------------------------------------
 
 

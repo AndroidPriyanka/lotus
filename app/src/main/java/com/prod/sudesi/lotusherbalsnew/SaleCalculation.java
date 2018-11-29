@@ -102,9 +102,7 @@ public class SaleCalculation extends Activity {
     Cursor stock_array;
     ArrayList<String> uploadidlist;
     private JSONArray array;
-    SharedPreferences sp;
-    SharedPreferences.Editor spe;
-    String ErroFlag = "";
+     String ErroFlag = "";
 
 
     public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
@@ -2950,7 +2948,7 @@ public class SaleCalculation extends Activity {
                         db.insertSyncLog(error.getMessage(),
                                 String.valueOf(n),
                                 "SaveStock()", Createddate,
-                                Createddate, sp.getString(
+                                Createddate, shp.getString(
                                         "username", ""),
                                 "SaveStock()", "Fail");
 

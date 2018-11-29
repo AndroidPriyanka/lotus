@@ -515,17 +515,15 @@ public class DashboardNewActivity extends Activity {
                                     Toast.makeText(DashboardNewActivity.this, "Please Data Download First", Toast.LENGTH_LONG).show();
 
                                 } else {
-                                    startActivity(new Intent(getApplicationContext(),
-                                            SaleNewActivity.class));
+                                   new CheckNoSale().execute();
                                 }
                             } else {
-                                startActivity(new Intent(getApplicationContext(),
-                                        SaleNewActivity.class));
+                                new CheckNoSale().execute();
                             }
 
                         } else {
-                            startActivity(new Intent(getApplicationContext(),
-                                    SaleNewActivity.class));
+                            new CheckNoSale().execute();
+
                         }
                     }
                 } else {
@@ -5626,6 +5624,130 @@ public class DashboardNewActivity extends Activity {
             } else {
                 Toast.makeText(DashboardNewActivity.this, "Please check internet Connectivity", Toast.LENGTH_LONG).show();
             }
+        }
+
+
+    }
+
+    public class CheckNoSale extends AsyncTask<String, Void, SoapObject> {
+
+        private SoapObject soap_result = null;
+
+        String Flag = "";
+
+        String bocname = "";
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+
+            mProgress.setMessage("Please Wait....");
+            mProgress.show();
+            mProgress.setCancelable(false);
+
+        }
+
+        @Override
+        protected SoapObject doInBackground(String... params) {
+            // TODO Auto-generated method stub
+
+            Date date = new Date();
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            attendanceDate1 = form.format(date);
+            Log.v("", "attendanceDate1=" + attendanceDate1);
+
+            String sld[] = attendanceDate1.split(" ");
+            String currdate = sld[0];
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    soap_result = service.CheckNoSale(username, currdate);
+
+                    if (soap_result != null) {
+                        if (soap_result.getProperty("Flag") != null) {
+                            String saleflag = cd.getNonNullValues(String.valueOf(soap_result.getProperty("Flag")));
+                            if (saleflag.equalsIgnoreCase("True")) {
+                                Flag = "1";
+                            } else if (saleflag.equalsIgnoreCase("FALSE")) {
+                                Flag = "2";
+                            }else if (saleflag.equalsIgnoreCase("SE")) {
+                                Flag = "SE";
+
+                            }
+                        }
+                    }else {
+
+                        final Calendar calendar = Calendar.getInstance();
+                        SimpleDateFormat formatter = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss");
+                        String Createddate = formatter.format(calendar
+                                .getTime());
+
+                        int n = Thread.currentThread().getStackTrace()[2]
+                                .getLineNumber();
+                        db.open();
+                        db.insertSyncLog(
+                                "Soup is Null While CheckNoSale()",
+                                String.valueOf(n), "CheckNoSale()",
+                                Createddate, Createddate,
+                                sp.getString("username", ""),
+                                "CheckNoSale", "Fail");
+                        db.close();
+
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "Connectivity Error, Please check Internet connection!!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+
+            if (mProgress != null && mProgress.isShowing() && !DashboardNewActivity.this.isFinishing()) {
+                mProgress.dismiss();
+            }
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(getApplicationContext(),
+                        "Connectivity Error, Please check Internet connection!!",
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                Toast.makeText(getApplicationContext(), "You have already Marked No Sale for today ", Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+                startActivity(new Intent(getApplicationContext(),
+                        SaleNewActivity.class));
+
+            } else if (Flag.equalsIgnoreCase("SE")) {
+
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Connectivity Error, Please check Internet connection!!",
+                        Toast.LENGTH_SHORT).show();
+
+            }
+
+
         }
 
 
