@@ -107,8 +107,10 @@ public class SaleCalculation extends Activity {
     String ErroFlag = "";
 
 
-    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
+    //public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
     //public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
+
+    public static String URL = "http://192.168.0.136:81/lotusapi/api/Stock/SaveStock";
 
     // private ProgressDialog mProgress = null;
 
@@ -2953,7 +2955,7 @@ public class SaleCalculation extends Activity {
                                 "SaveStock()", "Fail");
 
 //                        Toast.makeText(context,"Stock Data not upload", Toast.LENGTH_SHORT).show();
-                        Log.e("JSON_ERROR", error.getMessage());
+                        //Log.e("JSON_ERROR", error.getMessage());
 
                     }
                 }) {

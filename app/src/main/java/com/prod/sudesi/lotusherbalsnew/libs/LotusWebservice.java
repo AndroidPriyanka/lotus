@@ -16,7 +16,9 @@ public class LotusWebservice {
     // -----------------Mahi
 
     //String url = "http://lotusws.lotussmartforce.com/Service1.svc";// production lotus server
-    String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
+    //String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
+
+    String url = "http://192.168.0.136:81/Service1.svc";
 
 
     public LotusWebservice(Context con) {
@@ -1948,8 +1950,8 @@ public class LotusWebservice {
     }
 
     //Sharmila - checkout
-    public SoapPrimitive GetCheckout(String empid) {
-        SoapPrimitive result = null;
+    public SoapObject GetCheckout(String empid) {
+        SoapObject result = null;
         try {
             Log.v("", "checkout service called");
             SoapObject request = new SoapObject("http://tempuri.org/", "GetCheckout");
@@ -1965,7 +1967,7 @@ public class LotusWebservice {
             // transport call
             androidHttpTransport.call("http://tempuri.org/IService1/GetCheckout", envelope);
 
-            result = (SoapPrimitive) envelope.getResponse();
+            result = (SoapObject) envelope.getResponse();
             Log.e("GetCheckout=", result.toString());
 
         } catch (Exception e) {

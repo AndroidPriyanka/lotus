@@ -1488,6 +1488,10 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                         startActivity(i);
 
                     } else {
+                        String sld[] = attendanceDate1.split(" ");
+                        final String sld1 = sld[0];
+                        spe.putString("checkoutDate", sld1);
+                        spe.commit();
                         Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
                         i.putExtra("FROM", "LOGIN");
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -1945,7 +1949,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
     public class GetCheckout extends AsyncTask<String, Void, SoapObject> {
 
         ContentValues contentvalues = new ContentValues();
-        private SoapPrimitive soap_result = null;
+        private SoapObject soap_result = null;
 
         String Flag = "";
 
@@ -1983,12 +1987,65 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                     soap_result = service.GetCheckout(username);
 
                     if (soap_result != null) {
+                        if (soap_result.getProperty("Flag") != null) {
+                            String flag = cd.getNonNullValues(String.valueOf(soap_result.getProperty("Flag")));
+                            Log.v("", "soap_result_attendance=" + flag);
+                            if (flag.equalsIgnoreCase("True")) {
+                                Flag = "1";
 
-                        if (soap_result.toString().equalsIgnoreCase("TRUE")) {
-                            Flag = "1";
-                        } else if (soap_result.toString().equalsIgnoreCase("FALSE")) {
-                            Flag = "2";
-                        }
+                            }else if (flag.equalsIgnoreCase("False")) {
+                                Flag = "2";
+                                String previousdate = cd.getNonNullValues(String.valueOf(soap_result.getProperty("LastDateRecord")));
+
+                                SimpleDateFormat sdfSource = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
+                                Date date = null;
+                                try {
+                                    date = sdfSource.parse(previousdate);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                SimpleDateFormat sdfDestination = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                String asonDate = sdfDestination.format(date);
+
+                                String sld[] = asonDate.split(" ");
+                                final String sld1 = sld[0];
+
+                                spe.putString("checkoutDate", sld1);
+                                spe.commit();
+                            }else if (flag.equalsIgnoreCase("SE")) {
+                                Flag = "SE";
+
+                            }
+
+                               /* if (soap_result.toString().equalsIgnoreCase("TRUE")) {
+
+                                } else if (soap_result.toString().equalsIgnoreCase("FALSE")) {
+                                    Flag = "2";
+                                }*/
+                            }
+                        }else {
+
+                        final Calendar calendar = Calendar.getInstance();
+                        SimpleDateFormat formatter = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss");
+                        String Createddate = formatter.format(calendar
+                                .getTime());
+
+                        int n = Thread.currentThread().getStackTrace()[2]
+                                .getLineNumber();
+                        db.open();
+                        db.insertSyncLog(
+                                "Soup is Null While GetCheckout()",
+                                String.valueOf(n), "GetCheckout()",
+                                Createddate, Createddate,
+                                sp.getString("username", ""),
+                                "GetCheckout", "Fail");
+                        db.close();
+
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "Connectivity Error, Please check Internet connection!!",
+                                Toast.LENGTH_SHORT).show();
                     }
 
                 } catch (Exception e) {
@@ -2033,8 +2090,12 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                         });
                 AlertDialog alert = builder.create();
                 alert.show();
+            }else if (Flag.equalsIgnoreCase("SE")) {
 
-
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Connectivity Error, Please check Internet connection!!",
+                        Toast.LENGTH_SHORT).show();
 
             }
         }

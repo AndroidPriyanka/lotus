@@ -84,6 +84,8 @@ public class DashboardNewActivity extends Activity {
     public static AlertDialog.Builder alertDialogBuilder = null;
     public static AlertDialog.Builder alertDialogBuilder1 = null;
 
+    String sld1;
+
     private ArrayList<String> categoryDetailsArraylist;
 
     private String attendanceDate1;//for logout time
@@ -272,8 +274,8 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR") ||
-                        role.equalsIgnoreCase("ADR") ||
+                if (role.equalsIgnoreCase("FLR")||
+                        role.equalsIgnoreCase("ADR")||
                         role.equalsIgnoreCase("BP")) {
                     Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else if (role.equalsIgnoreCase("DUB")) {
@@ -292,8 +294,8 @@ public class DashboardNewActivity extends Activity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                if (role.equalsIgnoreCase("FLR") ||
-                        role.equalsIgnoreCase("ADR") ||
+                if (role.equalsIgnoreCase("FLR")||
+                        role.equalsIgnoreCase("ADR")||
                         role.equalsIgnoreCase("BP")) {
                     Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else {
@@ -373,8 +375,8 @@ public class DashboardNewActivity extends Activity {
                /* startActivity(new Intent(getApplicationContext(),
                         VisibilityFragment.class));*/
 //                Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
-                if (role.equalsIgnoreCase("FLR") ||
-                        role.equalsIgnoreCase("ADR") ||
+                if (role.equalsIgnoreCase("FLR")||
+                        role.equalsIgnoreCase("ADR")||
                         role.equalsIgnoreCase("BP")) {
                     Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else if (role.equalsIgnoreCase("DUB")) {
@@ -424,11 +426,11 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR") ||
-                        role.equalsIgnoreCase("ADR") ||
+                if (role.equalsIgnoreCase("FLR")||
+                        role.equalsIgnoreCase("ADR")||
                         role.equalsIgnoreCase("BP")) {
                     Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
-                } else {
+                }else {
                     new ValidateSale().execute();
                 }
             }
@@ -439,8 +441,8 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR") ||
-                        role.equalsIgnoreCase("ADR") ||
+                if (role.equalsIgnoreCase("FLR")||
+                        role.equalsIgnoreCase("ADR")||
                         role.equalsIgnoreCase("BP")) {
                     Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else {
@@ -456,8 +458,8 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR") ||
-                        role.equalsIgnoreCase("ADR") ||
+                if (role.equalsIgnoreCase("FLR")||
+                        role.equalsIgnoreCase("ADR")||
                         role.equalsIgnoreCase("BP")) {
                     Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else if (role.equalsIgnoreCase("DUB")) {
@@ -493,8 +495,8 @@ public class DashboardNewActivity extends Activity {
 
 
                 if (cd.isCurrentDateMatchDeviceDate()) {
-                    if (role.equalsIgnoreCase("FLR") ||
-                            role.equalsIgnoreCase("ADR") ||
+                    if (role.equalsIgnoreCase("FLR")||
+                            role.equalsIgnoreCase("ADR")||
                             role.equalsIgnoreCase("BP")) {
 
                         startActivity(new Intent(getApplicationContext(),
@@ -548,8 +550,8 @@ public class DashboardNewActivity extends Activity {
                 /*startActivity(new Intent(getApplicationContext(),
                         SupervisorAttendance.class));*/
                 //Toast.makeText(mContext,"Coming Soon...!",Toast.LENGTH_LONG).show();
-                if (role.equalsIgnoreCase("FLR") ||
-                        role.equalsIgnoreCase("ADR") ||
+                if (role.equalsIgnoreCase("FLR")||
+                        role.equalsIgnoreCase("ADR")||
                         role.equalsIgnoreCase("BP")) {
                     Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else if (role.equalsIgnoreCase("DUB")) {
@@ -5280,6 +5282,7 @@ public class DashboardNewActivity extends Activity {
         @Override
         protected SoapObject doInBackground(String... params) {
             // TODO Auto-generated method stub
+
             Date date = new Date();
             @SuppressLint("SimpleDateFormat")
             SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -5288,7 +5291,14 @@ public class DashboardNewActivity extends Activity {
             Log.v("", "attendanceDate1=" + attendanceDate1);
 
             String sld[] = attendanceDate1.split(" ");
-            final String sld1 = sld[0];
+            sld1 = sld[0];
+
+            String saleDate;
+            if(sp.getString("checkoutDate", "").equalsIgnoreCase(sld1)){
+                saleDate = sld1;
+            }else{
+                saleDate = sp.getString("checkoutDate", "");
+            }
 
             if (!cd.isConnectingToInternet()) {
 
@@ -5297,7 +5307,7 @@ public class DashboardNewActivity extends Activity {
             } else {
                 try {
 
-                    soap_result = service.ValidateSale(username, sld1);
+                    soap_result = service.ValidateSale(username, saleDate);
 
                     if (soap_result != null) {
 
@@ -5391,97 +5401,227 @@ public class DashboardNewActivity extends Activity {
 
                 dialog.show();
 
-               /* Date date = new Date();
-                @SuppressLint("SimpleDateFormat")
-                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-                attendanceDate1 = form.format(date);
-                Log.v("", "attendanceDate1=" + attendanceDate1);
-
-                String sld[] = attendanceDate1.split(" ");
-                final String sld1 = sld[0];
-
-                db.open();
-                db.updateAttendance(username, sld1);
-                db.close();
-                new SaveLogoutTime().execute();*/
 
             } else if (Flag.equalsIgnoreCase("2")) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
-                builder.setMessage("Please Punch your Previous Sale")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //do things
-                                Intent i = new Intent(mContext, SaleNewActivity.class);
-                                startActivity(i);
-                                dialog.dismiss();
+                if(sp.getString("checkoutDate", "").equalsIgnoreCase(sld1)){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
+                    builder.setMessage("Please Punch your Sale")
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //do things
+                                    Intent i = new Intent(mContext, SaleNewActivity.class);
+                                    startActivity(i);
+                                    dialog.dismiss();
+
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                }else {
+                    new InsertSaleRecord().execute();
+
+                }
+            }
+        }
+
+    }
+
+    public class InsertSaleRecord extends AsyncTask<String, Void, SoapObject> {
+
+        ContentValues contentvalues = new ContentValues();
+        private SoapPrimitive soap_result = null;
+
+        String Flag = "";
+
+        String bocname = "";
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+
+            mProgress.setMessage("Please Wait....");
+            mProgress.show();
+            mProgress.setCancelable(false);
+
+        }
+
+        @Override
+        protected SoapObject doInBackground(String... params) {
+            // TODO Auto-generated method stub
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    soap_result = service.InsertSaleRecord(username, "NO SALE");
+
+                    if (soap_result != null) {
+
+                        if (soap_result.toString().equalsIgnoreCase("TRUE")) {
+                            Flag = "1";
+                        } else if (soap_result.toString().equalsIgnoreCase("FALSE")) {
+                            Flag = "2";
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+
+            if (mProgress != null && mProgress.isShowing() && !DashboardNewActivity.this.isFinishing()) {
+                mProgress.dismiss();
+            }
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(getApplicationContext(),
+                        "Connectivity Error, Please check Internet connection!!",
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                final Dialog dialog = new Dialog(DashboardNewActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(false);
+                dialog.setContentView(R.layout.layout_out_attendance);
+
+                final Button out = (Button) dialog.findViewById(R.id.btn_out);
+                Button cancel = (Button) dialog.findViewById(R.id.btn_cancel);
+
+                out.setOnClickListener(new OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        // TODO Auto-generated method stub
+                        out.setEnabled(false);
+
+                        new Handler().postDelayed(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                // This method will be executed once the timer is over
+                                out.setEnabled(true);
+                                Log.d(TAG, "resend1");
 
                             }
-                        });
-                AlertDialog alert = builder.create();
-                alert.show();
+                        }, 5000);// set time as per your requirement
+
+                        Date date = new Date();
+                        @SuppressLint("SimpleDateFormat")
+                        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                        attendanceDate1 = form.format(date);
+                        Log.v("", "attendanceDate1=" + attendanceDate1);
+
+                        String sld[] = attendanceDate1.split(" ");
+                        final String sld1 = sld[0];
+
+                        db.open();
+                        db.updateAttendance(username, sld1);
+                        db.close();
+                        new SaveLogoutTime().execute();
+
+                    }
+                });
+
+                cancel.setOnClickListener(new OnClickListener() {
 
 
+                    @Override
+                    public void onClick(View v) {
+
+                        // TODO Auto-generated method stub
+
+                        dialog.cancel();
+
+                    }
+                });
+
+                dialog.show();
+
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+
+                Toast.makeText(getApplicationContext(), "Data Not Save Plz Try Again", Toast.LENGTH_SHORT).show();
             }
+
+
         }
 
-        private class SaveLogoutTime extends AsyncTask<Void, Void, SoapPrimitive> {
 
-            ProgressDialog progress;
+    }
 
-            SoapPrimitive soap_result;
+    private class SaveLogoutTime extends AsyncTask<Void, Void, SoapPrimitive> {
 
-            @Override
-            protected SoapPrimitive doInBackground(Void... params) {
-                // TODO Auto-generated method stub
+        ProgressDialog progress;
 
-                Date date = new Date();
-                @SuppressLint("SimpleDateFormat")
-                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SoapPrimitive soap_result;
 
-                attendanceDate1 = form.format(date);
-                soap_result = service.SaveLogoutTime(username, attendanceDate1);
+        @Override
+        protected SoapPrimitive doInBackground(Void... params) {
+            // TODO Auto-generated method stub
 
-                return soap_result;
+            Date date = new Date();
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            attendanceDate1 = form.format(date);
+            soap_result = service.SaveLogoutTime(username, attendanceDate1);
+
+            return soap_result;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+            progress = new ProgressDialog(DashboardNewActivity.this);
+            progress.setTitle("Uploading");
+            progress.setMessage("Please Wait.......");
+            progress.setCancelable(false);
+            progress.show();
+        }
+
+        @Override
+        protected void onPostExecute(SoapPrimitive result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+            if (progress != null && progress.isShowing() && !DashboardNewActivity.this.isFinishing()) {
+                progress.dismiss();
             }
+            if (result != null) {
+                if (result.toString().equalsIgnoreCase("true")) {
 
-            @Override
-            protected void onPreExecute() {
-                // TODO Auto-generated method stub
-                super.onPreExecute();
-                progress = new ProgressDialog(DashboardNewActivity.this);
-                progress.setTitle("Uploading");
-                progress.setMessage("Please Wait.......");
-                progress.setCancelable(false);
-                progress.show();
-            }
-
-            @Override
-            protected void onPostExecute(SoapPrimitive result) {
-                // TODO Auto-generated method stub
-                super.onPostExecute(result);
-                if (progress != null && progress.isShowing() && !DashboardNewActivity.this.isFinishing()) {
-                    progress.dismiss();
-                }
-                if (result != null) {
-                    if (result.toString().equalsIgnoreCase("true")) {
-                        Toast.makeText(DashboardNewActivity.this, "Uploaded Succesfully", Toast.LENGTH_LONG).show();
-
-                        Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    if(!sp.getString("checkoutDate", "").equalsIgnoreCase(sld1)) {
+                        Intent i = new Intent(getApplicationContext(), AttendanceFragment.class);
                         startActivity(i);
-                    } else {
-                        Toast.makeText(DashboardNewActivity.this, "Data Not uploaded", Toast.LENGTH_LONG).show();
+                    }else{
+                        Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
+                        startActivity(i);
                     }
                 } else {
-                    Toast.makeText(DashboardNewActivity.this, "Please check internet Connectivity", Toast.LENGTH_LONG).show();
+                    Toast.makeText(DashboardNewActivity.this, "Data Not uploaded", Toast.LENGTH_LONG).show();
                 }
+            } else {
+                Toast.makeText(DashboardNewActivity.this, "Please check internet Connectivity", Toast.LENGTH_LONG).show();
             }
-
-
         }
+
 
     }
 

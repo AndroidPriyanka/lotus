@@ -207,6 +207,13 @@ public class SaleNewActivity extends Activity implements OnClickListener {
                                     productlinearlayout.setVisibility(View.GONE);
                                     btn_proceed.setVisibility(View.GONE);
                                 }else {
+
+                                    btnsave.setVisibility(View.GONE);
+                                    typetxt.setVisibility(View.VISIBLE);
+                                    sp_product_type.setVisibility(View.VISIBLE);
+                                    productlinearlayout.setVisibility(View.VISIBLE);
+                                    btn_proceed.setVisibility(View.VISIBLE);
+
                                     db.open();
                                     if (sp_product_category.getItemAtPosition(position).toString().trim().equalsIgnoreCase("BABY CARE")) {
                                         producttypeArray = db.getproductypeforBabyProduct(selected_product_category);
@@ -717,10 +724,13 @@ public class SaleNewActivity extends Activity implements OnClickListener {
             } else if (Flag.equalsIgnoreCase("1")) {
 
                 Toast.makeText(getApplicationContext(), "Data Save Succesfully", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getApplicationContext(),DashboardNewActivity.class);
+                startActivity(i);
+
 
             } else if (Flag.equalsIgnoreCase("2")) {
 
-
+                Toast.makeText(getApplicationContext(), "Data Not Save Plz Try Again", Toast.LENGTH_SHORT).show();
             }
 
 
