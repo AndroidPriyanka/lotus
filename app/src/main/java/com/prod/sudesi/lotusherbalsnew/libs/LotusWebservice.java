@@ -16,9 +16,9 @@ public class LotusWebservice {
     // -----------------Mahi
 
     //String url = "http://lotusws.lotussmartforce.com/Service1.svc";// production lotus server
-    //String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
+    String url = "http://sandboxws.lotussmartforce.com/Service1.svc"; // UAT Link Lotus server
 
-    String url = "http://192.168.0.136:81/Service1.svc";
+//    String url = "http://192.168.0.136:81/Service1.svc";
 
 
     public LotusWebservice(Context con) {

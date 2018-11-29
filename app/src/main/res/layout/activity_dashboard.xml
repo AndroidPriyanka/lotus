@@ -54,8 +54,7 @@
                 android:id="@+id/checkout_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                >
+                android:layout_weight="1">
 
                 <Button
                     android:id="@+id/btn_checkout"
@@ -64,8 +63,7 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/checkout"
-                    android:padding="@dimen/_5sdp"
-                    />
+                    android:padding="@dimen/_5sdp" />
 
             </LinearLayout>
 
@@ -86,8 +84,7 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/noti"
-                    android:padding="@dimen/_5sdp"
-                    />
+                    android:padding="@dimen/_5sdp" />
 
             </LinearLayout>
 
@@ -120,8 +117,7 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/stock"
-                    android:padding="@dimen/_5sdp"
-                    />
+                    android:padding="@dimen/_5sdp" />
 
                 <Button
                     android:id="@+id/btn_outletwise"
@@ -129,13 +125,11 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:alpha="0.6"
-                    android:visibility="gone"
                     android:background="@drawable/outlet_wise_sales"
                     android:padding="@dimen/_5sdp"
-                    />
+                    android:visibility="gone" />
 
             </LinearLayout>
-
 
 
             <ImageSwitcher
@@ -155,8 +149,7 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/sale"
-                    android:padding="@dimen/_5sdp"
-                    />
+                    android:padding="@dimen/_5sdp" />
 
                 <Button
                     android:id="@+id/btn_stock_sale"
@@ -164,10 +157,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:alpha="0.6"
-                    android:visibility="gone"
                     android:background="@drawable/stock_sale"
                     android:padding="@dimen/_5sdp"
-                    />
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -189,8 +181,7 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/reports"
-                    android:padding="@dimen/_5sdp"
-                    />
+                    android:padding="@dimen/_5sdp" />
 
             </LinearLayout>
 
@@ -211,6 +202,7 @@
             android:weightSum="3">
 
             <LinearLayout
+                android:id="@+id/categorywise_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
@@ -222,8 +214,7 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/category_wise"
-                    android:padding="@dimen/_5sdp"
-                    />
+                    android:padding="@dimen/_5sdp" />
 
             </LinearLayout>
 
@@ -244,8 +235,7 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/dashboard"
-                    android:padding="@dimen/_5sdp"
-                    />
+                    android:padding="@dimen/_5sdp" />
 
             </LinearLayout>
 
@@ -255,6 +245,7 @@
                 android:background="#C72C2C" />
 
             <LinearLayout
+                android:id="@+id/targetAchieve_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
@@ -266,8 +257,7 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/tar_achive_report"
-                    android:padding="@dimen/_5sdp"
-                    />
+                    android:padding="@dimen/_5sdp" />
 
             </LinearLayout>
 
@@ -300,8 +290,7 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/boc_target"
-                    android:padding="@dimen/_5sdp"
-                    />
+                    android:padding="@dimen/_5sdp" />
 
             </LinearLayout>
 
@@ -323,8 +312,7 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/returns"
-                    android:padding="@dimen/_5sdp"
-                    />
+                    android:padding="@dimen/_5sdp" />
 
             </LinearLayout>
 
@@ -346,8 +334,7 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/focus_report"
-                    android:padding="@dimen/_5sdp"
-                    />
+                    android:padding="@dimen/_5sdp" />
 
             </LinearLayout>
 
@@ -364,20 +351,19 @@
             android:layout_gravity="center"
             android:layout_weight="0.6"
             android:gravity="center"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_master_sync"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Master Sync"
-                android:alpha="0.6"
                 android:layout_margin="@dimen/_2sdp"
+                android:alpha="0.6"
                 android:background="@color/white"
                 android:gravity="center"
+                android:text="Master Sync"
                 android:textColor="#711a58"
-                android:textSize="@dimen/_20sdp"/>
+                android:textSize="@dimen/_20sdp" />
 
         </LinearLayout>
 
@@ -387,7 +373,6 @@
             android:background="#C72C2C" />
 
     </LinearLayout>
-
 
 
 </LinearLayout>

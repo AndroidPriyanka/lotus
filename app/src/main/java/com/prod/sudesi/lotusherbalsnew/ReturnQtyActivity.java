@@ -96,10 +96,10 @@ public class ReturnQtyActivity extends Activity {
     private JSONArray array;
     String ErroFlag = "";
 
-    //public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
+    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
     //public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
 
-    public static String URL = "http://192.168.0.136:81/lotusapi/api/Stock/SaveStock";
+//    public static String URL = "http://192.168.0.136:81/lotusapi/api/Stock/SaveStock";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -125,11 +125,11 @@ public class LoginActivity extends Activity {
     public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production*/
 
     //UAT India
-    /*public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
-    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT India*/
+    public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
+    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT India
 
-    public static final String downloadURL = "http://192.168.0.136:81/UATAPK/Lotus_UAT.apk";
-    public static final String downloadConfigFile = "http://192.168.0.136:81/UATAPK/config.txt";
+   /* public static final String downloadURL = "http://192.168.0.136:81/UATAPK/Lotus_UAT.apk";
+    public static final String downloadConfigFile = "http://192.168.0.136:81/UATAPK/config.txt";*/
 
     //Production Dubai
      /*public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Dubai_Pro.apk"; //production

@@ -92,7 +92,8 @@ public class DashboardNewActivity extends Activity {
 
     private AlarmManagerBroadcastReceiver alarm;
 
-    private LinearLayout checkout_layout, stock_layout, boc_layout, returns_layout, focusreprt_layout;
+    private LinearLayout checkout_layout, stock_layout, boc_layout,
+            returns_layout, focusreprt_layout, targetAchieve_layout, categorywise_layout;
 
     @SuppressLint({"InflateParams", "WrongConstant"})
     @Override
@@ -199,6 +200,8 @@ public class DashboardNewActivity extends Activity {
         boc_layout = (LinearLayout) findViewById(R.id.boc_layout);
         returns_layout = (LinearLayout) findViewById(R.id.returns_layout);
         focusreprt_layout = (LinearLayout) findViewById(R.id.focusreprt_layout);
+        targetAchieve_layout = (LinearLayout) findViewById(R.id.targetAchieve_layout);
+        categorywise_layout = (LinearLayout) findViewById(R.id.categorywise_layout);
 
         btn_home.setVisibility(View.INVISIBLE);
         Log.e("db.checkStockUploaded()", String.valueOf(db.checkStockUploaded()));
@@ -218,6 +221,9 @@ public class DashboardNewActivity extends Activity {
             boc_layout.setBackgroundColor(Color.parseColor("#808080"));
             returns_layout.setBackgroundColor(Color.parseColor("#808080"));
             focusreprt_layout.setBackgroundColor(Color.parseColor("#808080"));
+            targetAchieve_layout.setBackgroundColor(Color.parseColor("#808080"));
+            categorywise_layout.setBackgroundColor(Color.parseColor("#808080"));
+
 
         }
 
@@ -274,8 +280,8 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR")||
-                        role.equalsIgnoreCase("ADR")||
+                if (role.equalsIgnoreCase("FLR") ||
+                        role.equalsIgnoreCase("ADR") ||
                         role.equalsIgnoreCase("BP")) {
                     Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else if (role.equalsIgnoreCase("DUB")) {
@@ -294,8 +300,8 @@ public class DashboardNewActivity extends Activity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                if (role.equalsIgnoreCase("FLR")||
-                        role.equalsIgnoreCase("ADR")||
+                if (role.equalsIgnoreCase("FLR") ||
+                        role.equalsIgnoreCase("ADR") ||
                         role.equalsIgnoreCase("BP")) {
                     Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else {
@@ -375,8 +381,8 @@ public class DashboardNewActivity extends Activity {
                /* startActivity(new Intent(getApplicationContext(),
                         VisibilityFragment.class));*/
 //                Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
-                if (role.equalsIgnoreCase("FLR")||
-                        role.equalsIgnoreCase("ADR")||
+                if (role.equalsIgnoreCase("FLR") ||
+                        role.equalsIgnoreCase("ADR") ||
                         role.equalsIgnoreCase("BP")) {
                     Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else if (role.equalsIgnoreCase("DUB")) {
@@ -426,11 +432,11 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR")||
-                        role.equalsIgnoreCase("ADR")||
+                if (role.equalsIgnoreCase("FLR") ||
+                        role.equalsIgnoreCase("ADR") ||
                         role.equalsIgnoreCase("BP")) {
                     Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
-                }else {
+                } else {
                     new ValidateSale().execute();
                 }
             }
@@ -441,8 +447,8 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR")||
-                        role.equalsIgnoreCase("ADR")||
+                if (role.equalsIgnoreCase("FLR") ||
+                        role.equalsIgnoreCase("ADR") ||
                         role.equalsIgnoreCase("BP")) {
                     Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else {
@@ -458,8 +464,8 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR")||
-                        role.equalsIgnoreCase("ADR")||
+                if (role.equalsIgnoreCase("FLR") ||
+                        role.equalsIgnoreCase("ADR") ||
                         role.equalsIgnoreCase("BP")) {
                     Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else if (role.equalsIgnoreCase("DUB")) {
@@ -495,8 +501,8 @@ public class DashboardNewActivity extends Activity {
 
 
                 if (cd.isCurrentDateMatchDeviceDate()) {
-                    if (role.equalsIgnoreCase("FLR")||
-                            role.equalsIgnoreCase("ADR")||
+                    if (role.equalsIgnoreCase("FLR") ||
+                            role.equalsIgnoreCase("ADR") ||
                             role.equalsIgnoreCase("BP")) {
 
                         startActivity(new Intent(getApplicationContext(),
@@ -550,8 +556,8 @@ public class DashboardNewActivity extends Activity {
                 /*startActivity(new Intent(getApplicationContext(),
                         SupervisorAttendance.class));*/
                 //Toast.makeText(mContext,"Coming Soon...!",Toast.LENGTH_LONG).show();
-                if (role.equalsIgnoreCase("FLR")||
-                        role.equalsIgnoreCase("ADR")||
+                if (role.equalsIgnoreCase("FLR") ||
+                        role.equalsIgnoreCase("ADR") ||
                         role.equalsIgnoreCase("BP")) {
                     Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
                 } else if (role.equalsIgnoreCase("DUB")) {
@@ -5294,9 +5300,9 @@ public class DashboardNewActivity extends Activity {
             sld1 = sld[0];
 
             String saleDate;
-            if(sp.getString("checkoutDate", "").equalsIgnoreCase(sld1)){
+            if (sp.getString("checkoutDate", "").equalsIgnoreCase(sld1)) {
                 saleDate = sld1;
-            }else{
+            } else {
                 saleDate = sp.getString("checkoutDate", "");
             }
 
@@ -5404,7 +5410,7 @@ public class DashboardNewActivity extends Activity {
 
             } else if (Flag.equalsIgnoreCase("2")) {
 
-                if(sp.getString("checkoutDate", "").equalsIgnoreCase(sld1)){
+                if (sp.getString("checkoutDate", "").equalsIgnoreCase(sld1)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
                     builder.setMessage("Please Punch your Sale")
                             .setCancelable(false)
@@ -5420,7 +5426,7 @@ public class DashboardNewActivity extends Activity {
                     AlertDialog alert = builder.create();
                     alert.show();
 
-                }else {
+                } else {
                     new InsertSaleRecord().execute();
 
                 }
@@ -5607,10 +5613,10 @@ public class DashboardNewActivity extends Activity {
             if (result != null) {
                 if (result.toString().equalsIgnoreCase("true")) {
 
-                    if(!sp.getString("checkoutDate", "").equalsIgnoreCase(sld1)) {
+                    if (!sp.getString("checkoutDate", "").equalsIgnoreCase(sld1)) {
                         Intent i = new Intent(getApplicationContext(), AttendanceFragment.class);
                         startActivity(i);
-                    }else{
+                    } else {
                         Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
                         startActivity(i);
                     }

@@ -1330,9 +1330,9 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                             if (t.equalsIgnoreCase("True")) {
                                 ErroFlag = "1";
 
-                                Aid = cd.getNonNullValues(String.valueOf(soap_attendance.getProperty("Id")));
+                                String aid = cd.getNonNullValues(String.valueOf(soap_attendance.getProperty("Id")));
 
-                                spe.putString("AttendAid", Aid);
+                                spe.putString("AttendAid", aid);
                                 spe.commit();
 
                                 String sld[] = attendanceDate1.split(" ");
