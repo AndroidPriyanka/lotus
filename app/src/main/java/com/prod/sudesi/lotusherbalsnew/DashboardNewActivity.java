@@ -53,7 +53,7 @@ import static com.prod.sudesi.lotusherbalsnew.TestApplication.TAG;
 public class DashboardNewActivity extends Activity {
 
     private Context mContext;
-
+    String saleDate;
     // today
     private Dbcon db = null;
     String[] values;
@@ -5297,11 +5297,16 @@ public class DashboardNewActivity extends Activity {
             String sld[] = attendanceDate1.split(" ");
             sld1 = sld[0];
 
-            String saleDate;
-            if (sp.getString("checkoutDate", "").equalsIgnoreCase(sld1)) {
+
+            if(sp.getString("checkoutDate", "")!= null &&
+                    !sp.getString("checkoutDate", "").equalsIgnoreCase("")) {
+                if (sp.getString("checkoutDate", "").equalsIgnoreCase(sld1)) {
+                    saleDate = sld1;
+                } else {
+                    saleDate = sp.getString("checkoutDate", "");
+                }
+            }else{
                 saleDate = sld1;
-            } else {
-                saleDate = sp.getString("checkoutDate", "");
             }
 
             if (!cd.isConnectingToInternet()) {
@@ -5408,7 +5413,7 @@ public class DashboardNewActivity extends Activity {
 
             } else if (Flag.equalsIgnoreCase("2")) {
 
-                if (sp.getString("checkoutDate", "").equalsIgnoreCase(sld1)) {
+                if (saleDate.equalsIgnoreCase(sld1)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
                     builder.setMessage("Please Punch your Sale")
                             .setCancelable(false)
@@ -5611,7 +5616,7 @@ public class DashboardNewActivity extends Activity {
             if (result != null) {
                 if (result.toString().equalsIgnoreCase("true")) {
 
-                    if (!sp.getString("checkoutDate", "").equalsIgnoreCase(sld1)) {
+                    if (!saleDate.equalsIgnoreCase(sld1)) {
                         Intent i = new Intent(getApplicationContext(), AttendanceFragment.class);
                         startActivity(i);
                     } else {

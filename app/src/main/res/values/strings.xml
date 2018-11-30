@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name_pro_pre">Lotus_PRO_v3.1</string>
-    <string name="app_name_pro_curr">Lotus_PRO_v3.2</string>
-    <string name="app_name1">Lotus_UAT_v3.1</string>
-    <string name="app_name2">Lotus_UAT_v3.2</string>
+    <string name="app_name_pro_pre">Lotus_PRO_v3.2</string>
+    <string name="app_name_pro_curr">Lotus_PRO_v3.3</string>
+    <string name="app_name1">Lotus_UAT_v3.2</string>
+    <string name="app_name2">Lotus_UAT_v3.3</string>
     <string name="app_name_floter">Lotus_UAT_Floter_v2.10</string>
     <string name="app_name_dubai">Lotus_Dubai_UAT_v1.0</string>
     <string name="app_name_dubai_pro">Lotus_Dubai_Pro_v1.0</string>
