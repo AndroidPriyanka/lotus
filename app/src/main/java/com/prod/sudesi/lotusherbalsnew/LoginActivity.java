@@ -120,13 +120,13 @@ public class LoginActivity extends Activity {
     AttendanceModel attendanceModel;
     String[] values;
 
-    //Production India
+   /* //Production India
     public static final String downloadURL = "http://lotussmartforce.com/apk/Lotus_Pro3_3.apk"; //production
-    public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production
+    public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production*/
 
     //UAT India
-   /* public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
-    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT India*/
+    public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
+    public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT India
 
    /* public static final String downloadURL = "http://192.168.0.136:81/UATAPK/Lotus_UAT.apk";
     public static final String downloadConfigFile = "http://192.168.0.136:81/UATAPK/config.txt";*/
