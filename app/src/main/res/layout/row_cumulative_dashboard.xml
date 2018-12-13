@@ -9,10 +9,11 @@
         android:id="@+id/txt_date"
         android:layout_width="0dp"
         android:layout_height="@dimen/_20sdp"
-        android:layout_margin="@dimen/_1sdp"
+        android:layout_margin="0.7dp"
         android:layout_weight="1"
         android:background="#ffffff"
         android:text="Date"
+        android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TableLayout
@@ -29,15 +30,17 @@
                 android:id="@+id/txt_lh_saleValue"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_20sdp"
-                android:layout_margin="@dimen/_1sdp"
+                android:layout_margin="0.2dp"                                                               
                 android:background="#ffffff"
+                android:gravity="center"
                 android:text="Sale Value" />
 
             <TextView
                 android:id="@+id/txt_lh_saleUnit"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_20sdp"
-                android:layout_margin="@dimen/_1sdp"
+                android:layout_margin="0.2dp"                                          
+                android:gravity="center"
                 android:background="#ffffff"
                 android:text="Sale Unit" />
         </TableRow>
@@ -57,7 +60,8 @@
                 android:id="@+id/txt_lm_saleValue"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_20sdp"
-                android:layout_margin="@dimen/_1sdp"
+                android:gravity="center"
+                android:layout_margin="0.2dp"                                                               
                 android:background="#ffffff"
                 android:text="Sale Value" />
 
@@ -65,7 +69,8 @@
                 android:id="@+id/txt_lm_saleUnit"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_20sdp"
-                android:layout_margin="@dimen/_1sdp"
+                android:gravity="center"
+                android:layout_margin="0.2dp"                                                               
                 android:background="#ffffff"
                 android:text="Sale Unit" />
         </TableRow>
@@ -85,15 +90,17 @@
                 android:id="@+id/txt_cumu_saleValue"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_20sdp"
-                android:layout_margin="@dimen/_1sdp"
+                android:layout_margin="0.2dp"                                          
+                android:gravity="center"
                 android:background="#ffffff"
                 android:text="Sale Value" />
 
             <TextView
                 android:id="@+id/txt_cumu_saleUnit"
                 android:layout_width="0dp"
+                android:gravity="center"
                 android:layout_height="@dimen/_20sdp"
-                android:layout_margin="@dimen/_1sdp"
+                android:layout_margin="0.2dp"                                                               
                 android:background="#ffffff"
                 android:text="Sale Unit" />
         </TableRow>

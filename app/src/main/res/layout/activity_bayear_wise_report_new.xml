@@ -175,7 +175,7 @@
 
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_40sdp">
+            android:layout_height="@dimen/_30sdp">
 
             <TableRow
                 android:id="@+id/tr_stock_report"
@@ -487,8 +487,8 @@
         <ListView
             android:id="@+id/listView_ba_year_report"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            ></ListView>
+            android:layout_height="wrap_content"
+            />
     </LinearLayout>
 
 </LinearLayout>

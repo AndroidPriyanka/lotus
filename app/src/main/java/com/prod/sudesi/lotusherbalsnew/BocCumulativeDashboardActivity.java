@@ -435,20 +435,20 @@ public class BocCumulativeDashboardActivity extends Activity {
 
 
                     txt_date.setText(c.getString(c.getColumnIndex("AndroidCreatedDate")));
-                    txt_date.setGravity(1);
+                    //txt_date.setGravity(1);
                     txt_lh_saleValue.setText(c.getString(c.getColumnIndex("SkinSoldValue")));
                     txt_lh_saleValue.setMaxEms(10);
-                    txt_lh_saleValue.setGravity(1);
+                    //txt_lh_saleValue.setGravity(1);
                     txt_lh_saleUnit.setText(c.getString(c.getColumnIndex("SkinSoldQty")));
-                    txt_lh_saleUnit.setGravity(1);
+                    //txt_lh_saleUnit.setGravity(1);
                     txt_lm_saleValue.setText(c.getString(c.getColumnIndex("ColorSoldValue")));
-                    txt_lm_saleValue.setGravity(1);
+                    //txt_lm_saleValue.setGravity(1);
                     txt_lm_saleUnit.setText(c.getString(c.getColumnIndex("ColorSoldQty")));
-                    txt_lm_saleUnit.setGravity(1);
+                    //txt_lm_saleUnit.setGravity(1);
                     txt_cumu_saleValue.setText(c.getString(c.getColumnIndex("TotalValue")));
-                    txt_cumu_saleValue.setGravity(1);
+                    //txt_cumu_saleValue.setGravity(1);
                     txt_cumu_saleUnit.setText(c.getString(c.getColumnIndex("TotalQty")));
-                    txt_cumu_saleUnit.setGravity(1);
+                    //txt_cumu_saleUnit.setGravity(1);
                     tl_cumulative.addView(tr);
 
                 } while (c.moveToNext());
