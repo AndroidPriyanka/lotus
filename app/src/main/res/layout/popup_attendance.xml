@@ -5,7 +5,7 @@
     android:gravity="center"
     android:orientation="vertical" >
 
-    <RelativeLayout
+   <!-- <RelativeLayout
         android:layout_width="@dimen/_210sdp"
         android:layout_height="@dimen/_210sdp"
         android:background="@drawable/pop3"
@@ -33,6 +33,34 @@
            	android:visibility="visible"
             android:background="@drawable/abs1" />
 
-    </RelativeLayout>
+    </RelativeLayout>-->
+
+    <LinearLayout
+        android:layout_width="@dimen/_210sdp"
+        android:layout_height="@dimen/_210sdp"
+        android:background="@drawable/pop3"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_present"
+            android:layout_width="@dimen/_130sdp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/pre1"
+            android:layout_marginTop="@dimen/_80sdp"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:id="@+id/btn_absent"
+            android:layout_width="@dimen/_130sdp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_present"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:background="@drawable/abs1"
+            />
+
+    </LinearLayout>
+
 
 </RelativeLayout>

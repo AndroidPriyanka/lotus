@@ -883,7 +883,7 @@ public class DashboardNewActivity extends Activity {
 
     }
 
-    public class InsertFirstTimeMaster extends AsyncTask<Void, Void, SoapObject> {
+   /* public class InsertFirstTimeMaster extends AsyncTask<Void, Void, SoapObject> {
 
         private SoapObject soap_result = null;
 
@@ -950,7 +950,7 @@ public class DashboardNewActivity extends Activity {
                     // --------------------------------upload
                     // stock-----------------------------------01.03.2016
 
-           /*         try {
+           *//*         try {
                         Log.e("", "saveto server1-stcok");
                         db.open();
                         stock_array = db.getStockdetails();
@@ -1073,7 +1073,7 @@ public class DashboardNewActivity extends Activity {
 
                                             );
 
-									*//*
+									*//**//*
                      * soap_result_stock = service.SaveStock(
                      * stock_array.getString(2),
                      * stock_array.getString(1), eancode_string,
@@ -1096,7 +1096,7 @@ public class DashboardNewActivity extends Activity {
                      *
                      *
                      * );
-                     *//*
+                     *//**//*
 
                                     if (soap_result_stock != null) {
                                         String result_stock = soap_result_stock
@@ -1198,7 +1198,7 @@ public class DashboardNewActivity extends Activity {
                                 sp.getString("username", ""), "SaveStock()",
                                 "Fail");
 
-                    }*/
+                    }*//*
 
                     // -----------------------------------------------------------------------------01.03.2016
 
@@ -1208,7 +1208,7 @@ public class DashboardNewActivity extends Activity {
                     db.open();
                     String lastdatesync = db.getLastSyncDate("stock");
 
-					/*if(lastdatesync != null && lastdatesync.length()>0) {
+					*//*if(lastdatesync != null && lastdatesync.length()>0) {
                         String[] dateParts = lastdatesync.split(" ");
 						String date1 = dateParts[0];
 						SimpleDateFormat sdf = new SimpleDateFormat(
@@ -1225,7 +1225,7 @@ public class DashboardNewActivity extends Activity {
 						lastdate = sdf.format(curntdte);
 					}else{
 						lastdate = "";
-					}*/
+					}*//*
 
                     db.close();
 
@@ -1233,7 +1233,7 @@ public class DashboardNewActivity extends Activity {
                     SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd ");
                     String strDate = mdformat.format(calendar1.getTime());
 
-                   /* soap_result = service.DataDownload(
+                   *//* soap_result = service.DataDownload(
                             sp.getString("username", ""), strDate);//strDate
 
                     if (soap_result != null) {
@@ -1596,14 +1596,14 @@ public class DashboardNewActivity extends Activity {
                                             NetAmount,
                                             S_Return_Saleable,
                                             S_Return_NonSaleable);
-                                    *//*db.UpdateStockSync1(ProductCategory,
+                                    *//**//*db.UpdateStockSync1(ProductCategory,
                                             ProductType, ProductName, EmpId,
                                             Opening_Stock, Stock_inhand, ClosingBal,
                                             FreshStock, GrossAmount, SoldStock,
                                             Price, Size, db_Id, LMD, Discount,
                                             NetAmount,
                                             S_Return_Saleable,
-                                            S_Return_NonSaleable);*//*
+                                            S_Return_NonSaleable);*//**//*
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","
@@ -1624,7 +1624,7 @@ public class DashboardNewActivity extends Activity {
                                             GrossAmount, Discount, NetAmount,
                                             Size, Price, LMD,
                                             AndroidCreatedDate, MONTH, YEAR);
-                                    *//*db.insertProductMasterFirsttime(
+                                    *//**//*db.insertProductMasterFirsttime(
                                             db_stock_id, db_Id, ProductId,
                                             CatCodeId, EANCode, EmpId,
                                             ProductCategory, ProductType,
@@ -1634,7 +1634,7 @@ public class DashboardNewActivity extends Activity {
                                             S_Return_Saleable, ClosingBal,
                                             GrossAmount, Discount, NetAmount,
                                             Size, Price, LMD,
-                                            AndroidCreatedDate, MONTH, YEAR);*//*
+                                            AndroidCreatedDate, MONTH, YEAR);*//**//*
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","
@@ -1725,7 +1725,7 @@ public class DashboardNewActivity extends Activity {
                                 sp.getString("username", ""), "Data Download",
                                 "Fail");
 
-                    }*/
+                    }*//*
 
                     soap_result = service.DataDownloadForSale(
                             sp.getString("username", ""), strDate);//strDate
@@ -2092,14 +2092,14 @@ public class DashboardNewActivity extends Activity {
                                             S_Return_Saleable,
                                             S_Return_NonSaleable);
 
-                                    /*db.UpdateStockSync1(ProductCategory,
+                                    *//*db.UpdateStockSync1(ProductCategory,
                                             ProductType, ProductName, EmpId,
                                             Opening_Stock, Stock_inhand, ClosingBal,
                                             FreshStock, GrossAmount, SoldStock,
                                             Price, Size, db_Id, LMD, Discount,
                                             NetAmount,
                                             S_Return_Saleable,
-                                            S_Return_NonSaleable);*/
+                                            S_Return_NonSaleable);*//*
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","
@@ -2121,7 +2121,7 @@ public class DashboardNewActivity extends Activity {
                                             Size, Price, LMD,
                                             AndroidCreatedDate, MONTH, YEAR);
 
-                                    /*db.insertProductMasterFirsttime(
+                                    *//*db.insertProductMasterFirsttime(
                                             db_stock_id, db_Id, ProductId,
                                             CatCodeId, EANCode, EmpId,
                                             ProductCategory, ProductType,
@@ -2131,7 +2131,7 @@ public class DashboardNewActivity extends Activity {
                                             S_Return_Saleable, ClosingBal,
                                             GrossAmount, Discount, NetAmount,
                                             Size, Price, LMD,
-                                            AndroidCreatedDate, MONTH, YEAR);*/
+                                            AndroidCreatedDate, MONTH, YEAR);*//*
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","
@@ -2225,7 +2225,7 @@ public class DashboardNewActivity extends Activity {
 
                     }
 
-					/*soap_result = service.SyncStockData(
+					*//*soap_result = service.SyncStockData(
                             sp.getString("username", ""), lastdatesync);
 					// soap_result =
 					// service.SyncStockData(sp.getString("username",
@@ -2648,7 +2648,7 @@ public class DashboardNewActivity extends Activity {
 								}
 
 								// }
-								*//*
+								*//**//*
                      * } catch (Exception e) { // TODO: handle
                      * exception e.printStackTrace(); String Error =
                      * e.toString(); Log.v("","se2 error"); final
@@ -2665,7 +2665,7 @@ public class DashboardNewActivity extends Activity {
                      * ,Createddate,Createddate,sp.getString
                      * ("username", ""),"SyncStockData()","Fail");
                      * db.close(); }
-                     *//*
+                     *//**//*
 
 							} else if (soap_result1.getProperty("status")
 									.toString().equalsIgnoreCase("E")) {
@@ -2677,13 +2677,13 @@ public class DashboardNewActivity extends Activity {
 								soap_update_stock_row = service
 										.UpdateTableData(db_stock_id_array,
 												"S", EmpId);
-								*//*
+								*//**//*
                      * Log.e("",
                      * "soap_update_stock_row= "+soap_update_stock_row
                      * .toString());
                      *
                      * Log.e("", "string ids== "+db_stock_id_array);
-                     *//*
+                     *//**//*
                                 SimpleDateFormat dateFormat = new SimpleDateFormat(
 										"MM/dd/yyyy HH:mm:ss");
 								// get current date time with Date()
@@ -2759,7 +2759,7 @@ public class DashboardNewActivity extends Activity {
 								sp.getString("username", ""), "Data Download",
 								"Fail");
 
-					}*/
+					}*//*
 
                     // -----------------Tester-------------//
 
@@ -4117,15 +4117,15 @@ public class DashboardNewActivity extends Activity {
 
                 DisplayDialogMessage("No Record found to Data Download");
 
-				/*Toast.makeText(context, "Data Download Incomplete!!",
+				*//*Toast.makeText(context, "Data Download Incomplete!!",
 						Toast.LENGTH_SHORT).show();
-*/
+*//*
             } else if (Flag.equalsIgnoreCase("3")) {
 
-               /* boolean bocflag = true;
+               *//* boolean bocflag = true;
                 spe.putBoolean("Bocflag", bocflag);
                 spe.putBoolean("DialogDismiss", true);
-                spe.commit();*/
+                spe.commit();*//*
 
                 // DisplayDialogMessage("Data Download Incomplete!!");
                 AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
@@ -4138,7 +4138,7 @@ public class DashboardNewActivity extends Activity {
 
                                 BocOpeningDialog();
 
-                             /*   db.open();
+                             *//*   db.open();
                                 String a = db.getdatepresentorabsent(sp.getString("todaydate", ""), username = sp.getString("username", ""));
                                 db.close();
 
@@ -4150,7 +4150,7 @@ public class DashboardNewActivity extends Activity {
                                     i.putExtra("FromLoginpage", "L");
                                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(i);
-                                }*/
+                                }*//*
                             }
                         });
                 AlertDialog alert = builder.create();
@@ -4158,10 +4158,10 @@ public class DashboardNewActivity extends Activity {
 
             } else if (Flag.equalsIgnoreCase("4")) {
 
-               /* boolean bocflag = true;
+               *//* boolean bocflag = true;
                 spe.putBoolean("Bocflag", bocflag);
                 spe.putBoolean("DialogDismiss", true);
-                spe.commit();*/
+                spe.commit();*//*
 
                 // DisplayDialogMessage("Data Download Incomplete!!Please try again");
 
@@ -4175,7 +4175,7 @@ public class DashboardNewActivity extends Activity {
 
                                 BocOpeningDialog();
 
-                               /* db.open();
+                               *//* db.open();
                                 String a = db.getdatepresentorabsent(sp.getString("todaydate", ""), username = sp.getString("username", ""));
                                 db.close();
 
@@ -4187,7 +4187,7 @@ public class DashboardNewActivity extends Activity {
                                     i.putExtra("FromLoginpage", "L");
                                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(i);
-                                }*/
+                                }*//*
                             }
                         });
                 AlertDialog alert = builder.create();
@@ -4196,10 +4196,10 @@ public class DashboardNewActivity extends Activity {
 
             } else {
 
-              /*  boolean bocflag = true;
+              *//*  boolean bocflag = true;
                 spe.putBoolean("Bocflag", bocflag);
                 spe.putBoolean("DialogDismiss", true);
-                spe.commit();*/
+                spe.commit();*//*
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
                 builder.setMessage("Data Download Incomplete!!")
@@ -4211,7 +4211,7 @@ public class DashboardNewActivity extends Activity {
 
                                 BocOpeningDialog();
 
-                               /* db.open();
+                               *//* db.open();
                                 String a = db.getdatepresentorabsent(sp.getString("todaydate", ""), username = sp.getString("username", ""));
                                 db.close();
 
@@ -4223,7 +4223,7 @@ public class DashboardNewActivity extends Activity {
                                     i.putExtra("FromLoginpage", "L");
                                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(i);
-                                }*/
+                                }*//*
                             }
                         });
                 AlertDialog alert = builder.create();
@@ -4233,22 +4233,711 @@ public class DashboardNewActivity extends Activity {
 
         }
 
-        private void DisplayDialogMessage(String msg) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
-            builder.setMessage(msg)
-                    .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            //do things
-                            dialog.dismiss();
+        }*/
+
+
+    public class DataDownload extends AsyncTask<Void, Void, SoapObject> {
+
+        private SoapObject soap_result = null;
+
+        SoapObject soap_result1 = null;
+        String Flag;
+
+        SoapPrimitive soap_update_stock_row = null;
+
+        int syncstockdata = 1;
+
+        String db_stock_id_array = "";
+
+        String EmpId = sp.getString("username", "");
+        String Erro_function = "";
+        String ErroFlag = "";
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+
+            mProgress.setMessage("Receiving.....");
+            mProgress.setCancelable(false);
+            mProgress.show();
+
+        }
+
+        @Override
+        protected SoapObject doInBackground(Void... params) {
+
+            try {
+
+                if (!cd.isConnectingToInternet()) {
+
+                    Flag = "0";
+                    // stop executing code by return
+
+                } else {
+
+                    ClearLocalAppData();
+
+                    String lastdate;
+                    db.open();
+                    String lastdatesync = db.getLastSyncDate("stock");
+
+                    db.close();
+
+                    Calendar calendar1 = Calendar.getInstance();
+                    SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd ");
+                    String strDate = mdformat.format(calendar1.getTime());
+
+                    soap_result = service.DataDownloadForSale(
+                            sp.getString("username", ""), strDate);//strDate
+
+                    if (soap_result != null) {
+
+                        for (int i = 0; i < soap_result.getPropertyCount(); i++) {
+
+                            soap_result1 = (SoapObject) soap_result
+                                    .getProperty(i);
+
+                            Log.e("pm",
+                                    "status="
+                                            + soap_result1
+                                            .getProperty("status")
+                                            .toString());
+
+                            if (soap_result1.getProperty("status").toString()
+                                    .equalsIgnoreCase("C")) {
+
+                                String db_stock_id = soap_result1.getProperty(
+                                        "Id").toString();
+
+                                String db_Id = soap_result1.getProperty(
+                                        "ProductId").toString();
+
+                                Log.v("", "db_Id=" + db_Id);
+
+                                String CatCodeId = soap_result1.getProperty(
+                                        "CatCodeId").toString();
+
+                                if (CatCodeId == null) {
+                                    CatCodeId = "";
+
+                                }
+                                Log.v("", "CatCodeId=" + CatCodeId);
+
+                                String ProductId = soap_result1.getProperty(
+                                        "ProductId").toString();
+                                Log.v("", "ProductId=" + ProductId);
+
+                                if (ProductId == null) {
+                                    ProductId = "";
+
+                                }
+
+                                String EANCode = soap_result1.getProperty(
+                                        "EANCode").toString();
+
+                                if (EANCode == null) {
+                                    EANCode = "";
+
+                                }
+                                EmpId = soap_result1.getProperty("EmpId")
+                                        .toString();
+
+                                if (EmpId == null) {
+                                    EmpId = "";
+
+                                }
+                                String ProductCategory = soap_result1
+                                        .getProperty("ProductCategory")
+                                        .toString();
+
+                                if (ProductCategory == null) {
+                                    ProductCategory = "";
+
+                                }
+                                String ProductType = soap_result1.getProperty(
+                                        "ProductType").toString();
+
+                                if (ProductType == null) {
+                                    ProductType = "";
+
+                                }
+                                String ProductName = soap_result1.getProperty(
+                                        "ProductName").toString();
+                                if (ProductName == null) {
+                                    ProductName = "";
+
+                                }
+
+                                String Opening_Stock = soap_result1
+                                        .getProperty("Opening_Stock")
+                                        .toString();
+                                if (Opening_Stock == null) {
+                                    Opening_Stock = "";
+
+                                }
+
+                                String FreshStock = soap_result1.getProperty(
+                                        "FreshStock").toString();
+                                if (FreshStock == null) {
+                                    FreshStock = "";
+
+                                }
+
+                                String Stock_inhand = soap_result1.getProperty(
+                                        "Stock_inhand").toString();
+
+                                if (Stock_inhand == null) {
+                                    Stock_inhand = "";
+
+                                }
+                                String SoldStock = soap_result1.getProperty(
+                                        "SoldStock").toString();
+
+                                if (SoldStock == null) {
+                                    SoldStock = "";
+
+                                }
+                                String S_Return_Saleable = soap_result1
+                                        .getProperty("S_Return_Saleable")
+                                        .toString();
+
+                                if (S_Return_Saleable == null) {
+                                    S_Return_Saleable = "";
+
+                                }
+                                String S_Return_NonSaleable = soap_result1
+                                        .getProperty("S_Return_NonSaleable")
+                                        .toString();
+
+                                if (S_Return_NonSaleable == null) {
+                                    S_Return_NonSaleable = "";
+
+                                }
+                                String ClosingBal = soap_result1.getProperty(
+                                        "ClosingBal").toString();
+
+                                if (ClosingBal == null) {
+                                    ClosingBal = "";
+
+                                }
+                                String GrossAmount = soap_result1.getProperty(
+                                        "GrossAmount").toString();
+
+                                if (GrossAmount == null) {
+                                    GrossAmount = "";
+
+                                }
+                                String Discount = soap_result1.getProperty(
+                                        "Discount").toString();
+
+                                if (Discount == null) {
+                                    Discount = "";
+
+                                }
+                                String NetAmount = soap_result1.getProperty(
+                                        "NetAmount").toString();
+
+                                if (NetAmount == null) {
+                                    NetAmount = "";
+
+                                }
+                                String Size = soap_result1.getProperty("Size")
+                                        .toString();
+
+                                if (Size == null) {
+                                    Size = "";
+
+                                }
+                                String Price = soap_result1
+                                        .getProperty("Price").toString();
+
+                                if (Price == null) {
+                                    Price = "";
+
+                                }
+                                String LMD = soap_result1.getProperty("LMD")
+                                        .toString();
+
+                                if (LMD == null) {
+                                    LMD = "";
+
+                                } else {
+
+                                    try {
+                                        String inputPattern = "MM/dd/yyyy hh:mm:ss a";
+                                        String outputPattern = "yyyy-MM-dd HH:mm:ss";
+
+                                        DateFormat inputFormat = new SimpleDateFormat(
+                                                inputPattern);
+                                        SimpleDateFormat outputFormat = new SimpleDateFormat(
+                                                outputPattern);
+
+                                        Date date = inputFormat.parse(LMD);
+                                        LMD = outputFormat.format(date);
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                String AndroidCreatedDate = soap_result1
+                                        .getProperty("AndroidCreatedDate")
+                                        .toString();
+
+
+                                String MONTH = "", YEAR = "";
+                                if (AndroidCreatedDate == null) {
+                                    AndroidCreatedDate = "";
+
+                                } else {
+
+                                    try {
+                                        String inputPattern = "MM/dd/yyyy hh:mm:ss a";
+                                        String outputPattern = "yyyy-MM-dd HH:mm:ss";
+
+                                        SimpleDateFormat inputFormat = new SimpleDateFormat(
+                                                inputPattern);
+                                        SimpleDateFormat outputFormat = new SimpleDateFormat(
+                                                outputPattern);
+
+                                        Date date = inputFormat
+                                                .parse(AndroidCreatedDate);
+                                        AndroidCreatedDate = outputFormat
+                                                .format(date);
+
+                                        String[] addd = AndroidCreatedDate
+                                                .split(" ");
+                                        String addd1 = addd[0];
+                                        String[] addd2 = addd1.split("-");
+
+                                        String month = addd2[1];
+                                        YEAR = addd2[0];
+                                        //
+                                        SimpleDateFormat monthParse = new SimpleDateFormat(
+                                                "MM");
+                                        SimpleDateFormat monthDisplay = new SimpleDateFormat(
+                                                "MMMM");
+                                        MONTH = monthDisplay.format(monthParse
+                                                .parse(month));
+                                        //
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                if (db_Id.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for db_Id");
+                                    db_Id = " ";
+                                }
+                                if (CatCodeId.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for CatCodeId");
+                                    CatCodeId = " ";
+                                }
+
+                                if (ProductId.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for ProductId");
+                                    ProductId = " ";
+                                }
+                                if (EANCode.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for EANCode");
+                                    EANCode = " ";
+                                }
+
+                                if (EmpId.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for EmpId");
+                                    EmpId = " ";
+                                }
+                                if (ProductCategory
+                                        .equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for ProductCategory");
+                                    ProductCategory = " ";
+                                }
+                                if (ProductType.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for ProductType");
+                                    ProductType = " ";
+                                }
+
+                                if (ProductName.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for ProductName");
+                                    ProductName = " ";
+                                }
+                                if (Opening_Stock.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for Opening_Stock");
+                                    Opening_Stock = " ";
+                                }
+
+                                if (FreshStock.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for FreshStock");
+                                    FreshStock = " ";
+                                }
+                                if (Stock_inhand.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for Stock_inhand");
+                                    Stock_inhand = " ";
+                                }
+                                if (SoldStock.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for SoldStock");
+                                    SoldStock = " ";
+                                }
+                                if (S_Return_Saleable
+                                        .equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for S_Return_Saleable");
+                                    S_Return_Saleable = " ";
+                                }
+                                if (S_Return_NonSaleable
+                                        .equalsIgnoreCase("anyType{}")) {
+                                    Log.e("",
+                                            "anytype for S_Return_NonSaleable");
+                                    S_Return_NonSaleable = " ";
+                                }
+                                if (ClosingBal.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for ClosingBal");
+                                    ClosingBal = " ";
+                                }
+                                if (GrossAmount.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for GrossAmount");
+                                    GrossAmount = " ";
+                                }
+                                if (Discount.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for Discount");
+                                    Discount = " ";
+                                }
+                                if (NetAmount.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for NetAmount");
+                                    NetAmount = " ";
+                                }
+                                if (Size.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for Size");
+                                    Size = " ";
+                                }
+                                if (Price.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for sku_l");
+                                    Price = " ";
+                                }
+                                if (LMD.equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for LMD");
+                                    LMD = " ";
+                                }
+                                if (AndroidCreatedDate
+                                        .equalsIgnoreCase("anyType{}")) {
+                                    Log.e("", "anytype for AndroidCreatedDate");
+                                    AndroidCreatedDate = " ";
+                                }
+
+                                String openingamt = String.valueOf(Integer.parseInt(Opening_Stock) * Integer.parseInt(Price));
+                                String closingamt = String.valueOf(Integer.parseInt(ClosingBal) * Integer.parseInt(Price));
+                                String Soldamt = String.valueOf(Integer.parseInt(SoldStock) * Integer.parseInt(Price));
+                                String Freshamt = String.valueOf(Integer.parseInt(FreshStock) * Integer.parseInt(Price));
+
+                                Log.e("pm", "pm5--");
+                                db.open();
+
+                                Cursor c1 = db.CheckDataExist("stock", db_Id,
+                                        ProductCategory, ProductType,
+                                        ProductName);
+
+
+                                int count = c1.getCount();
+                                Log.v("", "" + count);
+                                db.close();
+                                if (count > 0) {
+
+                                    db.open();
+                                    db.UpdateStockSync1(ProductCategory,
+                                            ProductType, ProductName, EmpId,
+                                            Opening_Stock, openingamt, Stock_inhand, ClosingBal, closingamt,
+                                            FreshStock, Freshamt, GrossAmount, SoldStock, Soldamt,
+                                            Price, Size, db_Id, LMD, Discount,
+                                            NetAmount,
+                                            S_Return_Saleable,
+                                            S_Return_NonSaleable);
+
+                                    /*db.UpdateStockSync1(ProductCategory,
+                                            ProductType, ProductName, EmpId,
+                                            Opening_Stock, Stock_inhand, ClosingBal,
+                                            FreshStock, GrossAmount, SoldStock,
+                                            Price, Size, db_Id, LMD, Discount,
+                                            NetAmount,
+                                            S_Return_Saleable,
+                                            S_Return_NonSaleable);*/
+                                    db.close();
+
+                                    db_stock_id_array = db_stock_id_array + ","
+                                            + db_Id;
+
+                                } else {
+
+                                    Log.e("pm", "pm5");
+                                    db.open();
+                                    db.insertProductMasterFirsttime(
+                                            db_stock_id, db_Id, ProductId,
+                                            CatCodeId, EANCode, EmpId,
+                                            ProductCategory, ProductType,
+                                            ProductName, Opening_Stock, openingamt,
+                                            FreshStock, Freshamt, Stock_inhand,
+                                            SoldStock, Soldamt, S_Return_NonSaleable,
+                                            S_Return_Saleable, ClosingBal, closingamt,
+                                            GrossAmount, Discount, NetAmount,
+                                            Size, Price, LMD,
+                                            AndroidCreatedDate, MONTH, YEAR);
+
+                                    /*db.insertProductMasterFirsttime(
+                                            db_stock_id, db_Id, ProductId,
+                                            CatCodeId, EANCode, EmpId,
+                                            ProductCategory, ProductType,
+                                            ProductName, Opening_Stock,
+                                            FreshStock, Stock_inhand,
+                                            SoldStock, S_Return_NonSaleable,
+                                            S_Return_Saleable, ClosingBal,
+                                            GrossAmount, Discount, NetAmount,
+                                            Size, Price, LMD,
+                                            AndroidCreatedDate, MONTH, YEAR);*/
+                                    db.close();
+
+                                    db_stock_id_array = db_stock_id_array + ","
+                                            + db_Id;
+
+                                }
+                                syncstockdata = 1;
+
+                            } else if (soap_result1.getProperty("status")
+                                    .toString().equalsIgnoreCase("E")) {
+                                Log.e("pm", "pm7");
+                                // Flag = "1";
+
+                                writeStringAsFile(db_stock_id_array);
+
+                                soap_update_stock_row = service
+                                        .UpdateTableData(db_stock_id_array,
+                                                "S", EmpId);
+
+                                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                                        "MM/dd/yyyy HH:mm:ss");
+                                // get current date time with Date()
+                                Calendar cal = Calendar.getInstance();
+                                // dateFormat.format(cal.getTime())
+                                db.open();
+                                db.updateDateSync(
+                                        dateFormat.format(cal.getTime()),
+                                        "stock");
+                                db.close();
+
+                            } else if (soap_result1.getProperty("status")
+                                    .toString().equalsIgnoreCase("N")) {
+
+                                // Flag = "3";
+                                Log.e("", "string ids== " + db_stock_id_array);
+                                soap_update_stock_row = service
+                                        .UpdateTableData(db_stock_id_array,
+                                                "S", EmpId);
+                                Log.e("", "soap_update_stock_row= "
+                                        + soap_update_stock_row.toString());
+
+                                syncstockdata = 2;
+                            } else if (soap_result1.getProperty("status")
+                                    .toString().equalsIgnoreCase("SE")) {
+
+                                soap_update_stock_row = service
+                                        .UpdateTableData(db_stock_id_array,
+                                                "S", EmpId);
+                                Log.e("", "soap_update_stock_row= "
+                                        + soap_update_stock_row.toString());
+
+                                // Flag="2";
+                                Log.e("", "string ids== " + db_stock_id_array);
+                                syncstockdata = 0;
+                                final Calendar calendar = Calendar
+                                        .getInstance();
+                                SimpleDateFormat formatter = new SimpleDateFormat(
+                                        "MM/dd/yyyy HH:mm:ss");
+                                String Createddate = formatter.format(calendar
+                                        .getTime());
+                                Log.v("", "se error");
+                                int n = Thread.currentThread().getStackTrace()[2]
+                                        .getLineNumber();
+                                db.open();
+                                db.insertSyncLog("FirstTimeSync_SE",
+                                        String.valueOf(n), "DataDownload()",
+                                        Createddate, Createddate,
+                                        sp.getString("username", ""),
+                                        "DataDownload()", "Fail");
+                                db.close();
+                            }
                         }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
+
+                    } else {
+                        Log.v("", "Soap result is null");
+
+                        syncstockdata = 0;
+                        final Calendar calendar = Calendar.getInstance();
+                        SimpleDateFormat formatter = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss");
+                        String Createddate = formatter.format(calendar
+                                .getTime());
+
+                        int n = Thread.currentThread().getStackTrace()[2]
+                                .getLineNumber();
+                        db.insertSyncLog("Soup is null - DataDownload()",
+                                String.valueOf(n), "DataDownload()",
+                                Createddate, Createddate,
+                                sp.getString("username", ""), "Data Download",
+                                "Fail");
+
+                    }
+
+                }
+
+                if (syncstockdata == 1) {
+
+                    Flag = "1";
+
+                } else if (syncstockdata == 2) {
+
+                    Flag = "2";
+
+                } else {
+
+                    Flag = "3";
+                }
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                String Error = e.toString();
+
+                final Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat formatter = new SimpleDateFormat(
+                        "MM/dd/yyyy HH:mm:ss");
+                String Createddate = formatter.format(calendar.getTime());
+                Flag = "4";
+                int n = Thread.currentThread().getStackTrace()[2]
+                        .getLineNumber();
+                db.open();
+                db.insertSyncLog(Error, String.valueOf(n), "", Createddate,
+                        Createddate, sp.getString("username", ""),
+                        "Data Download", "Fail");
+                db.close();
+
+            }
+
+            return soap_result;
         }
 
 
-    }
+        @Override
+        protected void onPostExecute(SoapObject result) {
+
+            db.close();
+            if (mProgress != null && mProgress.isShowing() && !DashboardNewActivity.this.isFinishing()) {
+                mProgress.dismiss();
+            }
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                DisplayDialogMessage("Check Your Internet Connection!!!");
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                boolean boc26 = false;
+                boolean bocflag = true;
+                spe.putBoolean("BOC26", boc26);
+                spe.putBoolean("Bocflag", bocflag);
+                spe.putBoolean("DialogDismiss", true);
+                spe.commit();
+                //final boolean boolRecd = false;
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
+                builder.setMessage("Data Download Completed Successfully!!")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                                dialog.dismiss();
+
+                                //disableBroadcastReceiver();
+
+                                db.open();
+                                String a = db.getdatepresentorabsent(sp.getString("todaydate", ""), username = sp.getString("username", ""));
+                                db.close();
+
+                                if (!a.equalsIgnoreCase("")) {
+                                    Intent i = new Intent(DashboardNewActivity.this, DashboardNewActivity.class);
+                                    //i.putExtra("Boc26",boolRecd);
+                                    startActivity(i);
+                                } else {
+                                    Intent i = new Intent(DashboardNewActivity.this, AttendanceFragment.class);
+                                    i.putExtra("FromLoginpage", "L");
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(i);
+                                }
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+
+                DisplayDialogMessage("No Record found to Data Download");
+
+            } else if (Flag.equalsIgnoreCase("3")) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
+                builder.setMessage("Data Download Incomplete!!")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                                dialog.dismiss();
+
+                                BocOpeningDialog();
+
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+
+            } else if (Flag.equalsIgnoreCase("4")) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
+                builder.setMessage("Data Download Incomplete!!Please try again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                                dialog.dismiss();
+
+                                BocOpeningDialog();
+
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+
+            } else {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
+                builder.setMessage("Data Download Incomplete!!")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                                dialog.dismiss();
+
+                                BocOpeningDialog();
+
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+
+            }
+
+        }
+
+        }
+
 
     public class InsertProductMaster extends AsyncTask<Void, Void, SoapObject> {
 
@@ -4648,7 +5337,7 @@ public class DashboardNewActivity extends Activity {
                             "GetProducts", "Fail");
                 }
 
-                db.open();
+             /*   db.open();
                 String lastdatesyncdate_tester = db
                         .getLastSyncDate("tester_master");
                 db.close();
@@ -5016,7 +5705,7 @@ public class DashboardNewActivity extends Activity {
                             Createddate, Createddate,
                             sp.getString("username", ""),
                             "GetTesterProducts()", "Fail");
-                }
+                }*/
             }
             return soap_result;
         }
@@ -5244,7 +5933,7 @@ public class DashboardNewActivity extends Activity {
 
             } else if (Flag.equalsIgnoreCase("1")) {
 
-                new InsertFirstTimeMaster().execute();
+                new DataDownload().execute();
 
             } else if (Flag.equalsIgnoreCase("2")) {
 
@@ -5618,6 +6307,8 @@ public class DashboardNewActivity extends Activity {
 
                     if (!saleDate.equalsIgnoreCase(sld1)) {
                         Intent i = new Intent(getApplicationContext(), AttendanceFragment.class);
+                        i.putExtra("FromLoginpage", "L");
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(i);
                     } else {
                         Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
@@ -5757,5 +6448,19 @@ public class DashboardNewActivity extends Activity {
 
 
     }
+
+      private void DisplayDialogMessage(String msg) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
+            builder.setMessage(msg)
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            //do things
+                            dialog.dismiss();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
 
 }

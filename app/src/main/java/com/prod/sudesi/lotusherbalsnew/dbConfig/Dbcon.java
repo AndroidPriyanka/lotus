@@ -1464,7 +1464,7 @@ public class Dbcon {
         // TODO Auto-generated method stub
 //		String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"' ORDER BY order_flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
 
-        String selectquery = "select distinct(product_name) ProductName from stock where product_category = " + "'" + selected_category + "'" + " AND product_type = " + "'" + selected_type + "' ORDER BY flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
+        String selectquery = "select distinct(product_name) ProductName from stock s inner join product_master p on p.db_id = s.db_id where product_category = " + "'" + selected_category + "'" + " AND product_type = " + "'" + selected_type + "' ORDER BY flag ";// ORDER BY order_flag +" AND price_type = "+"'"+flag+"'";
 
 
         //String selectquery = "select * from product_master where ProductCategory = "+"'"+ selected_category+"'"+" AND ProductType = "+"'"+selected_type+"'"+" AND price_type = "+"'"+flag+"'  AND db_id in (select db_id  from stock where close_bal > 0)";
