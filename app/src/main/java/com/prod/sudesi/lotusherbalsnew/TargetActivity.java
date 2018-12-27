@@ -227,24 +227,29 @@ public class TargetActivity extends Activity {
         btn_targetproceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                targetamt = et_targetamt.getText().toString().trim();
-                if (categorystring != null && categorystring.length() > 0) {
-                    if (!categorystring.equalsIgnoreCase("Select")) {
-                        if (!targetamt.equalsIgnoreCase("")) {
-                            try {
-                                new SaveBocTarget().execute();
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                if (cd.isCurrentDateMatchDeviceDate()) {
+                    targetamt = et_targetamt.getText().toString().trim();
+                    if (categorystring != null && categorystring.length() > 0) {
+                        if (!categorystring.equalsIgnoreCase("Select")) {
+                            if (!targetamt.equalsIgnoreCase("")) {
+                                try {
+                                    new SaveBocTarget().execute();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Please Enter Target Amt", Toast.LENGTH_SHORT).show();
+
                             }
                         } else {
-                            Toast.makeText(getApplicationContext(), "Please Enter Target Amt", Toast.LENGTH_SHORT).show();
-
+                            Toast.makeText(getApplicationContext(), "Please Select Product Category", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(getApplicationContext(), "Please Select Product Category", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Please Select Product Category", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TargetActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+
                 }
             }
         });
@@ -352,7 +357,7 @@ public class TargetActivity extends Activity {
 
             } else if (Flag.equalsIgnoreCase("1")) {
 
-                Toast.makeText(getApplicationContext(),"Boc Target Amount Save Succesfully!!",
+                Toast.makeText(getApplicationContext(), "Boc Target Amount Save Succesfully!!",
                         Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(getApplicationContext(), DashboardNewActivity.class);
                 startActivity(i);

@@ -77,6 +77,8 @@ public class DashboardNewActivity extends Activity {
     TextView tv_h_username;
     Button btn_home, btn_logout;
 
+    Boolean Checkoutflag = null;
+
     String from26;
     Boolean boc26 = null;
     Boolean boolRecd = null;
@@ -167,8 +169,9 @@ public class DashboardNewActivity extends Activity {
 
                 }
             }
-
         }
+
+        Checkoutflag = sp.getBoolean("Checkoutvalue", false);
 
         btn_attendance = (Button) findViewById(R.id.btn_atten);
         btn_focusreport = (Button) findViewById(R.id.btn_visibility);
@@ -280,16 +283,27 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR") ||
-                        role.equalsIgnoreCase("ADR") ||
-                        role.equalsIgnoreCase("BP")) {
-                    Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
-                } else if (role.equalsIgnoreCase("DUB")) {
-                    Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+                if (cd.isCurrentDateMatchDeviceDate()) {
+                    if (role.equalsIgnoreCase("FLR") ||
+                            role.equalsIgnoreCase("ADR") ||
+                            role.equalsIgnoreCase("BP")) {
+                        Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
+                    } else if (role.equalsIgnoreCase("DUB")) {
+                        Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+                    } else {
+                        if (Checkoutflag) {
+
+                            Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
+
+                        } else {
+                            startActivity(new Intent(getApplicationContext(),
+                                    ReturnsActivity.class));
+                        }
+                        //Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+                    }
                 } else {
-                    startActivity(new Intent(getApplicationContext(),
-                            ReturnsActivity.class));
-                    //Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+
                 }
             }
         });
@@ -300,47 +314,52 @@ public class DashboardNewActivity extends Activity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                if (role.equalsIgnoreCase("FLR") ||
-                        role.equalsIgnoreCase("ADR") ||
-                        role.equalsIgnoreCase("BP")) {
-                    Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
-                } else {
-                    Calendar calendar = Calendar.getInstance();
-                    Calendar setcalendar = Calendar.getInstance();
-                    setcalendar.setTimeInMillis(System.currentTimeMillis());
-                    setcalendar.set(Calendar.HOUR_OF_DAY, 7);
-                    setcalendar.set(Calendar.MINUTE, 0);
-                    setcalendar.set(Calendar.SECOND, 0);
-                    setcalendar.set(Calendar.DAY_OF_MONTH, 26);
+                if (cd.isCurrentDateMatchDeviceDate()) {
+                    if (role.equalsIgnoreCase("FLR") ||
+                            role.equalsIgnoreCase("ADR") ||
+                            role.equalsIgnoreCase("BP")) {
+                        Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
+                    } else {
+                        if (Checkoutflag) {
 
-                    Date bocdate = setcalendar.getTime();
-                    Date currentdate = calendar.getTime();
+                            Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
 
+                        } else {
+                            Calendar calendar = Calendar.getInstance();
+                            Calendar setcalendar = Calendar.getInstance();
+                            setcalendar.setTimeInMillis(System.currentTimeMillis());
+                            setcalendar.set(Calendar.HOUR_OF_DAY, 7);
+                            setcalendar.set(Calendar.MINUTE, 0);
+                            setcalendar.set(Calendar.SECOND, 0);
+                            setcalendar.set(Calendar.DAY_OF_MONTH, 26);
 
-                    if (cd.isCurrentDateMatchDeviceDate()) {
-                        if (calendar.get(Calendar.DAY_OF_MONTH) == 26) {
-                            if (currentdate.after(bocdate)) {
-                                if (sp.getBoolean("DialogDismiss", false) == false) {
+                            Date bocdate = setcalendar.getTime();
+                            Date currentdate = calendar.getTime();
 
-                                    Toast.makeText(DashboardNewActivity.this, "Please Data Download First", Toast.LENGTH_LONG).show();
+                            if (calendar.get(Calendar.DAY_OF_MONTH) == 26) {
+                                if (currentdate.after(bocdate)) {
+                                    if (sp.getBoolean("DialogDismiss", false) == false) {
 
+                                        Toast.makeText(DashboardNewActivity.this, "Please Data Download First", Toast.LENGTH_LONG).show();
+
+                                    } else {
+                                        startActivity(new Intent(getApplicationContext(),
+                                                StockNewActivity.class));
+                                    }
                                 } else {
                                     startActivity(new Intent(getApplicationContext(),
                                             StockNewActivity.class));
                                 }
+
                             } else {
                                 startActivity(new Intent(getApplicationContext(),
                                         StockNewActivity.class));
                             }
 
-                        } else {
-                            startActivity(new Intent(getApplicationContext(),
-                                    StockNewActivity.class));
                         }
-                    } else {
-                        Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
-
                     }
+                } else {
+                    Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
 
                 }
             }
@@ -351,10 +370,19 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
+                if (cd.isCurrentDateMatchDeviceDate()) {
+                    if (Checkoutflag) {
 
-                startActivity(new Intent(getApplicationContext(),
-                        ReportActivityNew.class));
+                        Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
 
+                    } else {
+                        startActivity(new Intent(getApplicationContext(),
+                                ReportActivityNew.class));
+                    }
+                } else {
+                    Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+
+                }
             }
         });
         btn_notification.setOnClickListener(new OnClickListener() {
@@ -362,13 +390,23 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("DUB")) {
-                    Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
-                } else {
-                    startActivity(new Intent(getApplicationContext(),
-                            NotificationFragment.class));
-                }
+                if (cd.isCurrentDateMatchDeviceDate()) {
+                    if (role.equalsIgnoreCase("DUB")) {
+                        Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+                    } else {
+                        if (Checkoutflag) {
 
+                            Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
+
+                        } else {
+                            startActivity(new Intent(getApplicationContext(),
+                                    NotificationFragment.class));
+                        }
+                    }
+                } else {
+                    Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+
+                }
             }
         });
 
@@ -381,17 +419,27 @@ public class DashboardNewActivity extends Activity {
                /* startActivity(new Intent(getApplicationContext(),
                         VisibilityFragment.class));*/
 //                Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
-                if (role.equalsIgnoreCase("FLR") ||
-                        role.equalsIgnoreCase("ADR") ||
-                        role.equalsIgnoreCase("BP")) {
-                    Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
-                } else if (role.equalsIgnoreCase("DUB")) {
-                    Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
-                } else {
-                    startActivity(new Intent(getApplicationContext(),
-                            FocusActivity.class));
-                }
+                if (cd.isCurrentDateMatchDeviceDate()) {
+                    if (role.equalsIgnoreCase("FLR") ||
+                            role.equalsIgnoreCase("ADR") ||
+                            role.equalsIgnoreCase("BP")) {
+                        Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
+                    } else if (role.equalsIgnoreCase("DUB")) {
+                        Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+                    } else {
+                        if (Checkoutflag) {
 
+                            Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
+
+                        } else {
+                            startActivity(new Intent(getApplicationContext(),
+                                    FocusActivity.class));
+                        }
+                    }
+                } else {
+                    Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+
+                }
             }
         });
 
@@ -400,16 +448,20 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-
                 if (cd.isCurrentDateMatchDeviceDate()) {
+                    if (Checkoutflag) {
 
-                    startActivity(new Intent(getApplicationContext(),
-                            SyncMaster.class));
+                        Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
+
+                    } else {
+                        startActivity(new Intent(getApplicationContext(),
+                                SyncMaster.class));
+
+                    }
                 } else {
                     Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
 
                 }
-
 
             }
         });
@@ -418,11 +470,16 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
+                if (Checkoutflag) {
 
-                Intent i = new Intent(getApplicationContext(),
-                        AttendanceFragment.class);
-                i.putExtra("FromLoginpage", "");
-                startActivity(i);
+                    Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
+
+                } else {
+                    Intent i = new Intent(getApplicationContext(),
+                            AttendanceFragment.class);
+                    i.putExtra("FromLoginpage", "");
+                    startActivity(i);
+                }
 
             }
         });
@@ -432,12 +489,17 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR") ||
-                        role.equalsIgnoreCase("ADR") ||
-                        role.equalsIgnoreCase("BP")) {
-                    Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
+                if (cd.isCurrentDateMatchDeviceDate()) {
+                    if (role.equalsIgnoreCase("FLR") ||
+                            role.equalsIgnoreCase("ADR") ||
+                            role.equalsIgnoreCase("BP")) {
+                        Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
+                    } else {
+                        new ValidateSale().execute();
+                    }
                 } else {
-                    new ValidateSale().execute();
+                    Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+
                 }
             }
         });
@@ -447,15 +509,25 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR") ||
-                        role.equalsIgnoreCase("ADR") ||
-                        role.equalsIgnoreCase("BP")) {
-                    Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
-                } else {
-                    Intent i = new Intent(getApplicationContext(), BAYearWiseReport.class);
-                    startActivity(i);
-                }
+                if (cd.isCurrentDateMatchDeviceDate()) {
+                    if (role.equalsIgnoreCase("FLR") ||
+                            role.equalsIgnoreCase("ADR") ||
+                            role.equalsIgnoreCase("BP")) {
+                        Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
+                    } else {
+                        if (Checkoutflag) {
 
+                            Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
+
+                        } else {
+                            Intent i = new Intent(getApplicationContext(), BAYearWiseReport.class);
+                            startActivity(i);
+                        }
+                    }
+                } else {
+                    Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+
+                }
             }
         });
 
@@ -464,22 +536,31 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR") ||
-                        role.equalsIgnoreCase("ADR") ||
-                        role.equalsIgnoreCase("BP")) {
-                    Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
-                } else if (role.equalsIgnoreCase("DUB")) {
-                    Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
-                } else {
+                if (cd.isCurrentDateMatchDeviceDate()) {
+                    if (role.equalsIgnoreCase("FLR") ||
+                            role.equalsIgnoreCase("ADR") ||
+                            role.equalsIgnoreCase("BP")) {
+                        Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
+                    } else if (role.equalsIgnoreCase("DUB")) {
+                        Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+                    } else {
                     /*Intent i = new Intent(getApplicationContext(),
                             BAMonthWiseReport.class);
                     startActivity(i);*/
+                        if (Checkoutflag) {
 
-                    Intent i = new Intent(getApplicationContext(),
-                            CategoryWiseDataActivity.class);
-                    startActivity(i);
+                            Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
+
+                        } else {
+                            Intent i = new Intent(getApplicationContext(),
+                                    CategoryWiseDataActivity.class);
+                            startActivity(i);
+                        }
+                    }
+                } else {
+                    Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+
                 }
-
             }
         });
 
@@ -508,22 +589,28 @@ public class DashboardNewActivity extends Activity {
                         startActivity(new Intent(getApplicationContext(),
                                 SaleActivityForFloter.class));
                     } else {
-                        if (calendar.get(Calendar.DAY_OF_MONTH) == 26) {
-                            if (currentdate.after(bocdate)) {
-                                if (sp.getBoolean("DialogDismiss", false) == false) {
+                        if (Checkoutflag) {
 
-                                    Toast.makeText(DashboardNewActivity.this, "Please Data Download First", Toast.LENGTH_LONG).show();
-
-                                } else {
-                                   new CheckNoSale().execute();
-                                }
-                            } else {
-                                new CheckNoSale().execute();
-                            }
+                            Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
 
                         } else {
-                            new CheckNoSale().execute();
+                            if (calendar.get(Calendar.DAY_OF_MONTH) == 26) {
+                                if (currentdate.after(bocdate)) {
+                                    if (sp.getBoolean("DialogDismiss", false) == false) {
 
+                                        Toast.makeText(DashboardNewActivity.this, "Please Data Download First", Toast.LENGTH_LONG).show();
+
+                                    } else {
+                                        new CheckNoSale().execute();
+                                    }
+                                } else {
+                                    new CheckNoSale().execute();
+                                }
+
+                            } else {
+                                new CheckNoSale().execute();
+
+                            }
                         }
                     }
                 } else {
@@ -539,9 +626,19 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                startActivity(new Intent(getApplicationContext(),
-                        BocDashBoardActivity.class));
+                if (cd.isCurrentDateMatchDeviceDate()) {
+                    if (Checkoutflag) {
 
+                        Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
+
+                    } else {
+                        startActivity(new Intent(getApplicationContext(),
+                                BocDashBoardActivity.class));
+                    }
+                } else {
+                    Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+
+                }
             }
         });
 
@@ -554,16 +651,26 @@ public class DashboardNewActivity extends Activity {
                 /*startActivity(new Intent(getApplicationContext(),
                         SupervisorAttendance.class));*/
                 //Toast.makeText(mContext,"Coming Soon...!",Toast.LENGTH_LONG).show();
-                if (role.equalsIgnoreCase("FLR") ||
-                        role.equalsIgnoreCase("ADR") ||
-                        role.equalsIgnoreCase("BP")) {
-                    Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
-                } else if (role.equalsIgnoreCase("DUB")) {
-                    Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
-                } else {
-                    fetchCategoryDetails();
-                }
+                if (cd.isCurrentDateMatchDeviceDate()) {
+                    if (role.equalsIgnoreCase("FLR") ||
+                            role.equalsIgnoreCase("ADR") ||
+                            role.equalsIgnoreCase("BP")) {
+                        Toast.makeText(mContext, "This page is not Enabled for you", Toast.LENGTH_LONG).show();
+                    } else if (role.equalsIgnoreCase("DUB")) {
+                        Toast.makeText(mContext, "Coming Soon...!", Toast.LENGTH_LONG).show();
+                    } else {
+                        if (Checkoutflag) {
 
+                            Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
+
+                        } else {
+                            fetchCategoryDetails();
+                        }
+                    }
+                } else {
+                    Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+
+                }
             }
         });
 
@@ -1074,29 +1181,29 @@ public class DashboardNewActivity extends Activity {
                                             );
 
 									*//**//*
-                     * soap_result_stock = service.SaveStock(
-                     * stock_array.getString(2),
-                     * stock_array.getString(1), eancode_string,
-                     * username, stock_array.getString(4),
-                     * stock_array.getString(5),
-                     * stock_array.getString(6), shad,
-                     *
-                     * opening_stock_string,
-                     * stock_receive_string,
-                     * stock_in_hand_string,
-                     *
-                     * sold_string, return_salable_string,
-                     * return_non_salable_string,
-                     *
-                     * close_bal_string, gross_amount_string,
-                     *
-                     * discount_string, net_amount_string,
-                     * size_string, price_string,
-                     * stock_array.getString(21)
-                     *
-                     *
-                     * );
-                     *//**//*
+     * soap_result_stock = service.SaveStock(
+     * stock_array.getString(2),
+     * stock_array.getString(1), eancode_string,
+     * username, stock_array.getString(4),
+     * stock_array.getString(5),
+     * stock_array.getString(6), shad,
+     *
+     * opening_stock_string,
+     * stock_receive_string,
+     * stock_in_hand_string,
+     *
+     * sold_string, return_salable_string,
+     * return_non_salable_string,
+     *
+     * close_bal_string, gross_amount_string,
+     *
+     * discount_string, net_amount_string,
+     * size_string, price_string,
+     * stock_array.getString(21)
+     *
+     *
+     * );
+     *//**//*
 
                                     if (soap_result_stock != null) {
                                         String result_stock = soap_result_stock
@@ -2649,23 +2756,23 @@ public class DashboardNewActivity extends Activity {
 
 								// }
 								*//**//*
-                     * } catch (Exception e) { // TODO: handle
-                     * exception e.printStackTrace(); String Error =
-                     * e.toString(); Log.v("","se2 error"); final
-                     * Calendar calendar = Calendar .getInstance();
-                     * SimpleDateFormat formatter = new
-                     * SimpleDateFormat( "MM/dd/yyyy HH:mm:ss");
-                     * String Createddate =
-                     * formatter.format(calendar .getTime()); Flag =
-                     * "4"; int n =
-                     * Thread.currentThread().getStackTrace
-                     * ()[2].getLineNumber(); db.open();
-                     * db.insertSyncLog(Error,String.valueOf(n),
-                     * "SyncStockData()"
-                     * ,Createddate,Createddate,sp.getString
-                     * ("username", ""),"SyncStockData()","Fail");
-                     * db.close(); }
-                     *//**//*
+     * } catch (Exception e) { // TODO: handle
+     * exception e.printStackTrace(); String Error =
+     * e.toString(); Log.v("","se2 error"); final
+     * Calendar calendar = Calendar .getInstance();
+     * SimpleDateFormat formatter = new
+     * SimpleDateFormat( "MM/dd/yyyy HH:mm:ss");
+     * String Createddate =
+     * formatter.format(calendar .getTime()); Flag =
+     * "4"; int n =
+     * Thread.currentThread().getStackTrace
+     * ()[2].getLineNumber(); db.open();
+     * db.insertSyncLog(Error,String.valueOf(n),
+     * "SyncStockData()"
+     * ,Createddate,Createddate,sp.getString
+     * ("username", ""),"SyncStockData()","Fail");
+     * db.close(); }
+     *//**//*
 
 							} else if (soap_result1.getProperty("status")
 									.toString().equalsIgnoreCase("E")) {
@@ -2678,12 +2785,12 @@ public class DashboardNewActivity extends Activity {
 										.UpdateTableData(db_stock_id_array,
 												"S", EmpId);
 								*//**//*
-                     * Log.e("",
-                     * "soap_update_stock_row= "+soap_update_stock_row
-                     * .toString());
-                     *
-                     * Log.e("", "string ids== "+db_stock_id_array);
-                     *//**//*
+     * Log.e("",
+     * "soap_update_stock_row= "+soap_update_stock_row
+     * .toString());
+     *
+     * Log.e("", "string ids== "+db_stock_id_array);
+     *//**//*
                                 SimpleDateFormat dateFormat = new SimpleDateFormat(
 										"MM/dd/yyyy HH:mm:ss");
 								// get current date time with Date()
@@ -4936,7 +5043,7 @@ public class DashboardNewActivity extends Activity {
 
         }
 
-        }
+    }
 
 
     public class InsertProductMaster extends AsyncTask<Void, Void, SoapObject> {
@@ -5987,14 +6094,14 @@ public class DashboardNewActivity extends Activity {
             sld1 = sld[0];
 
 
-            if(sp.getString("checkoutDate", "")!= null &&
+            if (sp.getString("checkoutDate", "") != null &&
                     !sp.getString("checkoutDate", "").equalsIgnoreCase("")) {
                 if (sp.getString("checkoutDate", "").equalsIgnoreCase(sld1)) {
                     saleDate = sld1;
                 } else {
                     saleDate = sp.getString("checkoutDate", "");
                 }
-            }else{
+            } else {
                 saleDate = sld1;
             }
 
@@ -6053,34 +6160,38 @@ public class DashboardNewActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         // TODO Auto-generated method stub
-                        out.setEnabled(false);
+                        if (cd.isCurrentDateMatchDeviceDate()) {
+                            out.setEnabled(false);
 
-                        new Handler().postDelayed(new Runnable() {
+                            new Handler().postDelayed(new Runnable() {
 
-                            @Override
-                            public void run() {
-                                // This method will be executed once the timer is over
-                                out.setEnabled(true);
-                                Log.d(TAG, "resend1");
+                                @Override
+                                public void run() {
+                                    // This method will be executed once the timer is over
+                                    out.setEnabled(true);
+                                    Log.d(TAG, "resend1");
 
-                            }
-                        }, 5000);// set time as per your requirement
+                                }
+                            }, 5000);// set time as per your requirement
 
-                        Date date = new Date();
-                        @SuppressLint("SimpleDateFormat")
-                        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            Date date = new Date();
+                            @SuppressLint("SimpleDateFormat")
+                            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-                        attendanceDate1 = form.format(date);
-                        Log.v("", "attendanceDate1=" + attendanceDate1);
+                            attendanceDate1 = form.format(date);
+                            Log.v("", "attendanceDate1=" + attendanceDate1);
 
-                        String sld[] = attendanceDate1.split(" ");
-                        final String sld1 = sld[0];
+                            String sld[] = attendanceDate1.split(" ");
+                            final String sld1 = sld[0];
 
-                        db.open();
-                        db.updateAttendance(username, sld1);
-                        db.close();
-                        new SaveLogoutTime().execute();
+                            db.open();
+                            db.updateAttendance(username, sld1);
+                            db.close();
+                            new SaveLogoutTime().execute();
+                        } else {
+                            Toast.makeText(DashboardNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
 
+                        }
                     }
                 });
 
@@ -6305,6 +6416,10 @@ public class DashboardNewActivity extends Activity {
             if (result != null) {
                 if (result.toString().equalsIgnoreCase("true")) {
 
+                    boolean checkout = false;
+                    spe.putBoolean("Checkoutvalue", checkout);
+                    spe.commit();
+
                     if (!saleDate.equalsIgnoreCase(sld1)) {
                         Intent i = new Intent(getApplicationContext(), AttendanceFragment.class);
                         i.putExtra("FromLoginpage", "L");
@@ -6373,12 +6488,12 @@ public class DashboardNewActivity extends Activity {
                                 Flag = "1";
                             } else if (saleflag.equalsIgnoreCase("FALSE")) {
                                 Flag = "2";
-                            }else if (saleflag.equalsIgnoreCase("SE")) {
+                            } else if (saleflag.equalsIgnoreCase("SE")) {
                                 Flag = "SE";
 
                             }
                         }
-                    }else {
+                    } else {
 
                         final Calendar calendar = Calendar.getInstance();
                         SimpleDateFormat formatter = new SimpleDateFormat(
@@ -6449,18 +6564,18 @@ public class DashboardNewActivity extends Activity {
 
     }
 
-      private void DisplayDialogMessage(String msg) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
-            builder.setMessage(msg)
-                    .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            //do things
-                            dialog.dismiss();
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
-        }
+    private void DisplayDialogMessage(String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);
+        builder.setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //do things
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
 
 }

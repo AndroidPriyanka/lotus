@@ -277,21 +277,25 @@ public class FocusActivity extends Activity implements View.OnClickListener {
 
             case R.id.btn_returnproced:
 
-                btn_returnproced.setEnabled(false);
+                if (cd.isCurrentDateMatchDeviceDate()) {
+                    btn_returnproced.setEnabled(false);
 
-                new Handler().postDelayed(new Runnable() {
+                    new Handler().postDelayed(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        // This method will be executed once the timer is over
-                        btn_returnproced.setEnabled(true);
-                        Log.d(TAG, "resend1");
+                        @Override
+                        public void run() {
+                            // This method will be executed once the timer is over
+                            btn_returnproced.setEnabled(true);
+                            Log.d(TAG, "resend1");
 
-                    }
-                }, 5000);
+                        }
+                    }, 5000);
 
-                stockProceedData();
+                    stockProceedData();
+                } else {
+                    Toast.makeText(FocusActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
 
+                }
                 break;
 
             case R.id.btn_home:
@@ -422,14 +426,14 @@ public class FocusActivity extends Activity implements View.OnClickListener {
                         db.open();
                         Cursor cur = db.getuniquedataFocusData(arr_selectedType.get(i),
                                 selected_product_category,
-                                username,boc, "focus_data");
+                                username, boc, "focus_data");
 
                         int count = cur.getCount();
                         Log.v("", "" + count);
                         db.close();
                         if (count > 0) {
                             db.open();
-                            db.update( arr_selectedType.get(i),
+                            db.update(arr_selectedType.get(i),
                                     new String[]{
                                             "",
                                             arr_selectedType.get(i),

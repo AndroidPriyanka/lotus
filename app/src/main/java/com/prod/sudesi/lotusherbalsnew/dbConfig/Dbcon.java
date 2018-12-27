@@ -4421,4 +4421,20 @@ public class Dbcon {
 
     }
 
+
+    public int checkTodaySale(String username, String date) {
+        // TODO Auto-generated method stub
+
+        Cursor c;
+        int count = 0;
+
+        String sql = "select * from stock where emp_id = '" + username + "' and  insert_date LIKE " + "'%" + date + "%'";
+        c = database.rawQuery(sql, null);
+        if (c != null && c.moveToFirst()) {
+            count = c.getCount();
+        }
+
+        return count;
+    }
+
 }

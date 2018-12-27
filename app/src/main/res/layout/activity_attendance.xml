@@ -94,4 +94,19 @@
         android:gravity="center"
         android:numColumns="7"></GridView>
 
+
+    <Button
+        android:id="@+id/bt_save"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginLeft="@dimen/_50sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginRight="@dimen/_50sdp"
+        android:text="Previous BOC"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textAllCaps="false"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:background="@drawable/header" />
+
 </LinearLayout>

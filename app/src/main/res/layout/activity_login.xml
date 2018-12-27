@@ -38,7 +38,7 @@
                 android:maxLength="12"
                 android:paddingLeft="@dimen/_10sdp"
                 android:singleLine="true"
-                android:text=""/>
+                android:text="LHR-9997"/>
 
             <EditText
                 android:id="@+id/edt_password"
@@ -52,7 +52,7 @@
                 android:maxLength="12"
                 android:paddingLeft="@dimen/_10sdp"
                 android:singleLine="true"
-                android:text="" />
+                android:text="password" />
 
             <Button
                 android:id="@+id/btn_login"

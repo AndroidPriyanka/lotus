@@ -103,6 +103,7 @@ import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibraryConstants
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class AttendanceFragment extends AppCompatActivity implements OnClickListener {
 
+    String attendancedate;
     String attendance_flag;
     String leavetype_flag;
     String uploadflag;
@@ -668,14 +669,86 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         @Override
         public void onClick(final View view) {
 
-            if (role.equalsIgnoreCase("FLR")||
-                    role.equalsIgnoreCase("ADR")||
+            if (role.equalsIgnoreCase("FLR") ||
+                    role.equalsIgnoreCase("ADR") ||
                     role.equalsIgnoreCase("BP")) {
 
                 showingPresentdialog(view);
 
-            }else {
-                new GetCheckout(view).execute();
+            } else {
+                String serverddate = sp.getString("currentdate", "");
+                String[] parts = serverddate.split(" ");
+                String serverdd = parts[0];
+
+                String date_month_year = (String) view.getTag();
+
+                Calendar c = Calendar.getInstance();
+                year1 = c.get(Calendar.YEAR);
+                month1 = c.get(Calendar.MONTH);
+                day1 = c.get(Calendar.DAY_OF_MONTH);
+                String currentDate = String.valueOf(day1) + "-" + "0"
+                        + String.valueOf(month1 + 1) + "-" + String.valueOf(year1);
+                Log.e("Selected date", date_month_year);
+                Log.e("currentDate", currentDate);
+
+
+                if (date_month_year != null) {
+                    if (date_month_year.contains("-")) {
+                        String d[] = date_month_year.split("-");
+
+                        Log.v("checklength==", "" + d[0].length());
+                        if (d[0].length() < 2) {
+                            Log.v("", "checklength1==");
+                            attendanceDate = "0" + d[0] + "-" + getmonthNo(d[1])
+                                    + "-" + d[2];
+                            attendmonth = getmonthNo(d[1]);
+
+                        } else {
+                            attendanceDate = d[0] + "-" + getmonthNo(d[1]) + "-"
+                                    + d[2];
+                            attendmonth = getmonthNo(d[1]);
+
+                        }
+
+                    }
+                }
+                Log.e("attendanceDate", attendanceDate);
+
+
+                String d[] = date_month_year.split("-");
+                String daa = "";
+                if (d[0].length() > 0) {
+
+                    daa = "0" + d[0];
+                }
+                String aattddate = d[2] + "-" + getmonthNo(d[1]) + "-"
+                        + daa;
+                Log.e("aattddate==", aattddate);
+                // if(checkholiday(attendanceDate)){
+                db.open();
+                //	if ((db.isholiday(attendanceDate)).toString().length() > 0) {
+                if ((db.isholiday(aattddate)).toString().length() > 0) {
+
+                    Toast.makeText(context,
+                            "Its holliday for " + db.isholiday(aattddate),
+                            Toast.LENGTH_SHORT).show();
+                    db.close();
+                } else if (afterdateValidate(attendanceDate)) {
+                    db.close();
+                    Toast.makeText(context, "Select Current Date only",
+                            Toast.LENGTH_SHORT).show();
+
+                } else if (beforedatevalidate(attendanceDate, currentDate)) {
+                    db.close();
+                    Toast.makeText(context, "Select Current Date only",
+                            Toast.LENGTH_SHORT).show();
+
+                } else if (afterdateChangeValidate(serverdd)) {
+                    Toast.makeText(context, "Please Check your Handset Date",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    new GetCheckout(view).execute();
+                }
             }
 
         }
@@ -1953,11 +2026,11 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
         String Flag = "";
 
-       // private WeakReference view;
+        // private WeakReference view;
 
-         private View view;
+        private View view;
 
-        public GetCheckout(View view){
+        public GetCheckout(View view) {
             this.view = view; // this you can use ahead wherever required
         }
 
@@ -1993,7 +2066,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                             if (flag.equalsIgnoreCase("True")) {
                                 Flag = "1";
 
-                            }else if (flag.equalsIgnoreCase("False")) {
+                            } else if (flag.equalsIgnoreCase("False")) {
                                 Flag = "2";
                                 String previousdate = cd.getNonNullValues(String.valueOf(soap_result.getProperty("LastDateRecord")));
 
@@ -2012,7 +2085,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
                                 spe.putString("checkoutDate", sld1);
                                 spe.commit();
-                            }else if (flag.equalsIgnoreCase("SE")) {
+                            } else if (flag.equalsIgnoreCase("SE")) {
                                 Flag = "SE";
 
                             }
@@ -2022,8 +2095,8 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                 } else if (soap_result.toString().equalsIgnoreCase("FALSE")) {
                                     Flag = "2";
                                 }*/
-                            }
-                        }else {
+                        }
+                    } else {
 
                         final Calendar calendar = Calendar.getInstance();
                         SimpleDateFormat formatter = new SimpleDateFormat(
@@ -2076,21 +2149,45 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
             } else if (Flag.equalsIgnoreCase("2")) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceFragment.this);
-                builder.setMessage("Please Punch your Checkout Time")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //do things
-                                Intent i = new Intent(context, DashboardNewActivity.class);
-                                startActivity(i);
-                                dialog.dismiss();
+                attendancedate = sp.getString("checkoutDate", "");
 
-                            }
-                        });
-                AlertDialog alert = builder.create();
-                alert.show();
-            }else if (Flag.equalsIgnoreCase("SE")) {
+                Date date = new Date();
+                @SuppressLint("SimpleDateFormat")
+                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                attendanceDate1 = form.format(date);
+                Log.v("", "attendanceDate1=" + attendanceDate1);
+
+                String sld[] = attendanceDate1.split(" ");
+                String todaydate = sld[0];
+
+                if (attendancedate.equalsIgnoreCase(todaydate)) {
+
+                    showingPresentdialog(view);
+
+                } else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceFragment.this);
+                    builder.setMessage("Please Punch your Checkout Time")
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //do things
+                                    boolean checkout = true;
+                                    spe.putBoolean("Checkoutvalue", checkout);
+                                    spe.commit();
+
+                                    Intent i = new Intent(context, DashboardNewActivity.class);
+                                    i.putExtra("Checkout", "check");
+                                    startActivity(i);
+                                    dialog.dismiss();
+
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+            } else if (Flag.equalsIgnoreCase("SE")) {
 
                 Toast.makeText(
                         getApplicationContext(),

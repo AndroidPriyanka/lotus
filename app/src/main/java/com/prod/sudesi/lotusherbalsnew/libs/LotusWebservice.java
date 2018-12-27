@@ -2054,6 +2054,32 @@ public class LotusWebservice {
         return result;
     }
 
+
+    public SoapPrimitive CheckNoSaleAndCheckout(String EmpId, String LMD) {
+        SoapPrimitive result = null;
+        try {
+            Log.v("", "CheckNoSaleAndCheckout service called");
+            SoapObject request = new SoapObject("http://tempuri.org/", "CheckNoSaleAndCheckout");
+            Log.v("", "EmpId==" + EmpId);
+            request.addProperty("EmpId", EmpId);
+            request.addProperty("LMD", LMD);
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);// soap envelop with version
+            envelope.setOutputSoapObject(request); // set request object
+            envelope.dotNet = true;
+
+            HttpTransportSE androidHttpTransport = new HttpTransportSE(url, 60000);// http
+            // transport call
+            androidHttpTransport.call("http://tempuri.org/IService1/CheckNoSaleAndCheckout", envelope);
+
+            result = (SoapPrimitive) envelope.getResponse();
+            Log.e("CheckNoSaleAndCheckout=", result.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     //------------------------------END--------------------------------------
 
 

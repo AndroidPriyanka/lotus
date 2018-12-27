@@ -28,6 +28,7 @@ import android.os.StrictMode;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
@@ -260,7 +261,7 @@ public class LoginActivity extends Activity {
 
                             if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(pass) && !TextUtils.isEmpty(VERSION_NAME)) {
                                 // TODO check apk version
-                                new DownloadNewVersion().execute();
+                                new CheckNoSaleAndCheckout().execute();
 
                             } else {
                                 Toast.makeText(getApplicationContext(), "Fields Cannot be Empty", Toast.LENGTH_SHORT).show();
@@ -2958,6 +2959,100 @@ public class LoginActivity extends Activity {
                 break;
 
         }
+    }
+
+    //Sharmila - for checking current day no sale issue
+    public class CheckNoSaleAndCheckout extends AsyncTask<String, Void, SoapObject> {
+
+        ContentValues contentvalues = new ContentValues();
+        private SoapPrimitive soap_result = null;
+
+        String Flag = "";
+
+        String DateLMD;
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+
+            mProgress.setMessage("Please Wait....");
+            mProgress.show();
+            mProgress.setCancelable(false);
+
+        }
+
+        @Override
+        protected SoapObject doInBackground(String... params) {
+            // TODO Auto-generated method stub
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    Date date = new Date();
+                    @SuppressLint("SimpleDateFormat")
+                    SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                    DateLMD = form.format(date);
+                    String lmd[] = DateLMD.split(" ");
+                    String currentdate = lmd[0];
+
+
+                    soap_result = service.CheckNoSaleAndCheckout(username, currentdate);
+
+                    if (soap_result != null) {
+
+                        if (soap_result.toString().equalsIgnoreCase("TRUE")) {
+                            Flag = "1";
+                        } else if (soap_result.toString().equalsIgnoreCase("FALSE")) {
+                            Flag = "2";
+                        }else if (soap_result.toString().equalsIgnoreCase("SE")) {
+                            Flag = "SE";
+
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+
+            if (mProgress != null && mProgress.isShowing() && !LoginActivity.this.isFinishing()) {
+                mProgress.dismiss();
+            }
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(getApplicationContext(), "Connectivity Error, Please check Internet connection!!", Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                Toast.makeText(getApplicationContext(), "You are not allowed to login because," + "\n" + "You already punched checkout for today...", Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+
+                new DownloadNewVersion().execute();
+            }
+            else if (Flag.equalsIgnoreCase("SE")) {
+
+                Toast.makeText(getApplicationContext(),"You Not punch checkout time", Toast.LENGTH_SHORT).show();
+
+            }
+
+        }
+
+
     }
 
 }
