@@ -1,9 +1,12 @@
 package com.prod.sudesi.lotusherbalsnew.libs;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+
+import com.prod.sudesi.lotusherbalsnew.FocusReportActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -14,6 +17,7 @@ public class ConnectionDetector {
     private Context _context;
     SharedPreferences sp;
     SharedPreferences.Editor spe;
+    private ProgressDialog mProgress = null;
 
     public ConnectionDetector(Context context){
 
@@ -79,6 +83,23 @@ public class ConnectionDetector {
             return "0";
         } else {
             return str;
+        }
+    }
+
+    public void showProgressDialog(String msg) {
+        if (mProgress == null) {
+
+            mProgress = new ProgressDialog(_context);
+            mProgress.setMessage(msg);
+            mProgress.setIndeterminate(false);
+            mProgress.setCancelable(false);
+        }
+        mProgress.show();
+    }
+
+    public void dismissProgressDialog() {
+        if (mProgress != null && mProgress.isShowing()) {
+            mProgress.dismiss();
         }
     }
 

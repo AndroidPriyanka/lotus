@@ -95,7 +95,7 @@
         android:numColumns="7"></GridView>
 
 
-    <Button
+   <!-- <Button
         android:id="@+id/bt_save"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
@@ -107,6 +107,6 @@
         android:gravity="center"
         android:textAllCaps="false"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:background="@drawable/header" />
+        android:background="@drawable/header" />-->
 
 </LinearLayout>

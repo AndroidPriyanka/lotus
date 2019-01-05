@@ -17,15 +17,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -37,14 +33,14 @@ import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
 import com.prod.sudesi.lotusherbalsnew.libs.LotusWebservice;
 
-public class BAYearWiseReport extends Activity {
+public class TargetVsAchievmentActivity extends Activity {
 
     SharedPreferences shp;
     SharedPreferences.Editor shpeditor;
 
     Context context;
 
-    private ProgressDialog prgdialog;
+    //private ProgressDialog prgdialog;
 
     private BAReportAdapter adapter;
 
@@ -81,15 +77,15 @@ public class BAYearWiseReport extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_bayear_wise_report_new);
+        setContentView(R.layout.activity_targetvsachivement);
         //////////Crash Report
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
-        context = BAYearWiseReport.this;
+        context = TargetVsAchievmentActivity.this;
 
-        prgdialog = new ProgressDialog(context);
-        service = new LotusWebservice(BAYearWiseReport.this);
-        cd = new ConnectionDetector(BAYearWiseReport.this);
+        //prgdialog = new ProgressDialog(context);
+        service = new LotusWebservice(TargetVsAchievmentActivity.this);
+        cd = new ConnectionDetector(TargetVsAchievmentActivity.this);
 
         shp = context.getSharedPreferences("Lotus", context.MODE_PRIVATE);
         shpeditor = shp.edit();
@@ -303,9 +299,8 @@ public class BAYearWiseReport extends Activity {
             // TODO Auto-generated method stub
             super.onPreExecute();
 
-            prgdialog.setMessage("Please Wait...");
-            prgdialog.show();
-            prgdialog.setCancelable(false);
+            String msg = "Please Wait....";
+            cd.showProgressDialog(msg);
         }
 
         @Override
@@ -313,13 +308,14 @@ public class BAYearWiseReport extends Activity {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
 
-            if (prgdialog != null && prgdialog.isShowing() && !BAYearWiseReport.this.isFinishing()) {
-                prgdialog.dismiss();
+            if (TargetVsAchievmentActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                return;
             }
+            cd.dismissProgressDialog();
 
             if (result.equalsIgnoreCase("1")) {
 
-                Toast.makeText(BAYearWiseReport.this, "Connectivity Error!! Please try again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TargetVsAchievmentActivity.this, "Connectivity Error!! Please try again", Toast.LENGTH_SHORT).show();
             } else {
                 if (role.equalsIgnoreCase("DUB")) {
                     loadReportsforDubai();
@@ -482,12 +478,18 @@ public class BAYearWiseReport extends Activity {
     }
 
     private void loadReports() {
-        adapter = new BAReportAdapter(BAYearWiseReport.this, todaymessagelist);
+        adapter = new BAReportAdapter(TargetVsAchievmentActivity.this, todaymessagelist);
         lv_ba_report.setAdapter(adapter);// add custom adapter to listview
     }
 
     private void loadReportsforDubai() {
-        adapter1 = new BAReportAdapterDubai(BAYearWiseReport.this, todaymessagelist);
+        adapter1 = new BAReportAdapterDubai(TargetVsAchievmentActivity.this, todaymessagelist);
         lv_ba_report.setAdapter(adapter1);
+    }
+
+    @Override
+    protected void onDestroy() {
+        cd.dismissProgressDialog();
+        super.onDestroy();
     }
 }

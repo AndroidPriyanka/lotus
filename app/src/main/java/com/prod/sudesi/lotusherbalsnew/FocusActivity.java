@@ -246,11 +246,11 @@ public class FocusActivity extends Activity implements View.OnClickListener {
                 String s;
                 switch (checkedId) {
                     case R.id.radio_target:
-                        target = true;
+                        /*target = true;
                         report = false;
 
                         table_header.setVisibility(View.VISIBLE);
-                        btn_returnproced.setVisibility(View.VISIBLE);
+                        btn_returnproced.setVisibility(View.VISIBLE);*/
 
                         break;
 

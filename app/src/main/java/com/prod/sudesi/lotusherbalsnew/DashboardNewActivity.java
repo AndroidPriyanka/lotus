@@ -433,7 +433,7 @@ public class DashboardNewActivity extends Activity {
 
                         } else {
                             startActivity(new Intent(getApplicationContext(),
-                                    FocusActivity.class));
+                                    FocusReportActivity.class));
                         }
                     }
                 } else {
@@ -520,7 +520,7 @@ public class DashboardNewActivity extends Activity {
                             Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
 
                         } else {
-                            Intent i = new Intent(getApplicationContext(), BAYearWiseReport.class);
+                            Intent i = new Intent(getApplicationContext(), TargetVsAchievmentActivity.class);
                             startActivity(i);
                         }
                     }

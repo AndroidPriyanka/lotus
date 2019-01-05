@@ -5,10 +5,10 @@ android {
     buildToolsVersion "27.0.1"
     defaultConfig {
         applicationId "com.prod.sudesi.lotusherbalsnew"
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 26
-        versionCode 28
-        versionName "3.3"
+        versionCode 29
+        versionName "3.4"
         multiDexEnabled true
         resConfigs "en"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

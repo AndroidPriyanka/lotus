@@ -38,7 +38,7 @@
                 android:maxLength="12"
                 android:paddingLeft="@dimen/_10sdp"
                 android:singleLine="true"
-                android:text="LHR-9997"/>
+                android:text=""/>
 
             <EditText
                 android:id="@+id/edt_password"
@@ -52,7 +52,7 @@
                 android:maxLength="12"
                 android:paddingLeft="@dimen/_10sdp"
                 android:singleLine="true"
-                android:text="password" />
+                android:text="" />
 
             <Button
                 android:id="@+id/btn_login"
@@ -84,7 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="(Lotus_India_UAT_v3.3)"
+                android:text="(Lotus_India_PRO_v3.4)"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#B6B6B4"
                 android:textStyle="italic" />

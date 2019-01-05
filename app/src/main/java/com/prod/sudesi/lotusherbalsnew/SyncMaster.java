@@ -113,8 +113,8 @@ public class SyncMaster extends Activity {
     ArrayList<HashMap<String, String>> listofimages = new ArrayList<HashMap<String, String>>();
     ArrayList<String> uploadidlist;
 
-    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
-//    public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
+//    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
+    public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
 
     //    public static String URL = "http://192.168.0.136:81/lotusapi/api/Stock/SaveStock";
     private JSONArray array;
@@ -1342,6 +1342,310 @@ public class SyncMaster extends Activity {
             }
         }
 
+        String Erro_function = "";
+
+        String Flag;
+
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+
+            mProgress.setMessage("Please Wait");
+            mProgress.show();
+            mProgress.setCancelable(false);
+        }
+
+        @Override
+        protected SoapObject doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "3";
+
+            } else {
+
+                try {
+                    Flag = "1";
+
+                    // -------------------------
+
+                    try {
+
+                        ContentValues contentvalues = new ContentValues();
+                        HashMap<String, String> map = new HashMap<String, String>();
+                        listofsyncerrorlog.clear();
+                        map.clear();
+                        db.open();
+                        listofsyncerrorlog = db.GETERRORLOGS();
+
+                        if (listofsyncerrorlog.size() > 0) {
+
+                            Log.i("No. of  Syn Error Log ",
+                                    String.valueOf(listofsyncerrorlog.size()));
+
+                            String eid;
+                            String Exception;
+                            String Lineno;
+                            String Method;
+                            String username_r;
+                            String sync_method;
+                            String status;
+                            String errordate;
+
+                            for (int m = 0; m < listofsyncerrorlog.size(); m++) {
+
+                                map = listofsyncerrorlog.get(m);
+
+                                if (map.get("ID") != null) {
+
+                                    eid = map.get("ID");
+                                } else {
+
+                                    eid = "";
+                                }
+                                // String eid = map.get("ID");
+                                if (map.get("EXCEPTION") != null) {
+
+                                    Exception = map.get("EXCEPTION");
+                                } else {
+                                    Exception = "";
+                                }
+                                // String Exception = map.get("EXCEPTION");
+                                if (map.get("LINE_NO") != null) {
+                                    Lineno = map.get("LINE_NO");
+
+                                } else {
+                                    Lineno = "";
+                                }
+                                if (map.get("METHOD") != null) {
+
+                                    Method = map.get("METHOD");
+                                } else {
+                                    Method = "";
+                                }
+                                // String Lineno = map.get("LINE_NO");
+                                // String Method = map.get("METHOD");
+                                if (map.get("USERNAME") != null) {
+
+                                    username_r = map.get("USERNAME");
+
+                                } else {
+
+                                    username_r = "";
+                                }
+                                if (map.get("SYNCMETHOD") != null) {
+
+                                    sync_method = map.get("SYNCMETHOD");
+                                } else {
+
+                                    sync_method = "";
+                                }
+
+                                if (map.get("RESULT") != null) {
+
+                                    status = map.get("RESULT");
+                                } else {
+
+                                    status = "";
+                                }
+
+                                if (map.get("CREATED_DATE") != null) {
+
+                                    errordate = map.get("CREATED_DATE");
+                                } else {
+
+                                    errordate = "";
+                                }
+                                // String username = map.get("USERNAME");
+                                // String sync_method = map
+                                // .get("SYNCMETHOD");
+                                // String status = map.get("RESULT");
+
+                                SoapPrimitive soapObj123;
+                                soapObj123 = service.StoreErrorLogTablettxt(
+                                        Exception, Lineno, Method, username_r,
+                                        sync_method, status, errordate);
+
+                                if (soapObj123 != null) {
+
+                                    String statussss = soapObj123.toString();
+
+                                    if (statussss.equalsIgnoreCase("True")) {
+
+                                        final Calendar calendar = Calendar
+                                                .getInstance();
+                                        SimpleDateFormat formatter = new SimpleDateFormat(
+                                                "MM/dd/yyyy HH:mm:ss");
+                                        String date = formatter.format(calendar
+                                                .getTime());
+
+                                        contentvalues.clear();
+                                        // contentvalues.put("LAST_SYNC",
+                                        // date);
+                                        contentvalues.put("FLAG", "U");
+                                        /*db.update("SYNC_LOG", "FLAG = ?", new String[]{"U"},
+                                                new String[]{"ID"}, new String[]{ eid});*/
+                                        db.updatevalues("SYNC_LOG",
+                                                contentvalues, "ID", eid);
+                                        db.delete_errorlog_data();
+
+                                    } else if (statussss.equalsIgnoreCase("SE")) {
+
+                                        ErroFlag = "0";
+                                        Erro_function = "StoreErrorLogTablettxt_Upload_SE";
+
+                                        final Calendar calendar1 = Calendar
+                                                .getInstance();
+                                        SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                                "MM/dd/yyyy HH:mm:ss");
+                                        String Createddate = formatter1
+                                                .format(calendar1.getTime());
+
+                                        int n = Thread.currentThread()
+                                                .getStackTrace()[2]
+                                                .getLineNumber();
+
+                                        db.insertSyncLog(
+                                                "StoreErrorLogTablettxt_Upload_SE",
+                                                String.valueOf(n),
+                                                "StoreErrorLogTablettxt()",
+                                                Createddate, Createddate,
+                                                username,
+                                                "StoreErrorLogTablettxt()",
+                                                "Fail");
+
+                                    }
+
+                                } else {
+                                    ErroFlag = "0";
+                                    Erro_function = "StoreErrorLogTablettxt_Upload";
+
+                                    final Calendar calendar1 = Calendar
+                                            .getInstance();
+                                    SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                            "MM/dd/yyyy HH:mm:ss");
+                                    String Createddate = formatter1
+                                            .format(calendar1.getTime());
+
+                                    int n = Thread.currentThread()
+                                            .getStackTrace()[2].getLineNumber();
+
+                                    db.insertSyncLog(
+                                            "Internet Connection Lost, Soap in giving null while 'StoreErrorLogTablettxt'",
+                                            String.valueOf(n),
+                                            "StoreErrorLogTablettxt()",
+                                            Createddate, Createddate,
+                                            username,
+                                            "StoreErrorLogTablettxt()", "Fail");
+
+                                    // String errors=
+                                    // "Internet Connection lost!! Soap in giving null while 'StoreErrorLogTablettxt_Upload' and 'checkSyncFlag = 0' in Upload data Sync";
+                                    // we.writeToSD(errors.toString());
+
+                                    Log.e("Error in Sync Error log", String
+                                            .valueOf(listofsyncerrorlog.size()));
+                                }
+
+                            }
+
+                        } else if (listofsyncerrorlog == null) {
+
+                        } else {
+                            Log.e("NoSync errorupload",
+                                    String.valueOf(listofsyncerrorlog.size()));
+
+                        }
+
+                    } catch (Exception e) {
+
+                        StringWriter errors = new StringWriter();
+                        e.printStackTrace(new PrintWriter(errors));
+
+                        e.printStackTrace();
+                        // we.writeToSD(errors.toString());
+                        String error = e.toString();
+
+                        final Calendar calendar1 = Calendar.getInstance();
+                        SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss");
+                        String Createddate = formatter1.format(calendar1
+                                .getTime());
+
+                        int n = Thread.currentThread().getStackTrace()[2]
+                                .getLineNumber();
+
+                        db.insertSyncLog(error, String.valueOf(n),
+                                "StoreErrorLogTablettxt()", Createddate,
+                                Createddate, username,
+                                "StoreErrorLogTablettxt()", "Fail");
+
+                    }
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+            if (mProgress != null && mProgress.isShowing() && !SyncMaster.this.isFinishing()) {
+                mProgress.dismiss();
+            }
+            if (Flag.equalsIgnoreCase("3")) {
+
+                Toast.makeText(getApplicationContext(), "Connectivity Error Please check internet", Toast.LENGTH_SHORT).show();
+
+            }
+            Log.d("Errr flag is", "" + ErroFlag);
+            if (ErroFlag.equalsIgnoreCase("0")) {
+
+                DisplayDialogMessage("Uploading data Incomplete !! Check Data Network & Try again");
+            }
+            if (ErroFlag.equalsIgnoreCase("1")) {
+
+                DisplayDialogMessage("Data Upload Completed Successfully!!");
+            }
+
+        }
+
+        private void DisplayDialogMessage(String msg) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(SyncMaster.this);
+            builder.setMessage(msg)
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            //do things
+                            dialog.dismiss();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+
+    }
+
+   /* public class syncAllData extends AsyncTask<Void, Void, SoapObject> {
+
+        public syncAllData(String flag) {
+            super();
+            // do stuff
+            if (flag.equalsIgnoreCase("TRUE")) {
+                ErroFlag = "1";
+            } else {
+                ErroFlag = "0";
+            }
+        }
+
         private SoapPrimitive soap_result = null;
 
         SoapPrimitive soap_result_img = null;
@@ -1394,7 +1698,7 @@ public class SyncMaster extends Activity {
                 try {
                     Flag = "1";
                     //ErroFlag = "1";
-/*
+*//*
                     try {
                         db.open();
 
@@ -1531,9 +1835,9 @@ public class SyncMaster extends Activity {
                                 "SaveTesterData()", "Fail");
 
                     }
-*/
+*//*
 
-					/*try {
+					*//*try {
 						db.open();
 						attendance_array = db.getAttendanceData();
 
@@ -1666,16 +1970,16 @@ public class SyncMaster extends Activity {
 								username,
 								"SaveAttendance()", "Fail");
 
-					}*/
+					}*//*
 
-                    /*try {
+                    *//*try {
                         Log.e("", "saveto server1-stcok");
                         db.open();
                         stock_array = db.getStockdetails();
                         // db.close();
                         // ------------------
 
-                        *//*for (stock_array.moveToFirst(); !stock_array.isAfterLast(); stock_array.moveToNext()) {
+                        *//**//*for (stock_array.moveToFirst(); !stock_array.isAfterLast(); stock_array.moveToNext()) {
                             // do what you need with the cursor here
                             String shad;
                             for (int i = 0; i < stock_array.getCount(); i++) {
@@ -1722,7 +2026,7 @@ public class SyncMaster extends Activity {
                                 }
                                 array.put(obj);
                             }
-                        }*//*
+                        }*//**//*
 
                         if (stock_array.getCount() > 0) {
 
@@ -1940,7 +2244,7 @@ public class SyncMaster extends Activity {
                                 username, "SaveStock()",
                                 "Fail");
 
-                    }*/
+                    }*//*
                     // -----------------------------------boc day wise data
                     // -----------------------------------------------//
                     final Calendar calendar123 = Calendar.getInstance();
@@ -2292,7 +2596,7 @@ public class SyncMaster extends Activity {
 
                     // ----------------------------visibility
 
-/*                    try {
+*//*                    try {
 
                         Log.e("in weservice", "statrt- visibility");
 
@@ -2357,7 +2661,7 @@ public class SyncMaster extends Activity {
                                                 upload_image = db
                                                         .getimageDetails1();
 
-												*//*
+												*//**//*
                      * if (upload_image != null &&
                      * upload_image.moveToFirst()) {
                      *
@@ -2374,7 +2678,7 @@ public class SyncMaster extends Activity {
                      *
                      *
                      * }
-                     *//*
+                     *//**//*
                                                 if (upload_image.getCount() > 0) {
 
                                                     if (upload_image != null
@@ -2793,7 +3097,7 @@ public class SyncMaster extends Activity {
 
                                                 }
 
-												*//*
+												*//**//*
                      * String image_name_return =
                      * ImageUtils
                      * .getCompressedImagePath(
@@ -2813,7 +3117,7 @@ public class SyncMaster extends Activity {
                      *
                      *
                      * }
-                     *//*
+                     *//**//*
 
                                             } while (image_array1.moveToNext());
 
@@ -2858,7 +3162,7 @@ public class SyncMaster extends Activity {
                                     String.valueOf(image_array.getCount()));
                         }
 
-						*//*
+						*//**//*
                      * if(soap_result_img != null && soap_result_img_data
                      * !=null &&
                      * !soap_result_img_data.toString().equalsIgnoreCase
@@ -2879,7 +3183,7 @@ public class SyncMaster extends Activity {
                      * db.close();
                      *
                      * } }
-                     *//*
+                     *//**//*
                     } catch (Exception e) {
 
                         e.printStackTrace();
@@ -2902,7 +3206,7 @@ public class SyncMaster extends Activity {
                                 "Fail");
 
                     }
-*/
+*//*
                     // -------------------------
 
                     try {
@@ -3019,8 +3323,8 @@ public class SyncMaster extends Activity {
                                         // contentvalues.put("LAST_SYNC",
                                         // date);
                                         contentvalues.put("FLAG", "U");
-                                        /*db.update("SYNC_LOG", "FLAG = ?", new String[]{"U"},
-                                                new String[]{"ID"}, new String[]{ eid});*/
+                                        *//*db.update("SYNC_LOG", "FLAG = ?", new String[]{"U"},
+                                                new String[]{"ID"}, new String[]{ eid});*//*
                                         db.updatevalues("SYNC_LOG",
                                                 contentvalues, "ID", eid);
                                         db.delete_errorlog_data();
@@ -3269,16 +3573,16 @@ public class SyncMaster extends Activity {
 
                 DisplayDialogMessage("Uploading data Incomplete !! Check Data Network & Try again");
 
-			/*	Toast.makeText(getApplicationContext(),
+			*//*	Toast.makeText(getApplicationContext(),
 						"Uploading data Incomplete !! Try again",
-						Toast.LENGTH_SHORT).show();*/
+						Toast.LENGTH_SHORT).show();*//*
             }
             if (ErroFlag.equalsIgnoreCase("1")) {
 
                 DisplayDialogMessage("Data Upload Completed Successfully!!");
-				/*Toast.makeText(getApplicationContext(),
+				*//*Toast.makeText(getApplicationContext(),
 						"Data Upload Completed Successfully!!",
-						Toast.LENGTH_SHORT).show();*/
+						Toast.LENGTH_SHORT).show();*//*
             }
 
         }
@@ -3298,7 +3602,7 @@ public class SyncMaster extends Activity {
             alert.show();
         }
 
-    }
+    }*/
 
    /* public class InsertFirstTimeMaster extends
             AsyncTask<Void, Void, SoapObject> {
@@ -7320,7 +7624,7 @@ public class SyncMaster extends Activity {
 
                         }
 
-                        String boc = cd.getBocName();
+                        /*String boc = cd.getBocName();
                         soap_result = service.GetFOCUSReport(boc, username);//strDate
 
                         if (soap_result != null) {
@@ -7387,7 +7691,7 @@ public class SyncMaster extends Activity {
                                     username, "Focus Data",
                                     "Fail");
 
-                        }
+                        }*/
 
                     }
 

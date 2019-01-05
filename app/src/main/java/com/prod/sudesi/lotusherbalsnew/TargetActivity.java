@@ -45,7 +45,7 @@ public class TargetActivity extends Activity {
     SharedPreferences shp;
     SharedPreferences.Editor shpeditor;
     LotusWebservice service;
-    private ProgressDialog pd;
+    //private ProgressDialog pd;
     ConnectionDetector cd;
     Dbcon db;
 
@@ -82,7 +82,7 @@ public class TargetActivity extends Activity {
         et_targetamt = (EditText) findViewById(R.id.et_targetamt);
         btn_targetproceed = (Button) findViewById(R.id.btn_targetproceed);
 
-        pd = new ProgressDialog(this);
+        //pd = new ProgressDialog(this);
         service = new LotusWebservice(this);
         cd = new ConnectionDetector(this);
         db = new Dbcon(this);
@@ -298,9 +298,8 @@ public class TargetActivity extends Activity {
         protected void onPreExecute() {
             // TODO Auto-generated method stub
 
-            pd.setMessage("Please Wait....");
-            pd.show();
-            pd.setCancelable(false);
+            String msg = "Please Wait....";
+            cd.showProgressDialog(msg);
 
         }
 
@@ -345,9 +344,10 @@ public class TargetActivity extends Activity {
         protected void onPostExecute(SoapObject result) {
             // TODO Auto-generated method stub
 
-            if (pd != null && pd.isShowing() && !TargetActivity.this.isFinishing()) {
-                pd.dismiss();
+            if (TargetActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                return;
             }
+            cd.dismissProgressDialog();
 
             if (Flag.equalsIgnoreCase("0")) {
 
@@ -370,6 +370,12 @@ public class TargetActivity extends Activity {
 
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        cd.dismissProgressDialog();
+        super.onDestroy();
     }
 
 }

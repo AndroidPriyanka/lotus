@@ -55,7 +55,7 @@ public class BocCumulativeDashboardActivity extends Activity {
     private Context context;
     ArrayList<HashMap<String, String>> skin_array, color_array, total_array, final_array;
     LotusWebservice service;
-    private ProgressDialog prgdialog;
+    //private ProgressDialog prgdialog;
     Date startdate, enddate;
     TableLayout tl_cumulative, tl_cumulativeD;
     String year, year1;
@@ -94,7 +94,7 @@ public class BocCumulativeDashboardActivity extends Activity {
         cd = new ConnectionDetector(BocCumulativeDashboardActivity.this);
 
         service = new LotusWebservice(BocCumulativeDashboardActivity.this);
-        prgdialog = new ProgressDialog(BocCumulativeDashboardActivity.this);
+        //prgdialog = new ProgressDialog(BocCumulativeDashboardActivity.this);
 
 
         Intent intent = getIntent();
@@ -396,18 +396,18 @@ public class BocCumulativeDashboardActivity extends Activity {
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            prgdialog.setMessage("Please Wait...");
-            prgdialog.show();
-            prgdialog.setCancelable(false);
+            String msg = "Please Wait....";
+            cd.showProgressDialog(msg);
         }
 
         @Override
         protected void onPostExecute(String result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-            if (prgdialog != null && prgdialog.isShowing() && !BocCumulativeDashboardActivity.this.isFinishing()) {
-                prgdialog.dismiss();
+            if (BocCumulativeDashboardActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                return;
             }
+            cd.dismissProgressDialog();
 
         /*    for (int i = 0; i < final_array.size(); i++) {
                 Log.d("In ginalk loop", "" + i);
@@ -477,6 +477,12 @@ public class BocCumulativeDashboardActivity extends Activity {
 */
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        cd.dismissProgressDialog();
+        super.onDestroy();
     }
 
     public class DashbardDataForDubai extends AsyncTask<Void, Void, String> {
@@ -595,18 +601,18 @@ public class BocCumulativeDashboardActivity extends Activity {
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            prgdialog.setMessage("Please Wait...");
-            prgdialog.show();
-            prgdialog.setCancelable(false);
+            String msg = "Please Wait....";
+            cd.showProgressDialog(msg);
         }
 
         @Override
         protected void onPostExecute(String result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-            if (prgdialog != null && prgdialog.isShowing() && !BocCumulativeDashboardActivity.this.isFinishing()) {
-                prgdialog.dismiss();
+            if (BocCumulativeDashboardActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                return;
             }
+            cd.dismissProgressDialog();
 
             db.open();
 

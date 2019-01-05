@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name_pro_pre">Lotus_PRO_v3.2</string>
-    <string name="app_name_pro_curr">Lotus_PRO_v3.3</string>
-    <string name="app_name1">Lotus_UAT_v3.2</string>
-    <string name="app_name2">Lotus_UAT_v3.3</string>
+    <string name="app_name_pro_pre">Lotus_PRO_v3.3</string>
+    <string name="app_name_pro_curr">Lotus_PRO_v3.4</string>
+    <string name="app_name1">Lotus_UAT_v3.3</string>
+    <string name="app_name2">Lotus_UAT_v3.4</string>
     <string name="app_name_floter">Lotus_UAT_Floter_v2.10</string>
     <string name="app_name_dubai">Lotus_Dubai_UAT_v1.0</string>
     <string name="app_name_dubai_pro">Lotus_Dubai_Pro_v1.0</string>
@@ -20,7 +20,7 @@
     <string name="title_activity_v">VActivity</string>
     <string name="action_settings">Settings</string>
     <string name="titile_activity_visibility">VActivity</string>
-    <string name="title_activity_bayear_wise_report">BAYearWiseReport</string>
+    <string name="title_activity_bayear_wise_report">TargetVsAchievment</string>
     <string name="title_activity_bamonth_wise_report">BAMonthWiseReport</string>
     <string name="title_activity_bamonth_report_page">BAMonthReportPage</string>
     <string name="title_activity_new_dashboard">NewDashboardActivity</string>
