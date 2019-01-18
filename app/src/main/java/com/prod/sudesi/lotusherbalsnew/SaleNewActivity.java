@@ -42,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import static android.content.ContentValues.TAG;
 
@@ -137,7 +138,7 @@ public class SaleNewActivity extends Activity implements OnClickListener {
 
         Date date = new Date();
         @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
 
         String attendanceDate1 = form.format(date);
         Log.v("", "attendanceDate1=" + attendanceDate1);
@@ -347,6 +348,18 @@ public class SaleNewActivity extends Activity implements OnClickListener {
             case R.id.bt_save:
 
                 if (cd.isCurrentDateMatchDeviceDate()) {
+                    btnsave.setEnabled(false);
+
+                    new Handler().postDelayed(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            // This method will be executed once the timer is over
+                            btnsave.setEnabled(true);
+                            Log.d(TAG, "resend1");
+
+                        }
+                    }, 5000);// set time as per your requirement
                     new InsertSaleRecord().execute();
                 } else {
                     Toast.makeText(SaleNewActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
@@ -771,7 +784,7 @@ public class SaleNewActivity extends Activity implements OnClickListener {
 
                 Date date = new Date();
                 @SuppressLint("SimpleDateFormat")
-                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 
                 String attendanceDate1 = form.format(date);
                 Log.v("", "attendanceDate1=" + attendanceDate1);
@@ -809,7 +822,7 @@ public class SaleNewActivity extends Activity implements OnClickListener {
 
             Date date = new Date();
             @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
 
             String attendanceDate1 = form.format(date);
             soap_result = service.SaveLogoutTime(username, attendanceDate1);

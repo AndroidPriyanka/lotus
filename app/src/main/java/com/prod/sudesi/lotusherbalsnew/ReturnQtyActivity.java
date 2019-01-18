@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -42,14 +44,19 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
 import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
+import com.prod.sudesi.lotusherbalsnew.libs.LotusWebservice;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import static android.content.ContentValues.TAG;
 
@@ -95,9 +102,14 @@ public class ReturnQtyActivity extends Activity {
     ArrayList<String> uploadidlist;
     private JSONArray array;
     String ErroFlag = "";
+    LotusWebservice service;
 
 //    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
+//    public static String CoCheckStockURL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/Check_AvailableStock";//UAT Server
+
     public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
+    public static String CoCheckStockURL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/Check_AvailableStock";//Production Server
+
 
 //    public static String URL = "http://192.168.0.136:81/lotusapi/api/Stock/SaveStock";
 
@@ -116,7 +128,8 @@ public class ReturnQtyActivity extends Activity {
         tl_return_calculation = (TableLayout) findViewById(R.id.tl_return_calculation);
 
         context = getApplicationContext();
-        cd = new ConnectionDetector(context);
+        cd = new ConnectionDetector(this);
+        service = new LotusWebservice(this);
         titel = (TextView) findViewById(R.id.textView1);
         titel.setText("" + ReturnsActivity.PMODE);
         edt_gross = (EditText) findViewById(R.id.edt_gross);
@@ -319,182 +332,13 @@ public class ReturnQtyActivity extends Activity {
                     }
                 }, 5000);// set time as per your requirement
 
-                if (cd.isCurrentDateMatchDeviceDate()) {
-                    try {
-
-                        int etcount = 0;
-                        int count = 0;
-                        boolean negative = false;
-                        if (tl_return_calculation.getChildCount() != 1) {
-                            for (int i = 0; i < tl_return_calculation.getChildCount() - 1; i++) {
-
-                                TableRow t = (TableRow) tl_return_calculation
-                                        .getChildAt(i + 1);
-                                EditText edt_qty = (EditText) t.getChildAt(1);
-                                TextView tv_dbID = (TextView) t.getChildAt(3);
-
-                                if (edt_qty.getText().toString().trim()
-                                        .equalsIgnoreCase("0")
-                                        || edt_qty.getText().toString().trim()
-                                        .equalsIgnoreCase("")
-                                        || edt_qty.getText().toString().trim()
-                                        .equalsIgnoreCase(" ")) {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Please Enter in All Fields",
-                                            Toast.LENGTH_SHORT);
-                                } else {
-
-                                    if (titel.getText().toString().equalsIgnoreCase("Return to Company")) {
-                                        int closBal, enteredQty, difference = 0;
-//									int difference =
-                                        db.open();
-                                        Cursor cur = db.getuniquedata1("", "", tv_dbID.getText().toString().trim(), "");
-                                        if (cur != null && cur.getCount() > 0) {
-                                            cur.moveToFirst();
-                                            if (isInteger(cur.getString(cur.getColumnIndex("close_bal"))))
-                                                closBal = Integer.parseInt(cur.getString(cur.getColumnIndex("close_bal")));
-                                            else
-                                                closBal = 0;
-                                            if (isInteger(edt_qty.getText().toString().trim())) {
-                                                enteredQty = Integer.parseInt(edt_qty.getText().toString().trim());
-                                            } else {
-                                                enteredQty = 0;
-                                            }
-
-                                            difference = closBal - enteredQty;
-                                        }
-                                        if (edt_qty.getText().toString()
-                                                .matches("[a-zA-Z ]+")) {
-                                            Toast.makeText(getApplicationContext(),
-                                                    "Please Enter Only Numbers",
-                                                    Toast.LENGTH_SHORT);
-                                        }
-
-                                        if (Integer.parseInt(edt_qty.getText()
-                                                .toString().trim()) <= 0) {
-                                            Toast.makeText(getApplicationContext(),
-                                                    "Please Enter in All Fields",
-                                                    Toast.LENGTH_SHORT);
-                                        } else if (difference <= 0) {
-                                            negative = true;
-                                        } else {
-                                            etcount++;
-                                        }
-                                    } else {
-                                        if (edt_qty.getText().toString()
-                                                .matches("[a-zA-Z ]+")) {
-                                            Toast.makeText(getApplicationContext(),
-                                                    "Please Enter Only Numbers",
-                                                    Toast.LENGTH_SHORT);
-                                        }
-
-                                        if (Integer.parseInt(edt_qty.getText()
-                                                .toString().trim()) <= 0) {
-                                            Toast.makeText(getApplicationContext(),
-                                                    "Please Enter in All Fields",
-                                                    Toast.LENGTH_SHORT);
-                                        } else
-
-                                            etcount++;
-                                    }
-
-
-                                    Log.e("etcount", String.valueOf(etcount));
-                                }
-
-                            }
-                        }
-
-                        int numberofproduct = (tl_return_calculation.getChildCount() - 1);
-
-                        if (numberofproduct == etcount) {
-                            if (tl_return_calculation.getChildCount() != 1) {
-
-                                count = saveData();
-                                if(cd.isConnectingToInternet()) {
-                                    uploaddata();
-                                }
-                            }
-                            showAlertDialog(count);
-
-                        } else {
-                            // mProgress.dismiss();
-
-                            if (titel.getText().toString().equalsIgnoreCase("Return to Company")) {
-                                if (negative == true) {
-                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                                            ReturnQtyActivity.this);
-
-                                    // set title
-                                    alertDialogBuilder.setTitle("ERROR !!");
-
-                                    // set dialog message
-                                    alertDialogBuilder
-                                            .setMessage("Closing Balance is going in negative. Do you want to continue ?")
-                                            .setCancelable(false)
-
-                                            .setNegativeButton(
-                                                    "YES",
-                                                    new DialogInterface.OnClickListener() {
-
-                                                        public void onClick(
-
-                                                                DialogInterface dialog,
-                                                                int id) {
-
-                                                            dialog.dismiss();
-                                                            int count;
-                                                            count = saveData();
-
-                                                            showAlertDialog(count);
-                                                        }
-                                                    })
-
-                                            .setPositiveButton(
-                                                    "NO",
-                                                    new DialogInterface.OnClickListener() {
-                                                        public void onClick(
-                                                                DialogInterface dialog,
-                                                                int id) {
-
-                                                            dialog.dismiss();
-
-
-                                                        }
-                                                    });
-
-                                    // create alert dialog
-                                    AlertDialog alertDialog = alertDialogBuilder
-                                            .create();
-
-                                    // show it
-                                    alertDialog.show();
-                                } else {
-                                    Toast.makeText(
-                                            ReturnQtyActivity.this,
-                                            "Please fill up all valid value in quantity fields",
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            } else {
-                                Toast.makeText(
-                                        ReturnQtyActivity.this,
-                                        "Please fill up all valid value in quantity fields",
-                                        Toast.LENGTH_LONG).show();
-                            }
-
-                        }
-                    } catch (NumberFormatException e) {
-                        Toast.makeText(ReturnQtyActivity.this,
-                                "Please enter Only numbers", Toast.LENGTH_LONG)
-                                .show();
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                if (titel.getText().toString().equalsIgnoreCase("Return to Company")) {
+                    //new Check_AvailableStock_Server().execute();
+                    Check_Stock_Server();
                 } else {
-                    Toast.makeText(ReturnQtyActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
-
+                    savebuttonMethod();
                 }
+
             }
         });
 
@@ -511,7 +355,7 @@ public class ReturnQtyActivity extends Activity {
         String last_modified_date;
         Calendar c = Calendar.getInstance();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
 
         String date = sdf.format(c.getTime());
 
@@ -739,7 +583,7 @@ public class ReturnQtyActivity extends Activity {
 
             Calendar c = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat(
-                    "yyyy-MM-dd HH:mm:ss");
+                    "yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
             String insert_timestamp = sdf.format(c
                     .getTime());
 
@@ -846,13 +690,13 @@ public class ReturnQtyActivity extends Activity {
 
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat month_date = new SimpleDateFormat(
-                    "MMMM");
+                    "MMMM",Locale.ENGLISH);
             String month_name = month_date.format(cal
                     .getTime());
 
             Calendar cal1 = Calendar.getInstance();
             SimpleDateFormat year_format = new SimpleDateFormat(
-                    "yyyy");
+                    "yyyy",Locale.ENGLISH);
             String year_name = year_format.format(cal1
                     .getTime());
 
@@ -1243,7 +1087,7 @@ public class ReturnQtyActivity extends Activity {
                                     final Calendar calendar1 = Calendar
                                             .getInstance();
                                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                            "MM/dd/yyyy HH:mm:ss");
+                                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                     String Createddate = formatter1
                                             .format(calendar1.getTime());
 
@@ -1267,7 +1111,7 @@ public class ReturnQtyActivity extends Activity {
                         final Calendar calendar1 = Calendar
                                 .getInstance();
                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss");
+                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                         String Createddate = formatter1
                                 .format(calendar1.getTime());
 
@@ -1309,7 +1153,7 @@ public class ReturnQtyActivity extends Activity {
 
         } else {
             Toast.makeText(this, "No Stock For Data Upload", Toast.LENGTH_SHORT).show();
-            Log.e("NoStock dataupload",String.valueOf(stock_array.getCount()));
+            Log.e("NoStock dataupload", String.valueOf(stock_array.getCount()));
         }
 
     }
@@ -1342,4 +1186,442 @@ public class ReturnQtyActivity extends Activity {
         AlertDialog alert = builder.create();
         alert.show();
     }
+
+
+    public class Check_AvailableStock_Server extends AsyncTask<String, Void, SoapObject> {
+
+        private SoapPrimitive soap_result = null;
+
+        String Flag = "";
+        int protruecount = 0;
+        int procount = 0;
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+
+            String msg = "Please Wait....";
+            cd.showProgressDialog(msg);
+
+        }
+
+        @Override
+        protected SoapObject doInBackground(String... params) {
+            // TODO Auto-generated method stub
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+                    for (int i = 0; i < tl_return_calculation.getChildCount() - 1; i++) {
+
+                        TableRow t = (TableRow) tl_return_calculation
+                                .getChildAt(i + 1);
+                        EditText edt_qty = (EditText) t.getChildAt(1);
+                        TextView tv_dbID = (TextView) t.getChildAt(3);
+
+                        procount++;
+                        soap_result = service.Check_AvailableStock_Server(username, tv_dbID.getText().toString(),
+                                edt_qty.getText().toString());
+
+                        if (soap_result != null) {
+
+                            if (soap_result.toString().equalsIgnoreCase("True")) {
+                                Flag = "1";
+                                protruecount++;
+                            } else if (soap_result.toString().equalsIgnoreCase("False")) {
+                                Flag = "2";
+                            } else if (soap_result.toString().equalsIgnoreCase("No opening")) {
+                                Flag = "3";
+                            } else if (soap_result.toString().equalsIgnoreCase("SE")) {
+                                Flag = "SE";
+
+                            }
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+
+            if (ReturnQtyActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                return;
+            }
+            cd.dismissProgressDialog();
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(getApplicationContext(), "Connectivity Error, Please check Internet connection!!", Toast.LENGTH_SHORT).show();
+
+            } else if (procount == protruecount) {
+                if (Flag.equalsIgnoreCase("1")) {
+
+                    savebuttonMethod();
+
+                } else if (Flag.equalsIgnoreCase("2")) {
+
+                    DisplayDialogMessage("You don't have enough Stock to Return, Kindly check your Stock.");
+
+                } else if (Flag.equalsIgnoreCase("3")) {
+
+                    DisplayDialogMessage("You don't have Opening for this SKU, Kindly check your Openings.");
+
+                } else if (Flag.equalsIgnoreCase("SE")) {
+
+                    Toast.makeText(getApplicationContext(), "Connectivity server Error, Please Try Again!!", Toast.LENGTH_SHORT).show();
+
+                }
+            } else {
+
+            }
+
+        }
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        cd.dismissProgressDialog();
+        super.onDestroy();
+    }
+
+    public void savebuttonMethod() {
+        if (cd.isCurrentDateMatchDeviceDate()) {
+            try {
+
+                int etcount = 0;
+                int count = 0;
+                boolean negative = false;
+                if (tl_return_calculation.getChildCount() != 1) {
+                    for (int i = 0; i < tl_return_calculation.getChildCount() - 1; i++) {
+
+                        TableRow t = (TableRow) tl_return_calculation
+                                .getChildAt(i + 1);
+                        EditText edt_qty = (EditText) t.getChildAt(1);
+                        TextView tv_dbID = (TextView) t.getChildAt(3);
+
+                        if (edt_qty.getText().toString().trim()
+                                .equalsIgnoreCase("0")
+                                || edt_qty.getText().toString().trim()
+                                .equalsIgnoreCase("")
+                                || edt_qty.getText().toString().trim()
+                                .equalsIgnoreCase(" ")) {
+                            Toast.makeText(getApplicationContext(),
+                                    "Please Enter in All Fields",
+                                    Toast.LENGTH_SHORT);
+                        } else {
+
+                         /*   if (titel.getText().toString().equalsIgnoreCase("Return to Company")) {
+                                int closBal, enteredQty, difference = 0;
+//									int difference =
+                                db.open();
+                                Cursor cur = db.getuniquedata1("", "", tv_dbID.getText().toString().trim(), "");
+                                if (cur != null && cur.getCount() > 0) {
+                                    cur.moveToFirst();
+                                    if (isInteger(cur.getString(cur.getColumnIndex("close_bal"))))
+                                        closBal = Integer.parseInt(cur.getString(cur.getColumnIndex("close_bal")));
+                                    else
+                                        closBal = 0;
+                                    if (isInteger(edt_qty.getText().toString().trim())) {
+                                        enteredQty = Integer.parseInt(edt_qty.getText().toString().trim());
+                                    } else {
+                                        enteredQty = 0;
+                                    }
+
+                                    difference = closBal - enteredQty;
+                                }
+                                if (edt_qty.getText().toString()
+                                        .matches("[a-zA-Z ]+")) {
+                                    Toast.makeText(getApplicationContext(),
+                                            "Please Enter Only Numbers",
+                                            Toast.LENGTH_SHORT);
+                                }
+
+                                if (Integer.parseInt(edt_qty.getText()
+                                        .toString().trim()) <= 0) {
+                                    Toast.makeText(getApplicationContext(),
+                                            "Please Enter in All Fields",
+                                            Toast.LENGTH_SHORT);
+                                } else if (difference <= 0) {
+                                    negative = true;
+                                } else {
+                                    etcount++;
+                                }
+                            } else {*/
+                            if (edt_qty.getText().toString()
+                                    .matches("[a-zA-Z ]+")) {
+                                Toast.makeText(getApplicationContext(),
+                                        "Please Enter Only Numbers",
+                                        Toast.LENGTH_SHORT);
+                            }
+
+                            if (Integer.parseInt(edt_qty.getText()
+                                    .toString().trim()) <= 0) {
+                                Toast.makeText(getApplicationContext(),
+                                        "Please Enter in All Fields",
+                                        Toast.LENGTH_SHORT);
+                            } else
+
+                                etcount++;
+                            // }
+
+
+                            Log.e("etcount", String.valueOf(etcount));
+                        }
+
+                    }
+                }
+
+                int numberofproduct = (tl_return_calculation.getChildCount() - 1);
+
+                if (numberofproduct == etcount) {
+                    if (tl_return_calculation.getChildCount() != 1) {
+
+                        count = saveData();
+                        if (cd.isConnectingToInternet()) {
+                            uploaddata();
+
+                            showAlertDialog(count);
+
+                        }else{
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ReturnQtyActivity.this);
+                            builder.setMessage("Your Data Save Locally, Please do Data Upload!!")
+                                    .setCancelable(false)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            //do things
+                                            Intent i = new Intent(ReturnQtyActivity.this, SyncMaster.class);
+                                            startActivity(i);
+
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            AlertDialog alert = builder.create();
+                            alert.show();
+                        }
+                    }
+
+
+                } else {
+                    Toast.makeText(
+                            ReturnQtyActivity.this,
+                            "Please fill up all valid value in quantity fields",
+                            Toast.LENGTH_LONG).show();
+                }
+                  /*          // mProgress.dismiss();
+
+                            if (titel.getText().toString().equalsIgnoreCase("Return to Company")) {
+                                if (negative == true) {
+                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                            ReturnQtyActivity.this);
+
+                                    // set title
+                                    alertDialogBuilder.setTitle("ERROR !!");
+
+                                    // set dialog message
+                                    alertDialogBuilder
+                                            .setMessage("Closing Balance is going in negative. Do you want to continue ?")
+                                            .setCancelable(false)
+
+                                            .setNegativeButton(
+                                                    "YES",
+                                                    new DialogInterface.OnClickListener() {
+
+                                                        public void onClick(
+
+                                                                DialogInterface dialog,
+                                                                int id) {
+
+                                                            dialog.dismiss();
+                                                            int count;
+                                                            count = saveData();
+
+                                                            showAlertDialog(count);
+                                                        }
+                                                    })
+
+                                            .setPositiveButton(
+                                                    "NO",
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(
+                                                                DialogInterface dialog,
+                                                                int id) {
+
+                                                            dialog.dismiss();
+
+
+                                                        }
+                                                    });
+
+                                    // create alert dialog
+                                    AlertDialog alertDialog = alertDialogBuilder
+                                            .create();
+
+                                    // show it
+                                    alertDialog.show();
+                                } else {
+                                    Toast.makeText(
+                                            ReturnQtyActivity.this,
+                                            "Please fill up all valid value in quantity fields",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                                Toast.makeText(
+                                        ReturnQtyActivity.this,
+                                        "Please fill up all valid value in quantity fields",
+                                        Toast.LENGTH_LONG).show();
+                            }
+
+                        }*/
+            } catch (NumberFormatException e) {
+                Toast.makeText(ReturnQtyActivity.this,
+                        "Please enter Only numbers", Toast.LENGTH_LONG)
+                        .show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(ReturnQtyActivity.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
+
+        }
+    }
+
+
+    private void Check_Stock_Server() {
+
+        JSONArray array = new JSONArray();
+
+        for (int i = 0; i < tl_return_calculation.getChildCount() - 1; i++) {
+
+            JSONObject obj = new JSONObject();
+            TableRow t = (TableRow) tl_return_calculation
+                    .getChildAt(i + 1);
+            EditText edt_qty = (EditText) t.getChildAt(1);
+            TextView tv_dbID = (TextView) t.getChildAt(3);
+            try {
+                obj.put("empId", cd.getNonNullValues(username));
+                obj.put("Pid", cd.getNonNullValues(tv_dbID.getText().toString()));
+                obj.put("S_Return_NonSaleable", cd.getNonNullValues(edt_qty.getText().toString()));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            array.put(obj);
+        }
+
+
+        if (cd.isConnectingToInternet()) {
+            try {
+                showProgreesDialog();
+                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, CoCheckStockURL, array, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray jsonResponse) {
+
+                        Log.e("onResponse: ", jsonResponse.toString());
+                        int indexOfOpenBracket = jsonResponse.toString().indexOf("[");
+                        int indexOfLastBracket = jsonResponse.toString().lastIndexOf("]");
+
+                        String jsonStr = jsonResponse.toString().substring(indexOfOpenBracket + 1, indexOfLastBracket);
+
+                        if (jsonStr != null) {
+                            try {
+                                JSONObject jsonObj = new JSONObject(jsonStr);
+
+                                // Getting JSON Array node
+                                String flag = jsonObj.getString("Flag");
+
+                                if (flag != null && flag.equalsIgnoreCase("True")) {
+
+                                    savebuttonMethod();
+
+                                } else if (flag != null && flag.equalsIgnoreCase("False")) {
+
+                                    DisplayDialogMessage("You don't have enough Stock to Return, Kindly check your Stock.");
+
+                                } else if (flag != null && flag.equalsIgnoreCase("No opening")) {
+
+                                    DisplayDialogMessage("You don't have Opening for this SKU, Kindly check your Openings.");
+
+                                } else {
+                                    ErroFlag = "0";
+                                    final Calendar calendar1 = Calendar
+                                            .getInstance();
+                                    SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                            "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                                    String Createddate = formatter1
+                                            .format(calendar1.getTime());
+
+                                    int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                                    db.insertSyncLog("", String.valueOf(n), "Check_AvailableStock()", Createddate,
+                                            Createddate, username,
+                                            "Check_AvailableStock()", "Fail");
+                                }
+                                dissmissDialog();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        dissmissDialog();
+                        ErroFlag = "0";
+                        final Calendar calendar1 = Calendar
+                                .getInstance();
+                        SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                        String Createddate = formatter1
+                                .format(calendar1.getTime());
+
+                        int n = Thread.currentThread()
+                                .getStackTrace()[2]
+                                .getLineNumber();
+                        db.insertSyncLog(error.getMessage(),
+                                String.valueOf(n),
+                                "Check_AvailableStock()", Createddate,
+                                Createddate, shp.getString(
+                                        "username", ""),
+                                "Check_AvailableStock()", "Fail");
+
+                    }
+                }) {
+                    @Override
+                    protected Response<JSONArray> parseNetworkResponse(NetworkResponse response) {
+                        return super.parseNetworkResponse(response);
+                    }
+
+                    @Override
+                    public String getBodyContentType() {
+                        return "application/json";
+                    }
+                };
+                jsonArrayRequest.setShouldCache(false);
+                jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        300000,
+                        0,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                TestApplication.getInstance().addToRequestQueue(jsonArrayRequest);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            DisplayDialogMessage("Connectivity Error Please check internet");
+        }
+
+
+    }
+
 }

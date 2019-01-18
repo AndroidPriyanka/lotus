@@ -2080,6 +2080,31 @@ public class LotusWebservice {
         return result;
     }
 
+    public SoapPrimitive Check_AvailableStock_Server(String Empid, String ProductId, String Qty) {
+        SoapPrimitive result = null;
+        try {
+            Log.v("", "Check_AvailableStock service called");
+            SoapObject request = new SoapObject("http://tempuri.org/", "Check_AvailableStock");
+            Log.v("", "EmpId==" + Empid);
+            request.addProperty("Empid", Empid);
+            request.addProperty("ProductId", ProductId);
+            request.addProperty("Qty", Qty);
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);// soap envelop with version
+            envelope.setOutputSoapObject(request); // set request object
+            envelope.dotNet = true;
+
+            HttpTransportSE androidHttpTransport = new HttpTransportSE(url, 60000);// http
+            // transport call
+            androidHttpTransport.call("http://tempuri.org/IService1/Check_AvailableStock", envelope);
+
+            result = (SoapPrimitive) envelope.getResponse();
+            Log.e("Check_AvailableStock=", result.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
     //------------------------------END--------------------------------------
 
 

@@ -28,6 +28,7 @@
             android:weightSum="3">
 
             <LinearLayout
+                android:id="@+id/attendance_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -73,6 +74,7 @@
                 android:background="#C72C2C" />
 
             <LinearLayout
+                android:id="@+id/notification_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
@@ -138,6 +140,7 @@
                 android:background="#C72C2C" />
 
             <LinearLayout
+                android:id="@+id/sale_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
@@ -170,6 +173,7 @@
                 android:background="#C72C2C" />
 
             <LinearLayout
+                android:id="@+id/report_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
@@ -224,6 +228,7 @@
                 android:background="#C72C2C" />
 
             <LinearLayout
+                android:id="@+id/dashboard_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
@@ -346,6 +351,7 @@
             android:background="#C72C2C" />
 
         <LinearLayout
+            android:id="@+id/mastersync_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"

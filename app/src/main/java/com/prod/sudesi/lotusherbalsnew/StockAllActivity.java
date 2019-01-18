@@ -52,6 +52,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import static android.content.ContentValues.TAG;
 
@@ -538,11 +539,29 @@ public class StockAllActivity extends Activity {
                                     count = saveData();
                                     if(cd.isConnectingToInternet()) {
                                         uploaddata();
+
+                                        showAlertDialog(count);
+
+                                    }else{
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(StockAllActivity.this);
+                                        builder.setMessage("Your Data Save Locally, Please do Data Upload!!")
+                                                .setCancelable(false)
+                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        //do things
+                                                        Intent i = new Intent(StockAllActivity.this, SyncMaster.class);
+                                                        startActivity(i);
+
+                                                        dialog.dismiss();
+                                                    }
+                                                });
+                                        AlertDialog alert = builder.create();
+                                        alert.show();
                                     }
                                 }
 
                             }
-                            showAlertDialog(count);
+
 
                         } else {
                             // mProgress.dismiss();
@@ -700,7 +719,7 @@ public class StockAllActivity extends Activity {
     public static String between(Date date) {
         String bb = "";
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
 
             Calendar c = Calendar.getInstance();
 
@@ -971,7 +990,7 @@ public class StockAllActivity extends Activity {
         String last_modified_date;
         Calendar c = Calendar.getInstance();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
 
         String date = sdf.format(c.getTime());
 
@@ -1148,7 +1167,7 @@ public class StockAllActivity extends Activity {
 
             Calendar c = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat(
-                    "yyyy-MM-dd HH:mm:ss");
+                    "yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
             String insert_timestamp = sdf.format(c
                     .getTime());
 
@@ -1275,13 +1294,13 @@ public class StockAllActivity extends Activity {
 
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat month_date = new SimpleDateFormat(
-                    "MMMM");
+                    "MMMM",Locale.ENGLISH);
             String month_name = month_date.format(cal
                     .getTime());
 
             Calendar cal1 = Calendar.getInstance();
             SimpleDateFormat year_format = new SimpleDateFormat(
-                    "yyyy");
+                    "yyyy",Locale.ENGLISH);
             String year_name = year_format.format(cal1
                     .getTime());
 
@@ -1568,7 +1587,7 @@ public class StockAllActivity extends Activity {
 
             Calendar c = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat(
-                    "yyyy-MM-dd HH:mm:ss");
+                    "yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
             String insert_timestamp = sdf.format(c
                     .getTime());
 
@@ -1660,13 +1679,13 @@ public class StockAllActivity extends Activity {
 
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat month_date = new SimpleDateFormat(
-                    "MMMM");
+                    "MMMM",Locale.ENGLISH);
             String month_name = month_date.format(cal
                     .getTime());
 
             Calendar cal1 = Calendar.getInstance();
             SimpleDateFormat year_format = new SimpleDateFormat(
-                    "yyyy");
+                    "yyyy",Locale.ENGLISH);
             String year_name = year_format.format(cal1
                     .getTime());
 
@@ -2143,7 +2162,7 @@ public class StockAllActivity extends Activity {
                                     final Calendar calendar1 = Calendar
                                             .getInstance();
                                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                            "MM/dd/yyyy HH:mm:ss");
+                                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                     String Createddate = formatter1
                                             .format(calendar1.getTime());
 
@@ -2167,7 +2186,7 @@ public class StockAllActivity extends Activity {
                         final Calendar calendar1 = Calendar
                                 .getInstance();
                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss");
+                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                         String Createddate = formatter1
                                 .format(calendar1.getTime());
 

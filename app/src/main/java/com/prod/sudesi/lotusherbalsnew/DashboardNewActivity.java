@@ -46,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import static com.prod.sudesi.lotusherbalsnew.TestApplication.TAG;
 
@@ -95,7 +96,8 @@ public class DashboardNewActivity extends Activity {
     private AlarmManagerBroadcastReceiver alarm;
 
     private LinearLayout checkout_layout, stock_layout, boc_layout,
-            returns_layout, focusreprt_layout, targetAchieve_layout, categorywise_layout;
+            returns_layout, focusreprt_layout, targetAchieve_layout, categorywise_layout,
+            attendance_layout,notification_layout,sale_layout,report_layout,dashboard_layout,mastersync_layout;
 
     @SuppressLint({"InflateParams", "WrongConstant"})
     @Override
@@ -205,6 +207,12 @@ public class DashboardNewActivity extends Activity {
         focusreprt_layout = (LinearLayout) findViewById(R.id.focusreprt_layout);
         targetAchieve_layout = (LinearLayout) findViewById(R.id.targetAchieve_layout);
         categorywise_layout = (LinearLayout) findViewById(R.id.categorywise_layout);
+        attendance_layout = (LinearLayout) findViewById(R.id.attendance_layout);
+        notification_layout = (LinearLayout) findViewById(R.id.notification_layout);
+        sale_layout = (LinearLayout) findViewById(R.id.sale_layout);
+        report_layout = (LinearLayout) findViewById(R.id.report_layout);
+        dashboard_layout = (LinearLayout) findViewById(R.id.dashboard_layout);
+        mastersync_layout = (LinearLayout) findViewById(R.id.mastersync_layout);
 
         btn_home.setVisibility(View.INVISIBLE);
         Log.e("db.checkStockUploaded()", String.valueOf(db.checkStockUploaded()));
@@ -228,6 +236,21 @@ public class DashboardNewActivity extends Activity {
             categorywise_layout.setBackgroundColor(Color.parseColor("#808080"));
 
 
+        }else{
+            if(Checkoutflag){
+                stock_layout.setBackgroundColor(Color.parseColor("#808080"));
+                boc_layout.setBackgroundColor(Color.parseColor("#808080"));
+                returns_layout.setBackgroundColor(Color.parseColor("#808080"));
+                focusreprt_layout.setBackgroundColor(Color.parseColor("#808080"));
+                targetAchieve_layout.setBackgroundColor(Color.parseColor("#808080"));
+                categorywise_layout.setBackgroundColor(Color.parseColor("#808080"));
+                attendance_layout.setBackgroundColor(Color.parseColor("#808080"));
+                notification_layout.setBackgroundColor(Color.parseColor("#808080"));
+                sale_layout.setBackgroundColor(Color.parseColor("#808080"));
+                report_layout.setBackgroundColor(Color.parseColor("#808080"));
+                dashboard_layout.setBackgroundColor(Color.parseColor("#808080"));
+                mastersync_layout.setBackgroundColor(Color.parseColor("#808080"));
+            }
         }
 
         if (db.checkStockUploaded()) {
@@ -862,7 +885,7 @@ public class DashboardNewActivity extends Activity {
     public static boolean beforedatevalidate(String selecteddate,
                                              String currentdate) {
         boolean result = false;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
         try {
             Date selectdate = sdf.parse(selecteddate);
             Date curntdate = sdf.parse(currentdate);
@@ -888,7 +911,7 @@ public class DashboardNewActivity extends Activity {
 
     @SuppressLint("SimpleDateFormat")
     private String getYesterdayDateString() {
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss",Locale.ENGLISH);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
 
@@ -4392,7 +4415,7 @@ public class DashboardNewActivity extends Activity {
                     db.close();
 
                     Calendar calendar1 = Calendar.getInstance();
-                    SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd ");
+                    SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
                     String strDate = mdformat.format(calendar1.getTime());
 
                     soap_result = service.DataDownloadForSale(
@@ -4576,9 +4599,9 @@ public class DashboardNewActivity extends Activity {
                                         String outputPattern = "yyyy-MM-dd HH:mm:ss";
 
                                         DateFormat inputFormat = new SimpleDateFormat(
-                                                inputPattern);
+                                                inputPattern,Locale.ENGLISH);
                                         SimpleDateFormat outputFormat = new SimpleDateFormat(
-                                                outputPattern);
+                                                outputPattern,Locale.ENGLISH);
 
                                         Date date = inputFormat.parse(LMD);
                                         LMD = outputFormat.format(date);
@@ -4604,9 +4627,9 @@ public class DashboardNewActivity extends Activity {
                                         String outputPattern = "yyyy-MM-dd HH:mm:ss";
 
                                         SimpleDateFormat inputFormat = new SimpleDateFormat(
-                                                inputPattern);
+                                                inputPattern,Locale.ENGLISH);
                                         SimpleDateFormat outputFormat = new SimpleDateFormat(
-                                                outputPattern);
+                                                outputPattern,Locale.ENGLISH);
 
                                         Date date = inputFormat
                                                 .parse(AndroidCreatedDate);
@@ -4622,9 +4645,9 @@ public class DashboardNewActivity extends Activity {
                                         YEAR = addd2[0];
                                         //
                                         SimpleDateFormat monthParse = new SimpleDateFormat(
-                                                "MM");
+                                                "MM",Locale.ENGLISH);
                                         SimpleDateFormat monthDisplay = new SimpleDateFormat(
-                                                "MMMM");
+                                                "MMMM",Locale.ENGLISH);
                                         MONTH = monthDisplay.format(monthParse
                                                 .parse(month));
                                         //
@@ -4820,7 +4843,7 @@ public class DashboardNewActivity extends Activity {
                                                 "S", EmpId);
 
                                 SimpleDateFormat dateFormat = new SimpleDateFormat(
-                                        "MM/dd/yyyy HH:mm:ss");
+                                        "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                 // get current date time with Date()
                                 Calendar cal = Calendar.getInstance();
                                 // dateFormat.format(cal.getTime())
@@ -4857,7 +4880,7 @@ public class DashboardNewActivity extends Activity {
                                 final Calendar calendar = Calendar
                                         .getInstance();
                                 SimpleDateFormat formatter = new SimpleDateFormat(
-                                        "MM/dd/yyyy HH:mm:ss");
+                                        "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                 String Createddate = formatter.format(calendar
                                         .getTime());
                                 Log.v("", "se error");
@@ -4879,7 +4902,7 @@ public class DashboardNewActivity extends Activity {
                         syncstockdata = 0;
                         final Calendar calendar = Calendar.getInstance();
                         SimpleDateFormat formatter = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss");
+                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                         String Createddate = formatter.format(calendar
                                 .getTime());
 
@@ -4915,7 +4938,7 @@ public class DashboardNewActivity extends Activity {
 
                 final Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat formatter = new SimpleDateFormat(
-                        "MM/dd/yyyy HH:mm:ss");
+                        "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                 String Createddate = formatter.format(calendar.getTime());
                 Flag = "4";
                 int n = Thread.currentThread().getStackTrace()[2]
@@ -5366,7 +5389,7 @@ public class DashboardNewActivity extends Activity {
                                     final Calendar calendar1 = Calendar
                                             .getInstance();
                                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                            "MM/dd/yyyy HH:mm:ss");
+                                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                     String Createddate = formatter1
                                             .format(calendar1.getTime());
 
@@ -5395,7 +5418,7 @@ public class DashboardNewActivity extends Activity {
                             Log.e("pm", "pm7");
 
                             SimpleDateFormat dateFormat = new SimpleDateFormat(
-                                    "MM/dd/yyyy HH:mm:ss");
+                                    "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                             // get current date time with Date()
                             Calendar cal = Calendar.getInstance();
                             // dateFormat.format(cal.getTime())
@@ -5410,7 +5433,7 @@ public class DashboardNewActivity extends Activity {
 
                             final Calendar calendar1 = Calendar.getInstance();
                             SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                    "MM/dd/yyyy HH:mm:ss");
+                                    "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                             String Createddate = formatter1.format(calendar1
                                     .getTime());
 
@@ -5432,7 +5455,7 @@ public class DashboardNewActivity extends Activity {
 
                     final Calendar calendar1 = Calendar.getInstance();
                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                            "MM/dd/yyyy HH:mm:ss");
+                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                     String Createddate = formatter1.format(calendar1.getTime());
 
                     int n = Thread.currentThread().getStackTrace()[2]
@@ -5993,7 +6016,7 @@ public class DashboardNewActivity extends Activity {
 
             Calendar cal2 = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat(
-                    "yyyy-MM-dd HH:mm:ss");
+                    "yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
             String insert_timestamp = sdf.format(cal2.getTime());
 
             if (!cd.isConnectingToInternet()) {
@@ -6085,7 +6108,7 @@ public class DashboardNewActivity extends Activity {
 
             Date date = new Date();
             @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
 
             attendanceDate1 = form.format(date);
             Log.v("", "attendanceDate1=" + attendanceDate1);
@@ -6176,7 +6199,7 @@ public class DashboardNewActivity extends Activity {
 
                             Date date = new Date();
                             @SuppressLint("SimpleDateFormat")
-                            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
 
                             attendanceDate1 = form.format(date);
                             Log.v("", "attendanceDate1=" + attendanceDate1);
@@ -6332,7 +6355,7 @@ public class DashboardNewActivity extends Activity {
 
                         Date date = new Date();
                         @SuppressLint("SimpleDateFormat")
-                        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
 
                         attendanceDate1 = form.format(date);
                         Log.v("", "attendanceDate1=" + attendanceDate1);
@@ -6387,7 +6410,7 @@ public class DashboardNewActivity extends Activity {
 
             Date date = new Date();
             @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
 
             attendanceDate1 = form.format(date);
             soap_result = service.SaveLogoutTime(username, attendanceDate1);
@@ -6464,7 +6487,7 @@ public class DashboardNewActivity extends Activity {
 
             Date date = new Date();
             @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
 
             attendanceDate1 = form.format(date);
             Log.v("", "attendanceDate1=" + attendanceDate1);
@@ -6497,7 +6520,7 @@ public class DashboardNewActivity extends Activity {
 
                         final Calendar calendar = Calendar.getInstance();
                         SimpleDateFormat formatter = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss");
+                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                         String Createddate = formatter.format(calendar
                                 .getTime());
 

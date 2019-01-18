@@ -139,7 +139,9 @@ public class OutletActivity extends Activity {
                     outletstring = parent.getItemAtPosition(position).toString();
                     for (int i = 0; i < outletDetailsArraylist.size(); i++) {
                         String text;
-                        if(role.equalsIgnoreCase("FLR")) {
+                        if(role.equalsIgnoreCase("FLR")||
+                                role.equalsIgnoreCase("ADR")||
+                                role.equalsIgnoreCase("BP")) {
                              text = outletDetailsArraylist.get(i).getOutletname() + "(" +
                                     outletDetailsArraylist.get(i).getBAnameOutlet() + "-" +
                                      outletDetailsArraylist.get(i).getBACodeOutlet() + ")";
@@ -327,7 +329,9 @@ public class OutletActivity extends Activity {
                     e.printStackTrace();
                 }
 
-                if (role.equalsIgnoreCase("FLR")) {
+                if (role.equalsIgnoreCase("FLR")||
+                        role.equalsIgnoreCase("ADR")||
+                        role.equalsIgnoreCase("BP")) {
                     if (outletDetailsArraylist.size() > 0) {
                         strOutletArray = new String[outletDetailsArraylist.size() + 1];
                         strOutletArray[0] = "Office";

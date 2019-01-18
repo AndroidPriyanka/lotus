@@ -161,7 +161,7 @@ public class BocCumulativeDashboardActivity extends Activity {
                 dates_array = new ArrayList<String>();
 
                 for (int i = 0; i < dates.size(); i++) {
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
 
                     String reportDate = df.format(dates.get(i));
                     Log.d("Date is", " " + reportDate);
@@ -196,7 +196,7 @@ public class BocCumulativeDashboardActivity extends Activity {
                 dates_array = new ArrayList<String>();
 
                 for (int i = 0; i < dates.size(); i++) {
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
 
                     String reportDate = df.format(dates.get(i));
                     Log.d("Date is", " " + reportDate);
@@ -298,7 +298,7 @@ public class BocCumulativeDashboardActivity extends Activity {
                     SoapObject resultsRequestSOAP = null;
                     final String[] columns = new String[]{"BOC", "AndroidCreatedDate", "COLOR", "ColorSoldQty", "ColorSoldValue", "SKIN", "SkinSoldQty", "SkinSoldValue", "TOTAL", "TotalQty", "TotalValue"};
 
-                    DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
 
                     String startdate[] = getStartEnd(str_BOC, year, year1);
 
@@ -499,7 +499,7 @@ public class BocCumulativeDashboardActivity extends Activity {
                     SoapObject resultsRequestSOAP = null;
                     final String[] columns = new String[]{"BOC", "AndroidCreatedDate", "SoldQty", "Soldvalue"};
 
-                    DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
 
                     String startdate[];
                     if (role.equalsIgnoreCase("DUB")) {

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -201,7 +202,9 @@ public class SaleCalculation extends Activity {
                     }
                 }, 5000);// set time as per your requirement
 
-                if (role.equalsIgnoreCase("FLR")) {
+                if (role.equalsIgnoreCase("FLR")||
+                        role.equalsIgnoreCase("ADR")||
+                        role.equalsIgnoreCase("BP")) {
                     saveMethodForFLR();
                 } else if (role.equalsIgnoreCase("DUB")) {
                     saveMethodForDubai();
@@ -217,7 +220,9 @@ public class SaleCalculation extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (role.equalsIgnoreCase("FLR")) {
+                if (role.equalsIgnoreCase("FLR")||
+                        role.equalsIgnoreCase("ADR")||
+                        role.equalsIgnoreCase("BP")) {
                     finish();
                     startActivity(new Intent(SaleCalculation.this,
                             SaleActivityForFloter.class));
@@ -636,7 +641,7 @@ public class SaleCalculation extends Activity {
     public static String between(Date date) {
         String bb = "";
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy",Locale.ENGLISH);
 
             Calendar c = Calendar.getInstance();
 
@@ -906,7 +911,7 @@ public class SaleCalculation extends Activity {
         String last_modified_date;
         Calendar c = Calendar.getInstance();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
 
         String date = sdf.format(c.getTime());
 
@@ -1444,21 +1449,21 @@ public class SaleCalculation extends Activity {
                                         Calendar cal = Calendar
                                                 .getInstance();
                                         SimpleDateFormat month_date = new SimpleDateFormat(
-                                                "MMMM");
+                                                "MMMM",Locale.ENGLISH);
                                         String month_name = month_date
                                                 .format(cal.getTime());
 
                                         Calendar cal1 = Calendar
                                                 .getInstance();
                                         SimpleDateFormat year_format = new SimpleDateFormat(
-                                                "yyyy");
+                                                "yyyy",Locale.ENGLISH);
                                         String year_name = year_format
                                                 .format(cal1.getTime());
 
                                         Calendar cal2 = Calendar
                                                 .getInstance();
                                         SimpleDateFormat sdf = new SimpleDateFormat(
-                                                "yyyy-MM-dd HH:mm:ss");
+                                                "yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
                                         String insert_timestamp = sdf
                                                 .format(cal2.getTime());
 
@@ -1525,7 +1530,7 @@ public class SaleCalculation extends Activity {
 
                                         // db.close();
                                         SimpleDateFormat sdf123 = new SimpleDateFormat(
-                                                "dd/MM/yyyy");
+                                                "dd/MM/yyyy",Locale.ENGLISH);
                                         String currentDateandTime = sdf123
                                                 .format(new Date())
                                                 .toString();
@@ -1681,58 +1686,76 @@ public class SaleCalculation extends Activity {
 
                                 if(cd.isConnectingToInternet()) {
                                     uploaddata();
+
+                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                            SaleCalculation.this);
+
+                                    // set title
+                                    alertDialogBuilder
+                                            .setTitle("Saved Successfully!!");
+
+                                    // set dialog message
+                                    alertDialogBuilder
+                                            .setMessage("Go  TO  :")
+                                            .setCancelable(false)
+
+                                            .setNegativeButton(
+                                                    "Sale Page",
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(
+                                                                DialogInterface dialog,
+                                                                int id) {
+
+                                                            dialog.cancel();
+                                                            finish();
+                                                            startActivity(new Intent(
+                                                                    SaleCalculation.this,
+                                                                    SaleNewActivity.class));
+
+                                                        }
+                                                    })
+
+                                            .setPositiveButton(
+                                                    "Home",
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(
+                                                                DialogInterface dialog,
+                                                                int id) {
+
+                                                            dialog.cancel();
+                                                            finish();
+                                                            startActivity(new Intent(
+                                                                    SaleCalculation.this,
+                                                                    DashboardNewActivity.class));
+
+                                                        }
+                                                    });
+
+                                    // create alert dialog
+                                    AlertDialog alertDialog = alertDialogBuilder
+                                            .create();
+
+                                    // show it
+                                    alertDialog.show();
+                                }else{
+
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(SaleCalculation.this);
+                                    builder.setMessage("Your Data Save Locally, Please do Data Upload!!")
+                                            .setCancelable(false)
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    //do things
+                                                    Intent i = new Intent(SaleCalculation.this, SyncMaster.class);
+                                                    startActivity(i);
+
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                    AlertDialog alert = builder.create();
+                                    alert.show();
                                 }
 
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                                        SaleCalculation.this);
 
-                                // set title
-                                alertDialogBuilder
-                                        .setTitle("Saved Successfully!!");
-
-                                // set dialog message
-                                alertDialogBuilder
-                                        .setMessage("Go  TO  :")
-                                        .setCancelable(false)
-
-                                        .setNegativeButton(
-                                                "Sale Page",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(
-                                                            DialogInterface dialog,
-                                                            int id) {
-
-                                                        dialog.cancel();
-                                                        finish();
-                                                        startActivity(new Intent(
-                                                                SaleCalculation.this,
-                                                                SaleNewActivity.class));
-
-                                                    }
-                                                })
-
-                                        .setPositiveButton(
-                                                "Home",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(
-                                                            DialogInterface dialog,
-                                                            int id) {
-
-                                                        dialog.cancel();
-                                                        finish();
-                                                        startActivity(new Intent(
-                                                                SaleCalculation.this,
-                                                                DashboardNewActivity.class));
-
-                                                    }
-                                                });
-
-                                // create alert dialog
-                                AlertDialog alertDialog = alertDialogBuilder
-                                        .create();
-
-                                // show it
-                                alertDialog.show();
                             } else {
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                                         SaleCalculation.this);
@@ -1905,19 +1928,19 @@ public class SaleCalculation extends Activity {
 
                                 Calendar c = Calendar.getInstance();
                                 SimpleDateFormat sdf = new SimpleDateFormat(
-                                        "yyyy-MM-dd HH:mm:ss");
+                                        "yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
                                 String insert_timestamp = sdf.format(c
                                         .getTime());
 
                                 Calendar cal = Calendar.getInstance();
                                 SimpleDateFormat month_date = new SimpleDateFormat(
-                                        "MMMM");
+                                        "MMMM",Locale.ENGLISH);
                                 String month_name = month_date.format(cal
                                         .getTime());
 
                                 Calendar cal1 = Calendar.getInstance();
                                 SimpleDateFormat year_format = new SimpleDateFormat(
-                                        "yyyy");
+                                        "yyyy",Locale.ENGLISH);
                                 String year_name = year_format.format(cal1
                                         .getTime());
 
@@ -2183,56 +2206,78 @@ public class SaleCalculation extends Activity {
 
                             if (count == tl_sale_calculation.getChildCount() - 1) {
 
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                                        SaleCalculation.this);
+                                if(cd.isConnectingToInternet()) {
+                                    uploaddata();
 
-                                // set title
-                                alertDialogBuilder
-                                        .setTitle("Saved Successfully!!");
+                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                            SaleCalculation.this);
 
-                                // set dialog message
-                                alertDialogBuilder
-                                        .setMessage("Go  TO  :")
-                                        .setCancelable(false)
+                                    // set title
+                                    alertDialogBuilder
+                                            .setTitle("Saved Successfully!!");
 
-                                        .setNegativeButton(
-                                                "Sale Page",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(
-                                                            DialogInterface dialog,
-                                                            int id) {
+                                    // set dialog message
+                                    alertDialogBuilder
+                                            .setMessage("Go  TO  :")
+                                            .setCancelable(false)
 
-                                                        dialog.cancel();
-                                                        finish();
-                                                        startActivity(new Intent(
-                                                                SaleCalculation.this,
-                                                                SaleActivityForFloter.class));
+                                            .setNegativeButton(
+                                                    "Sale Page",
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(
+                                                                DialogInterface dialog,
+                                                                int id) {
 
-                                                    }
-                                                })
+                                                            dialog.cancel();
+                                                            finish();
+                                                            startActivity(new Intent(
+                                                                    SaleCalculation.this,
+                                                                    SaleActivityForFloter.class));
 
-                                        .setPositiveButton(
-                                                "Home",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(
-                                                            DialogInterface dialog,
-                                                            int id) {
+                                                        }
+                                                    })
 
-                                                        dialog.cancel();
-                                                        finish();
-                                                        startActivity(new Intent(
-                                                                SaleCalculation.this,
-                                                                DashboardNewActivity.class));
+                                            .setPositiveButton(
+                                                    "Home",
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(
+                                                                DialogInterface dialog,
+                                                                int id) {
 
-                                                    }
-                                                });
+                                                            dialog.cancel();
+                                                            finish();
+                                                            startActivity(new Intent(
+                                                                    SaleCalculation.this,
+                                                                    DashboardNewActivity.class));
 
-                                // create alert dialog
-                                AlertDialog alertDialog = alertDialogBuilder
-                                        .create();
+                                                        }
+                                                    });
 
-                                // show it
-                                alertDialog.show();
+                                    // create alert dialog
+                                    AlertDialog alertDialog = alertDialogBuilder
+                                            .create();
+
+                                    // show it
+                                    alertDialog.show();
+                                }else{
+
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(SaleCalculation.this);
+                                    builder.setMessage("Your Data Save Locally, Please do Data Upload!!")
+                                            .setCancelable(false)
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    //do things
+                                                    Intent i = new Intent(SaleCalculation.this, SyncMaster.class);
+                                                    startActivity(i);
+
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                    AlertDialog alert = builder.create();
+                                    alert.show();
+                                }
+
+
                             } else {
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                                         SaleCalculation.this);
@@ -2607,21 +2652,21 @@ public class SaleCalculation extends Activity {
                                         Calendar cal = Calendar
                                                 .getInstance();
                                         SimpleDateFormat month_date = new SimpleDateFormat(
-                                                "MMMM");
+                                                "MMMM",Locale.ENGLISH);
                                         String month_name = month_date
                                                 .format(cal.getTime());
 
                                         Calendar cal1 = Calendar
                                                 .getInstance();
                                         SimpleDateFormat year_format = new SimpleDateFormat(
-                                                "yyyy");
+                                                "yyyy",Locale.ENGLISH);
                                         String year_name = year_format
                                                 .format(cal1.getTime());
 
                                         Calendar cal2 = Calendar
                                                 .getInstance();
                                         SimpleDateFormat sdf = new SimpleDateFormat(
-                                                "yyyy-MM-dd HH:mm:ss");
+                                                "yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
                                         String insert_timestamp = sdf
                                                 .format(cal2.getTime());
 
@@ -2914,7 +2959,7 @@ public class SaleCalculation extends Activity {
                                     final Calendar calendar1 = Calendar
                                             .getInstance();
                                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                            "MM/dd/yyyy HH:mm:ss");
+                                            "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                                     String Createddate = formatter1
                                             .format(calendar1.getTime());
 
@@ -2938,7 +2983,7 @@ public class SaleCalculation extends Activity {
                         final Calendar calendar1 = Calendar
                                 .getInstance();
                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss");
+                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                         String Createddate = formatter1
                                 .format(calendar1.getTime());
 

@@ -3,6 +3,7 @@ package com.prod.sudesi.lotusherbalsnew;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 
 import org.ksoap2.serialization.SoapPrimitive;
@@ -112,7 +113,7 @@ public class SupervisorAttendance extends Activity implements OnClickListener {
 
         Calendar cal = Calendar.getInstance();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
 
         String date = sdf.format(cal.getTime());
 
@@ -200,7 +201,7 @@ public class SupervisorAttendance extends Activity implements OnClickListener {
 
                 Calendar c = Calendar.getInstance();
 
-                SimpleDateFormat sdft = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+                SimpleDateFormat sdft = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss",Locale.ENGLISH);
 
                 Actual_date = sdft.format(c.getTime());
 

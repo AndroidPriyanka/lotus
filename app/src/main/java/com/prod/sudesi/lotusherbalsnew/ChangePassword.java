@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import org.ksoap2.serialization.SoapPrimitive;
 
@@ -193,7 +194,7 @@ public class ChangePassword extends Activity {
         }
 
         final Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
         String date = formatter.format(calendar.getTime());
 
         ProgressDialog progressDialog;

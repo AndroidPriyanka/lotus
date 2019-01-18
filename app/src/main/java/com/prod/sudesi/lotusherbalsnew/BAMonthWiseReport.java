@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -147,7 +148,7 @@ public class BAMonthWiseReport extends Activity {
 		Log.v("","comparedatewith="+comparedatewith);
 		
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         Date date1 = null;Date date2 = null;
 		try {
 			date1 = sdf.parse(current_server_date);

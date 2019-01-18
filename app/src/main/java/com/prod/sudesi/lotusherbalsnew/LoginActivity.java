@@ -20,18 +20,14 @@ import android.location.LocationManager;
 import android.net.ParseException;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -71,7 +67,6 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.FileChannel;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -90,6 +85,8 @@ public class LoginActivity extends Activity {
     EditText edt_password;
     SharedPreferences sp;
     SharedPreferences.Editor spe;
+
+    ProgressDialog mprogress;
 
     LotusWebservice service;
     String username = "", pass = "", VERSION_NAME = "", OS_VERSION = "", role = "";
@@ -126,11 +123,8 @@ public class LoginActivity extends Activity {
     public static final String downloadConfigFile = "http://lotussmartforce.com/apk/config.txt";//production
 
     //UAT India
-    /*public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
+   /* public static final String downloadURL = "http://lotussmartforce.com/UATAPK/Lotus_UAT.apk"; //UAT India
     public static final String downloadConfigFile = "http://lotussmartforce.com/UATAPK/config.txt";//UAT India*/
-
-   /* public static final String downloadURL = "http://192.168.0.136:81/UATAPK/Lotus_UAT.apk";
-    public static final String downloadConfigFile = "http://192.168.0.136:81/UATAPK/config.txt";*/
 
     //Production Dubai
      /*public static final String  downloadURL = "http://lotussmartforce.com/apk/Lotus_Dubai_Pro.apk"; //production
@@ -391,7 +385,7 @@ public class LoginActivity extends Activity {
             setcalendar.set(Calendar.DAY_OF_MONTH, 26);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(
-                    "MM/dd/yyyy HH:mm:ss");
+                    "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
             // get current date time with Date()
             String currentDate = dateFormat.format(calendar.getTime()).split(" ")[0];
             db.open();
@@ -680,7 +674,7 @@ public class LoginActivity extends Activity {
                                                 final Calendar calendar = Calendar
                                                         .getInstance();
                                                 SimpleDateFormat formatter = new SimpleDateFormat(
-                                                        "MM/dd/yyyy HH:mm:ss");
+                                                        "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                                 String Createddate = formatter
                                                         .format(calendar
                                                                 .getTime());
@@ -718,7 +712,7 @@ public class LoginActivity extends Activity {
                             final Calendar calendar = Calendar
                                     .getInstance();
                             SimpleDateFormat formatter = new SimpleDateFormat(
-                                    "MM/dd/yyyy HH:mm:ss");
+                                    "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                             String Createddate = formatter.format(calendar
                                     .getTime());
 
@@ -789,20 +783,20 @@ public class LoginActivity extends Activity {
                                 } else if (loginstaus
                                         .equalsIgnoreCase("true3")) {
 
-                                    db.open();
+                                   /* db.open();
                                     String userid = db.getUserId(username);
                                     db.close();
 
-                                    if (userid.equalsIgnoreCase("no")) {
+                                    if (userid.equalsIgnoreCase("no")) {*/
 
                                         Toast.makeText(
                                                 LoginActivity.this,
                                                 "This device is already assigned to another user.Please contact your system administrator!.",
                                                 Toast.LENGTH_LONG).show();
 
-                                    } else {
+                                 /*   } else {
 
-                                        /*String[] serverdatearray = serverdate
+                                        *//*String[] serverdatearray = serverdate
                                                 .split(" ");
 
                                         server_date = serverdatearray[0];
@@ -829,7 +823,7 @@ public class LoginActivity extends Activity {
                                         todaydate1 = sdf.format(curntdte);
 
                                         spe.putString("todaydate", todaydate1);
-                                        spe.commit();*/
+                                        spe.commit();*//*
 
                                         //SetClosingISOpeningOnlyOnce();
                                         // checkAndSaveMonthly();
@@ -845,7 +839,7 @@ public class LoginActivity extends Activity {
 //                                                "This device is already assigned to another user.Please contact your system administrator!. Already Login Id = "
 //                                                        + userid,
 //                                                Toast.LENGTH_LONG).show();
-                                    }
+                                    }*/
                                 } else if (loginstaus
                                         .equalsIgnoreCase("true2")) {
 
@@ -1045,7 +1039,7 @@ public class LoginActivity extends Activity {
                                 }
 
                                 SimpleDateFormat sdf = new SimpleDateFormat(
-                                        "MM/dd/yyyy hh:mm:ss a");
+                                        "MM/dd/yyyy hh:mm:ss a",Locale.ENGLISH);
                                 Date d = sdf.parse(holiday_date);
                                 sdf.applyPattern("yyyy-MM-dd hh:mm:ss");
                                 holiday_date1 = sdf.format(d);
@@ -1151,7 +1145,9 @@ public class LoginActivity extends Activity {
         String a = db.getdatepresentorabsent(givendate, username);
         db.close();
         // String a="P";
-        if (role.equalsIgnoreCase("FLR")) {
+        if (role.equalsIgnoreCase("FLR")||
+                role.equalsIgnoreCase("ADR")||
+                role.equalsIgnoreCase("BP")) {
 
             if (a.equalsIgnoreCase("")) {
 
@@ -1215,7 +1211,9 @@ public class LoginActivity extends Activity {
             } else {
 
             }*/
-                if (!sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                if (!sp.getString("Role", "").equalsIgnoreCase("FLR")||
+                        !sp.getString("Role", "").equalsIgnoreCase("ADR")||
+                        !sp.getString("Role", "").equalsIgnoreCase("BP")) {
                     Boc26AlaramReceiver();
                 }
                 Intent i = new Intent(getApplicationContext(), AttendanceFragment.class);
@@ -1229,7 +1227,9 @@ public class LoginActivity extends Activity {
 
                 result = true;
 
-                if (!sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                if (!sp.getString("Role", "").equalsIgnoreCase("FLR")||
+                        !sp.getString("Role", "").equalsIgnoreCase("ADR")||
+                        !sp.getString("Role", "").equalsIgnoreCase("BP")) {
                     Boc26AlaramReceiver();
                 }
                 Intent i = new Intent(getApplicationContext(),
@@ -1968,12 +1968,9 @@ public class LoginActivity extends Activity {
         return str_BOC;
     }*/
 
-    public class SyncApkCheck extends AsyncTask<Void, Integer, Boolean> {
+    public class SyncApkCheck extends AsyncTask<Void, String, String> {
 
-        boolean result = false;
-
-        ProgressDialog mprogress;
-
+        String retResult;
 
         @Override
         protected void onPreExecute() {
@@ -1981,36 +1978,46 @@ public class LoginActivity extends Activity {
             super.onPreExecute();
 
             mprogress = new ProgressDialog(LoginActivity.this);
-            mprogress.setTitle("Checking / Downloading APK");
+            mprogress.setTitle("Checking/Downloading Update.");
             mProgress.setMessage("Please Wait");
-            mprogress.setIndeterminate(true);
             mprogress.setCancelable(false);
+            mprogress.setIndeterminate(false);
+            mprogress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mprogress.setMax(100);
             mprogress.show();
 
 
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected String doInBackground(Void... params) {
 
             CheckServerApkVersionDownloadFile(downloadConfigFile);
             String version = ReadVersionFromSDCardFile();
             if (!version.equalsIgnoreCase("")) {
                 if (!VERSION_NAME.trim().equalsIgnoreCase(version.trim())) {
-                    result = Update(downloadURL);
+                    Update(downloadURL);
+                    retResult = "DOWNLD";
                 } else {
-                    result = false;
+                    retResult = "NODOWNLD";
                 }
             } else {
-                result = false;
+                retResult = "NODOWNLD";
             }
 
-            return result;
+            return retResult;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            mprogress.setProgress(Integer.parseInt(values[0])); //Updating progress
+
         }
 
 
         @Override
-        protected void onPostExecute(Boolean result) {
+        protected void onPostExecute(String result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
             if (mprogress != null && mprogress.isShowing() && !LoginActivity.this.isFinishing()) {
@@ -2018,16 +2025,14 @@ public class LoginActivity extends Activity {
             }
 
             if (result != null) {
-                if (result) {
-                    Toast.makeText(LoginActivity.this, "New Apk Version has been Installed..!", Toast.LENGTH_SHORT).show();
+                if (result.equalsIgnoreCase("DOWNLD")) {
+                    Toast.makeText(LoginActivity.this, "New Apk Version has been Installed..!", Toast.LENGTH_LONG).show();
                 } else {
-//                    Toast.makeText(MainActivity.this, "No New Version !", Toast.LENGTH_SHORT).show();
-                    //LoginUser();
+
                     new GetServerDate().execute();
                 }
             } else {
-//                Toast.makeText(MainActivity.this, "No New Version !", Toast.LENGTH_SHORT).show();
-                //LoginUser();
+
                 new GetServerDate().execute();
 
             }
@@ -2037,7 +2042,7 @@ public class LoginActivity extends Activity {
     }
 
 
-    public class DownloadNewVersion extends AsyncTask<String, Integer, Boolean> {
+   /* public class DownloadNewVersion extends AsyncTask<String, Integer, Boolean> {
 
         ProgressDialog mprogress;
 
@@ -2089,8 +2094,8 @@ public class LoginActivity extends Activity {
                         URL url = new URL(downloadURL);
 
                         HttpURLConnection c = (HttpURLConnection) url.openConnection();
-                       /* c.setRequestMethod("GET");
-                        c.setDoOutput(true);*/
+                       *//* c.setRequestMethod("GET");
+                        c.setDoOutput(true);*//*
                         c.setRequestMethod("GET");
                         c.setDoOutput(false);
                         c.setReadTimeout(6000);
@@ -2178,7 +2183,7 @@ public class LoginActivity extends Activity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
 
-    }
+    }*/
 
 
     public void LoginUser() {
@@ -2280,7 +2285,7 @@ public class LoginActivity extends Activity {
         }
     }
 
-    public void CheckServerApkVersionDownloadFile(String configFileUrl) {
+   public void CheckServerApkVersionDownloadFile(String configFileUrl) {
         try {
             URL url = new URL(configFileUrl);
             HttpURLConnection c = (HttpURLConnection) url.openConnection();
@@ -2312,7 +2317,7 @@ public class LoginActivity extends Activity {
         }
     }
 
-    public String ReadVersionFromSDCardFile() {
+    /* public String ReadVersionFromSDCardFile() {
 
         String serverApkVersion = "";
 
@@ -2337,11 +2342,11 @@ public class LoginActivity extends Activity {
 
             e.printStackTrace();
         }
-        return serverApkVersion   /*.split("\\$")[0]*/;
+        return serverApkVersion   *//*.split("\\$")[0]*//*;
 
-    }
+    }*/
 
-    public Boolean Update(String apkurl) {
+    /*public Boolean Update(String apkurl) {
         try {
             URL url = new URL(apkurl);
             HttpURLConnection c = (HttpURLConnection) url.openConnection();
@@ -2397,8 +2402,114 @@ public class LoginActivity extends Activity {
             return false;
         }
         return null;
+    }*/
+
+
+
+    public String ReadVersionFromSDCardFile() {
+
+        String serverApkVersion = "";
+        try {
+
+            String PATH = Environment.getExternalStorageDirectory()
+                    + "/download/Config.txt";
+            File myFile = new File(PATH);
+            FileInputStream fIn = new FileInputStream(myFile);
+            BufferedReader myReader = new BufferedReader(new InputStreamReader(
+                    fIn));
+            String aDataRow = "";
+            String aBuffer = "";
+            while ((aDataRow = myReader.readLine()) != null) {
+                aBuffer = aDataRow;
+            }
+
+            return serverApkVersion = aBuffer;
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+        return serverApkVersion   /*.split("\\$")[0]*/;
+
     }
 
+    public void Update(String apkurl) {
+        try {
+            URL url = new URL(apkurl);
+            HttpURLConnection c = (HttpURLConnection) url.openConnection();
+            c.setRequestMethod("GET");
+            c.setDoOutput(false);
+            c.setConnectTimeout(60000);
+            c.setReadTimeout(60000);
+            c.connect();
+
+            String PATH = Environment.getExternalStorageDirectory()
+                    + "/download/";
+            File file = new File(PATH);
+            file.mkdirs();
+            File outputFile = new File(file, "app1.apk");
+            FileOutputStream fos = new FileOutputStream(outputFile);
+
+            InputStream is = c.getInputStream();
+
+            // Detect the file lenghth
+            final int fileLength = c.getContentLength();
+
+            byte[] buffer = new byte[1024];
+            int len1 = 0;
+            int Offset = 0;
+
+            while ((len1 = is.read(buffer)) != -1) {
+                //pdialog.setProgress(load);
+                Offset += len1;
+                fos.write(buffer, 0, len1);
+
+                //pdialog.setProgress(load);
+                int percentage = ((Offset * 100) / fileLength);
+                if (percentage > 0)
+                    mprogress.setProgress((int) percentage); // sending progress percent to publishProgress
+
+                Log.d("Percentage : ", "" + (int) ((Offset * 100) / fileLength));
+
+            }
+            fos.close();
+            is.close();//
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(
+                    Uri.fromFile(new File(Environment
+                            .getExternalStorageDirectory()
+                            + "/download/"
+                            + "app1.apk")),
+                    "application/vnd.android.package-archive");
+            startActivity(intent);
+            // mProgress.dismiss();
+
+        } catch (Exception e) {
+
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    if (mprogress.isShowing())
+                        mprogress.dismiss();
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                    builder.setMessage("Please login again or install app1.apk manualy from Download folder.")
+                            .setTitle("Update Error.");
+                    builder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int id) {
+                            Log.i("", "Clicked");
+                            //makeRequest();
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+            });
+            e.printStackTrace();
+        }
+    }
     /**
      * This method disables the Broadcast receiver registered in the AndroidManifest file.
      */
@@ -2461,7 +2572,7 @@ public class LoginActivity extends Activity {
                     final Calendar calendar1 = Calendar
                             .getInstance();
                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                            "M/d/yyyy");
+                            "M/d/yyyy",Locale.ENGLISH);
                     String systemdate = formatter1.format(calendar1
                             .getTime());
 
@@ -2483,7 +2594,7 @@ public class LoginActivity extends Activity {
 
                     final Calendar calendar = Calendar.getInstance();
                     SimpleDateFormat formatter = new SimpleDateFormat(
-                            "MM/dd/yyyy HH:mm:ss");
+                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                     String Createddate = formatter.format(calendar
                             .getTime());
 
@@ -2689,7 +2800,7 @@ public class LoginActivity extends Activity {
                         final Calendar calendar1 = Calendar
                                 .getInstance();
                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss");
+                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                         String Createddate = formatter1.format(calendar1
                                 .getTime());
                         log = log + "-attendance null";
@@ -2708,7 +2819,7 @@ public class LoginActivity extends Activity {
                     final Calendar calendar1 = Calendar
                             .getInstance();
                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                            "MM/dd/yyyy HH:mm:ss");
+                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                     String Createddate = formatter1.format(calendar1
                             .getTime());
 
@@ -2762,7 +2873,7 @@ public class LoginActivity extends Activity {
                 spe.commit();
 
                 SimpleDateFormat sdf = new SimpleDateFormat(
-                        "MM/dd/yyyy");
+                        "MM/dd/yyyy",Locale.ENGLISH);
 
                 Date curntdte = null;
                 try {
@@ -2994,7 +3105,7 @@ public class LoginActivity extends Activity {
 
                     Date date = new Date();
                     @SuppressLint("SimpleDateFormat")
-                    SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
 
                     DateLMD = form.format(date);
                     String lmd[] = DateLMD.split(" ");
@@ -3042,7 +3153,7 @@ public class LoginActivity extends Activity {
 
             } else if (Flag.equalsIgnoreCase("2")) {
 
-                new DownloadNewVersion().execute();
+                new SyncApkCheck().execute();
             }
             else if (Flag.equalsIgnoreCase("SE")) {
 

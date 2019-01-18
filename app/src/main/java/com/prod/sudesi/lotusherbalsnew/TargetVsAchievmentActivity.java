@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 
 import org.ksoap2.serialization.SoapObject;
@@ -200,7 +201,7 @@ public class TargetVsAchievmentActivity extends Activity {
                 Log.v("", "comparedatewith=" + comparedatewith);
 
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                 Date date1 = null;
                 Date date2 = null;
                 try {

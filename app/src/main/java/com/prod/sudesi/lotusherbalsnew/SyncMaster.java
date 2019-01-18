@@ -116,7 +116,6 @@ public class SyncMaster extends Activity {
 //    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
     public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
 
-    //    public static String URL = "http://192.168.0.136:81/lotusapi/api/Stock/SaveStock";
     private JSONArray array;
     String flag;
     String ErroFlag = "";
@@ -186,7 +185,7 @@ public class SyncMaster extends Activity {
         if (role.equalsIgnoreCase("DUB")) {
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat(
-                    "yyyy-MMMM-dd");
+                    "yyyy-MMMM-dd",Locale.ENGLISH);
             String insert_timestamp = sdf.format(cal
                     .getTime());
 
@@ -212,7 +211,7 @@ public class SyncMaster extends Activity {
                 dates_array = new ArrayList<String>();
 
                 for (int i = 0; i < dates.size(); i++) {
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
 
                     String reportDate = df.format(dates.get(i));
                     Log.d("Date is", " " + reportDate);
@@ -280,7 +279,9 @@ public class SyncMaster extends Activity {
                     }
                 }, 5000);// set time as per your requirement
 
-                if (sp.getString("Role", "").equalsIgnoreCase("FLR")) {
+                if (sp.getString("Role", "").equalsIgnoreCase("FLR")||
+                        sp.getString("Role", "").equalsIgnoreCase("ADR")||
+                        sp.getString("Role", "").equalsIgnoreCase("BP")) {
                     Toast.makeText(context, "Data Download not use for Floter", Toast.LENGTH_LONG).show();
                 } else {
                     if (cd.isCurrentDateMatchDeviceDate()) {
@@ -822,7 +823,7 @@ public class SyncMaster extends Activity {
                                     final Calendar calendar1 = Calendar
                                             .getInstance();
                                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                            "MM/dd/yyyy HH:mm:ss");
+                                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                     String Createddate = formatter1
                                             .format(calendar1.getTime());
 
@@ -851,7 +852,7 @@ public class SyncMaster extends Activity {
                             Log.e("pm", "pm7");
 
                             SimpleDateFormat dateFormat = new SimpleDateFormat(
-                                    "MM/dd/yyyy HH:mm:ss");
+                                    "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                             // get current date time with Date()
                             Calendar cal = Calendar.getInstance();
                             // dateFormat.format(cal.getTime())
@@ -866,7 +867,7 @@ public class SyncMaster extends Activity {
 
                             final Calendar calendar1 = Calendar.getInstance();
                             SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                    "MM/dd/yyyy HH:mm:ss");
+                                    "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                             String Createddate = formatter1.format(calendar1
                                     .getTime());
 
@@ -888,7 +889,7 @@ public class SyncMaster extends Activity {
 
                     final Calendar calendar1 = Calendar.getInstance();
                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                            "MM/dd/yyyy HH:mm:ss");
+                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                     String Createddate = formatter1.format(calendar1.getTime());
 
                     int n = Thread.currentThread().getStackTrace()[2]
@@ -1478,7 +1479,7 @@ public class SyncMaster extends Activity {
                                         final Calendar calendar = Calendar
                                                 .getInstance();
                                         SimpleDateFormat formatter = new SimpleDateFormat(
-                                                "MM/dd/yyyy HH:mm:ss");
+                                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                         String date = formatter.format(calendar
                                                 .getTime());
 
@@ -1500,7 +1501,7 @@ public class SyncMaster extends Activity {
                                         final Calendar calendar1 = Calendar
                                                 .getInstance();
                                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                                "MM/dd/yyyy HH:mm:ss");
+                                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                         String Createddate = formatter1
                                                 .format(calendar1.getTime());
 
@@ -1526,7 +1527,7 @@ public class SyncMaster extends Activity {
                                     final Calendar calendar1 = Calendar
                                             .getInstance();
                                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                            "MM/dd/yyyy HH:mm:ss");
+                                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                     String Createddate = formatter1
                                             .format(calendar1.getTime());
 
@@ -1570,7 +1571,7 @@ public class SyncMaster extends Activity {
 
                         final Calendar calendar1 = Calendar.getInstance();
                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss");
+                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                         String Createddate = formatter1.format(calendar1
                                 .getTime());
 
@@ -7116,7 +7117,7 @@ public class SyncMaster extends Activity {
                         db.close();
 
                         Calendar calendar1 = Calendar.getInstance();
-                        SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd ");
+                        SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
                         String strDate = mdformat.format(calendar1.getTime());
 
                         soap_result = service.DataDownloadForSale(
@@ -7308,9 +7309,9 @@ public class SyncMaster extends Activity {
                                             String outputPattern = "yyyy-MM-dd HH:mm:ss";
 
                                             DateFormat inputFormat = new SimpleDateFormat(
-                                                    inputPattern);
+                                                    inputPattern,Locale.ENGLISH);
                                             SimpleDateFormat outputFormat = new SimpleDateFormat(
-                                                    outputPattern);
+                                                    outputPattern,Locale.ENGLISH);
 
                                             Date date = inputFormat.parse(LMD);
                                             LMD = outputFormat.format(date);
@@ -7336,9 +7337,9 @@ public class SyncMaster extends Activity {
                                             String outputPattern = "yyyy-MM-dd HH:mm:ss";
 
                                             SimpleDateFormat inputFormat = new SimpleDateFormat(
-                                                    inputPattern);
+                                                    inputPattern,Locale.ENGLISH);
                                             SimpleDateFormat outputFormat = new SimpleDateFormat(
-                                                    outputPattern);
+                                                    outputPattern,Locale.ENGLISH);
 
                                             Date date = inputFormat
                                                     .parse(AndroidCreatedDate);
@@ -7354,9 +7355,9 @@ public class SyncMaster extends Activity {
                                             YEAR = addd2[0];
                                             //
                                             SimpleDateFormat monthParse = new SimpleDateFormat(
-                                                    "MM");
+                                                    "MM",Locale.ENGLISH);
                                             SimpleDateFormat monthDisplay = new SimpleDateFormat(
-                                                    "MMMM");
+                                                    "MMMM",Locale.ENGLISH);
                                             MONTH = monthDisplay.format(monthParse
                                                     .parse(month));
                                             //
@@ -7551,7 +7552,7 @@ public class SyncMaster extends Activity {
                                                     "S", EmpId);
 
                                     SimpleDateFormat dateFormat = new SimpleDateFormat(
-                                            "MM/dd/yyyy HH:mm:ss");
+                                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                     // get current date time with Date()
                                     Calendar cal = Calendar.getInstance();
                                     // dateFormat.format(cal.getTime())
@@ -7588,7 +7589,7 @@ public class SyncMaster extends Activity {
                                     final Calendar calendar = Calendar
                                             .getInstance();
                                     SimpleDateFormat formatter = new SimpleDateFormat(
-                                            "MM/dd/yyyy HH:mm:ss");
+                                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                     String Createddate = formatter.format(calendar
                                             .getTime());
                                     Log.v("", "se error");
@@ -7610,7 +7611,7 @@ public class SyncMaster extends Activity {
                             syncstockdata = 0;
                             final Calendar calendar = Calendar.getInstance();
                             SimpleDateFormat formatter = new SimpleDateFormat(
-                                    "MM/dd/yyyy HH:mm:ss");
+                                    "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                             String Createddate = formatter.format(calendar
                                     .getTime());
 
@@ -7715,7 +7716,7 @@ public class SyncMaster extends Activity {
 
                 final Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat formatter = new SimpleDateFormat(
-                        "MM/dd/yyyy HH:mm:ss");
+                        "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                 String Createddate = formatter.format(calendar.getTime());
                 Flag = "4";
                 int n = Thread.currentThread().getStackTrace()[2]
@@ -8011,7 +8012,7 @@ public class SyncMaster extends Activity {
                                     final Calendar calendar1 = Calendar
                                             .getInstance();
                                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                            "MM/dd/yyyy HH:mm:ss");
+                                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                     String Createddate = formatter1
                                             .format(calendar1.getTime());
 
@@ -8070,7 +8071,7 @@ public class SyncMaster extends Activity {
                         final Calendar calendar1 = Calendar
                                 .getInstance();
                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss");
+                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                         String Createddate = formatter1
                                 .format(calendar1.getTime());
 
@@ -8258,7 +8259,7 @@ public class SyncMaster extends Activity {
                                             final Calendar calendar1 = Calendar
                                                     .getInstance();
                                             SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                                    "MM/dd/yyyy HH:mm:ss");
+                                                    "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                             String Createddate = formatter1
                                                     .format(calendar1.getTime());
 
@@ -8282,7 +8283,7 @@ public class SyncMaster extends Activity {
                                         final Calendar calendar1 = Calendar
                                                 .getInstance();
                                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                                "MM/dd/yyyy HH:mm:ss");
+                                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                         String Createddate = formatter1
                                                 .format(calendar1.getTime());
 
@@ -8323,7 +8324,7 @@ public class SyncMaster extends Activity {
 
                         final Calendar cal = Calendar.getInstance();
                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss");
+                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                         String Createddate = formatter1.format(cal.getTime());
 
                         int n = Thread.currentThread().getStackTrace()[2]
@@ -8494,9 +8495,9 @@ public class SyncMaster extends Activity {
                                         String outputPattern = "yyyy-MM-dd HH:mm:ss";
 
                                         DateFormat inputFormat = new SimpleDateFormat(
-                                                inputPattern);
+                                                inputPattern,Locale.ENGLISH);
                                         SimpleDateFormat outputFormat = new SimpleDateFormat(
-                                                outputPattern);
+                                                outputPattern,Locale.ENGLISH);
 
                                         Date date = inputFormat.parse(LMD);
                                         LMD = outputFormat.format(date);
@@ -8519,9 +8520,9 @@ public class SyncMaster extends Activity {
                                         String outputPattern = "yyyy-MM-dd HH:mm:ss";
 
                                         SimpleDateFormat inputFormat = new SimpleDateFormat(
-                                                inputPattern);
+                                                inputPattern,Locale.ENGLISH);
                                         SimpleDateFormat outputFormat = new SimpleDateFormat(
-                                                outputPattern);
+                                                outputPattern,Locale.ENGLISH);
 
                                         Date date = inputFormat
                                                 .parse(AndroidCreatedDate);
@@ -8537,9 +8538,9 @@ public class SyncMaster extends Activity {
                                         YEAR = addd2[0];
                                         //
                                         SimpleDateFormat monthParse = new SimpleDateFormat(
-                                                "MM");
+                                                "MM",Locale.ENGLISH);
                                         SimpleDateFormat monthDisplay = new SimpleDateFormat(
-                                                "MMMM");
+                                                "MMMM",Locale.ENGLISH);
                                         MONTH = monthDisplay.format(monthParse
                                                 .parse(month));
                                         //
@@ -8734,7 +8735,7 @@ public class SyncMaster extends Activity {
                                 final Calendar calendar = Calendar
                                         .getInstance();
                                 SimpleDateFormat formatter = new SimpleDateFormat(
-                                        "MM/dd/yyyy HH:mm:ss");
+                                        "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                 String Createddate = formatter.format(calendar
                                         .getTime());
                                 Log.v("", "se error");
@@ -8756,7 +8757,7 @@ public class SyncMaster extends Activity {
                         syncstockdata = 0;
                         final Calendar calendar = Calendar.getInstance();
                         SimpleDateFormat formatter = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss");
+                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                         String Createddate = formatter.format(calendar
                                 .getTime());
 
@@ -8787,7 +8788,7 @@ public class SyncMaster extends Activity {
                 Flag = "3";
                 final Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat formatter = new SimpleDateFormat(
-                        "MM/dd/yyyy HH:mm:ss");
+                        "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                 String Createddate = formatter.format(calendar.getTime());
                 int n = Thread.currentThread().getStackTrace()[2]
                         .getLineNumber();
@@ -8961,7 +8962,7 @@ public class SyncMaster extends Activity {
 
             Calendar cal2 = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat(
-                    "yyyy-MM-dd HH:mm:ss");
+                    "yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
             String insert_timestamp = sdf.format(cal2.getTime());
 
             if (!cd.isConnectingToInternet()) {

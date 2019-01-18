@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 
 public class FocusReportActivity extends Activity {
@@ -220,7 +221,7 @@ public class FocusReportActivity extends Activity {
 
                     final Calendar calendar = Calendar.getInstance();
                     SimpleDateFormat formatter = new SimpleDateFormat(
-                            "MM/dd/yyyy HH:mm:ss");
+                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                     String Createddate = formatter.format(calendar
                             .getTime());
 
@@ -322,7 +323,7 @@ public class FocusReportActivity extends Activity {
 
                 Calendar cal = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat(
-                        "yyyy-MM-dd HH:mm:ss");
+                        "yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
                 String insert_timestamp = sdf.format(cal.getTime());
 
                 db.open();
@@ -511,7 +512,7 @@ public class FocusReportActivity extends Activity {
         focusReportList = new ArrayList<FocusModel>();
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss");
+                "yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
         String insert_timestamp = sdf.format(cal.getTime());
 
         db.open();

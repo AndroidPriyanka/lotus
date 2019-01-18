@@ -88,7 +88,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="Opening Bal"
+                            android:text="Closing Bal"
                             android:layout_weight="1"
                             android:textColor="@android:color/white"
                             android:textStyle="italic"

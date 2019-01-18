@@ -319,7 +319,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         private ArrayList<HashMap<String, String>> eventsPerMonthMap = new ArrayList<HashMap<String, String>>();
         private final ArrayList<String> attendance = new ArrayList<String>();
         private final SimpleDateFormat dateFormatter = new SimpleDateFormat(
-                "dd-MMM-yyyy");
+                "dd-MMM-yyyy",Locale.ENGLISH);
 
         // Days in Current Month
         public GridCellAdapter(Context context, int textViewResourceId,
@@ -866,7 +866,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
     public static boolean afterdateValidate(String date) {
         boolean result = false;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy",Locale.ENGLISH);
         try {
             Date parseddate = sdf.parse(date);
             Date dateObj2 = new Date(System.currentTimeMillis());
@@ -887,7 +887,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
     public static boolean beforedatevalidate(String selecteddate,
                                              String currentdate) {
         boolean result = false;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy",Locale.ENGLISH);
         try {
             Date selectdate = sdf.parse(selecteddate);
             Date curntdate = sdf.parse(currentdate);
@@ -918,7 +918,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
             final Calendar calendar1 = Calendar
                     .getInstance();
             SimpleDateFormat formatter1 = new SimpleDateFormat(
-                    "M/d/yyyy");
+                    "M/d/yyyy",Locale.ENGLISH);
             String currentdate = formatter1.format(calendar1
                     .getTime());
 
@@ -1071,13 +1071,13 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                             for (int j = 0; j < presentList.size(); j++) {
                                 attendanceModel = presentList.get(j);
 
-                                SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
+                                SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa",Locale.ENGLISH);
                                 Date date = df.parse(attendanceModel.getADate());
 
-                                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
                                 savedate = form.format(date);
 
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
                                 String adate = sdf.format(date.getTime());
 
                                 String sld[] = attendanceModel.getADate().split(" ");
@@ -1171,7 +1171,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                             final Calendar calendar1 = Calendar
                                     .getInstance();
                             SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                    "MM/dd/yyyy HH:mm:ss");
+                                    "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                             String Createddate = formatter1.format(calendar1
                                     .getTime());
 
@@ -1186,7 +1186,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                         final Calendar calendar1 = Calendar
                                 .getInstance();
                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss");
+                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                         String Createddate = formatter1.format(calendar1
                                 .getTime());
 
@@ -1205,7 +1205,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                     final Calendar calendar1 = Calendar
                             .getInstance();
                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                            "MM/dd/yyyy HH:mm:ss");
+                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                     String Createddate = formatter1.format(calendar1
                             .getTime());
 
@@ -1241,7 +1241,9 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                 Toast.makeText(getApplicationContext(), "Attendance Successfully Sync", Toast.LENGTH_SHORT).show();
 
 
-                if (role.equalsIgnoreCase("FLR")) {
+                if (role.equalsIgnoreCase("FLR")||
+                        role.equalsIgnoreCase("ADR")||
+                        role.equalsIgnoreCase("BP")) {
                     if (attendance_flag.equalsIgnoreCase("A")) {
                         Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -1294,7 +1296,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
             Date date = new Date();
             SimpleDateFormat form = new SimpleDateFormat(
-                    "yyyy-MM-dd HH:mm:ss");
+                    "yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
 
             attendanceDate1 = form.format(date);
             soap_result = service.SaveLogoutTime(username, attendanceDate1);
@@ -1459,7 +1461,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                 final Calendar calendar1 = Calendar
                                         .getInstance();
                                 SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                        "MM/dd/yyyy HH:mm:ss");
+                                        "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                                 String Createddate = formatter1.format(calendar1
                                         .getTime());
 
@@ -1474,7 +1476,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                             final Calendar calendar1 = Calendar
                                     .getInstance();
                             SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                    "MM/dd/yyyy HH:mm:ss");
+                                    "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                             String Createddate = formatter1.format(calendar1
                                     .getTime());
 
@@ -1492,7 +1494,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                     final Calendar calendar1 = Calendar
                             .getInstance();
                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                            "MM/dd/yyyy HH:mm:ss");
+                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                     String Createddate = formatter1.format(calendar1
                             .getTime());
 
@@ -1531,7 +1533,9 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                 flag = false;
                 Toast.makeText(getApplicationContext(), "Attendance Successfully Sync", Toast.LENGTH_SHORT).show();
 
-                if (role.equalsIgnoreCase("FLR")) {
+                if (role.equalsIgnoreCase("FLR")||
+                        role.equalsIgnoreCase("ADR")||
+                        role.equalsIgnoreCase("BP")) {
                     if (attendance_flag.equalsIgnoreCase("A")) {
                         Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -2070,14 +2074,14 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                                 Flag = "2";
                                 String previousdate = cd.getNonNullValues(String.valueOf(soap_result.getProperty("LastDateRecord")));
 
-                                SimpleDateFormat sdfSource = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
+                                SimpleDateFormat sdfSource = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa",Locale.ENGLISH);
                                 Date date = null;
                                 try {
                                     date = sdfSource.parse(previousdate);
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
-                                SimpleDateFormat sdfDestination = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                SimpleDateFormat sdfDestination = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
                                 String asonDate = sdfDestination.format(date);
 
                                 String sld[] = asonDate.split(" ");
@@ -2100,7 +2104,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
                         final Calendar calendar = Calendar.getInstance();
                         SimpleDateFormat formatter = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss");
+                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
                         String Createddate = formatter.format(calendar
                                 .getTime());
 
@@ -2153,7 +2157,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
 
                 Date date = new Date();
                 @SuppressLint("SimpleDateFormat")
-                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
 
                 attendanceDate1 = form.format(date);
                 Log.v("", "attendanceDate1=" + attendanceDate1);
@@ -2284,7 +2288,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                 try {
 
                     Date date = new Date();
-                    @SuppressLint("SimpleDateFormat") SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    @SuppressLint("SimpleDateFormat") SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
 
                     attendanceDate1 = form.format(date);
                     Log.v("", "attendanceDate1=" + attendanceDate1);

@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class TargetActivity extends Activity {
 
@@ -316,7 +317,7 @@ public class TargetActivity extends Activity {
 
                     Calendar c = Calendar.getInstance();
                     SimpleDateFormat sdf = new SimpleDateFormat(
-                            "yyyy-MM-dd HH:mm:ss");
+                            "yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
                     String insert_timestamp = sdf.format(c
                             .getTime());
 
