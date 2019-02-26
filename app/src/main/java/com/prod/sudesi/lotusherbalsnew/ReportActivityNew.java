@@ -59,10 +59,10 @@ public class ReportActivityNew extends Activity {
 
     Context context;
 
-    RadioButton rb_s, radio0, radio1;
+    //RadioButton rb_s, radio0, radio1;
     RadioButton rb_attendance;
 
-    RadioGroup rg_lhm_choice;
+    //RadioGroup rg_lhm_choice;
 
     EditText searchdata;
 
@@ -99,6 +99,13 @@ public class ReportActivityNew extends Activity {
     TableFixHeaders tableFixHeaders;
     MatrixTableAdapter<String> matrixTableAdapter;
     LinearLayout searchlayout;
+
+    AutoCompleteTextView category;
+    private ArrayList<String> categoryDetailsArraylist;
+    String[] strCategoryArray = null;
+    String categorystring,categoryname;
+
+    ArrayAdapter<String> adapter1;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -141,7 +148,7 @@ public class ReportActivityNew extends Activity {
                 }
             }
             if (outletDetailsArraylist != null && outletDetailsArraylist.size() > 0) {
-                ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strOutletArray) {
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strOutletArray) {
                     @Override
                     public View getDropDownView(int position, View convertView, ViewGroup parent) {
                         View v = null;
@@ -161,8 +168,8 @@ public class ReportActivityNew extends Activity {
                     }
                 };
 
-                adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                sp_outletName.setAdapter(adapter1);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                sp_outletName.setAdapter(adapter);
             }
 
             sp_outletName.setOnTouchListener(new View.OnTouchListener() {
@@ -212,9 +219,9 @@ public class ReportActivityNew extends Activity {
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
         if (!role.equalsIgnoreCase("DUB")) {
-            rg_lhm_choice = (RadioGroup) findViewById(R.id.rg_lhm_choice);
+            //rg_lhm_choice = (RadioGroup) findViewById(R.id.rg_lhm_choice);
 
-            searchdata = (EditText) findViewById(R.id.searchdata);
+            //searchdata = (EditText) findViewById(R.id.searchdata);
 
 
         }
@@ -244,9 +251,12 @@ public class ReportActivityNew extends Activity {
                 imm.showSoftInput(searchdata,InputMethodManager.SHOW_IMPLICIT);
             }
         });*/
-        rb_s = (RadioButton) findViewById(R.id.rb_stock);
-        radio0 = (RadioButton) findViewById(R.id.radio0);
-        radio1 = (RadioButton) findViewById(R.id.radio1);
+        //rb_s = (RadioButton) findViewById(R.id.rb_stock);
+        //radio0 = (RadioButton) findViewById(R.id.radio0);
+        //radio1 = (RadioButton) findViewById(R.id.radio1);
+
+        category = (AutoCompleteTextView) findViewById(R.id.spin_category);
+        searchdata = (EditText) findViewById(R.id.searchdata);
 
         tableFixHeaders = (TableFixHeaders) findViewById(R.id.table);
         searchlayout = (LinearLayout) findViewById(R.id.searchlayout);
@@ -287,6 +297,94 @@ public class ReportActivityNew extends Activity {
         });
         //---------------------
 
+
+        category.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (category.length() > 0) {
+                    category.setError(null);
+                }
+
+            }
+        });
+
+        fetchCategoryDetails();
+        /////////Details of Brand
+        if (categoryDetailsArraylist.size() > 0) {
+            strCategoryArray = new String[categoryDetailsArraylist.size()];
+            for (int i = 0; i < categoryDetailsArraylist.size(); i++) {
+                strCategoryArray[i] = categoryDetailsArraylist.get(i);
+            }
+        }
+        if (categoryDetailsArraylist != null && categoryDetailsArraylist.size() > 0) {
+            adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strCategoryArray) {
+                @Override
+                public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                    View v = null;
+                    // If this is the initial dummy entry, make it hidden
+                    if (position == 0) {
+                        TextView tv = new TextView(getContext());
+                        tv.setHeight(0);
+                        tv.setVisibility(View.GONE);
+                        v = tv;
+                    } else {
+                        // Pass convertView as null to prevent reuse of special case views
+                        v = super.getDropDownView(position, null, parent);
+                    }
+                    // Hide scroll bar because it appears sometimes unnecessarily, this does not prevent scrolling
+                    parent.setVerticalScrollBarEnabled(false);
+                    return v;
+                }
+            };
+
+            adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            category.setAdapter(adapter1);
+        }
+
+        category.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                category.showDropDown();
+                return false;
+            }
+        });
+
+        category.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (strCategoryArray != null && strCategoryArray.length > 0) {
+
+                    categorystring = parent.getItemAtPosition(position).toString();
+                    for (int i = 0; i < categoryDetailsArraylist.size(); i++) {
+                        String text = categoryDetailsArraylist.get(i);
+                        if (text.equalsIgnoreCase(categorystring)) {
+                            categoryname = text;
+                        }
+                    }
+                    if (categorystring != null && categorystring.length() > 0) {
+                       // ShowingReportTotalSum(categoryname);
+                       // new ShowCategoryWiseData().execute(categoryname);
+                        table_row_attend.setVisibility(View.GONE);
+                        attendancelist.setVisibility(View.GONE);
+                        rb_attendance.setChecked(false);
+                        searchdata.getText().clear();
+                        showCategoryReport(categoryname);
+                    }
+                }
+            }
+        });
+
         attendancelist = (ListView) findViewById(R.id.attendancelist);
 
         searchdata.addTextChangedListener(new TextWatcher() {
@@ -294,7 +392,42 @@ public class ReportActivityNew extends Activity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Call back the Adapter with current character to Filter
-                matrixTableAdapter.getFilter().filter(s.toString());
+                if(matrixTableAdapter != null) {
+                    matrixTableAdapter.getFilter().filter(s.toString());
+                }else {
+                    category.setText("Select");
+
+                    if (categoryDetailsArraylist.size() > 0) {
+                        strCategoryArray = new String[categoryDetailsArraylist.size()];
+                        for (int i = 0; i < categoryDetailsArraylist.size(); i++) {
+                            strCategoryArray[i] = categoryDetailsArraylist.get(i);
+                        }
+                    }
+                    if (categoryDetailsArraylist != null && categoryDetailsArraylist.size() > 0) {
+                        adapter1 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, strCategoryArray) {
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                                View v = null;
+                                // If this is the initial dummy entry, make it hidden
+                                if (position == 0) {
+                                    TextView tv = new TextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                } else {
+                                    // Pass convertView as null to prevent reuse of special case views
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                // Hide scroll bar because it appears sometimes unnecessarily, this does not prevent scrolling
+                                parent.setVerticalScrollBarEnabled(false);
+                                return v;
+                            }
+                        };
+
+                        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        category.setAdapter(adapter1);
+                    }
+                }
             }
 
             @Override
@@ -307,7 +440,7 @@ public class ReportActivityNew extends Activity {
             }
         });
 
-        if (!role.equalsIgnoreCase("DUB")) {
+        /*if (!role.equalsIgnoreCase("DUB")) {
             rb_s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
 
@@ -344,9 +477,12 @@ public class ReportActivityNew extends Activity {
                     }
                 }
             });
-        }
-        if (!role.equalsIgnoreCase("DUB")) {
-           /* rb_t.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        }*/
+
+
+   /*     if (!role.equalsIgnoreCase("DUB")) {
+            //tester
+           *//* rb_t.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -367,7 +503,7 @@ public class ReportActivityNew extends Activity {
                         txt_lhm.setVisibility(View.GONE);
                     }
                 }
-            });*/
+            });*//*
 
             rg_lhm_choice.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
@@ -586,7 +722,7 @@ public class ReportActivityNew extends Activity {
 
                 }
             });
-        }
+        }*/
         if (!role.equalsIgnoreCase("DUB")) {
             rb_attendance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -595,10 +731,43 @@ public class ReportActivityNew extends Activity {
                     // TODO Auto-generated method stub
 
                     if (isChecked) {
-                        rb_s.setChecked(false);
-                        radio0.setChecked(false);
-                        radio1.setChecked(false);
-                        rg_lhm_choice.setVisibility(View.GONE);
+                        //rb_s.setChecked(false);
+                        //radio0.setChecked(false);
+                        //radio1.setChecked(false);
+                        //rg_lhm_choice.setVisibility(View.GONE);
+
+                        category.setText("Select");
+
+                        if (categoryDetailsArraylist.size() > 0) {
+                            strCategoryArray = new String[categoryDetailsArraylist.size()];
+                            for (int i = 0; i < categoryDetailsArraylist.size(); i++) {
+                                strCategoryArray[i] = categoryDetailsArraylist.get(i);
+                            }
+                        }
+                        if (categoryDetailsArraylist != null && categoryDetailsArraylist.size() > 0) {
+                            adapter1 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, strCategoryArray) {
+                                @Override
+                                public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                                    View v = null;
+                                    // If this is the initial dummy entry, make it hidden
+                                    if (position == 0) {
+                                        TextView tv = new TextView(getContext());
+                                        tv.setHeight(0);
+                                        tv.setVisibility(View.GONE);
+                                        v = tv;
+                                    } else {
+                                        // Pass convertView as null to prevent reuse of special case views
+                                        v = super.getDropDownView(position, null, parent);
+                                    }
+                                    // Hide scroll bar because it appears sometimes unnecessarily, this does not prevent scrolling
+                                    parent.setVerticalScrollBarEnabled(false);
+                                    return v;
+                                }
+                            };
+
+                            adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            category.setAdapter(adapter1);
+                        }
                         tableFixHeaders.setVisibility(View.GONE);
                         searchlayout.setVisibility(View.GONE);
                         attendancelist.setVisibility(View.VISIBLE);
@@ -625,9 +794,9 @@ public class ReportActivityNew extends Activity {
                         attendancelist.setVisibility(View.VISIBLE);
                         tableFixHeaders.setVisibility(View.GONE);
                         searchlayout.setVisibility(View.GONE);
-                        rb_s.setChecked(false);
-                        radio0.setChecked(false);
-                        radio1.setChecked(false);
+                        //rb_s.setChecked(false);
+                        //radio0.setChecked(false);
+                        //radio1.setChecked(false);
                         report_attendance = new ShowReportofAttendance();
                         report_attendance.execute();
                     } else {
@@ -850,6 +1019,212 @@ public class ReportActivityNew extends Activity {
             value = subStr.substring(0, subStr.indexOf("}"));
         }
         return value;
+    }
+
+    private void showCategoryReport(String displayCategory){
+        tableFixHeaders.setVisibility(View.VISIBLE);
+        searchlayout.setVisibility(View.VISIBLE);
+        reportlist.clear();
+
+        ArrayList<ReportModel> reportModelArrayList;
+        reportModelArrayList = new ArrayList<>();
+
+        List<String> list1;
+        list1 = new ArrayList<String>();
+        ArrayList<HashMap> reportList;
+        Map<Integer, ArrayList<HashMap>> hashMapArrayList = new HashMap<>();
+        HashMap<Integer, String> map1;
+
+
+        ReportModel reportModel;
+
+        try {
+            db.open();
+
+            Cursor c = db.getReportTotalSum(displayCategory);
+            if (c != null && c.getCount() > 0) {
+                c.moveToFirst();
+                do {
+
+                    reportModel = new ReportModel();
+
+                    String opening = c.getString(2);
+                    String sold = c.getString(4);
+                    String closing = c.getString(3);
+                    String gross = c.getString(1);
+                    String net = c.getString(0);
+                    String openingStock = c.getString(5);
+                    String closeBal = c.getString(6);
+                    String soldStock = c.getString(7);
+
+                    reportModel.setProduct_id("");
+                    reportModel.setDb_id("");
+                    reportModel.setEancode("");
+                    reportModel.setProduct_category("");
+                    reportModel.setProduct_type("");
+                    reportModel.setProduct_name("TOTAL VALUE IN RUPEES");
+                    reportModel.setSize("");
+                    reportModel.setPrice("");
+                    reportModel.setEmp_id("");
+                    reportModel.setOpening_stock(cd.getNonNullValues_Integer(openingStock));
+                    reportModel.setOpening_amt(cd.getNonNullValues_Integer("\u20B9" + cd.getNonNullValues_Integer(opening)));
+                    reportModel.setStock_received("");
+                    reportModel.setStock_in_hand("");
+                    reportModel.setClose_bal(cd.getNonNullValues_Integer(closeBal));
+                    reportModel.setClose_amt(cd.getNonNullValues_Integer("\u20B9" + cd.getNonNullValues_Integer(closing)));
+                    reportModel.setReturn_saleable("");
+                    reportModel.setReturn_non_saleable("");
+                    reportModel.setSold_stock(cd.getNonNullValues_Integer(soldStock));
+                    reportModel.setSold_amt(cd.getNonNullValues_Integer("\u20B9" + cd.getNonNullValues_Integer(sold)));
+                    reportModel.setTotal_gross_amount(cd.getNonNullValues_Integer("\u20B9" + cd.getNonNullValues_Integer(gross)));
+                    reportModel.setTotal_net_amount(cd.getNonNullValues_Integer("\u20B9" + cd.getNonNullValues_Integer(net)));
+                    reportModel.setDiscount("");
+                    reportModel.setSavedServer("");
+                    reportModel.setInsert_date("");
+                    reportModel.setFLRCode("");
+
+                    reportModelArrayList.add(0, reportModel);
+
+                } while (c.moveToNext());
+            }
+
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            db.open();
+            cursor_stock = db.getReportforStock(displayCategory);
+
+            if (cursor_stock != null && cursor_stock.moveToFirst()) {
+                cursor_stock.moveToFirst();
+
+                do {
+
+                    reportModel = new ReportModel();
+
+                    reportModel.setProduct_id(cd.getNonNullValues(cursor_stock.getString(1)));
+                    reportModel.setDb_id(cd.getNonNullValues_Integer(cursor_stock.getString(2)));
+                    reportModel.setEancode(cursor_stock.getString(3));
+                    reportModel.setProduct_category(cursor_stock.getString(4));
+                    reportModel.setProduct_type(cd.getNonNullValues(cursor_stock.getString(5)));
+                    reportModel.setProduct_name(cd.getNonNullValues(cursor_stock.getString(6)));
+                    reportModel.setSize(cursor_stock.getString(7));
+                    reportModel.setPrice(cd.getNonNullValues_Integer(cursor_stock.getString(8)));
+                    reportModel.setEmp_id(cursor_stock.getString(9));
+                    reportModel.setOpening_stock(cd.getNonNullValues_Integer(cursor_stock.getString(10)));
+                    reportModel.setOpening_amt(cd.getNonNullValues_Integer(cursor_stock.getString(11)));
+                    reportModel.setStock_received(cd.getNonNullValues_Integer(cursor_stock.getString(12)));
+                    reportModel.setStock_in_hand(cd.getNonNullValues_Integer(cursor_stock.getString(13)));
+                    reportModel.setClose_bal(cd.getNonNullValues_Integer(cursor_stock.getString(14)));
+                    reportModel.setClose_amt(cd.getNonNullValues_Integer(cursor_stock.getString(15)));
+                    reportModel.setReturn_saleable(cd.getNonNullValues_Integer(cursor_stock.getString(16)));
+                    reportModel.setReturn_non_saleable(cd.getNonNullValues_Integer(cursor_stock.getString(17)));
+                    reportModel.setSold_stock(cd.getNonNullValues_Integer(cursor_stock.getString(18)));
+                    reportModel.setSold_amt(cd.getNonNullValues_Integer(cursor_stock.getString(19)));
+                    String gross = cursor_stock.getString(20);
+                    if (gross == null) {
+                        gross = "0";
+                    } else {
+                        gross = cursor_stock.getString(20);
+                    }
+                    reportModel.setTotal_gross_amount(gross);
+                    String netamt = cursor_stock.getString(21);
+                    if (netamt == null) {
+                        netamt = "0";
+                    } else {
+                        netamt = cursor_stock.getString(21);
+                    }
+                    reportModel.setTotal_net_amount(netamt);
+                    reportModel.setDiscount(cursor_stock.getString(22));
+
+                    String status = cursor_stock.getString(23);
+                    if (status.equalsIgnoreCase("0")) {
+                        status = "NU";
+                    } else {
+                        status = "U";
+                    }
+                    reportModel.setSavedServer(status);
+                    reportModel.setInsert_date(cursor_stock.getString(24));
+                    reportModel.setFLRCode(cd.getNonNullValues(cursor_stock.getString(26)));
+
+                    Log.e("savedServer", cursor_stock.getString(23));
+
+                    reportModelArrayList.add(reportModel);
+
+                } while (cursor_stock.moveToNext());
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
+
+
+        for (int i = 0; i < reportModelArrayList.size(); i++) {
+            final ReportModel reportModel1 = reportModelArrayList.get(i);
+            reportList = new ArrayList<>();
+            list1 = new ArrayList<String>();
+            list1.add(reportModel1.getProduct_name());
+            list1.add(reportModel1.getProduct_type());
+            list1.add(reportModel1.getPrice());
+            list1.add(reportModel1.getSize());
+            list1.add(reportModel1.getOpening_stock());
+            list1.add(reportModel1.getOpening_amt());
+            list1.add(reportModel1.getStock_received());
+            list1.add(reportModel1.getReturn_saleable());
+            list1.add(reportModel1.getReturn_non_saleable());
+            list1.add(reportModel1.getSold_stock());
+            list1.add(reportModel1.getSold_amt());
+            list1.add(reportModel1.getClose_bal());
+            list1.add(reportModel1.getClose_amt());
+            list1.add(reportModel1.getTotal_gross_amount());
+            list1.add(reportModel1.getDiscount());
+            list1.add(reportModel1.getTotal_net_amount());
+            list1.add(reportModel1.getSavedServer());
+            list1.add(reportModel1.getDb_id());
+            list1.add(reportModel1.getFLRCode());
+
+            for (int k = 0; k < list1.size(); k++) {
+                map1 = new HashMap<Integer, String>();
+                map1.put(k, list1.get(k));
+                reportList.add(map1);
+            }
+            hashMapArrayList.put(i, reportList);
+        }
+        String[] reportArr = new String[list1.size()];
+        reportArr = list1.toArray(reportArr);
+        String[][] reportArray;
+
+        reportArray = new String[reportModelArrayList.size()][19];//{"Header 1","Header 2","Header 3","Header 4","Header 5","Header 6"});
+
+        for (Integer key : hashMapArrayList.keySet()) {
+            System.out.println("key : " + key);
+            System.out.println("value : " + hashMapArrayList.get(key));
+
+            for (int x = 0; x < hashMapArrayList.get(key).get(0).size(); x++) {
+                for (int y = 0; y < reportArray[x].length; y++) {
+                    reportArray[key][y] = getValue(hashMapArrayList.get(key).get(y).toString());
+
+                }
+            }
+        }// end of outer for
+        if (reportArray != null) {
+            matrixTableAdapter = new MatrixTableAdapter<String>(context, reportArray);
+            tableFixHeaders.setAdapter(matrixTableAdapter);
+        }
+    }
+
+
+    public void fetchCategoryDetails() {
+        //new changes
+        categoryDetailsArraylist = new ArrayList<String>();
+
+        db.open();
+        categoryDetailsArraylist = db.getproductcategory(username);
+        db.close();
     }
 
 }

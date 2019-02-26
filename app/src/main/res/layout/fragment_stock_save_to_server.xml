@@ -109,12 +109,12 @@
                 android:orientation="vertical">
 
                 <Button
-                    android:id="@+id/btn_syncfirst"
+                    android:id="@+id/btn_notification"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:alpha="0.6"
-                    android:background="@drawable/data_download"
+                    android:background="@drawable/notification"
                     android:layout_margin="@dimen/_20sdp"/>
 
 
@@ -154,7 +154,7 @@
             android:layout_height="@dimen/_1sdp"
             android:background="#C72C2C" />
 
-        <LinearLayout
+       <!-- <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
@@ -190,7 +190,7 @@
                 android:background="#C72C2C"
                 android:layout_marginRight="@dimen/_150sdp"/>
 
-        </LinearLayout>
+        </LinearLayout>-->
 
         <ImageSwitcher
             android:layout_width="match_parent"

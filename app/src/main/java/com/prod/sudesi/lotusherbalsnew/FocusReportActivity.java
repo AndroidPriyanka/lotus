@@ -471,14 +471,8 @@ public class FocusReportActivity extends Activity {
                     HashMap<String, String> map = new HashMap<String, String>();
                     String protype = cd.getNonNullValues_Integer(c.getString(0));
                     String procategory = cd.getNonNullValues_Integer(c.getString(1));
-                    String div = "";
-                    if (procategory.equalsIgnoreCase("SKIN")) {
-                        div = "LH";
-                    } else {
-                        div = "LM";
-                    }
 
-                    map.put("Type", protype + " (" + div + " )");
+                    map.put("Type", protype + " (" + procategory + " )");
                     map.put("Target", cd.getNonNullValues_Integer(c.getString(2)));
                     map.put("Achievement", cd.getNonNullValues_Integer(c.getString(3)));
 

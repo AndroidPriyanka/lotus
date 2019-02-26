@@ -18,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -71,9 +72,9 @@ public class DashboardNewActivity extends Activity {
     String skincategory, colorcategory;
 
     Button btn_attendance, btn_stock, btn_return, btn_focusreport,
-            btn_notification, btn_reports, btn_datasync, btn_BAreport,
-            btn_BAMonthreport, btn_sale, btn_dashboard, btn_boctarget,
-            btn_stock_sale, btn_outletwise, btn_checkout;
+            btn_reports, btn_datasync, btn_BAreport,
+            btn_BAMonthreport, btn_sale, btn_dashboard,
+            btn_stock_sale, btn_outletwise, btn_checkout,btn_notification;
 
     TextView tv_h_username;
     Button btn_home, btn_logout;
@@ -95,9 +96,9 @@ public class DashboardNewActivity extends Activity {
 
     private AlarmManagerBroadcastReceiver alarm;
 
-    private LinearLayout checkout_layout, stock_layout, boc_layout,
+    private LinearLayout checkout_layout, stock_layout, notification_layout,
             returns_layout, focusreprt_layout, targetAchieve_layout, categorywise_layout,
-            attendance_layout,notification_layout,sale_layout,report_layout,dashboard_layout,mastersync_layout;
+            attendance_layout,sale_layout,report_layout,dashboard_layout,mastersync_layout;
 
     @SuppressLint({"InflateParams", "WrongConstant"})
     @Override
@@ -126,8 +127,8 @@ public class DashboardNewActivity extends Activity {
         role = sp.getString("Role", "");
 
         //enableBroadcastReceiver();
-
-        // TODO: 2/20/2018  set Bocflag false for after boc dialog on 27 date
+        // popup dialog commit code 2019-01-22
+       /* // TODO: 2/20/2018  set Bocflag false for after boc dialog on 27 date
         Calendar calendar = Calendar.getInstance();
         Calendar setcalendar = Calendar.getInstance();
         setcalendar.setTimeInMillis(System.currentTimeMillis());
@@ -171,7 +172,7 @@ public class DashboardNewActivity extends Activity {
 
                 }
             }
-        }
+        }*/
 
         Checkoutflag = sp.getBoolean("Checkoutvalue", false);
 
@@ -184,7 +185,7 @@ public class DashboardNewActivity extends Activity {
         btn_datasync = (Button) findViewById(R.id.btn_master_sync);
         btn_BAreport = (Button) findViewById(R.id.btn_ba_sale_yr);
         btn_sale = (Button) findViewById(R.id.btn_sale);
-        btn_boctarget = (Button) findViewById(R.id.btn_super_atten);
+        //btn_boctarget = (Button) findViewById(R.id.btn_super_atten);
         btn_checkout = (Button) findViewById(R.id.btn_checkout);
 
         btn_outletwise = (Button) findViewById(R.id.btn_outletwise);
@@ -202,7 +203,7 @@ public class DashboardNewActivity extends Activity {
 
         checkout_layout = (LinearLayout) findViewById(R.id.checkout_layout);
         stock_layout = (LinearLayout) findViewById(R.id.stock_layout);
-        boc_layout = (LinearLayout) findViewById(R.id.boc_layout);
+        //boc_layout = (LinearLayout) findViewById(R.id.boc_layout);
         returns_layout = (LinearLayout) findViewById(R.id.returns_layout);
         focusreprt_layout = (LinearLayout) findViewById(R.id.focusreprt_layout);
         targetAchieve_layout = (LinearLayout) findViewById(R.id.targetAchieve_layout);
@@ -229,7 +230,7 @@ public class DashboardNewActivity extends Activity {
                 role.equalsIgnoreCase("BP")) {
             checkout_layout.setBackgroundColor(Color.parseColor("#808080"));
             stock_layout.setBackgroundColor(Color.parseColor("#808080"));
-            boc_layout.setBackgroundColor(Color.parseColor("#808080"));
+            //boc_layout.setBackgroundColor(Color.parseColor("#808080"));
             returns_layout.setBackgroundColor(Color.parseColor("#808080"));
             focusreprt_layout.setBackgroundColor(Color.parseColor("#808080"));
             targetAchieve_layout.setBackgroundColor(Color.parseColor("#808080"));
@@ -239,7 +240,7 @@ public class DashboardNewActivity extends Activity {
         }else{
             if(Checkoutflag){
                 stock_layout.setBackgroundColor(Color.parseColor("#808080"));
-                boc_layout.setBackgroundColor(Color.parseColor("#808080"));
+                //boc_layout.setBackgroundColor(Color.parseColor("#808080"));
                 returns_layout.setBackgroundColor(Color.parseColor("#808080"));
                 focusreprt_layout.setBackgroundColor(Color.parseColor("#808080"));
                 targetAchieve_layout.setBackgroundColor(Color.parseColor("#808080"));
@@ -348,7 +349,8 @@ public class DashboardNewActivity extends Activity {
                             Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
 
                         } else {
-                            Calendar calendar = Calendar.getInstance();
+                            // popup dialog commit code 2019-01-22
+                            /*Calendar calendar = Calendar.getInstance();
                             Calendar setcalendar = Calendar.getInstance();
                             setcalendar.setTimeInMillis(System.currentTimeMillis());
                             setcalendar.set(Calendar.HOUR_OF_DAY, 7);
@@ -377,7 +379,10 @@ public class DashboardNewActivity extends Activity {
                             } else {
                                 startActivity(new Intent(getApplicationContext(),
                                         StockNewActivity.class));
-                            }
+                            }*/
+
+                            startActivity(new Intent(getApplicationContext(),
+                                    StockNewActivity.class));
 
                         }
                     }
@@ -543,8 +548,13 @@ public class DashboardNewActivity extends Activity {
                             Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
 
                         } else {
-                            Intent i = new Intent(getApplicationContext(), TargetVsAchievmentActivity.class);
-                            startActivity(i);
+                            if(role.equalsIgnoreCase("DUB")){
+                                Intent i = new Intent(getApplicationContext(), TargetVsAchievmentActivity.class);
+                                startActivity(i);
+                            }else {
+                                Intent i = new Intent(getApplicationContext(), TargetVsAchievmentActivityIndia.class);
+                                startActivity(i);
+                            }
                         }
                     }
                 } else {
@@ -592,7 +602,8 @@ public class DashboardNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                Calendar calendar = Calendar.getInstance();
+                // popup dialog commit code 2019-01-22
+               /* Calendar calendar = Calendar.getInstance();
                 Calendar setcalendar = Calendar.getInstance();
                 setcalendar.setTimeInMillis(System.currentTimeMillis());
                 setcalendar.set(Calendar.HOUR_OF_DAY, 7);
@@ -601,7 +612,7 @@ public class DashboardNewActivity extends Activity {
                 setcalendar.set(Calendar.DAY_OF_MONTH, 26);
 
                 Date bocdate = setcalendar.getTime();
-                Date currentdate = calendar.getTime();
+                Date currentdate = calendar.getTime();*/
 
 
                 if (cd.isCurrentDateMatchDeviceDate()) {
@@ -617,7 +628,8 @@ public class DashboardNewActivity extends Activity {
                             Toast.makeText(DashboardNewActivity.this, "Please Punch your Checkout Time", Toast.LENGTH_LONG).show();
 
                         } else {
-                            if (calendar.get(Calendar.DAY_OF_MONTH) == 26) {
+                            // popup dialog commit code 2019-01-22
+                            /*if (calendar.get(Calendar.DAY_OF_MONTH) == 26) {
                                 if (currentdate.after(bocdate)) {
                                     if (sp.getBoolean("DialogDismiss", false) == false) {
 
@@ -633,7 +645,12 @@ public class DashboardNewActivity extends Activity {
                             } else {
                                 new CheckNoSale().execute();
 
-                            }
+                            }*/
+
+                            startActivity(new Intent(getApplicationContext(),
+                                    SaleNewActivity.class));
+
+                           // new CheckNoSale().execute();
                         }
                     }
                 } else {
@@ -665,14 +682,14 @@ public class DashboardNewActivity extends Activity {
             }
         });
 
-        btn_boctarget.setOnClickListener(new OnClickListener() {
+       /* btn_boctarget.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                /*startActivity(new Intent(getApplicationContext(),
-                        SupervisorAttendance.class));*/
+                *//*startActivity(new Intent(getApplicationContext(),
+                        SupervisorAttendance.class));*//*
                 //Toast.makeText(mContext,"Coming Soon...!",Toast.LENGTH_LONG).show();
                 if (cd.isCurrentDateMatchDeviceDate()) {
                     if (role.equalsIgnoreCase("FLR") ||
@@ -695,7 +712,7 @@ public class DashboardNewActivity extends Activity {
 
                 }
             }
-        });
+        });*/
 
         btn_outletwise.setOnClickListener(new OnClickListener() {
 
@@ -757,33 +774,46 @@ public class DashboardNewActivity extends Activity {
 
     public void fetchCategoryDetails() {
         //new changes
-        //categoryDetailsArraylist = new ArrayList<String>();
+        categoryDetailsArraylist = new ArrayList<String>();
         String div = sp.getString("div", "");
 
-        if (div.equalsIgnoreCase("LH & LHM") || div.equalsIgnoreCase("LH & LM")) {
+       /* if (div.equalsIgnoreCase("LH & LHM") || div.equalsIgnoreCase("LH & LM")) {
 
-            /*db.open();
+            *//*db.open();
             categoryDetailsArraylist = db.getproductcategoryforTarget(); // ------------
 
-            Log.e("", "kkkklklk111");*/
+            Log.e("", "kkkklklk111");*//*
             skincategory = "";
             strCategory = "SKIN,COLOR";
 
         }
         if (div.equalsIgnoreCase("LH")) {
-            /*categoryDetailsArraylist.clear();
-            categoryDetailsArraylist.add("SKIN");*/
+            *//*categoryDetailsArraylist.clear();
+            categoryDetailsArraylist.add("SKIN");*//*
             skincategory = "";
             strCategory = "SKIN";
 
         }
         if (div.equalsIgnoreCase("LM")) {
-            /*categoryDetailsArraylist.clear();
-            categoryDetailsArraylist.add("COLOR");*/
+            *//*categoryDetailsArraylist.clear();
+            categoryDetailsArraylist.add("COLOR");*//*
             skincategory = "";
             strCategory = "COLOR";
 
+        }*/
+
+        db.open();
+        categoryDetailsArraylist = db.getproductcategorywithoutselect(username);
+        db.close();
+
+        if (categoryDetailsArraylist.size() > 0) {
+            String[] strCategoryArray = new String[categoryDetailsArraylist.size()];
+            for (int i = 0; i < categoryDetailsArraylist.size(); i++) {
+                strCategoryArray[i] = categoryDetailsArraylist.get(i);
+            }
+            strCategory = TextUtils.join(",", strCategoryArray);
         }
+
 
 
         try {
@@ -4366,7 +4396,7 @@ public class DashboardNewActivity extends Activity {
         }*/
 
 
-    public class DataDownload extends AsyncTask<Void, Void, SoapObject> {
+ /*   public class DataDownload extends AsyncTask<Void, Void, SoapObject> {
 
         private SoapObject soap_result = null;
 
@@ -4406,7 +4436,7 @@ public class DashboardNewActivity extends Activity {
 
                 } else {
 
-                    ClearLocalAppData();
+                    cd.ClearLocalAppData();
 
                     String lastdate;
                     db.open();
@@ -4783,14 +4813,14 @@ public class DashboardNewActivity extends Activity {
                                             S_Return_Saleable,
                                             S_Return_NonSaleable);
 
-                                    /*db.UpdateStockSync1(ProductCategory,
+                                    *//*db.UpdateStockSync1(ProductCategory,
                                             ProductType, ProductName, EmpId,
                                             Opening_Stock, Stock_inhand, ClosingBal,
                                             FreshStock, GrossAmount, SoldStock,
                                             Price, Size, db_Id, LMD, Discount,
                                             NetAmount,
                                             S_Return_Saleable,
-                                            S_Return_NonSaleable);*/
+                                            S_Return_NonSaleable);*//*
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","
@@ -4812,7 +4842,7 @@ public class DashboardNewActivity extends Activity {
                                             Size, Price, LMD,
                                             AndroidCreatedDate, MONTH, YEAR);
 
-                                    /*db.insertProductMasterFirsttime(
+                                    *//*db.insertProductMasterFirsttime(
                                             db_stock_id, db_Id, ProductId,
                                             CatCodeId, EANCode, EmpId,
                                             ProductCategory, ProductType,
@@ -4822,7 +4852,7 @@ public class DashboardNewActivity extends Activity {
                                             S_Return_Saleable, ClosingBal,
                                             GrossAmount, Discount, NetAmount,
                                             Size, Price, LMD,
-                                            AndroidCreatedDate, MONTH, YEAR);*/
+                                            AndroidCreatedDate, MONTH, YEAR);*//*
                                     db.close();
 
                                     db_stock_id_array = db_stock_id_array + ","
@@ -5021,7 +5051,8 @@ public class DashboardNewActivity extends Activity {
                                 //do things
                                 dialog.dismiss();
 
-                                BocOpeningDialog();
+                                // popup dialog commit code 2019-01-22
+                               // BocOpeningDialog();
 
                             }
                         });
@@ -5038,7 +5069,8 @@ public class DashboardNewActivity extends Activity {
                                 //do things
                                 dialog.dismiss();
 
-                                BocOpeningDialog();
+                                // popup dialog commit code 2019-01-22
+                               // BocOpeningDialog();
 
                             }
                         });
@@ -5054,8 +5086,8 @@ public class DashboardNewActivity extends Activity {
                             public void onClick(DialogInterface dialog, int id) {
                                 //do things
                                 dialog.dismiss();
-
-                                BocOpeningDialog();
+                                // popup dialog commit code 2019-01-22
+                               // BocOpeningDialog();
 
                             }
                         });
@@ -5330,12 +5362,12 @@ public class DashboardNewActivity extends Activity {
                                         Log.e("", "anytype for sku_h");
                                         SingleOffer = " ";
                                     }
-                                    /*
+                                    *//*
                                      * if (order_flag!=null ||
                                      * order_flag.equalsIgnoreCase("NULL")) {
                                      * Log.e("", "anytype for sku_h");
                                      * order_flag = " "; }
-                                     */
+                                     *//*
 
                                     Log.v("", "flag=" + flag);
                                     // if (flag.equalsIgnoreCase("E")) {
@@ -5467,7 +5499,7 @@ public class DashboardNewActivity extends Activity {
                             "GetProducts", "Fail");
                 }
 
-             /*   db.open();
+             *//*   db.open();
                 String lastdatesyncdate_tester = db
                         .getLastSyncDate("tester_master");
                 db.close();
@@ -5835,7 +5867,7 @@ public class DashboardNewActivity extends Activity {
                             Createddate, Createddate,
                             sp.getString("username", ""),
                             "GetTesterProducts()", "Fail");
-                }*/
+                }*//*
             }
             return soap_result;
         }
@@ -5851,17 +5883,17 @@ public class DashboardNewActivity extends Activity {
             if (Flag.equalsIgnoreCase("0")) {
 
                 // DisplayDialogMessage("Check Your Internet Connection!!!");
-                /*
+                *//*
                 Toast.makeText(SyncMaster.this,
 						"Check Your Internet Connection!!!", Toast.LENGTH_LONG)
-						.show();*/
+						.show();*//*
             } else {
                 if (soap_result == null) {
 
                     // DisplayDialogMessage("Master Data Sync Incomplete, Please try again!!");
-                    /*Toast.makeText(context,
+                    *//*Toast.makeText(context,
                             "Master Data Sync Incomplete, Please try again!!",
-							Toast.LENGTH_SHORT).show();*/
+							Toast.LENGTH_SHORT).show();*//*
 
                 } else if (soap_result1.getProperty("status").toString()
                         .equalsIgnoreCase("C")) {
@@ -5869,17 +5901,17 @@ public class DashboardNewActivity extends Activity {
                     new ClearDataLog().execute();
                     //DisplayDialogMessage("Master Data Completed Successfully!!");
 
-				/*	Toast.makeText(context,
+				*//*	Toast.makeText(context,
 							"Master Data Completed Successfully!!",
-							Toast.LENGTH_SHORT).show();*/
+							Toast.LENGTH_SHORT).show();*//*
 
                 } else if (soap_result1.getProperty("status").toString()
                         .equalsIgnoreCase("SE")) {
 
                     // DisplayDialogMessage("Master Data Sync Incomplete please try again!!");
-					/*Toast.makeText(context,
+					*//*Toast.makeText(context,
 							"Master Data Sync Incomplete please try again!!",
-							Toast.LENGTH_SHORT).show();*/
+							Toast.LENGTH_SHORT).show();*//*
                 }
 
             }
@@ -5895,9 +5927,9 @@ public class DashboardNewActivity extends Activity {
             mProgress.setCancelable(false);
         }
 
-    }
+    }*/
 
-    private void ClearLocalAppData() {
+   /* private void ClearLocalAppData() {
         try {
             db.open();
 
@@ -5917,7 +5949,7 @@ public class DashboardNewActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     public void writeStringAsFile(String fileContents) {
         Context context1 = mContext;
@@ -5940,7 +5972,8 @@ public class DashboardNewActivity extends Activity {
     /**
      * This method enables the Broadcast receiver registered in the AndroidManifest file.
      */
-    public void disableBroadcastReceiver() {
+    // popup dialog commit code 2019-01-22
+    /*public void disableBroadcastReceiver() {
         ComponentName receiver = new ComponentName(this, BocBroadcastReceiver.class);
         PackageManager pm = this.getPackageManager();
 
@@ -5950,9 +5983,10 @@ public class DashboardNewActivity extends Activity {
         spe.putString("Boardcast", "Disable");
         spe.commit();
         Toast.makeText(this, "Disabled broadcst receiver", Toast.LENGTH_SHORT).show();
-    }
+    }*/
 
-    private void BocOpeningDialog() {
+    // popup dialog commit code 2019-01-22
+    /*private void BocOpeningDialog() {
         try {
             alertDialogBuilder = new AlertDialog.Builder(DashboardNewActivity.this);
             // set title
@@ -5992,9 +6026,9 @@ public class DashboardNewActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
-    public class ClearDataLog extends AsyncTask<Void, Void, SoapObject> {
+   /* public class ClearDataLog extends AsyncTask<Void, Void, SoapObject> {
 
         private SoapPrimitive soap_result = null;
 
@@ -6026,7 +6060,7 @@ public class DashboardNewActivity extends Activity {
             } else {
                 try {
 
-                    soap_result = service.ClearDataLog("Doing Clear Data", username, insert_timestamp);
+                    soap_result = service.ClearDataLog("Doing Clear Data", username, insert_timestamp,"");
 
                     if (soap_result != null) {
 
@@ -6077,7 +6111,7 @@ public class DashboardNewActivity extends Activity {
         }
 
 
-    }
+    }*/
 
     //Check out async task - Sharmila
     @SuppressLint("StaticFieldLeak")
@@ -6463,129 +6497,6 @@ public class DashboardNewActivity extends Activity {
 
     }
 
-    public class CheckNoSale extends AsyncTask<String, Void, SoapObject> {
-
-        private SoapObject soap_result = null;
-
-        String Flag = "";
-
-        String bocname = "";
-
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-
-            mProgress.setMessage("Please Wait....");
-            mProgress.show();
-            mProgress.setCancelable(false);
-
-        }
-
-        @Override
-        protected SoapObject doInBackground(String... params) {
-            // TODO Auto-generated method stub
-
-            Date date = new Date();
-            @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
-
-            attendanceDate1 = form.format(date);
-            Log.v("", "attendanceDate1=" + attendanceDate1);
-
-            String sld[] = attendanceDate1.split(" ");
-            String currdate = sld[0];
-
-            if (!cd.isConnectingToInternet()) {
-
-                Flag = "0";
-
-            } else {
-                try {
-
-                    soap_result = service.CheckNoSale(username, currdate);
-
-                    if (soap_result != null) {
-                        if (soap_result.getProperty("Flag") != null) {
-                            String saleflag = cd.getNonNullValues(String.valueOf(soap_result.getProperty("Flag")));
-                            if (saleflag.equalsIgnoreCase("True")) {
-                                Flag = "1";
-                            } else if (saleflag.equalsIgnoreCase("FALSE")) {
-                                Flag = "2";
-                            } else if (saleflag.equalsIgnoreCase("SE")) {
-                                Flag = "SE";
-
-                            }
-                        }
-                    } else {
-
-                        final Calendar calendar = Calendar.getInstance();
-                        SimpleDateFormat formatter = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
-                        String Createddate = formatter.format(calendar
-                                .getTime());
-
-                        int n = Thread.currentThread().getStackTrace()[2]
-                                .getLineNumber();
-                        db.open();
-                        db.insertSyncLog(
-                                "Soup is Null While CheckNoSale()",
-                                String.valueOf(n), "CheckNoSale()",
-                                Createddate, Createddate,
-                                sp.getString("username", ""),
-                                "CheckNoSale", "Fail");
-                        db.close();
-
-                        Toast.makeText(
-                                getApplicationContext(),
-                                "Connectivity Error, Please check Internet connection!!",
-                                Toast.LENGTH_SHORT).show();
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return null;
-        }
-
-        @SuppressLint("DefaultLocale")
-        @Override
-        protected void onPostExecute(SoapObject result) {
-            // TODO Auto-generated method stub
-
-            if (mProgress != null && mProgress.isShowing() && !DashboardNewActivity.this.isFinishing()) {
-                mProgress.dismiss();
-            }
-
-            if (Flag.equalsIgnoreCase("0")) {
-
-                Toast.makeText(getApplicationContext(),
-                        "Connectivity Error, Please check Internet connection!!",
-                        Toast.LENGTH_SHORT).show();
-
-            } else if (Flag.equalsIgnoreCase("1")) {
-
-                Toast.makeText(getApplicationContext(), "You have already Marked No Sale for today ", Toast.LENGTH_SHORT).show();
-
-            } else if (Flag.equalsIgnoreCase("2")) {
-                startActivity(new Intent(getApplicationContext(),
-                        SaleNewActivity.class));
-
-            } else if (Flag.equalsIgnoreCase("SE")) {
-
-                Toast.makeText(
-                        getApplicationContext(),
-                        "Connectivity Error, Please check Internet connection!!",
-                        Toast.LENGTH_SHORT).show();
-
-            }
-
-
-        }
-
-
-    }
 
     private void DisplayDialogMessage(String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(DashboardNewActivity.this);

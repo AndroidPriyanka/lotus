@@ -73,6 +73,11 @@
             android:label="@string/title_activity_bayear_wise_report"
             android:screenOrientation="landscape"></activity>
         <activity
+            android:name="com.prod.sudesi.lotusherbalsnew.TargetVsAchievmentActivityIndia"
+            android:label="@string/title_activity_bayear_wise_report"
+            android:screenOrientation="landscape"></activity>
+
+        <activity
             android:name="com.prod.sudesi.lotusherbalsnew.BAMonthWiseReport"
             android:label="@string/title_activity_bamonth_wise_report"
             android:screenOrientation="portrait"></activity>
@@ -112,6 +117,10 @@
             android:name="com.prod.sudesi.lotusherbalsnew.BocCumulativeDashboardActivity"
             android:screenOrientation="landscape"></activity>
 
+        <activity
+            android:name="com.prod.sudesi.lotusherbalsnew.BocCumulativeDashboardActivityIndia"
+            android:screenOrientation="landscape"></activity>
+
         <activity android:name="com.prod.sudesi.lotusherbalsnew.StockNewActivity" />
 
         <activity android:name="com.prod.sudesi.lotusherbalsnew.SaleNewActivity" />
@@ -147,7 +156,6 @@
         <activity android:name="com.prod.sudesi.lotusherbalsnew.ReportActivityNew"
             android:screenOrientation="landscape"/>
 
-        <receiver android:name="com.prod.sudesi.lotusherbalsnew.UploadDataBrodcastReceiver" />
         <receiver android:name="com.prod.sudesi.lotusherbalsnew.MyScheduledReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -155,7 +163,6 @@
         </receiver>
         <receiver android:name="com.prod.sudesi.lotusherbalsnew.BocBroadcastReceiver" />
 
-        <service android:name="com.prod.sudesi.lotusherbalsnew.BackgroundService" />
         <service android:name="com.prod.sudesi.lotusherbalsnew.BackgroundServiceBOC" />
 
 

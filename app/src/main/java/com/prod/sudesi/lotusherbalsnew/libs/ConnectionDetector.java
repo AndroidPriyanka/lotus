@@ -1,16 +1,25 @@
 package com.prod.sudesi.lotusherbalsnew.libs;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.util.Log;
 
 import com.prod.sudesi.lotusherbalsnew.FocusReportActivity;
+import com.prod.sudesi.lotusherbalsnew.SyncMaster;
+import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
+
+import org.ksoap2.serialization.SoapObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class ConnectionDetector {
 
@@ -18,26 +27,26 @@ public class ConnectionDetector {
     SharedPreferences sp;
     SharedPreferences.Editor spe;
     private ProgressDialog mProgress = null;
+    private Dbcon db;
 
-    public ConnectionDetector(Context context){
+    public ConnectionDetector(Context context) {
 
         this._context = context;
+        db = new Dbcon(_context);
         sp = _context.getSharedPreferences("Lotus", Context.MODE_PRIVATE);
         spe = sp.edit();
     }
 
     /**
      * Checking for all possible internet providers
-     * **/
-    public boolean isConnectingToInternet(){
+     **/
+    public boolean isConnectingToInternet() {
         ConnectivityManager connectivity = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity != null)
-        {
+        if (connectivity != null) {
             NetworkInfo[] info = connectivity.getAllNetworkInfo();
             if (info != null)
                 for (int i = 0; i < info.length; i++)
-                    if (info[i].getState() == NetworkInfo.State.CONNECTED)
-                    {
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
                         return true;
                     }
 
@@ -45,7 +54,7 @@ public class ConnectionDetector {
         return false;
     }
 
-    public boolean isCurrentDateMatchDeviceDate(){
+    public boolean isCurrentDateMatchDeviceDate() {
 
         final Calendar calendar1 = Calendar
                 .getInstance();
@@ -54,7 +63,7 @@ public class ConnectionDetector {
         String systemdate = formatter1.format(calendar1
                 .getTime());
 
-        String serverdate = sp.getString("SERVER_DATE","");
+        String serverdate = sp.getString("SERVER_DATE", "");
         //  String date = "8/29/2011 11:16:12 AM";
         String[] parts = serverdate.split(" ");
         String serverdd = parts[0];
@@ -69,7 +78,7 @@ public class ConnectionDetector {
     }
 
     public String getNonNullValues(String str) {
-        if (str == null || str.isEmpty() || str.equalsIgnoreCase("null") || str.equalsIgnoreCase("")||
+        if (str == null || str.isEmpty() || str.equalsIgnoreCase("null") || str.equalsIgnoreCase("") ||
                 str.equalsIgnoreCase("anyType{}")) {
             return "";
         } else {
@@ -78,7 +87,7 @@ public class ConnectionDetector {
     }
 
     public String getNonNullValues_Integer(String str) {
-        if (str == null || str.isEmpty() || str.equalsIgnoreCase("null") || str.equalsIgnoreCase("")||
+        if (str == null || str.isEmpty() || str.equalsIgnoreCase("null") || str.equalsIgnoreCase("") ||
                 str.equalsIgnoreCase("anyType{}")) {
             return "0";
         } else {
@@ -244,13 +253,13 @@ public class ConnectionDetector {
                     }
 
                 } else {
-                    if(pmonth==2) {
+                    if (pmonth == 2) {
                         if ((dat.after(sDate) && (dat.before(eDate)))) {
                             bocname = "BOC" + String.valueOf(pmonth - 2);
                         } else {
                             bocname = "BOC12";
                         }
-                    }else{
+                    } else {
                         bocname = "BOC" + String.valueOf(pmonth - 2);
                     }
                 }
@@ -265,4 +274,30 @@ public class ConnectionDetector {
 
         return bocname;
     }
+
+    public void ClearLocalAppData() {
+        try {
+            db.open();
+
+            db.deleteTables("SYNC_LOG");
+            db.deleteTables("boc_wise_stock");
+            db.deleteTables("dashboard_details");
+            db.deleteTables("image");
+            db.deleteTables("scan");
+            db.deleteTables("stock");
+            db.deleteTables("stock_monthwise");
+            db.deleteTables("supervisor_attendance");
+            db.deleteTables("tester");
+            db.deleteTables("focus_data");
+            db.deleteTables("login");
+            db.deleteTables("division_master");
+
+            db.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

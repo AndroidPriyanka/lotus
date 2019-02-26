@@ -7,8 +7,8 @@ android {
         applicationId "com.prod.sudesi.lotusherbalsnew"
         minSdkVersion 17
         targetSdkVersion 26
-        versionCode 30
-        versionName "3.5"
+        versionCode 31
+        versionName "3.6"
         multiDexEnabled true
         resConfigs "en"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

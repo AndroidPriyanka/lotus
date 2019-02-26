@@ -172,6 +172,7 @@ public class OutletActivity extends Activity {
 
                 if (outletstring != null) {
                     try {
+                        ClearLocalAppData();
                         new FLROutletAttendance().execute();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -539,5 +540,28 @@ public class OutletActivity extends Activity {
         }
 
 
+    }
+
+    public void ClearLocalAppData() {
+        try {
+            db.open();
+
+            db.deleteTables("SYNC_LOG");
+            db.deleteTables("boc_wise_stock");
+            db.deleteTables("dashboard_details");
+            db.deleteTables("image");
+            db.deleteTables("scan");
+            db.deleteTables("stock");
+            db.deleteTables("stock_monthwise");
+            db.deleteTables("supervisor_attendance");
+            db.deleteTables("tester");
+            db.deleteTables("focus_data");
+            db.deleteTables("division_master");
+
+            db.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -27,7 +27,7 @@ public class LotusWebservice {
 
     //For current production using this method
     public SoapObject SaveAttendance(String empid, String date,
-                                        String attend, String absent_type, String lat, String lon, String flag) {
+                                        String attend, String absent_type, String lat, String lon, String flag, String deviceid) {
         SoapObject result = null;
         try {
             Log.v("", "attendace service called");
@@ -41,6 +41,7 @@ public class LotusWebservice {
             request.addProperty("lat", lat);
             request.addProperty("lon", lon);
             request.addProperty("flag", flag);
+            request.addProperty("Android_Uid", deviceid);
 
             Log.e("AttendanceValues", empid + "---" + date + "---" + attend
                     + "---" + absent_type + "---" + lat + "---" + lon + "---" + flag);
@@ -143,7 +144,7 @@ public class LotusWebservice {
 		return result;
 	}*/
 
-    public SoapObject GetAttendanceList(String empid) {
+    public SoapObject GetAttendanceList(String empid,String ClearDate, String FirstLogin) {
         SoapObject result = null;
         try {
             Log.v("", "attendace service called");
@@ -151,6 +152,8 @@ public class LotusWebservice {
                     "GetAttendanceList");
 
             request.addProperty("emp_id", empid);
+            request.addProperty("Clear_Date", ClearDate);
+            request.addProperty("First_Login", FirstLogin);
 
             Log.e("GetAttendanceList", empid);
 
@@ -450,7 +453,7 @@ public class LotusWebservice {
      *
      * } catch(Exception e) { e.printStackTrace(); } return result; }
      */
-    public SoapPrimitive SaveVisibility(String product_type, String emp_id,
+    /*public SoapPrimitive SaveVisibility(String product_type, String emp_id,
                                         String img_count, String Description, String Latitude,
                                         String Longitude) {
         SoapPrimitive result = null;
@@ -484,9 +487,9 @@ public class LotusWebservice {
             e.printStackTrace();
         }
         return result;
-    }
+    }*/
 
-    public SoapPrimitive UploadImage(String ProductType, String ImageName,
+   /* public SoapPrimitive UploadImage(String ProductType, String ImageName,
                                      int VisibilityID, String captureddate) {
         SoapPrimitive result = null;
         try {
@@ -522,7 +525,7 @@ public class LotusWebservice {
             e.printStackTrace();
         }
         return result;
-    }
+    }*/
 
     public SoapObject GetLogin(String EmpId, String Password, String version) {
         SoapObject result = null;
@@ -617,7 +620,7 @@ public class LotusWebservice {
 
     // BA REPORT
 
-    public SoapObject GetBAOutletSales(String EmpID) {
+    /*public SoapObject GetBAOutletSales(String EmpID) {
 
         SoapObject result = null;
         try {
@@ -647,7 +650,7 @@ public class LotusWebservice {
         }
         Log.e("GetBAOutletSales==", result.toString());
         return result;
-    }
+    }*/
 
     public SoapObject GetAchievementReport(String EmpID) {
 
@@ -683,7 +686,7 @@ public class LotusWebservice {
 
     // Ba month wise report
 
-    public SoapObject GetBAOutletMothWiseSales(String EmpID, String month,
+    /*public SoapObject GetBAOutletMothWiseSales(String EmpID, String month,
                                                String year) {
 
         SoapObject result = null;
@@ -716,7 +719,7 @@ public class LotusWebservice {
         }
         Log.e("GetBAOutletmonthSales==", result.toString());
         return result;
-    }
+    }*/
 
     public SoapPrimitive GetServerDate() {
         SoapPrimitive result = null;
@@ -791,7 +794,7 @@ public class LotusWebservice {
     // cmd.Parameters.Add("@username", EmpId);
     // public List<stock_details> SyncStockData(string EmpId)
 
-    public SoapObject SyncStockData(String empid, String lastsync_date) {
+    /*public SoapObject SyncStockData(String empid, String lastsync_date) {
         SoapObject result = null;
         try {
             Log.v("", "sync stock service called");
@@ -820,10 +823,10 @@ public class LotusWebservice {
             e.printStackTrace();
         }
         return result;
-    }
+    }*/
 
     //--- tester data download
-    public SoapObject SyncGetTesterData(String empid, String lastsync_date) {
+    /*public SoapObject SyncGetTesterData(String empid, String lastsync_date) {
         SoapObject result = null;
         try {
             Log.v("", "sync tester data download service called");
@@ -852,7 +855,7 @@ public class LotusWebservice {
             e.printStackTrace();
         }
         return result;
-    }
+    }*/
 
 
     // StoreErro Log for Transaction Download
@@ -983,7 +986,7 @@ public class LotusWebservice {
 
     // GetVisibilityNotReceivedImage(string EmpId)
 
-    public SoapObject GetVisibilityNotReceivedImage(String username) {
+   /* public SoapObject GetVisibilityNotReceivedImage(String username) {
         SoapObject result = null;
         try {
             SoapObject request = new SoapObject("http://tempuri.org/",
@@ -1011,9 +1014,9 @@ public class LotusWebservice {
             e.printStackTrace();
         }
         return result;
-    }
+    }*/
 
-    public SoapPrimitive InsertStockCummData(String Pid, String CatCodeId,
+   /* public SoapPrimitive InsertStockCummData(String Pid, String CatCodeId,
                                              String EANCode, String empId, String ProductCategory,
                                              String product_type, String product_name, String shadeno,
                                              String Opening_Stock, String FreshStock, String Stock_inhand,
@@ -1071,9 +1074,9 @@ public class LotusWebservice {
             e.printStackTrace();
         }
         return result;
-    }
+    }*/
 
-    public SoapObject GetTesterProducts(String Date, String username) {
+   /* public SoapObject GetTesterProducts(String Date, String username) {
         SoapObject result = null;
 
         try {
@@ -1101,10 +1104,10 @@ public class LotusWebservice {
             e.printStackTrace();
         }
         return result;
-    }
+    }*/
 
 
-    public SoapPrimitive SaveStockEveryDayNetvalue(String Pid, String CatCodeId,
+   /* public SoapPrimitive SaveStockEveryDayNetvalue(String Pid, String CatCodeId,
                                                    String EANCode, String empId, String ProductCategory,
                                                    String product_type, String product_name, String shadeno,
                                                    String Opening_Stock, String FreshStock, String Stock_inhand,
@@ -1258,9 +1261,9 @@ public class LotusWebservice {
         }
 
         return result;
-    }
+    }*/
 
-    public SoapObject SyncStockNetvalue(String empid, String lastsync_date) {
+   /* public SoapObject SyncStockNetvalue(String empid, String lastsync_date) {
         SoapObject result = null;
         try {
             Log.v("", "sync SyncStockNetvalue service called");
@@ -1289,9 +1292,9 @@ public class LotusWebservice {
             e.printStackTrace();
         }
         return result;
-    }
+    }*/
 
-    public SoapObject SyncStockCummData(String empid, String lastsync_date) {
+   /* public SoapObject SyncStockCummData(String empid, String lastsync_date) {
         SoapObject result = null;
         try {
             Log.v("", "sync SyncStockCummData service called");
@@ -1320,7 +1323,7 @@ public class LotusWebservice {
             e.printStackTrace();
         }
         return result;
-    }
+    }*/
 
     public SoapPrimitive SaveSupervisorAttendance(String BDE_CODE, String BA_id, String Adate, String Actual_date, String lat, String lon) {
         SoapPrimitive result = null;
@@ -1498,7 +1501,7 @@ public class LotusWebservice {
         return result;
     }
 
-    public SoapObject GetBOCOpening(String EmpId) {
+   /* public SoapObject GetBOCOpening(String EmpId) {
         SoapObject result = null;
         try {
 
@@ -1530,11 +1533,11 @@ public class LotusWebservice {
         Log.e("GetBOCOpening", result.toString());
         return result;
 
-    }
+    }*/
 
     //-----------------------New Sp for data download----------------------
 
-    public SoapObject DataDownload(String empid, String lastsync_date) {
+    /*public SoapObject DataDownload(String empid, String lastsync_date) {
         SoapObject result = null;
         try {
             Log.v("", "sync stock service called");
@@ -1563,7 +1566,7 @@ public class LotusWebservice {
             e.printStackTrace();
         }
         return result;
-    }
+    }*/
 
     public SoapObject DataDownloadForSale(String empid, String lastsync_date) {
         SoapObject result = null;
@@ -1626,7 +1629,7 @@ public class LotusWebservice {
         return result;
     }
 
-    public SoapPrimitive ClearDataLog(String msg, String username, String Clear_Date) {
+    public SoapPrimitive ClearDataLog(String msg, String username, String Clear_Date, String First_Login) {
         SoapPrimitive result = null;
         try {
             Log.v("", "sync stock service called");
@@ -1636,6 +1639,7 @@ public class LotusWebservice {
             request.addProperty("sMessage", msg);
             request.addProperty("username", username);
             request.addProperty("Clear_Date", Clear_Date);
+            request.addProperty("First_Login",First_Login);
             SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
                     SoapEnvelope.VER11);// soap envelop with version
             envelope.setOutputSoapObject(request); // set request object
@@ -2054,7 +2058,6 @@ public class LotusWebservice {
         return result;
     }
 
-
     public SoapPrimitive CheckNoSaleAndCheckout(String EmpId, String LMD) {
         SoapPrimitive result = null;
         try {
@@ -2099,6 +2102,85 @@ public class LotusWebservice {
 
             result = (SoapPrimitive) envelope.getResponse();
             Log.e("Check_AvailableStock=", result.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public SoapPrimitive CheckfirstLoginData(String Empid) {
+        SoapPrimitive result = null;
+        try {
+            Log.v("", "LoginData service called");
+            SoapObject request = new SoapObject("http://tempuri.org/", "LoginData");
+            Log.v("", "EmpId==" + Empid);
+            request.addProperty("Empid", Empid);
+
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);// soap envelop with version
+            envelope.setOutputSoapObject(request); // set request object
+            envelope.dotNet = true;
+
+            HttpTransportSE androidHttpTransport = new HttpTransportSE(url, 60000);// http
+            // transport call
+            androidHttpTransport.call("http://tempuri.org/IService1/LoginData", envelope);
+
+            result = (SoapPrimitive) envelope.getResponse();
+            Log.e("LoginData=", result.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public SoapPrimitive CheckpasswordChange(String EmpId, String Password) {
+        SoapPrimitive result = null;
+        try {
+            Log.v("", "VerifyPassword service called");
+            SoapObject request = new SoapObject("http://tempuri.org/", "VerifyPassword");
+            Log.v("", "EmpId==" + EmpId);
+            request.addProperty("EmpId", EmpId);
+            request.addProperty("Password", Password);
+
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);// soap envelop with version
+            envelope.setOutputSoapObject(request); // set request object
+            envelope.dotNet = true;
+
+            HttpTransportSE androidHttpTransport = new HttpTransportSE(url, 60000);// http
+            // transport call
+            androidHttpTransport.call("http://tempuri.org/IService1/VerifyPassword", envelope);
+
+            result = (SoapPrimitive) envelope.getResponse();
+            Log.e("VerifyPassword=", result.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public SoapObject GetDivisions(String username) {
+        SoapObject result = null;
+        try {
+            SoapObject request = new SoapObject("http://tempuri.org/",
+                    "GetDivisions");
+            // /// send link
+            request.addProperty("EmpId", username);
+
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+                    SoapEnvelope.VER11);// soap envelop with version
+            envelope.setOutputSoapObject(request); // set request object
+            envelope.dotNet = true;
+
+            HttpTransportSE androidHttpTransport = new HttpTransportSE(url, 60000);// http
+            // transport
+            // call
+            androidHttpTransport.call(
+                    "http://tempuri.org/IService1/GetDivisions", envelope);
+
+            result = (SoapObject) envelope.getResponse();
+            Log.e("GetDivisions=", result.toString());
 
         } catch (Exception e) {
             e.printStackTrace();

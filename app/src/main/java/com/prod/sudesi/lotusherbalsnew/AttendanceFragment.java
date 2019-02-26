@@ -167,6 +167,7 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
     private Button gridcell;
     private ArrayList<AttendanceModel> presentList;
     AttendanceModel attendanceModel;
+    String deviceId = "";
 
 
     @SuppressLint("WrongConstant")
@@ -223,6 +224,8 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
         username = sp.getString("username", "");
         bdename = sp.getString("BDEusername", "");
         role = sp.getString("Role", "");
+
+        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         selectedDayMonthYearButton = (Button) findViewById(R.id.selectedDayMonthYear);
         selectedDayMonthYearButton.setText("Selected: ");
@@ -1392,10 +1395,10 @@ public class AttendanceFragment extends AppCompatActivity implements OnClickList
                     if (attendance_flag.equalsIgnoreCase("P") &&
                             attendance_flag.length() > 0 && attendance_flag != null) {
                         soap_attendance = service.SaveAttendance(username, attendanceDate1,
-                                attendance_flag, "", String.valueOf(lat), String.valueOf(lon), uploadflag);
+                                attendance_flag, "", String.valueOf(lat), String.valueOf(lon), uploadflag, deviceId);
                     } else {
                         soap_attendance = service.SaveAttendance(username, attendanceDate1,
-                                attendance_flag, leavetype_flag, String.valueOf(lat), String.valueOf(lon), uploadflag);
+                                attendance_flag, leavetype_flag, String.valueOf(lat), String.valueOf(lon), uploadflag, deviceId);
                     }
 
                     if (soap_attendance != null) {

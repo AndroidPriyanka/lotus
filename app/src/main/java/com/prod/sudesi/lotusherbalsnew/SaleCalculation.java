@@ -16,6 +16,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
 import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
+import com.prod.sudesi.lotusherbalsnew.libs.LotusWebservice;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -28,6 +29,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -59,6 +61,8 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
 
 import static android.content.ContentValues.TAG;
 
@@ -88,7 +92,7 @@ public class SaleCalculation extends Activity {
     private static SpannableStringBuilder ssbuilder;
 
     TextView tv_h_username;// -------
-    String username, FLRCode, role, bdename;
+    String username, pass, FLRCode, role, bdename;
     SharedPreferences shp;
     SharedPreferences.Editor shpeditor;
     static Context context;
@@ -104,9 +108,9 @@ public class SaleCalculation extends Activity {
     ArrayList<String> uploadidlist;
     private JSONArray array;
      String ErroFlag = "";
+    LotusWebservice service;
 
-
-//    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
+//      public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
     public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
 
 //    public static String URL = "http://192.168.0.136:81/lotusapi/api/Stock/SaveStock";
@@ -131,7 +135,8 @@ public class SaleCalculation extends Activity {
         // scrv_sale = (ScrollView)findViewById(R.id.scrv_sale);
 
         context = getApplicationContext();
-        cd = new ConnectionDetector(context);
+        cd = new ConnectionDetector(SaleCalculation.this);
+        service = new LotusWebservice(this);
         edt_gross = (EditText) findViewById(R.id.edt_gross);
 
         edt_net = (EditText) findViewById(R.id.edt_net);
@@ -146,6 +151,7 @@ public class SaleCalculation extends Activity {
         shpeditor = shp.edit();
 
         username = shp.getString("username", "");
+        pass = shp.getString("Password", "");
         FLRCode = shp.getString("FLRCode", "");
         role = shp.getString("Role", "");
         bdename = shp.getString("BDEusername", "");
@@ -209,7 +215,9 @@ public class SaleCalculation extends Activity {
                 } else if (role.equalsIgnoreCase("DUB")) {
                     saveMethodForDubai();
                 } else {
-                    saveMethodForLHR();
+
+                    new CheckNoSale().execute();
+                    //saveMethodForLHR();
                 }
 
             }
@@ -1323,8 +1331,13 @@ public class SaleCalculation extends Activity {
                                                 if (stockreceived > 0 || openingstock > 0) {
                                                     calc_gross = calc_gross;
                                                 } else {
-                                                    calc_gross = calc_gross - (i_return_customer * Integer.parseInt(tv_mrp
-                                                            .getText().toString()));
+                                                    /*int customer_total = i_return_customer - Integer.parseInt(edt_qty
+                                                    .getText().toString());
+                                                    calc_gross = calc_gross - (customer_total * Integer.parseInt(tv_mrp
+                                                            .getText().toString()));*/
+                                                    /*calc_gross = calc_gross - (i_return_customer * Integer.parseInt(tv_mrp
+                                                            .getText().toString()));*/
+                                                    calc_gross = calc_gross;
                                                 }
                                             }
                                             calc_gross = Math.abs(calc_gross);
@@ -2953,6 +2966,7 @@ public class SaleCalculation extends Activity {
                                     }
 
                                     Log.e("JSON_TRUE", flag + "_MSG_" + message);
+                                    new CheckpasswordChange().execute();
 
                                 } else {
                                     ErroFlag = "0";
@@ -2969,7 +2983,7 @@ public class SaleCalculation extends Activity {
                                             "SaveStock()", "Fail");
                                     Log.e("JSON_FALSE", flag + "_MSG_" + message);
                                 }
-                                dissmissDialog();
+                                //dissmissDialog();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -3024,6 +3038,7 @@ public class SaleCalculation extends Activity {
             }
 
         } else {
+            new CheckpasswordChange().execute();
             Toast.makeText(this, "No Stock For Data Upload", Toast.LENGTH_SHORT).show();
             Log.e("NoStock dataupload",String.valueOf(stock_array.getCount()));
         }
@@ -3057,6 +3072,216 @@ public class SaleCalculation extends Activity {
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public class CheckpasswordChange extends AsyncTask<String, Void, SoapObject> {
+
+        private SoapPrimitive soap_result = null;
+
+        String Flag = "";
+
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        protected SoapObject doInBackground(String... params) {
+            // TODO Auto-generated method stub
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    soap_result = service.CheckpasswordChange(username, pass);
+
+                    if (soap_result != null) {
+
+                        if (soap_result.toString().equalsIgnoreCase("Correct")) {
+                            Flag = "1";
+                        } else if (soap_result.toString().equalsIgnoreCase("Incorrect")) {
+                            Flag = "2";
+                        }else if (soap_result.toString().equalsIgnoreCase("SE")) {
+                            Flag = "SE";
+
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+
+            if (SaleCalculation.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                return;
+            }
+
+            dissmissDialog();
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(getApplicationContext(), "Connectivity Error, Please check Internet connection!!", Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                //showAlertDialog(count);
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+
+                Intent i = new Intent(SaleCalculation.this, LoginActivity.class);
+                startActivity(i);
+            }
+            else if (Flag.equalsIgnoreCase("SE")) {
+
+                Toast.makeText(getApplicationContext(),"Please check Internet connection!! Try Again", Toast.LENGTH_SHORT).show();
+
+            }
+
+        }
+
+    }
+
+    public class CheckNoSale extends AsyncTask<String, Void, SoapObject> {
+
+        private SoapObject soap_result = null;
+
+        String Flag = "";
+
+        String bocname = "";
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+
+            String msg = "Please Wait....";
+            cd.showProgressDialog(msg);
+
+        }
+
+        @Override
+        protected SoapObject doInBackground(String... params) {
+            // TODO Auto-generated method stub
+
+            Date date = new Date();
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
+
+            String attendanceDate1 = form.format(date);
+            Log.v("", "attendanceDate1=" + attendanceDate1);
+
+            String sld[] = attendanceDate1.split(" ");
+            String currdate = sld[0];
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    soap_result = service.CheckNoSale(username, currdate);
+
+                    if (soap_result != null) {
+                        if (soap_result.getProperty("Flag") != null) {
+                            String saleflag = cd.getNonNullValues(String.valueOf(soap_result.getProperty("Flag")));
+                            if (saleflag.equalsIgnoreCase("True")) {
+                                Flag = "1";
+                            } else if (saleflag.equalsIgnoreCase("FALSE")) {
+                                Flag = "2";
+                            } else if (saleflag.equalsIgnoreCase("SE")) {
+                                Flag = "SE";
+
+                            }
+                        }
+                    } else {
+
+                        final Calendar calendar = Calendar.getInstance();
+                        SimpleDateFormat formatter = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                        String Createddate = formatter.format(calendar
+                                .getTime());
+
+                        int n = Thread.currentThread().getStackTrace()[2]
+                                .getLineNumber();
+                        db.open();
+                        db.insertSyncLog(
+                                "Soup is Null While CheckNoSale()",
+                                String.valueOf(n), "CheckNoSale()",
+                                Createddate, Createddate,
+                                shp.getString("username", ""),
+                                "CheckNoSale", "Fail");
+                        db.close();
+
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "Connectivity Error, Please check Internet connection!!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+
+            if (SaleCalculation.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                return;
+            }
+            cd.dismissProgressDialog();
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(getApplicationContext(),
+                        "Connectivity Error, Please check Internet connection!!",
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                Toast.makeText(getApplicationContext(), "You have already Marked No Sale for today ", Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+
+                saveMethodForLHR();
+
+            } else if (Flag.equalsIgnoreCase("SE")) {
+
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Connectivity Error, Please check Internet connection!!",
+                        Toast.LENGTH_SHORT).show();
+
+            }
+
+
+        }
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        cd.dismissProgressDialog();
+        super.onDestroy();
     }
 
 }

@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:orientation="vertical"
-        android:weightSum="5">
+        android:weightSum="4">
 
         <ImageSwitcher
             android:layout_width="match_parent"
@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_weight="1.1"
+            android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="3">
@@ -74,18 +74,18 @@
                 android:background="#C72C2C" />
 
             <LinearLayout
-                android:id="@+id/notification_layout"
+                android:id="@+id/mastersync_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <Button
-                    android:id="@+id/btn_notifi"
+                    android:id="@+id/btn_master_sync"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:alpha="0.6"
-                    android:background="@drawable/noti"
+                    android:background="@drawable/master"
                     android:padding="@dimen/_5sdp" />
 
             </LinearLayout>
@@ -101,7 +101,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_weight="1.1"
+            android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="3">
@@ -200,7 +200,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_weight="1.1"
+            android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="3">
@@ -277,24 +277,33 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_weight="1.1"
+            android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="3">
 
             <LinearLayout
-                android:id="@+id/boc_layout"
+                android:id="@+id/notification_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <Button
+               <!-- <Button
                     android:id="@+id/btn_super_atten"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:background="@drawable/boc_target"
+                    android:padding="@dimen/_5sdp" />-->
+
+                <Button
+                    android:id="@+id/btn_notifi"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="@drawable/noti"
                     android:padding="@dimen/_5sdp" />
 
             </LinearLayout>
@@ -350,7 +359,7 @@
             android:layout_height="@dimen/_1sdp"
             android:background="#C72C2C" />
 
-        <LinearLayout
+      <!--  <LinearLayout
             android:id="@+id/mastersync_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -376,7 +385,7 @@
         <ImageSwitcher
             android:layout_width="match_parent"
             android:layout_height="@dimen/_1sdp"
-            android:background="#C72C2C" />
+            android:background="#C72C2C" />-->
 
     </LinearLayout>
 

@@ -24,12 +24,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.prod.sudesi.lotusherbalsnew.adapter.BAReportAdapter;
 import com.prod.sudesi.lotusherbalsnew.adapter.BAReportAdapterDubai;
+import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
 import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
 import com.prod.sudesi.lotusherbalsnew.libs.LotusWebservice;
@@ -72,6 +74,13 @@ public class TargetVsAchievmentActivity extends Activity {
 
     String PreviousYear, CurrentYear;
 
+    TextView firstPAtxt,secondPAtxt,firstCTgtxt,secondCTgtxt,firstCAtxt,secondCAtxt,
+            firstCGtxt,secondCGtxt,firstPAtxt1,firstCTgtxt1,firstCAtxt1,firstCGtxt1;
+    private ArrayList<String> categoryDetailsArraylist;
+    private Dbcon db;
+
+    TableLayout onedivlayout, twodivlayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +99,8 @@ public class TargetVsAchievmentActivity extends Activity {
 
         shp = context.getSharedPreferences("Lotus", context.MODE_PRIVATE);
         shpeditor = shp.edit();
+
+        db = new Dbcon(TargetVsAchievmentActivity.this);
 
         role = shp.getString("Role", "");
         outletcode = shp.getString("FLRCode", "");
@@ -141,6 +152,50 @@ public class TargetVsAchievmentActivity extends Activity {
             }
         });
         //---------------------
+
+        firstPAtxt = (TextView) findViewById(R.id.firstPAtxt);
+        secondPAtxt = (TextView) findViewById(R.id.secondPAtxt);
+        firstCTgtxt = (TextView) findViewById(R.id.firstCTgtxt);
+        secondCTgtxt = (TextView) findViewById(R.id.secondCTgtxt);
+        firstCAtxt = (TextView) findViewById(R.id.firstCAtxt);
+        secondCAtxt = (TextView) findViewById(R.id.secondCAtxt);
+        firstCGtxt = (TextView) findViewById(R.id.firstCGtxt);
+        secondCGtxt = (TextView) findViewById(R.id.secondCGtxt);
+        firstPAtxt1 = (TextView) findViewById(R.id.firstPAtxt1);
+        firstCTgtxt1 = (TextView) findViewById(R.id.firstCTgtxt1);
+        firstCAtxt1 = (TextView) findViewById(R.id.firstCAtxt1);
+        firstCGtxt1 = (TextView) findViewById(R.id.firstCGtxt1);
+
+        onedivlayout = (TableLayout) findViewById(R.id.onedivlayout);
+        twodivlayout = (TableLayout) findViewById(R.id.twodivlayout);
+
+
+        fetchCategoryDetails();
+
+        if (categoryDetailsArraylist.size() > 0) {
+            if (categoryDetailsArraylist.size() == 2) {
+                firstPAtxt.setText(categoryDetailsArraylist.get(0));
+                secondPAtxt.setText(categoryDetailsArraylist.get(1));
+                firstCTgtxt.setText(categoryDetailsArraylist.get(0));
+                secondCTgtxt.setText(categoryDetailsArraylist.get(1));
+                firstCAtxt.setText(categoryDetailsArraylist.get(0));
+                secondCAtxt.setText(categoryDetailsArraylist.get(1));
+                firstCGtxt.setText(categoryDetailsArraylist.get(0));
+                secondCGtxt.setText(categoryDetailsArraylist.get(1));
+
+            } else {
+
+
+                twodivlayout.setVisibility(View.GONE);
+                onedivlayout.setVisibility(View.VISIBLE);
+                firstPAtxt1.setText(categoryDetailsArraylist.get(0));
+                firstCTgtxt1.setText(categoryDetailsArraylist.get(0));
+                firstCAtxt1.setText(categoryDetailsArraylist.get(0));
+                firstCGtxt1.setText(categoryDetailsArraylist.get(0));
+
+            }
+
+        }
 
         try {
             new GetBAreport().execute();
@@ -361,21 +416,21 @@ public class TargetVsAchievmentActivity extends Activity {
 
                         map.put("MONTH", String.valueOf(getmessaage.getProperty("MONTH")));
 
-                        map.put("NetAmountPSkin", String.valueOf(getmessaage.getProperty("NetAmountPSkin")));
+                        map.put("NetAmountPFirst", String.valueOf(getmessaage.getProperty("NetAmountPFirst")));
 
-                        map.put("NetAmountPColor", String.valueOf(getmessaage.getProperty("NetAmountPColor")));
+                        map.put("NetAmountPSecond", String.valueOf(getmessaage.getProperty("NetAmountPSecond")));
 
-                        map.put("NetAmountCSkin", String.valueOf(getmessaage.getProperty("NetAmountCSkin")));
+                        map.put("NetAmountCFirst", String.valueOf(getmessaage.getProperty("NetAmountCFirst")));
 
-                        map.put("NetAmountCColor", String.valueOf(getmessaage.getProperty("NetAmountCColor")));
+                        map.put("NetAmountCSecond", String.valueOf(getmessaage.getProperty("NetAmountCSecond")));
 
-                        map.put("TargetAmountCSkin", String.valueOf(getmessaage.getProperty("TargetAmountCSkin")));
+                        map.put("TargetAmountCFirst", String.valueOf(getmessaage.getProperty("TargetAmountCFirst")));
 
-                        map.put("TargetAmountCColor", String.valueOf(getmessaage.getProperty("TargetAmountCColor")));
+                        map.put("TargetAmountCSecond", String.valueOf(getmessaage.getProperty("TargetAmountCSecond")));
 
-                        map.put("GrowthSkin", String.valueOf(getmessaage.getProperty("GrowthSkin")));
+                        map.put("GrowthFirst", String.valueOf(getmessaage.getProperty("GrowthFirst")));
 
-                        map.put("GrowthColor", String.valueOf(getmessaage.getProperty("GrowthColor")));
+                        map.put("GrowthSecond", String.valueOf(getmessaage.getProperty("GrowthSecond")));
 
 
                         todaymessagelist.add(map);
@@ -492,5 +547,15 @@ public class TargetVsAchievmentActivity extends Activity {
     protected void onDestroy() {
         cd.dismissProgressDialog();
         super.onDestroy();
+    }
+
+    public void fetchCategoryDetails() {
+        //new changes
+        categoryDetailsArraylist = new ArrayList<String>();
+
+        db.open();
+        categoryDetailsArraylist = db.getproductcategorywithoutselect(username);
+        db.close();
+
     }
 }

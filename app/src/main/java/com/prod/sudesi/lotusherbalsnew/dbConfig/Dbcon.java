@@ -749,7 +749,7 @@ public class Dbcon {
         ArrayList<String> product_type_data = new ArrayList<String>();
 
         String selectquery = " select DISTINCT ProductType from product_master where ProductCategory = "
-                + "'" + ProductCategory + "'" + " AND ProductType != " + "'BABY CARE'";
+                + "'" + ProductCategory + "'";
 
         Cursor cursor = database.rawQuery(selectquery, null);
         if (cursor != null) {
@@ -772,7 +772,7 @@ public class Dbcon {
         return product_type_data;
     }
 
-    public ArrayList<String> getproductypeforBabyProduct(String ProductCategory) {
+   /* public ArrayList<String> getproductypeforBabyProduct(String ProductCategory) {
         // TODO Auto-generated method stub
         ArrayList<String> product_type_data = new ArrayList<String>();
 
@@ -798,7 +798,7 @@ public class Dbcon {
         }
         database.close();
         return product_type_data;
-    }
+    }*/
 
     public ArrayList<String> fetchselectbrand() {
         // TODO Auto-generated method stub
@@ -943,6 +943,21 @@ public class Dbcon {
 
         // }
         // getStockdetails();
+        database.close();
+
+    }
+
+    public void insertDivisionMaster(String Division, String ShortName, String empid) {
+        // TODO Auto-generated method stub
+
+        ContentValues values = new ContentValues();
+
+        values.put("Division", Division);
+        values.put("ShortName", ShortName);
+        values.put("Empid", empid);
+
+        database.insert("division_master", null, values);
+
         database.close();
 
     }
@@ -1186,6 +1201,19 @@ public class Dbcon {
         String sql = null;
         try {
             sql = "select * from stock where db_id =" + "'" + d_id + "'";
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return database.rawQuery(sql, null);
+    }
+
+    public Cursor getuniquedivision(String div) {
+        // TODO Auto-generated method stub
+
+        String sql = null;
+        try {
+            sql = "select * from division_master where Division =" + "'" + div + "'";
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -3717,16 +3745,27 @@ public class Dbcon {
     }
 
     public void UpdateProductMaster(String product_category, String product_type,
-                                    String product, String d_id, String categoryid,
-                                    String category, String shadeno, String eancode, String size,
-                                    String mrp, String masterpackqty, String monopackqty,
-                                    String innerqty, String sku_l, String sku_b, String sku_h,
-                                    String price_type, String order_flag, String SingleOffer) {
+                                      String product, String d_id, String categoryid,
+                                      String category, String shadeno, String eancode, String size,
+                                      String mrp, String masterpackqty, String monopackqty,
+                                      String innerqty, String sku_l, String sku_b, String sku_h,
+                                      String price_type, String order_flag, String SingleOffer) {
 
         String sql = " update product_master set  ProductCategory = '" + product_category + "', ProductType = '" + product_type + "', ProductName = '" + product + "', CategoryId = '" + categoryid + "' ," +
                 "Category = '" + category + "' , ShadeNo = '" + shadeno + "' , EANCode = '" + eancode + "' , Size = '" + size + "', MRP ='" + mrp + "', MasterPackQty = '" + masterpackqty + "', " +
                 "MonoPackQty = '" + monopackqty + "' , InnerQty = '" + innerqty + "' , SKU_L = '" + sku_l + "' , SKU_B ='" + sku_b + "', SKU_H ='" + sku_h + "' , price_type = '" + price_type + "' ,order_flag = '" + order_flag + "' ,SingleOffer = '" + SingleOffer + "'" +
                 " Where db_id = '" + d_id + "'";
+
+        Log.v("", "sql=" + sql);
+        database.execSQL(sql);
+        // TODO Auto-generated method stub
+
+    }
+
+    public void UpdateDivisionMaster(String Division, String ShortName, String empid) {
+
+        String sql = " update product_master set  Division = '" + Division + "', ShortName = '" + ShortName + "', " +
+                " Empid = '" + empid + "' Where Division = '" + Division + "'";
 
         Log.v("", "sql=" + sql);
         database.execSQL(sql);
@@ -4124,7 +4163,7 @@ public class Dbcon {
 
     public Cursor getReportTotalSum(String ProdCategory) {
 
-        String selectquery = "SELECT sum(Customers.total_net_amount),sum(Customers.total_gross_amount)" +
+        /*String selectquery = "SELECT sum(Customers.total_net_amount),sum(Customers.total_gross_amount)" +
                 ",sum(Customers.opening_amt),sum(Customers.close_amt),sum(Customers.sold_amt)" +
                 ",sum(Customers.opening_stock),sum(Custo" +
                 "" +
@@ -4132,6 +4171,17 @@ public class Dbcon {
                 " FROM product_master Orders," +
                 " stock Customers where Orders.db_id=Customers.db_id and Orders.ProductCategory = '" + ProdCategory + "' order by Orders.order_flag";  // new join query with Product Master table 11.05.2015//04.07.2015
 
+*/
+        String selectquery = "SELECT sum(Customers.total_net_amount),sum(Customers.total_gross_amount)" +
+                ",(SELECT sum(Customers.opening_amt) FROM product_master Orders, stock Customers where Orders.db_id = Customers.db_id" +
+                " and Orders.ProductCategory = '" + ProdCategory + "') as opening_amt," +
+                " sum(Customers.close_amt),sum(Customers.sold_amt)" +
+                ",(SELECT sum(Customers.opening_stock) FROM product_master Orders, stock Customers where Orders.db_id = Customers.db_id" +
+                " and Orders.ProductCategory = '" + ProdCategory + "') as opening_stock," +
+                " sum(Customers.close_bal),sum(Customers.sold_stock) FROM product_master Orders," +
+                " stock Customers where Orders.db_id=Customers.db_id and Orders.ProductCategory = '" + ProdCategory + "' " +
+                " and savedServer = '1' order by Orders.order_flag";
+        // new join query with Product Master table 28.01.2019
 
         Cursor cursor = database.rawQuery(selectquery, null);
 
@@ -4144,11 +4194,27 @@ public class Dbcon {
                 sum(received_amt),sum(close_amt) from product_master Orders,
                 stock Customers where Orders.db_id=Customers.db_id and Customers.product_category = 'COLOR' and savedServer = '1' and Group BY product_type
 */
-        String selectquery = "select  product_type, sum(opening_stock)," +
+       /* String selectquery = "select  product_type, sum(opening_stock)," +
                 " sum(stock_received),sum(close_bal),sum(opening_amt),sum(received_amt),sum(close_amt) " +
                 " from product_master Orders, stock Customers where Orders.db_id = Customers.db_id " +
                 " and Customers.product_category = '" + Category + "' and savedServer = '1' Group BY product_type";  // new join query with Product Master table 11.05.2015//04.07.2015
+*/
 
+        String selectquery = "Select a.product_type, b.openstock,a.receivestock, a.closesbal, b.openamt, a.receiveamt, a.closeamt from " +
+                " ( " +
+                "(select  product_type, 0 as openstock," +
+                " sum(stock_received) as receivestock,sum(close_bal) as closesbal," +
+                " 0 as openamt , sum(received_amt) as receiveamt," +
+                " sum(close_amt) as closeamt " +
+                " from product_master Orders, stock Customers where Orders.db_id = Customers.db_id " +
+                " and Customers.product_category = '" + Category + "' and savedServer = '1'  Group BY product_type " +
+                ")  a  join " +
+                " (SELECT  product_type, sum(opening_stock) as openstock, 0 as receivestock, 0 as closesbal, sum(opening_amt) as openamt," +
+                " 0 as receiveamt, 0 as closeamt  FROM product_master Orders, stock Customers " +
+                " where Orders.db_id = Customers.db_id  and Customers.product_category = '" + Category + "' " +
+                "Group BY product_type) b on a.product_type = b.product_type) group by a.product_type ";
+
+        // new join query with Product Master table 28.01.2019
 
         Cursor cursor = database.rawQuery(selectquery, null);
 
@@ -4157,7 +4223,9 @@ public class Dbcon {
 
     public Cursor getReportCategorydatatotal(String Category) {
 
-        String selectquery = "select sum(opening_amt),sum(received_amt),sum(close_amt) " +
+        String selectquery = "select (SELECT sum(Customers.opening_amt) " +
+                " FROM product_master Orders, stock Customers where Orders.db_id = Customers.db_id "  +
+                " and Customers.product_category = '" + Category + "') as opening_amt,sum(received_amt),sum(close_amt) " +
                 "from product_master Orders, stock Customers where Orders.db_id = Customers.db_id" +
                 " and Customers.product_category = '" + Category + "' and savedServer = '1' ";  // new join query with Product Master table 11.05.2015//04.07.2015
 
@@ -4437,4 +4505,56 @@ public class Dbcon {
         return count;
     }
 
+    @SuppressLint("ShowToast")
+    public ArrayList<String> getproductcategory(String username) {
+        // TODO Auto-generated method stub
+        ArrayList<String> product_category_data = new ArrayList<String>();
+
+        String selectquery = " select DISTINCT Division from division_master where Empid = '" + username + "'";
+
+        Cursor cursor = database.rawQuery(selectquery, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                product_category_data.add("Select");
+                do {
+                    product_category_data.add(cursor.getString(cursor
+                            .getColumnIndex("Division")));
+
+                    Log.e("", "data category_type=" + product_category_data);
+
+                } while (cursor.moveToNext());
+
+            }
+        } else {
+
+            //Toast.makeText(context, "No data available", Toast.LENGTH_LONG);
+        }
+        return product_category_data;
+    }
+
+    @SuppressLint("ShowToast")
+    public ArrayList<String> getproductcategorywithoutselect(String username) {
+        // TODO Auto-generated method stub
+        ArrayList<String> product_category_data = new ArrayList<String>();
+
+        String selectquery = " select DISTINCT Division from division_master where Empid = '" + username + "'";
+
+        Cursor cursor = database.rawQuery(selectquery, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    product_category_data.add(cursor.getString(cursor
+                            .getColumnIndex("Division")));
+
+                    Log.e("", "data category_type=" + product_category_data);
+
+                } while (cursor.moveToNext());
+
+            }
+        } else {
+
+            //Toast.makeText(context, "No data available", Toast.LENGTH_LONG);
+        }
+        return product_category_data;
+    }
 }

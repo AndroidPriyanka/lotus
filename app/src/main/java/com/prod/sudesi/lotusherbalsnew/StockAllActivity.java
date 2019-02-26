@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -42,10 +43,13 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.prod.sudesi.lotusherbalsnew.dbConfig.Dbcon;
 import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
+import com.prod.sudesi.lotusherbalsnew.libs.LotusWebservice;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -84,7 +88,7 @@ public class StockAllActivity extends Activity {
     private static SpannableStringBuilder ssbuilder;
     String rt_stk1 = "0";
     TextView tv_h_username;// -------
-    String username, role, outletcode,bdename;
+    String username, pass, role, outletcode,bdename;
     SharedPreferences shp;
     SharedPreferences.Editor shpeditor;
     static Context context;
@@ -100,12 +104,12 @@ public class StockAllActivity extends Activity {
     SharedPreferences sp;
     SharedPreferences.Editor spe;
     String ErroFlag = "";
+    LotusWebservice service;
 
 
 //    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//UAT Server
     public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";//Production Server
 
-//    public static String URL = "http://192.168.0.136:81/lotusapi/api/Stock/SaveStock";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +128,7 @@ public class StockAllActivity extends Activity {
 
         context = getApplicationContext();
         cd = new ConnectionDetector(context);
+        service = new LotusWebservice(this);
 
         sp = context.getSharedPreferences("Lotus", context.MODE_PRIVATE);
         spe = sp.edit();
@@ -144,6 +149,7 @@ public class StockAllActivity extends Activity {
         shpeditor = shp.edit();
 
         username = shp.getString("username", "");
+        pass = shp.getString("Password", "");
         role = shp.getString("Role", "");
         bdename = shp.getString("BDEusername", "");
         outletcode = shp.getString("FLRCode", "");
@@ -595,7 +601,7 @@ public class StockAllActivity extends Activity {
                                                             } else {
                                                                 count = saveData();
                                                                 if(cd.isConnectingToInternet()) {
-                                                                    uploaddata();
+                                                                    //uploaddata();
                                                                 }
                                                             }
                                                             showAlertDialog(count);
@@ -2156,6 +2162,7 @@ public class StockAllActivity extends Activity {
                                     }
 
                                     Log.e("JSON_TRUE", flag + "_MSG_" + message);
+                                    new CheckpasswordChange().execute();
 
                                 } else {
                                     ErroFlag = "0";
@@ -2172,7 +2179,7 @@ public class StockAllActivity extends Activity {
                                             "SaveStock()", "Fail");
                                     Log.e("JSON_FALSE", flag + "_MSG_" + message);
                                 }
-                                dissmissDialog();
+                                //dissmissDialog();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -2227,6 +2234,7 @@ public class StockAllActivity extends Activity {
             }
 
         } else {
+            new CheckpasswordChange().execute();
             Toast.makeText(this, "No Stock For Data Upload", Toast.LENGTH_SHORT).show();
             Log.e("NoStock dataupload",String.valueOf(stock_array.getCount()));
         }
@@ -2260,6 +2268,87 @@ public class StockAllActivity extends Activity {
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public class CheckpasswordChange extends AsyncTask<String, Void, SoapObject> {
+
+        private SoapPrimitive soap_result = null;
+
+        String Flag = "";
+
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        protected SoapObject doInBackground(String... params) {
+            // TODO Auto-generated method stub
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    soap_result = service.CheckpasswordChange(username, pass);
+
+                    if (soap_result != null) {
+
+                        if (soap_result.toString().equalsIgnoreCase("Correct")) {
+                            Flag = "1";
+                        } else if (soap_result.toString().equalsIgnoreCase("Incorrect")) {
+                            Flag = "2";
+                        }else if (soap_result.toString().equalsIgnoreCase("SE")) {
+                            Flag = "SE";
+
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+
+            if (StockAllActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                return;
+            }
+
+            dissmissDialog();
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(getApplicationContext(), "Connectivity Error, Please check Internet connection!!", Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                //showAlertDialog(count);
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+
+                Intent i = new Intent(StockAllActivity.this, LoginActivity.class);
+                startActivity(i);
+            }
+            else if (Flag.equalsIgnoreCase("SE")) {
+
+                Toast.makeText(getApplicationContext(),"Please check Internet connection!! Try Again", Toast.LENGTH_SHORT).show();
+
+            }
+
+        }
+
+
     }
 
 }

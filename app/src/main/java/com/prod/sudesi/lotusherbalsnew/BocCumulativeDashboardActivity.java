@@ -10,11 +10,13 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -62,6 +64,11 @@ public class BocCumulativeDashboardActivity extends Activity {
     private Dbcon db;
     ConnectionDetector cd;
 
+    TextView firsttxtdiv, secondtxtdiv,firsttxtdiv1;
+    private ArrayList<String> categoryDetailsArraylist;
+    TableRow tr_stock_report, tr_stock_report1;
+
+
     @SuppressLint("WrongConstant")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +79,6 @@ public class BocCumulativeDashboardActivity extends Activity {
         setContentView(R.layout.activity_dashboard_cumulative);
         //////////Crash Report
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
-
-        txt_boc = (TextView) findViewById(R.id.txt_boc);
-        txt_year = (TextView) findViewById(R.id.txt_year);
-
-        tl_cumulative = (TableLayout) findViewById(R.id.tl_cumulative);
-        tl_cumulativeD = (TableLayout) findViewById(R.id.tl_cumulativeD);
 
         dbcon = new Dbcon(BocCumulativeDashboardActivity.this);
         dbcon.open();
@@ -90,11 +91,43 @@ public class BocCumulativeDashboardActivity extends Activity {
         role = shp.getString("Role", "");
         outletcode = shp.getString("FLRCode", "");
 
+        txt_boc = (TextView) findViewById(R.id.txt_boc);
+        txt_year = (TextView) findViewById(R.id.txt_year);
+
+        tl_cumulative = (TableLayout) findViewById(R.id.tl_cumulative);
+        tl_cumulativeD = (TableLayout) findViewById(R.id.tl_cumulativeD);
+
+        tr_stock_report1 = (TableRow) findViewById(R.id.tr_stock_report1);
+        tr_stock_report = (TableRow) findViewById(R.id.tr_stock_report);
+
+        firsttxtdiv = (TextView) findViewById(R.id.firsttxtdiv);
+        secondtxtdiv = (TextView) findViewById(R.id.secondtxtdiv);
+        firsttxtdiv1 = (TextView) findViewById(R.id.firsttxtdiv1);
+
         db = new Dbcon(BocCumulativeDashboardActivity.this);
         cd = new ConnectionDetector(BocCumulativeDashboardActivity.this);
 
         service = new LotusWebservice(BocCumulativeDashboardActivity.this);
         //prgdialog = new ProgressDialog(BocCumulativeDashboardActivity.this);
+
+        fetchCategoryDetails();
+
+        if (categoryDetailsArraylist.size() > 0) {
+            if (categoryDetailsArraylist.size() == 2) {
+                firsttxtdiv.setText(categoryDetailsArraylist.get(0));
+                secondtxtdiv.setText(categoryDetailsArraylist.get(1));
+
+            } else {
+
+                tr_stock_report.setVisibility(View.GONE);
+                tr_stock_report1.setVisibility(View.VISIBLE);
+                firsttxtdiv1.setText(categoryDetailsArraylist.get(0));
+
+            }
+
+        }
+
+
 
 
         Intent intent = getIntent();
@@ -161,7 +194,7 @@ public class BocCumulativeDashboardActivity extends Activity {
                 dates_array = new ArrayList<String>();
 
                 for (int i = 0; i < dates.size(); i++) {
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
                     String reportDate = df.format(dates.get(i));
                     Log.d("Date is", " " + reportDate);
@@ -196,7 +229,7 @@ public class BocCumulativeDashboardActivity extends Activity {
                 dates_array = new ArrayList<String>();
 
                 for (int i = 0; i < dates.size(); i++) {
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
                     String reportDate = df.format(dates.get(i));
                     Log.d("Date is", " " + reportDate);
@@ -298,7 +331,7 @@ public class BocCumulativeDashboardActivity extends Activity {
                     SoapObject resultsRequestSOAP = null;
                     final String[] columns = new String[]{"BOC", "AndroidCreatedDate", "COLOR", "ColorSoldQty", "ColorSoldValue", "SKIN", "SkinSoldQty", "SkinSoldValue", "TOTAL", "TotalQty", "TotalValue"};
 
-                    DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
+                    DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
                     String startdate[] = getStartEnd(str_BOC, year, year1);
 
@@ -315,12 +348,12 @@ public class BocCumulativeDashboardActivity extends Activity {
 
                             map.put("AndroidCreatedDate", String.valueOf(getmessaage.getProperty("AndroidCreatedDate")));
                             map.put("SKIN", String.valueOf(getmessaage.getProperty("SKIN")));
-                            map.put("SkinSoldValue", String.valueOf(getmessaage.getProperty("SkinSoldValue")));
-                            map.put("SkinSoldQty", String.valueOf(getmessaage.getProperty("SkinSoldQty")));
+                            map.put("FirstSoldValue", String.valueOf(getmessaage.getProperty("FirstSoldValue")));
+                            map.put("FirstSoldQty", String.valueOf(getmessaage.getProperty("FirstSoldQty")));
 
                             map.put("COLOR", String.valueOf(getmessaage.getProperty("COLOR")));
-                            map.put("ColorSoldValue", String.valueOf(getmessaage.getProperty("ColorSoldValue")));
-                            map.put("ColorSoldQty", String.valueOf(getmessaage.getProperty("ColorSoldQty")));
+                            map.put("SecondSoldValue", String.valueOf(getmessaage.getProperty("SecondSoldValue")));
+                            map.put("SecondSoldQty", String.valueOf(getmessaage.getProperty("SecondSoldQty")));
 
                             map.put("TOTAL", String.valueOf(getmessaage.getProperty("TOTAL")));
                             map.put("TotalValue", String.valueOf(getmessaage.getProperty("TotalValue")));
@@ -339,11 +372,11 @@ public class BocCumulativeDashboardActivity extends Activity {
                                     String[] values = new String[]{str_BOC,
                                             String.valueOf(final_array.get(i).get("DATE")),
                                             String.valueOf(final_array.get(i).get("COLOR")),
-                                            String.valueOf(final_array.get(i).get("ColorSoldQty")),
-                                            String.valueOf(final_array.get(i).get("ColorSoldValue")),
+                                            String.valueOf(final_array.get(i).get("SecondSoldQty")),
+                                            String.valueOf(final_array.get(i).get("SecondSoldValue")),
                                             String.valueOf(final_array.get(i).get("SKIN")),
-                                            String.valueOf(final_array.get(i).get("SkinSoldQty")),
-                                            String.valueOf(final_array.get(i).get("SkinSoldValue")),
+                                            String.valueOf(final_array.get(i).get("FirstSoldQty")),
+                                            String.valueOf(final_array.get(i).get("FirstSoldValue")),
                                             String.valueOf(final_array.get(i).get("TOTAL")),
                                             String.valueOf(final_array.get(i).get("TotalQty")),
                                             String.valueOf(final_array.get(i).get("TotalValue"))};
@@ -355,11 +388,11 @@ public class BocCumulativeDashboardActivity extends Activity {
                                     String[] values = new String[]{str_BOC,
                                             String.valueOf(final_array.get(i).get("DATE")),
                                             String.valueOf(final_array.get(i).get("COLOR")),
-                                            String.valueOf(final_array.get(i).get("ColorSoldQty")),
-                                            String.valueOf(final_array.get(i).get("ColorSoldValue")),
+                                            String.valueOf(final_array.get(i).get("SecondSoldQty")),
+                                            String.valueOf(final_array.get(i).get("SecondSoldValue")),
                                             String.valueOf(final_array.get(i).get("SKIN")),
-                                            String.valueOf(final_array.get(i).get("SkinSoldQty")),
-                                            String.valueOf(final_array.get(i).get("SkinSoldValue")),
+                                            String.valueOf(final_array.get(i).get("FirstSoldQty")),
+                                            String.valueOf(final_array.get(i).get("FirstSoldValue")),
                                             String.valueOf(final_array.get(i).get("TOTAL")),
                                             String.valueOf(final_array.get(i).get("TotalQty")),
                                             String.valueOf(final_array.get(i).get("TotalValue"))};
@@ -422,34 +455,65 @@ public class BocCumulativeDashboardActivity extends Activity {
                 //  Log.e("Cursor", DatabaseUtils.dumpCursorToString(c));
                 c.moveToFirst();
                 do {
-                    View tr = (TableRow) View.inflate(BocCumulativeDashboardActivity.this,
-                            R.layout.row_cumulative_dashboard, null);
 
-                    TextView txt_date = (TextView) tr.findViewById(R.id.txt_date);
-                    TextView txt_lh_saleValue = (TextView) tr.findViewById(R.id.txt_lh_saleValue);
-                    TextView txt_lh_saleUnit = (TextView) tr.findViewById(R.id.txt_lh_saleUnit);
-                    TextView txt_lm_saleValue = (TextView) tr.findViewById(R.id.txt_lm_saleValue);
-                    TextView txt_lm_saleUnit = (TextView) tr.findViewById(R.id.txt_lm_saleUnit);
-                    TextView txt_cumu_saleValue = (TextView) tr.findViewById(R.id.txt_cumu_saleValue);
-                    TextView txt_cumu_saleUnit = (TextView) tr.findViewById(R.id.txt_cumu_saleUnit);
+                    if (categoryDetailsArraylist.size() > 0) {
+                        if (categoryDetailsArraylist.size() == 2) {
+                            View tr = (TableRow) View.inflate(BocCumulativeDashboardActivity.this,
+                                    R.layout.row_cumulative_dashboard, null);
+
+                            TextView txt_date = (TextView) tr.findViewById(R.id.txt_date);
+                            TextView txt_first_saleValue = (TextView) tr.findViewById(R.id.txt_lh_saleValue);
+                            TextView txt_first_saleUnit = (TextView) tr.findViewById(R.id.txt_lh_saleUnit);
+                            TextView txt_second_saleValue = (TextView) tr.findViewById(R.id.txt_lm_saleValue);
+                            TextView txt_second_saleUnit = (TextView) tr.findViewById(R.id.txt_lm_saleUnit);
+                            TextView txt_cumu_saleValue = (TextView) tr.findViewById(R.id.txt_cumu_saleValue);
+                            TextView txt_cumu_saleUnit = (TextView) tr.findViewById(R.id.txt_cumu_saleUnit);
 
 
-                    txt_date.setText(c.getString(c.getColumnIndex("AndroidCreatedDate")));
-                    //txt_date.setGravity(1);
-                    txt_lh_saleValue.setText(c.getString(c.getColumnIndex("SkinSoldValue")));
-                    txt_lh_saleValue.setMaxEms(10);
-                    //txt_lh_saleValue.setGravity(1);
-                    txt_lh_saleUnit.setText(c.getString(c.getColumnIndex("SkinSoldQty")));
-                    //txt_lh_saleUnit.setGravity(1);
-                    txt_lm_saleValue.setText(c.getString(c.getColumnIndex("ColorSoldValue")));
-                    //txt_lm_saleValue.setGravity(1);
-                    txt_lm_saleUnit.setText(c.getString(c.getColumnIndex("ColorSoldQty")));
-                    //txt_lm_saleUnit.setGravity(1);
-                    txt_cumu_saleValue.setText(c.getString(c.getColumnIndex("TotalValue")));
-                    //txt_cumu_saleValue.setGravity(1);
-                    txt_cumu_saleUnit.setText(c.getString(c.getColumnIndex("TotalQty")));
-                    //txt_cumu_saleUnit.setGravity(1);
-                    tl_cumulative.addView(tr);
+                            txt_date.setText(c.getString(c.getColumnIndex("AndroidCreatedDate")));
+                            //txt_date.setGravity(1);
+                            txt_first_saleValue.setText(c.getString(c.getColumnIndex("SkinSoldValue")));
+                            txt_first_saleValue.setMaxEms(10);
+                            //txt_lh_saleValue.setGravity(1);
+                            txt_first_saleUnit.setText(c.getString(c.getColumnIndex("SkinSoldQty")));
+                            //txt_lh_saleUnit.setGravity(1);
+                            txt_second_saleValue.setText(c.getString(c.getColumnIndex("ColorSoldValue")));
+                            //txt_lm_saleValue.setGravity(1);
+                            txt_second_saleUnit.setText(c.getString(c.getColumnIndex("ColorSoldQty")));
+                            //txt_lm_saleUnit.setGravity(1);
+                            txt_cumu_saleValue.setText(c.getString(c.getColumnIndex("TotalValue")));
+                            //txt_cumu_saleValue.setGravity(1);
+                            txt_cumu_saleUnit.setText(c.getString(c.getColumnIndex("TotalQty")));
+                            //txt_cumu_saleUnit.setGravity(1);
+                            tl_cumulative.addView(tr);
+
+                        } else {
+                            View tr1 = (TableRow) View.inflate(BocCumulativeDashboardActivity.this,
+                                    R.layout.row_cumulative_dashboard1, null);
+
+                            TextView txt_date = (TextView) tr1.findViewById(R.id.txt_date);
+                            TextView txt_first_saleValue = (TextView) tr1.findViewById(R.id.txt_lh_saleValue);
+                            TextView txt_first_saleUnit = (TextView) tr1.findViewById(R.id.txt_lh_saleUnit);
+                            TextView txt_cumu_saleValue = (TextView) tr1.findViewById(R.id.txt_cumu_saleValue);
+                            TextView txt_cumu_saleUnit = (TextView) tr1.findViewById(R.id.txt_cumu_saleUnit);
+
+
+                            txt_date.setText(c.getString(c.getColumnIndex("AndroidCreatedDate")));
+                            //txt_date.setGravity(1);
+                            txt_first_saleValue.setText(c.getString(c.getColumnIndex("SkinSoldValue")));
+                            txt_first_saleValue.setMaxEms(10);
+                            //txt_lh_saleValue.setGravity(1);
+                            txt_first_saleUnit.setText(c.getString(c.getColumnIndex("SkinSoldQty")));
+                            //txt_lh_saleUnit.setGravity(1);
+                            txt_cumu_saleValue.setText(c.getString(c.getColumnIndex("TotalValue")));
+                            //txt_cumu_saleValue.setGravity(1);
+                            txt_cumu_saleUnit.setText(c.getString(c.getColumnIndex("TotalQty")));
+                            //txt_cumu_saleUnit.setGravity(1);
+                            tl_cumulative.addView(tr1);
+                        }
+                    }
+
+
 
                 } while (c.moveToNext());
             }
@@ -499,7 +563,7 @@ public class BocCumulativeDashboardActivity extends Activity {
                     SoapObject resultsRequestSOAP = null;
                     final String[] columns = new String[]{"BOC", "AndroidCreatedDate", "SoldQty", "Soldvalue"};
 
-                    DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
+                    DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
                     String startdate[];
                     if (role.equalsIgnoreCase("DUB")) {
@@ -689,6 +753,17 @@ public class BocCumulativeDashboardActivity extends Activity {
         }
 
         return startend;
+    }
+
+
+    public void fetchCategoryDetails() {
+        //new changes
+        categoryDetailsArraylist = new ArrayList<String>();
+
+        db.open();
+        categoryDetailsArraylist = db.getproductcategorywithoutselect(username);
+        db.close();
+
     }
 
 

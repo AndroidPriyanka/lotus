@@ -112,7 +112,7 @@ public class StockNewActivity extends Activity implements OnClickListener {
 
         String div = shp.getString("div", "");
 
-        if (div.equalsIgnoreCase("LH & LHM") || div.equalsIgnoreCase("LH & LM")) {
+        /*if (div.equalsIgnoreCase("LH & LHM") || div.equalsIgnoreCase("LH & LM")) {
 
             db.open();
             productcategory = db.getproductcategory1(); // ------------
@@ -136,7 +136,10 @@ public class StockNewActivity extends Activity implements OnClickListener {
             productcategory.add("Select");
             productcategory.add("COLOR");
 
-        }
+        }*/
+        db.open();
+        productcategory = db.getproductcategory(username);
+        db.close();
 
         ArrayAdapter<String> product_adapter = new ArrayAdapter<String>(
                 // context, android.R.layout.simple_spinner_item,
@@ -181,16 +184,17 @@ public class StockNewActivity extends Activity implements OnClickListener {
                                     columnname = "ShadeNo";
                                 }
 
-                                if (selected_product_category.equalsIgnoreCase("BABY CARE")){
+                               /* if (selected_product_category.equalsIgnoreCase("BABY CARE")){
                                     selected_product_category = "SKIN";
-                                }
+                                }*/
 
                                 db.open();
-                                if(sp_product_category.getItemAtPosition(position).toString().trim().equalsIgnoreCase("BABY CARE")){
+                               /* if(sp_product_category.getItemAtPosition(position).toString().trim().equalsIgnoreCase("BABY")){
                                     producttypeArray = db.getproductypeforBabyProduct(selected_product_category);
                                 }else {
                                     producttypeArray = db.getproductype1(selected_product_category); // -------------
-                                }
+                                }*/
+                                producttypeArray = db.getproductype1(selected_product_category);
                                 System.out.println(producttypeArray);
 
                                 ArrayAdapter<String> product_adapter1 = new ArrayAdapter<String>(
@@ -237,11 +241,12 @@ public class StockNewActivity extends Activity implements OnClickListener {
 
                 } else {
                     String selected_category;
-                    if (sp_product_category.getSelectedItem().toString().equalsIgnoreCase("BABY CARE")) {
+                   /* if (sp_product_category.getSelectedItem().toString().equalsIgnoreCase("BABY CARE")) {
                         selected_category = "SKIN";
                     } else {
                         selected_category = sp_product_category.getSelectedItem().toString();
-                    }
+                    }*/
+                    selected_category = sp_product_category.getSelectedItem().toString();
                     selected_type = sp_product_type.getSelectedItem()
                             .toString();
 

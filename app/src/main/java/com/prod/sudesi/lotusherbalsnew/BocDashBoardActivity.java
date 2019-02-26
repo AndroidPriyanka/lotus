@@ -386,10 +386,18 @@ public class BocDashBoardActivity extends Activity {
 						//checkandsendboc(selected_month,selected_year);
 				
 			//	Intent i = new Intent(getApplicationContext(), BocGridViewActivity.class);
-				Intent i = new Intent(getApplicationContext(), BocCumulativeDashboardActivity.class);
-				i.putExtra("month", selected_month);
-				i.putExtra("year", selected_year);
-				startActivity(i);
+						if(role.equalsIgnoreCase("DUB")) {
+							Intent i = new Intent(getApplicationContext(), BocCumulativeDashboardActivity.class);
+							i.putExtra("month", selected_month);
+							i.putExtra("year", selected_year);
+							startActivity(i);
+						}else {
+
+							Intent i = new Intent(getApplicationContext(), BocCumulativeDashboardActivityIndia.class);
+							i.putExtra("month", selected_month);
+							i.putExtra("year", selected_year);
+							startActivity(i);
+						}
 					}
 				}catch(Exception e){
 					

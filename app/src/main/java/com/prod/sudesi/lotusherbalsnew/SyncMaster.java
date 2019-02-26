@@ -75,8 +75,8 @@ public class SyncMaster extends Activity {
     Context context;
     private ProgressDialog progressDialog;
 
-    Button master_sync, data_sync, btn_data_download, btn_usermanual, btn_cleardata;
-    // ,attendance, stock, tester, visibility;
+    Button master_sync, data_sync, btn_notification, btn_usermanual;
+    //, btn_cleardata ,attendance, stock, tester, visibility;
 
     private Dbcon db;
     private ProgressDialog mProgress = null;
@@ -88,7 +88,7 @@ public class SyncMaster extends Activity {
     int soapresultforvisibilityid;
 
     private double lon = 0.0, lat = 0.0;
-    String username, FLRCode, bdename, imgpth, producttype, role;
+    String username, pass, FLRCode, bdename, imgpth, producttype, role;
 
     // shredpreference
     private SharedPreferences sharedpre = null;
@@ -146,10 +146,12 @@ public class SyncMaster extends Activity {
         data_sync = (Button) findViewById(R.id.btn_server_data_sync);
         master_sync = (Button) findViewById(R.id.btn_server_master_sync);
         //btn_ch = (Button) findViewById(R.id.btn_changePass);
-        btn_data_download = (Button) findViewById(R.id.btn_syncfirst);
+        //btn_data_download = (Button) findViewById(R.id.btn_syncfirst);
+
+        btn_notification = (Button) findViewById(R.id.btn_notification);
 
         btn_usermanual = (Button) findViewById(R.id.btn_usermanual);
-        btn_cleardata = (Button) findViewById(R.id.btn_cleardata);
+        //btn_cleardata = (Button) findViewById(R.id.btn_cleardata);
 
         cd = new ConnectionDetector(context);
         db = new Dbcon(context);
@@ -170,6 +172,8 @@ public class SyncMaster extends Activity {
         username = sp.getString("username", "");
         Log.e("", "username==" + username);
 
+        pass = sp.getString("Password", "");
+
         FLRCode = sp.getString("FLRCode", "");
 
         role = sp.getString("Role", "");
@@ -185,7 +189,7 @@ public class SyncMaster extends Activity {
         if (role.equalsIgnoreCase("DUB")) {
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat(
-                    "yyyy-MMMM-dd",Locale.ENGLISH);
+                    "yyyy-MMMM-dd", Locale.ENGLISH);
             String insert_timestamp = sdf.format(cal
                     .getTime());
 
@@ -211,7 +215,7 @@ public class SyncMaster extends Activity {
                 dates_array = new ArrayList<String>();
 
                 for (int i = 0; i < dates.size(); i++) {
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
                     String reportDate = df.format(dates.get(i));
                     Log.d("Date is", " " + reportDate);
@@ -260,26 +264,26 @@ public class SyncMaster extends Activity {
             }
         });*/
 
-        btn_data_download.setOnClickListener(new OnClickListener() {
+        btn_notification.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                btn_data_download.setEnabled(false);
+                btn_notification.setEnabled(false);
 
                 new Handler().postDelayed(new Runnable() {
 
                     @Override
                     public void run() {
                         // This method will be executed once the timer is over
-                        btn_data_download.setEnabled(true);
+                        btn_notification.setEnabled(true);
                         Log.d(TAG, "resend1");
 
                     }
                 }, 5000);// set time as per your requirement
 
-                if (sp.getString("Role", "").equalsIgnoreCase("FLR")||
+               /* if (sp.getString("Role", "").equalsIgnoreCase("FLR")||
                         sp.getString("Role", "").equalsIgnoreCase("ADR")||
                         sp.getString("Role", "").equalsIgnoreCase("BP")) {
                     Toast.makeText(context, "Data Download not use for Floter", Toast.LENGTH_LONG).show();
@@ -294,7 +298,10 @@ public class SyncMaster extends Activity {
                         Toast.makeText(SyncMaster.this, "Your Handset Date Not Match Current Date", Toast.LENGTH_LONG).show();
 
                     }
-                }
+                }*/
+
+                startActivity(new Intent(getApplicationContext(),
+                        NotificationFragment.class));
             }
         });
 
@@ -387,7 +394,7 @@ public class SyncMaster extends Activity {
             }
         });
 
-        btn_cleardata.setOnClickListener(new OnClickListener() {
+       /* btn_cleardata.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -433,7 +440,8 @@ public class SyncMaster extends Activity {
                                 dialog.dismiss();
 
                                 try {
-                                    new ClearDataLog().execute();
+                                    DataUpload_on_ClearData();
+                                   // new ClearDataLog().execute();
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -448,7 +456,7 @@ public class SyncMaster extends Activity {
                 alertDialog.show();
 
             }
-        });
+        });*/
 
     }
 
@@ -512,272 +520,66 @@ public class SyncMaster extends Activity {
         SoapObject soap_result1 = null;
         SoapObject soap_result_tester1 = null;
 
+        int syncdivmaster = 1;
+        int syncprodmaster = 1;
+
         String Flag;
 
         @SuppressLint("NewApi")
         @Override
         protected SoapObject doInBackground(Void... params) {
 
-            if (!cd.isConnectingToInternet()) {
-                // Internet Connection is not present
-                // Toast.makeText(SyncMaster.this(),"Check Your Internet Connection!!!",
-                // Toast.LENGTH_LONG).show();
+            try {
+                if (!cd.isConnectingToInternet()) {
+                    // Internet Connection is not present
+                    // Toast.makeText(SyncMaster.this(),"Check Your Internet Connection!!!",
+                    // Toast.LENGTH_LONG).show();
 
-                Flag = "0";
-                // stop executing code by return
+                    Flag = "0";
+                    // stop executing code by return
 
-            } else {
-                Flag = "1";
-                // TODO Auto-generated method stub
-                Log.e("pm", "pm0");
-                db.open();
-                String lastdatesync = db.getLastSyncDate("product_master");
-                db.close();
+                } else {
+                    Flag = "1";
 
-                Log.e("pm", "lastdatesync=" + lastdatesync);
+                    //new changes for division master in 3.6 version
 
-                soap_result = service.GetProducts(lastdatesync,
-                        sp.getString("username", ""));
-                // ,);
+                    soap_result = service.GetDivisions(username);
 
-                Log.e("pm", "pm1");
-                if (soap_result != null) {
+                    Log.e("pm", "pm1");
+                    if (soap_result != null) {
 
-                    Log.e("pm",
-                            "count================="
-                                    + soap_result.getPropertyCount());
+                        for (int i = 0; i < soap_result.getPropertyCount(); i++) {
 
-                    for (int i = 0; i < soap_result.getPropertyCount(); i++) {
+                            soap_result1 = (SoapObject) soap_result.getProperty(i);
 
-                        soap_result1 = (SoapObject) soap_result.getProperty(i);
+                            Log.e("pm", "pm3");
 
-                        Log.e("pm", "pm3");
+                            if (soap_result1 != null) {
 
-                        if (soap_result1.getProperty("Flag") != null) {
-
-                            if (soap_result1.getProperty("Flag").toString()
-                                    .equalsIgnoreCase("E")) {
-                                Log.e("pm", "pm4");
                                 try {
 
-                                    String d_id = soap_result1
-                                            .getProperty("ID").toString();
+                                    String Div = soap_result1
+                                            .getProperty("Div").toString();
 
-                                    String product_category = soap_result1
-                                            .getProperty("ProductCategory")
+                                    String ShortName = soap_result1
+                                            .getProperty("ShortName")
                                             .toString();
-                                    String product_type = soap_result1
-                                            .getProperty("ProductType")
-                                            .toString();
-                                    String product = soap_result1.getProperty(
-                                            "ProductName").toString();
 
-                                    String categoryid = soap_result1
-                                            .getProperty("CategoryId")
-                                            .toString();
-                                    String category = soap_result1.getProperty(
-                                            "Category").toString();
-                                    String shadeno = soap_result1.getProperty(
-                                            "ShadeNo").toString();
-                                    String eancode = soap_result1.getProperty(
-                                            "EANCode").toString();
-                                    String size = soap_result1.getProperty(
-                                            "Size").toString();
-                                    String mrp = soap_result1
-                                            .getProperty("MRP").toString();
-                                    String masterpackqty = soap_result1
-                                            .getProperty("MasterPackQty")
-                                            .toString();
-                                    String monopackqty = soap_result1
-                                            .getProperty("MonoPackQty")
-                                            .toString();
-                                    String innerqty = soap_result1.getProperty(
-                                            "InnerQty").toString();
-                                    String sku_l = soap_result1.getProperty(
-                                            "SKU_L").toString();
-                                    String sku_b = soap_result1.getProperty(
-                                            "SKU_B").toString();
-                                    String sku_h = soap_result1.getProperty(
-                                            "SKU_H").toString();
-                                    String price_type = soap_result1
-                                            .getPropertyAsString("OldNewStatus")
-                                            .toString();
-                                    String order_flag = soap_result1
-                                            .getPropertyAsString("order_flag")
-                                            .toString();
-                                    String SingleOffer = soap_result1
-                                            .getPropertyAsString("SingleOffer")
-                                            .toString();
-                                    // String lmd =
-                                    // soap_result1.getProperty("LMD").toString();
-                                    String flag = soap_result1.getProperty(
-                                            "Flag").toString();
 
-                                    if (d_id.equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for d_id");
-                                        d_id = " ";
+                                    if (Div.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for Div");
+                                        Div = " ";
                                     }
-                                    if (product_category
+                                    if (ShortName
                                             .equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for product");
-                                        product_category = " ";
-                                    }
-                                    if (product_type
-                                            .equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for producttype");
-                                        product_type = " ";
-                                    }
-                                    if (product.equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for product");
-                                        product = " ";
-                                    }
-                                    if (categoryid
-                                            .equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for categoryid");
-                                        categoryid = " ";
-                                    }
-                                    if (category.equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for category");
-                                        category = " ";
-                                    }
-                                    if (shadeno.equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for shadeno");
-                                        shadeno = " ";
-                                    }
-                                    if (eancode.equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for eancode");
-                                        eancode = " ";
-                                    }
-                                    if (size.equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for size");
-                                        size = " ";
-                                    }
-                                    if (mrp.equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for mrp");
-                                        mrp = " ";
-                                    }
-                                    if (masterpackqty
-                                            .equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for masterpackqty");
-                                        masterpackqty = " ";
-                                    }
-                                    if (monopackqty
-                                            .equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for monopackqty");
-                                        monopackqty = " ";
-                                    }
-                                    if (innerqty.equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for innerqty");
-                                        innerqty = " ";
-                                    }
-                                    if (sku_l.equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for sku_l");
-                                        sku_l = " ";
-                                    }
-                                    if (sku_b.equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for sku_b");
-                                        sku_b = " ";
-                                    }
-                                    if (sku_h.equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for sku_h");
-                                        sku_h = " ";
-                                    }
-                                    if (sku_h.equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for sku_h");
-                                        sku_h = " ";
-                                    }
-                                    if (SingleOffer.equalsIgnoreCase("anyType{}")) {
-                                        Log.e("", "anytype for sku_h");
-                                        SingleOffer = " ";
+                                        Log.e("", "anytype for ShortName");
+                                        ShortName = " ";
                                     }
 
-                                    if (d_id.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for d_id");
-                                        d_id = " ";
-                                    }
-                                    if (product_category
-                                            .equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for product");
-                                        product_category = " ";
-                                    }
-                                    if (product_type.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for producttype");
-                                        product_type = " ";
-                                    }
-                                    if (product.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for product");
-                                        product = " ";
-                                    }
-                                    if (categoryid.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for categoryid");
-                                        categoryid = " ";
-                                    }
-                                    if (category.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for category");
-                                        category = " ";
-                                    }
-                                    if (shadeno.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for shadeno");
-                                        shadeno = " ";
-                                    }
-                                    if (eancode.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for eancode");
-                                        eancode = " ";
-                                    }
-                                    if (size.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for size");
-                                        size = " ";
-                                    }
-                                    if (mrp.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for mrp");
-                                        mrp = " ";
-                                    }
-                                    if (masterpackqty.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for masterpackqty");
-                                        masterpackqty = " ";
-                                    }
-                                    if (monopackqty.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for monopackqty");
-                                        monopackqty = " ";
-                                    }
-                                    if (innerqty.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for innerqty");
-                                        innerqty = " ";
-                                    }
-                                    if (sku_l.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for sku_l");
-                                        sku_l = " ";
-                                    }
-                                    if (sku_b.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for sku_b");
-                                        sku_b = " ";
-                                    }
-                                    if (sku_h.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for sku_h");
-                                        sku_h = " ";
-                                    }
-                                    if (sku_h.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for sku_h");
-                                        sku_h = " ";
-                                    }
-                                    if (SingleOffer.equalsIgnoreCase("NULL")) {
-                                        Log.e("", "anytype for sku_h");
-                                        SingleOffer = " ";
-                                    }
-                                    /*
-                                     * if (order_flag!=null ||
-                                     * order_flag.equalsIgnoreCase("NULL")) {
-                                     * Log.e("", "anytype for sku_h");
-                                     * order_flag = " "; }
-                                     */
-
-                                    Log.v("", "flag=" + flag);
-                                    // if (flag.equalsIgnoreCase("E")) {
 
                                     Log.e("pm", "pm5--");
                                     db.open();
-                                    Cursor c = db.getuniquedata(categoryid,
-                                            eancode, d_id, "product_master");
+                                    Cursor c = db.getuniquedivision(Div);
 
                                     int count = c.getCount();
                                     Log.v("", "" + count);
@@ -787,14 +589,7 @@ public class SyncMaster extends Activity {
                                         Log.v("", "data already available");
 
                                         db.open();
-                                        db.UpdateProductMaster(
-                                                product_category,
-                                                product_type.trim(), product,
-                                                d_id, categoryid, category,
-                                                shadeno, eancode, size, mrp,
-                                                masterpackqty, monopackqty,
-                                                innerqty, sku_l, sku_b, sku_h,
-                                                price_type, order_flag, SingleOffer);
+                                        db.UpdateDivisionMaster(Div,ShortName,username);
                                         db.close();
 
                                     } else {
@@ -802,19 +597,12 @@ public class SyncMaster extends Activity {
                                         Log.e("pm", "pm5");
 
                                         db.open();
-                                        db.insertProductMaster(
-                                                product_category,
-                                                product_type.trim(), product,
-                                                d_id, categoryid, category,
-                                                shadeno, eancode, size, mrp,
-                                                masterpackqty, monopackqty,
-                                                innerqty, sku_l, sku_b, sku_h,
-                                                price_type, order_flag, SingleOffer);
+                                        db.insertDivisionMaster(Div,ShortName,username);
                                         db.close();
 
                                     }
 
-                                    // }
+                                    syncdivmaster = 1;
 
                                 } catch (Exception e) {
                                     // TODO: handle exception
@@ -823,83 +611,453 @@ public class SyncMaster extends Activity {
                                     final Calendar calendar1 = Calendar
                                             .getInstance();
                                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                            "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                                     String Createddate = formatter1
                                             .format(calendar1.getTime());
 
                                     int n = Thread.currentThread()
                                             .getStackTrace()[2].getLineNumber();
                                     db.insertSyncLog(error, String.valueOf(n),
-                                            "GetProducts()", Createddate,
+                                            "GetDivisions()", Createddate,
                                             Createddate,
-                                            username,
-                                            "GetProducts", "Fail");
+                                            sp.getString("username", ""),
+                                            "GetDivisions", "Fail");
                                 }
 
-                            } else if (soap_result1.getProperty("Flag")
-                                    .toString().equalsIgnoreCase("D")) {
+                            } else if (soap_result1.getProperty("status").toString()
+                                    .equalsIgnoreCase("N")) {
+                                Log.e("pm", "pm7");
 
-                                Log.e("pm", "pm6");
+                                syncdivmaster = 2;
+
+                            } else if (soap_result1.getProperty("status")
+                                    .toString().equalsIgnoreCase("SE")) {
+                                Log.e("pm", "pm7");
+                                syncdivmaster = 0;
+                                final Calendar calendar1 = Calendar.getInstance();
+                                SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                        "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                                String Createddate = formatter1.format(calendar1
+                                        .getTime());
+
+                                int n = Thread.currentThread().getStackTrace()[2]
+                                        .getLineNumber();
+                                db.insertSyncLog("GetDivisions_SE",
+                                        String.valueOf(n), "GetDivisions()",
+                                        Createddate, Createddate,
+                                        sp.getString("username", ""),
+                                        "GetDivisions", "Fail");
+                            }
+                        }
+
+                    } else {
+                        Log.v("", "Soap result is null");
+
+                        syncdivmaster = 0;
+                        final Calendar calendar1 = Calendar.getInstance();
+                        SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                        String Createddate = formatter1.format(calendar1.getTime());
+
+                        int n = Thread.currentThread().getStackTrace()[2]
+                                .getLineNumber();
+                        db.insertSyncLog(
+                                "Internet Connection Lost, Soap in giving null while 'GetDivisions'",
+                                String.valueOf(n), "GetDivisions()", Createddate,
+                                Createddate, sp.getString("username", ""),
+                                "GetDivisions", "Fail");
+                    }
+
+                    ///////////////////////////////// END///////////////////
+                    // TODO Auto-generated method stub
+                    Log.e("pm", "pm0");
+                    db.open();
+                    String lastdatesync = db.getLastSyncDate("product_master");
+                    db.close();
+
+                    Log.e("pm", "lastdatesync=" + lastdatesync);
+
+                    soap_result = service.GetProducts(lastdatesync,
+                            sp.getString("username", ""));
+                    // ,);
+
+                    Log.e("pm", "pm1");
+                    if (soap_result != null) {
+
+                        Log.e("pm",
+                                "count================="
+                                        + soap_result.getPropertyCount());
+
+                        for (int i = 0; i < soap_result.getPropertyCount(); i++) {
+
+                            soap_result1 = (SoapObject) soap_result.getProperty(i);
+
+                            Log.e("pm", "pm3");
+
+                            if (soap_result1.getProperty("Flag") != null) {
+
+                                if (soap_result1.getProperty("Flag").toString()
+                                        .equalsIgnoreCase("E")) {
+                                    Log.e("pm", "pm4");
+                                    try {
+
+                                        String d_id = soap_result1
+                                                .getProperty("ID").toString();
+
+                                        String product_category = soap_result1
+                                                .getProperty("ProductCategory")
+                                                .toString();
+                                        String product_type = soap_result1
+                                                .getProperty("ProductType")
+                                                .toString();
+                                        String product = soap_result1.getProperty(
+                                                "ProductName").toString();
+
+                                        String categoryid = soap_result1
+                                                .getProperty("CategoryId")
+                                                .toString();
+                                        String category = soap_result1.getProperty(
+                                                "Category").toString();
+                                        String shadeno = soap_result1.getProperty(
+                                                "ShadeNo").toString();
+                                        String eancode = soap_result1.getProperty(
+                                                "EANCode").toString();
+                                        String size = soap_result1.getProperty(
+                                                "Size").toString();
+                                        String mrp = soap_result1
+                                                .getProperty("MRP").toString();
+                                        String masterpackqty = soap_result1
+                                                .getProperty("MasterPackQty")
+                                                .toString();
+                                        String monopackqty = soap_result1
+                                                .getProperty("MonoPackQty")
+                                                .toString();
+                                        String innerqty = soap_result1.getProperty(
+                                                "InnerQty").toString();
+                                        String sku_l = soap_result1.getProperty(
+                                                "SKU_L").toString();
+                                        String sku_b = soap_result1.getProperty(
+                                                "SKU_B").toString();
+                                        String sku_h = soap_result1.getProperty(
+                                                "SKU_H").toString();
+                                        String price_type = soap_result1
+                                                .getPropertyAsString("OldNewStatus")
+                                                .toString();
+                                        String order_flag = soap_result1
+                                                .getPropertyAsString("order_flag")
+                                                .toString();
+                                        String SingleOffer = soap_result1
+                                                .getPropertyAsString("SingleOffer")
+                                                .toString();
+                                        // String lmd =
+                                        // soap_result1.getProperty("LMD").toString();
+                                        String flag = soap_result1.getProperty(
+                                                "Flag").toString();
+
+                                        if (d_id.equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for d_id");
+                                            d_id = " ";
+                                        }
+                                        if (product_category
+                                                .equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for product");
+                                            product_category = " ";
+                                        }
+                                        if (product_type
+                                                .equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for producttype");
+                                            product_type = " ";
+                                        }
+                                        if (product.equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for product");
+                                            product = " ";
+                                        }
+                                        if (categoryid
+                                                .equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for categoryid");
+                                            categoryid = " ";
+                                        }
+                                        if (category.equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for category");
+                                            category = " ";
+                                        }
+                                        if (shadeno.equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for shadeno");
+                                            shadeno = " ";
+                                        }
+                                        if (eancode.equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for eancode");
+                                            eancode = " ";
+                                        }
+                                        if (size.equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for size");
+                                            size = " ";
+                                        }
+                                        if (mrp.equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for mrp");
+                                            mrp = " ";
+                                        }
+                                        if (masterpackqty
+                                                .equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for masterpackqty");
+                                            masterpackqty = " ";
+                                        }
+                                        if (monopackqty
+                                                .equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for monopackqty");
+                                            monopackqty = " ";
+                                        }
+                                        if (innerqty.equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for innerqty");
+                                            innerqty = " ";
+                                        }
+                                        if (sku_l.equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for sku_l");
+                                            sku_l = " ";
+                                        }
+                                        if (sku_b.equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for sku_b");
+                                            sku_b = " ";
+                                        }
+                                        if (sku_h.equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for sku_h");
+                                            sku_h = " ";
+                                        }
+                                        if (sku_h.equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for sku_h");
+                                            sku_h = " ";
+                                        }
+                                        if (SingleOffer.equalsIgnoreCase("anyType{}")) {
+                                            Log.e("", "anytype for sku_h");
+                                            SingleOffer = " ";
+                                        }
+
+                                        if (d_id.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for d_id");
+                                            d_id = " ";
+                                        }
+                                        if (product_category
+                                                .equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for product");
+                                            product_category = " ";
+                                        }
+                                        if (product_type.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for producttype");
+                                            product_type = " ";
+                                        }
+                                        if (product.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for product");
+                                            product = " ";
+                                        }
+                                        if (categoryid.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for categoryid");
+                                            categoryid = " ";
+                                        }
+                                        if (category.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for category");
+                                            category = " ";
+                                        }
+                                        if (shadeno.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for shadeno");
+                                            shadeno = " ";
+                                        }
+                                        if (eancode.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for eancode");
+                                            eancode = " ";
+                                        }
+                                        if (size.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for size");
+                                            size = " ";
+                                        }
+                                        if (mrp.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for mrp");
+                                            mrp = " ";
+                                        }
+                                        if (masterpackqty.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for masterpackqty");
+                                            masterpackqty = " ";
+                                        }
+                                        if (monopackqty.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for monopackqty");
+                                            monopackqty = " ";
+                                        }
+                                        if (innerqty.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for innerqty");
+                                            innerqty = " ";
+                                        }
+                                        if (sku_l.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for sku_l");
+                                            sku_l = " ";
+                                        }
+                                        if (sku_b.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for sku_b");
+                                            sku_b = " ";
+                                        }
+                                        if (sku_h.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for sku_h");
+                                            sku_h = " ";
+                                        }
+                                        if (sku_h.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for sku_h");
+                                            sku_h = " ";
+                                        }
+                                        if (SingleOffer.equalsIgnoreCase("NULL")) {
+                                            Log.e("", "anytype for sku_h");
+                                            SingleOffer = " ";
+                                        }
+                                        /*
+                                         * if (order_flag!=null ||
+                                         * order_flag.equalsIgnoreCase("NULL")) {
+                                         * Log.e("", "anytype for sku_h");
+                                         * order_flag = " "; }
+                                         */
+
+                                        Log.v("", "flag=" + flag);
+                                        // if (flag.equalsIgnoreCase("E")) {
+
+                                        Log.e("pm", "pm5--");
+                                        db.open();
+                                        Cursor c = db.getuniquedata(categoryid,
+                                                eancode, d_id, "product_master");
+
+                                        int count = c.getCount();
+                                        Log.v("", "" + count);
+                                        db.close();
+                                        if (count > 0) {
+
+                                            Log.v("", "data already available");
+
+                                            db.open();
+                                            db.UpdateProductMaster(
+                                                    product_category,
+                                                    product_type.trim(), product,
+                                                    d_id, categoryid, category,
+                                                    shadeno, eancode, size, mrp,
+                                                    masterpackqty, monopackqty,
+                                                    innerqty, sku_l, sku_b, sku_h,
+                                                    price_type, order_flag, SingleOffer);
+                                            db.close();
+
+                                        } else {
+
+                                            Log.e("pm", "pm5");
+
+                                            db.open();
+                                            db.insertProductMaster(
+                                                    product_category,
+                                                    product_type.trim(), product,
+                                                    d_id, categoryid, category,
+                                                    shadeno, eancode, size, mrp,
+                                                    masterpackqty, monopackqty,
+                                                    innerqty, sku_l, sku_b, sku_h,
+                                                    price_type, order_flag, SingleOffer);
+                                            db.close();
+
+                                        }
+
+                                        syncprodmaster = 1;
+
+                                        // }
+
+                                    } catch (Exception e) {
+                                        // TODO: handle exception
+                                        e.printStackTrace();
+                                        String error = e.toString();
+                                        final Calendar calendar1 = Calendar
+                                                .getInstance();
+                                        SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                                "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                                        String Createddate = formatter1
+                                                .format(calendar1.getTime());
+
+                                        int n = Thread.currentThread()
+                                                .getStackTrace()[2].getLineNumber();
+                                        db.insertSyncLog(error, String.valueOf(n),
+                                                "GetProducts()", Createddate,
+                                                Createddate,
+                                                username,
+                                                "GetProducts", "Fail");
+                                    }
+
+                                } else if (soap_result1.getProperty("Flag")
+                                        .toString().equalsIgnoreCase("D")) {
+
+                                    Log.e("pm", "pm6");
+                                    db.open();
+                                    db.deletproductmaster("", "", soap_result1
+                                                    .getProperty("ID").toString(),
+                                            "product_master");
+                                    db.close();
+                                    syncprodmaster = 2;
+
+                                }
+                            } else if (soap_result1.getProperty("status").toString()
+                                    .equalsIgnoreCase("C")) {
+                                Log.e("pm", "pm7");
+
+                                syncprodmaster = 1;
+                                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                                        "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                                // get current date time with Date()
+                                Calendar cal = Calendar.getInstance();
+                                // dateFormat.format(cal.getTime())
                                 db.open();
-                                db.deletproductmaster("", "", soap_result1
-                                                .getProperty("ID").toString(),
+                                db.updateDateSync(dateFormat.format(cal.getTime()),
                                         "product_master");
                                 db.close();
 
+                            } else if (soap_result1.getProperty("status")
+                                    .toString().equalsIgnoreCase("SE")) {
+                                Log.e("pm", "pm7");
+                                syncprodmaster = 0;
+                                final Calendar calendar1 = Calendar.getInstance();
+                                SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                        "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                                String Createddate = formatter1.format(calendar1
+                                        .getTime());
+
+                                int n = Thread.currentThread().getStackTrace()[2]
+                                        .getLineNumber();
+                                db.insertSyncLog("GetProducts_SE",
+                                        String.valueOf(n), "GetProducts()",
+                                        Createddate, Createddate,
+                                        username,
+                                        "GetProducts", "Fail");
                             }
-                        } else if (soap_result1.getProperty("status").toString()
-                                .equalsIgnoreCase("C")) {
-                            Log.e("pm", "pm7");
-
-                            SimpleDateFormat dateFormat = new SimpleDateFormat(
-                                    "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
-                            // get current date time with Date()
-                            Calendar cal = Calendar.getInstance();
-                            // dateFormat.format(cal.getTime())
-                            db.open();
-                            db.updateDateSync(dateFormat.format(cal.getTime()),
-                                    "product_master");
-                            db.close();
-
-                        } else if (soap_result1.getProperty("status")
-                                .toString().equalsIgnoreCase("SE")) {
-                            Log.e("pm", "pm7");
-
-                            final Calendar calendar1 = Calendar.getInstance();
-                            SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                    "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
-                            String Createddate = formatter1.format(calendar1
-                                    .getTime());
-
-                            int n = Thread.currentThread().getStackTrace()[2]
-                                    .getLineNumber();
-                            db.insertSyncLog("GetProducts_SE",
-                                    String.valueOf(n), "GetProducts()",
-                                    Createddate, Createddate,
-                                    username,
-                                    "GetProducts", "Fail");
                         }
+
+                    } else {
+                        Log.v("", "Soap result is null");
+                        // Toast.makeText(context,
+                        // "Data Not Available or Check Connectivity",
+                        // Toast.LENGTH_SHORT).show();
+                        syncprodmaster = 0;
+                        final Calendar calendar1 = Calendar.getInstance();
+                        SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                        String Createddate = formatter1.format(calendar1.getTime());
+
+                        int n = Thread.currentThread().getStackTrace()[2]
+                                .getLineNumber();
+                        db.insertSyncLog(
+                                "Internet Connection Lost, Soap in giving null while 'GetProducts'",
+                                String.valueOf(n), "GetProducts()", Createddate,
+                                Createddate, username,
+                                "GetProducts", "Fail");
                     }
 
-                } else {
-                    Log.v("", "Soap result is null");
-                    // Toast.makeText(context,
-                    // "Data Not Available or Check Connectivity",
-                    // Toast.LENGTH_SHORT).show();
+                    if (syncdivmaster == 1 && syncprodmaster == 1) {
 
-                    final Calendar calendar1 = Calendar.getInstance();
-                    SimpleDateFormat formatter1 = new SimpleDateFormat(
-                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
-                    String Createddate = formatter1.format(calendar1.getTime());
+                        Flag = "1";
 
-                    int n = Thread.currentThread().getStackTrace()[2]
-                            .getLineNumber();
-                    db.insertSyncLog(
-                            "Internet Connection Lost, Soap in giving null while 'GetProducts'",
-                            String.valueOf(n), "GetProducts()", Createddate,
-                            Createddate, username,
-                            "GetProducts", "Fail");
-                }
+                    } else if (syncdivmaster == 2 && syncprodmaster == 2) {
+
+                        Flag = "2";
+                    } else {
+
+                        Flag = "3";
+                    }
+
 /*
                 //------------------------------------tester-------------------------//
                 db.open();
@@ -1271,7 +1429,28 @@ public class SyncMaster extends Activity {
                             username,
                             "GetTesterProducts()", "Fail");
                 }*/
-                //-------------------------------End-----------------------//
+                    //-------------------------------End-----------------------//
+
+
+                }
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                String Error = e.toString();
+
+                final Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat formatter = new SimpleDateFormat(
+                        "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                String Createddate = formatter.format(calendar.getTime());
+                Flag = "4";
+                int n = Thread.currentThread().getStackTrace()[2]
+                        .getLineNumber();
+                db.open();
+                db.insertSyncLog(Error, String.valueOf(n), "", Createddate,
+                        Createddate, sp.getString("username", ""),
+                        "Data Download", "Fail");
+                db.close();
+
             }
             return soap_result;
         }
@@ -1284,37 +1463,66 @@ public class SyncMaster extends Activity {
             if (mProgress != null && mProgress.isShowing() && !SyncMaster.this.isFinishing()) {
                 mProgress.dismiss();
             }
-            if (Flag.equalsIgnoreCase("0")) {
+            /*if (Flag.equalsIgnoreCase("0")) {
 
                 DisplayDialogMessage("Check Your Internet Connection!!!");
-                /*
+                *//*
                 Toast.makeText(SyncMaster.this,
 						"Check Your Internet Connection!!!", Toast.LENGTH_LONG)
-						.show();*/
+						.show();*//*
             } else {
                 if (soap_result == null) {
 
                     DisplayDialogMessage("Master Data Sync Incomplete, Please try again!!");
-					/*Toast.makeText(context,
+					*//*Toast.makeText(context,
 							"Master Data Sync Incomplete, Please try again!!",
-							Toast.LENGTH_SHORT).show();*/
+							Toast.LENGTH_SHORT).show();*//*
 
                 } else if (soap_result1.getProperty("status").toString()
                         .equalsIgnoreCase("C")) {
                     DisplayDialogMessage("Master Data Completed Successfully!!");
 
-				/*	Toast.makeText(context,
+				*//*	Toast.makeText(context,
 							"Master Data Completed Successfully!!",
-							Toast.LENGTH_SHORT).show();*/
+							Toast.LENGTH_SHORT).show();*//*
 
                 } else if (soap_result1.getProperty("status").toString()
                         .equalsIgnoreCase("SE")) {
 
                     DisplayDialogMessage("Master Data Sync Incomplete please try again!!");
-					/*Toast.makeText(context,
+					*//*Toast.makeText(context,
 							"Master Data Sync Incomplete please try again!!",
-							Toast.LENGTH_SHORT).show();*/
+							Toast.LENGTH_SHORT).show();*//*
                 }
+
+            }*/
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Connectivity Error, Please check Internet connection!!",
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                DisplayDialogMessage("Master Data Completed Successfully!!");
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+
+                DisplayDialogMessage("No Record Found to Master Sync!!");
+
+            } else if (Flag.equalsIgnoreCase("3")) {
+
+                DisplayDialogMessage("Master Data Sync Incomplete, Please try again!!");
+
+            } else if (Flag.equalsIgnoreCase("4")) {
+
+                DisplayDialogMessage("Master Data Sync Incomplete please try again!!");
+
+            } else {
+
+                DisplayDialogMessage("Master Data Sync Incomplete!!");
 
             }
         }
@@ -1479,7 +1687,7 @@ public class SyncMaster extends Activity {
                                         final Calendar calendar = Calendar
                                                 .getInstance();
                                         SimpleDateFormat formatter = new SimpleDateFormat(
-                                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                                "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                                         String date = formatter.format(calendar
                                                 .getTime());
 
@@ -1501,7 +1709,7 @@ public class SyncMaster extends Activity {
                                         final Calendar calendar1 = Calendar
                                                 .getInstance();
                                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                                "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                                         String Createddate = formatter1
                                                 .format(calendar1.getTime());
 
@@ -1527,7 +1735,7 @@ public class SyncMaster extends Activity {
                                     final Calendar calendar1 = Calendar
                                             .getInstance();
                                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                            "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                                     String Createddate = formatter1
                                             .format(calendar1.getTime());
 
@@ -1571,7 +1779,7 @@ public class SyncMaster extends Activity {
 
                         final Calendar calendar1 = Calendar.getInstance();
                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                         String Createddate = formatter1.format(calendar1
                                 .getTime());
 
@@ -1613,7 +1821,19 @@ public class SyncMaster extends Activity {
             }
             if (ErroFlag.equalsIgnoreCase("1")) {
 
-                DisplayDialogMessage("Data Upload Completed Successfully!!");
+                //DisplayDialogMessage("Data Upload Completed Successfully!!");
+                AlertDialog.Builder builder = new AlertDialog.Builder(SyncMaster.this);
+                builder.setMessage("Data Upload Completed Successfully!!")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                                dialog.dismiss();
+                                new CheckpasswordChange().execute();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
             }
 
         }
@@ -1838,7 +2058,7 @@ public class SyncMaster extends Activity {
                     }
 *//*
 
-					*//*try {
+     *//*try {
 						db.open();
 						attendance_array = db.getAttendanceData();
 
@@ -1973,7 +2193,7 @@ public class SyncMaster extends Activity {
 
 					}*//*
 
-                    *//*try {
+     *//*try {
                         Log.e("", "saveto server1-stcok");
                         db.open();
                         stock_array = db.getStockdetails();
@@ -2663,23 +2883,23 @@ public class SyncMaster extends Activity {
                                                         .getimageDetails1();
 
 												*//**//*
-                     * if (upload_image != null &&
-                     * upload_image.moveToFirst()) {
-                     *
-                     * upload_image.moveToFirst();
-                     * do{ Log.v("",
-                     * "visibility_id="
-                     * +upload_image.getString(5));
-                     * Log.v("",
-                     * "visibility_id="+upload_image
-                     * .getString(6));
-                     *
-                     * }while(upload_image.moveToNext
-                     * ());
-                     *
-                     *
-                     * }
-                     *//**//*
+     * if (upload_image != null &&
+     * upload_image.moveToFirst()) {
+     *
+     * upload_image.moveToFirst();
+     * do{ Log.v("",
+     * "visibility_id="
+     * +upload_image.getString(5));
+     * Log.v("",
+     * "visibility_id="+upload_image
+     * .getString(6));
+     *
+     * }while(upload_image.moveToNext
+     * ());
+     *
+     *
+     * }
+     *//**//*
                                                 if (upload_image.getCount() > 0) {
 
                                                     if (upload_image != null
@@ -3099,26 +3319,26 @@ public class SyncMaster extends Activity {
                                                 }
 
 												*//**//*
-                     * String image_name_return =
-                     * ImageUtils
-                     * .getCompressedImagePath(
-                     * image_array1 .getString(2),
-                     * username, producttype); if
-                     * (image_name_return==null) {
-                     *
-                     *
-                     * Log.e("",
-                     * "image_name_return=" +
-                     * image_name_return); } else {
-                     *
-                     * Log.e("",
-                     * "image_name_return=" +
-                     * image_name_return);
-                     *
-                     *
-                     *
-                     * }
-                     *//**//*
+     * String image_name_return =
+     * ImageUtils
+     * .getCompressedImagePath(
+     * image_array1 .getString(2),
+     * username, producttype); if
+     * (image_name_return==null) {
+     *
+     *
+     * Log.e("",
+     * "image_name_return=" +
+     * image_name_return); } else {
+     *
+     * Log.e("",
+     * "image_name_return=" +
+     * image_name_return);
+     *
+     *
+     *
+     * }
+     *//**//*
 
                                             } while (image_array1.moveToNext());
 
@@ -3164,27 +3384,27 @@ public class SyncMaster extends Activity {
                         }
 
 						*//**//*
-                     * if(soap_result_img != null && soap_result_img_data
-                     * !=null &&
-                     * !soap_result_img_data.toString().equalsIgnoreCase
-                     * ("SE") ){
-                     *
-                     * String result_visibility =
-                     * soap_result_img.toString(); String result_visibility1
-                     * = soap_result_img_data.toString(); Log.v("",
-                     * "result_visibility=" + result_visibility); Log.v("",
-                     * "result_visibility1=" + result_visibility1);
-                     *
-                     *
-                     *
-                     * if (result_visibility1.equalsIgnoreCase("TRUE")) {
-                     *
-                     * db.update_scan_data(); db.update_image_data();
-                     *
-                     * db.close();
-                     *
-                     * } }
-                     *//**//*
+     * if(soap_result_img != null && soap_result_img_data
+     * !=null &&
+     * !soap_result_img_data.toString().equalsIgnoreCase
+     * ("SE") ){
+     *
+     * String result_visibility =
+     * soap_result_img.toString(); String result_visibility1
+     * = soap_result_img_data.toString(); Log.v("",
+     * "result_visibility=" + result_visibility); Log.v("",
+     * "result_visibility1=" + result_visibility1);
+     *
+     *
+     *
+     * if (result_visibility1.equalsIgnoreCase("TRUE")) {
+     *
+     * db.update_scan_data(); db.update_image_data();
+     *
+     * db.close();
+     *
+     * } }
+     *//**//*
                     } catch (Exception e) {
 
                         e.printStackTrace();
@@ -3793,29 +4013,29 @@ public class SyncMaster extends Activity {
                                             );
 
 									*//**//*
-                         * soap_result_stock = service.SaveStock(
-                         * stock_array.getString(2),
-                         * stock_array.getString(1), eancode_string,
-                         * username, stock_array.getString(4),
-                         * stock_array.getString(5),
-                         * stock_array.getString(6), shad,
-                         *
-                         * opening_stock_string,
-                         * stock_receive_string,
-                         * stock_in_hand_string,
-                         *
-                         * sold_string, return_salable_string,
-                         * return_non_salable_string,
-                         *
-                         * close_bal_string, gross_amount_string,
-                         *
-                         * discount_string, net_amount_string,
-                         * size_string, price_string,
-                         * stock_array.getString(21)
-                         *
-                         *
-                         * );
-                         *//**//*
+     * soap_result_stock = service.SaveStock(
+     * stock_array.getString(2),
+     * stock_array.getString(1), eancode_string,
+     * username, stock_array.getString(4),
+     * stock_array.getString(5),
+     * stock_array.getString(6), shad,
+     *
+     * opening_stock_string,
+     * stock_receive_string,
+     * stock_in_hand_string,
+     *
+     * sold_string, return_salable_string,
+     * return_non_salable_string,
+     *
+     * close_bal_string, gross_amount_string,
+     *
+     * discount_string, net_amount_string,
+     * size_string, price_string,
+     * stock_array.getString(21)
+     *
+     *
+     * );
+     *//**//*
 
                                     if (soap_result_stock != null) {
                                         String result_stock = soap_result_stock
@@ -3921,7 +4141,7 @@ public class SyncMaster extends Activity {
 
                         // -----------------------------------------------------------------------------01.03.2016
 
-                        ClearLocalAppData();
+                        cd.ClearLocalAppData();
 
                         String lastdate;
                         db.open();
@@ -5456,23 +5676,23 @@ public class SyncMaster extends Activity {
 
 								// }
 								*//**//*
-                         * } catch (Exception e) { // TODO: handle
-                         * exception e.printStackTrace(); String Error =
-                         * e.toString(); Log.v("","se2 error"); final
-                         * Calendar calendar = Calendar .getInstance();
-                         * SimpleDateFormat formatter = new
-                         * SimpleDateFormat( "MM/dd/yyyy HH:mm:ss");
-                         * String Createddate =
-                         * formatter.format(calendar .getTime()); Flag =
-                         * "4"; int n =
-                         * Thread.currentThread().getStackTrace
-                         * ()[2].getLineNumber(); db.open();
-                         * db.insertSyncLog(Error,String.valueOf(n),
-                         * "SyncStockData()"
-                         * ,Createddate,Createddate,sp.getString
-                         * ("username", ""),"SyncStockData()","Fail");
-                         * db.close(); }
-                         *//**//*
+     * } catch (Exception e) { // TODO: handle
+     * exception e.printStackTrace(); String Error =
+     * e.toString(); Log.v("","se2 error"); final
+     * Calendar calendar = Calendar .getInstance();
+     * SimpleDateFormat formatter = new
+     * SimpleDateFormat( "MM/dd/yyyy HH:mm:ss");
+     * String Createddate =
+     * formatter.format(calendar .getTime()); Flag =
+     * "4"; int n =
+     * Thread.currentThread().getStackTrace
+     * ()[2].getLineNumber(); db.open();
+     * db.insertSyncLog(Error,String.valueOf(n),
+     * "SyncStockData()"
+     * ,Createddate,Createddate,sp.getString
+     * ("username", ""),"SyncStockData()","Fail");
+     * db.close(); }
+     *//**//*
 
 							} else if (soap_result1.getProperty("status")
 									.toString().equalsIgnoreCase("E")) {
@@ -5485,12 +5705,12 @@ public class SyncMaster extends Activity {
 										.UpdateTableData(db_stock_id_array,
 												"S", EmpId);
 								*//**//*
-                         * Log.e("",
-                         * "soap_update_stock_row= "+soap_update_stock_row
-                         * .toString());
-                         *
-                         * Log.e("", "string ids== "+db_stock_id_array);
-                         *//**//*
+     * Log.e("",
+     * "soap_update_stock_row= "+soap_update_stock_row
+     * .toString());
+     *
+     * Log.e("", "string ids== "+db_stock_id_array);
+     *//**//*
 								SimpleDateFormat dateFormat = new SimpleDateFormat(
 										"MM/dd/yyyy HH:mm:ss");
 								// get current date time with Date()
@@ -5802,24 +6022,24 @@ public class SyncMaster extends Activity {
 
                                     // }
                                     *//*
-                                     * } catch (Exception e) { // TODO: handle
-                                     * exception e.printStackTrace(); String Error =
-                                     * e.toString(); Log.v("","se2 error"); final
-                                     * Calendar calendar = Calendar .getInstance();
-                                     * SimpleDateFormat formatter = new
-                                     * SimpleDateFormat( "MM/dd/yyyy HH:mm:ss");
-                                     * String Createddate =
-                                     * formatter.format(calendar .getTime()); Flag =
-                                     * "4"; int n =
-                                     * Thread.currentThread().getStackTrace
-                                     * ()[2].getLineNumber(); db.open();
-                                     * db.insertSyncLog(Error,String.valueOf(n),
-                                     * "SyncGetTesterData()"
-                                     * ,Createddate,Createddate,
-                                     * sp.getString("username",
-                                     * ""),"SyncGetTesterData()","Fail");
-                                     * db.close(); }
-                                     *//*
+     * } catch (Exception e) { // TODO: handle
+     * exception e.printStackTrace(); String Error =
+     * e.toString(); Log.v("","se2 error"); final
+     * Calendar calendar = Calendar .getInstance();
+     * SimpleDateFormat formatter = new
+     * SimpleDateFormat( "MM/dd/yyyy HH:mm:ss");
+     * String Createddate =
+     * formatter.format(calendar .getTime()); Flag =
+     * "4"; int n =
+     * Thread.currentThread().getStackTrace
+     * ()[2].getLineNumber(); db.open();
+     * db.insertSyncLog(Error,String.valueOf(n),
+     * "SyncGetTesterData()"
+     * ,Createddate,Createddate,
+     * sp.getString("username",
+     * ""),"SyncGetTesterData()","Fail");
+     * db.close(); }
+     *//*
 
                                 } else if (soap_result_tester1
                                         .getProperty("status").toString()
@@ -6106,10 +6326,10 @@ public class SyncMaster extends Activity {
                                         .getProperty("LMD").toString();
 
                                 *//*
-                                 * if(LMD == null){ LMD="";
-                                 *
-                                 * }
-                                 *//*
+     * if(LMD == null){ LMD="";
+     *
+     * }
+     *//*
                                 // ---
                                 if (LMD == null) {
                                     LMD = "";
@@ -6341,21 +6561,21 @@ public class SyncMaster extends Activity {
                                 }
                                 // }
                                 *//*
-                                 * } catch (Exception e) { // TODO: handle exception
-                                 * e.printStackTrace(); String Error = e.toString();
-                                 * Log.v("","se2 error"); final Calendar calendar =
-                                 * Calendar .getInstance(); SimpleDateFormat
-                                 * formatter = new SimpleDateFormat(
-                                 * "MM/dd/yyyy HH:mm:ss"); String Createddate =
-                                 * formatter.format(calendar .getTime()); Flag =
-                                 * "4"; int n =
-                                 * Thread.currentThread().getStackTrace(
-                                 * )[2].getLineNumber(); db.open();
-                                 * db.insertSyncLog(Error,String.valueOf(n),
-                                 * "SyncStockNetvalue()"
-                                 * ,Createddate,Createddate,sp.getString("username",
-                                 * ""),"SyncStockNetvalue()","Fail"); db.close(); }
-                                 *//*
+     * } catch (Exception e) { // TODO: handle exception
+     * e.printStackTrace(); String Error = e.toString();
+     * Log.v("","se2 error"); final Calendar calendar =
+     * Calendar .getInstance(); SimpleDateFormat
+     * formatter = new SimpleDateFormat(
+     * "MM/dd/yyyy HH:mm:ss"); String Createddate =
+     * formatter.format(calendar .getTime()); Flag =
+     * "4"; int n =
+     * Thread.currentThread().getStackTrace(
+     * )[2].getLineNumber(); db.open();
+     * db.insertSyncLog(Error,String.valueOf(n),
+     * "SyncStockNetvalue()"
+     * ,Createddate,Createddate,sp.getString("username",
+     * ""),"SyncStockNetvalue()","Fail"); db.close(); }
+     *//*
 
                             } else if (soap_result_boc_day1.getProperty("status")
                                     .toString().equalsIgnoreCase("E")) {
@@ -6633,10 +6853,10 @@ public class SyncMaster extends Activity {
                                         "LMD").toString();
 
                                 *//*
-                                 * if(LMD == null){ LMD="";
-                                 *
-                                 * }
-                                 *//*
+     * if(LMD == null){ LMD="";
+     *
+     * }
+     *//*
 
                                 if (LMD == null) {
                                     LMD = "";
@@ -6673,11 +6893,11 @@ public class SyncMaster extends Activity {
                                         .toString();
 
                                 *//*
-                                 * if(AndroidCreatedDate == null){
-                                 * AndroidCreatedDate="";
-                                 *
-                                 * }
-                                 *//*
+     * if(AndroidCreatedDate == null){
+     * AndroidCreatedDate="";
+     *
+     * }
+     *//*
 
                                 String MONTH = "", YEAR = "";
                                 if (AndroidCreatedDate == null) {
@@ -7108,7 +7328,7 @@ public class SyncMaster extends Activity {
 
                     } else {
 
-                        ClearLocalAppData();
+                        cd.ClearLocalAppData();
 
                         String lastdate;
                         db.open();
@@ -7117,7 +7337,7 @@ public class SyncMaster extends Activity {
                         db.close();
 
                         Calendar calendar1 = Calendar.getInstance();
-                        SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
+                        SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                         String strDate = mdformat.format(calendar1.getTime());
 
                         soap_result = service.DataDownloadForSale(
@@ -7309,9 +7529,9 @@ public class SyncMaster extends Activity {
                                             String outputPattern = "yyyy-MM-dd HH:mm:ss";
 
                                             DateFormat inputFormat = new SimpleDateFormat(
-                                                    inputPattern,Locale.ENGLISH);
+                                                    inputPattern, Locale.ENGLISH);
                                             SimpleDateFormat outputFormat = new SimpleDateFormat(
-                                                    outputPattern,Locale.ENGLISH);
+                                                    outputPattern, Locale.ENGLISH);
 
                                             Date date = inputFormat.parse(LMD);
                                             LMD = outputFormat.format(date);
@@ -7337,9 +7557,9 @@ public class SyncMaster extends Activity {
                                             String outputPattern = "yyyy-MM-dd HH:mm:ss";
 
                                             SimpleDateFormat inputFormat = new SimpleDateFormat(
-                                                    inputPattern,Locale.ENGLISH);
+                                                    inputPattern, Locale.ENGLISH);
                                             SimpleDateFormat outputFormat = new SimpleDateFormat(
-                                                    outputPattern,Locale.ENGLISH);
+                                                    outputPattern, Locale.ENGLISH);
 
                                             Date date = inputFormat
                                                     .parse(AndroidCreatedDate);
@@ -7355,9 +7575,9 @@ public class SyncMaster extends Activity {
                                             YEAR = addd2[0];
                                             //
                                             SimpleDateFormat monthParse = new SimpleDateFormat(
-                                                    "MM",Locale.ENGLISH);
+                                                    "MM", Locale.ENGLISH);
                                             SimpleDateFormat monthDisplay = new SimpleDateFormat(
-                                                    "MMMM",Locale.ENGLISH);
+                                                    "MMMM", Locale.ENGLISH);
                                             MONTH = monthDisplay.format(monthParse
                                                     .parse(month));
                                             //
@@ -7552,7 +7772,7 @@ public class SyncMaster extends Activity {
                                                     "S", EmpId);
 
                                     SimpleDateFormat dateFormat = new SimpleDateFormat(
-                                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                            "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                                     // get current date time with Date()
                                     Calendar cal = Calendar.getInstance();
                                     // dateFormat.format(cal.getTime())
@@ -7589,7 +7809,7 @@ public class SyncMaster extends Activity {
                                     final Calendar calendar = Calendar
                                             .getInstance();
                                     SimpleDateFormat formatter = new SimpleDateFormat(
-                                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                            "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                                     String Createddate = formatter.format(calendar
                                             .getTime());
                                     Log.v("", "se error");
@@ -7611,7 +7831,7 @@ public class SyncMaster extends Activity {
                             syncstockdata = 0;
                             final Calendar calendar = Calendar.getInstance();
                             SimpleDateFormat formatter = new SimpleDateFormat(
-                                    "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                    "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                             String Createddate = formatter.format(calendar
                                     .getTime());
 
@@ -7700,7 +7920,7 @@ public class SyncMaster extends Activity {
 
                         Flag = "1";
 
-                    } else if (syncstockdata == 2 ) {
+                    } else if (syncstockdata == 2) {
 
                         Flag = "2";
 
@@ -7716,7 +7936,7 @@ public class SyncMaster extends Activity {
 
                 final Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat formatter = new SimpleDateFormat(
-                        "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                        "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                 String Createddate = formatter.format(calendar.getTime());
                 Flag = "4";
                 int n = Thread.currentThread().getStackTrace()[2]
@@ -7747,46 +7967,47 @@ public class SyncMaster extends Activity {
 
             } else if (Flag.equalsIgnoreCase("1")) {
 
-                    boolean boc26 = false;
+                // popup dialog commit code 2019-01-22
+                   /* boolean boc26 = false;
                     spe.putBoolean("BOC26", boc26);
                     spe.putBoolean("DialogDismiss", true);
-                    spe.commit();
-                    //final boolean boolRecd = false;
+                    spe.commit();*/
+                //final boolean boolRecd = false;
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(SyncMaster.this);
-                    builder.setMessage("Data Download Completed Successfully!!")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    //do things
-                                    dialog.dismiss();
-                                    // boolean bocflag = true;
-                                    Intent i = new Intent(SyncMaster.this, DashboardNewActivity.class);
-                                    //   i.putExtra("Bocflag",bocflag);
-                                    startActivity(i);
-                                }
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(SyncMaster.this);
+                builder.setMessage("Data Download Completed Successfully!!")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                                dialog.dismiss();
+                                // boolean bocflag = true;
+                                Intent i = new Intent(SyncMaster.this, DashboardNewActivity.class);
+                                //   i.putExtra("Bocflag",bocflag);
+                                startActivity(i);
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
 
 
-                } else if (Flag.equalsIgnoreCase("2")) {
+            } else if (Flag.equalsIgnoreCase("2")) {
 
-                    DisplayDialogMessage("No Record found to Data Download");
+                DisplayDialogMessage("No Record found to Data Download");
 
-                } else if (Flag.equalsIgnoreCase("3")) {
+            } else if (Flag.equalsIgnoreCase("3")) {
 
-                    DisplayDialogMessage("Data Download Incomplete!!");
+                DisplayDialogMessage("Data Download Incomplete!!");
 
-                } else if (Flag.equalsIgnoreCase("4")) {
+            } else if (Flag.equalsIgnoreCase("4")) {
 
-                    DisplayDialogMessage("Data Download Incomplete!!,Please try again after some time");
+                DisplayDialogMessage("Data Download Incomplete!!,Please try again after some time");
 
-                } else {
+            } else {
 
-                    DisplayDialogMessage("Data Download Incomplete!!");
+                DisplayDialogMessage("Data Download Incomplete!!");
 
-                }
+            }
 
         }
 
@@ -7794,18 +8015,18 @@ public class SyncMaster extends Activity {
     }
 
     private void DisplayDialogMessage(String msg) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(SyncMaster.this);
-            builder.setMessage(msg)
-                    .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            //do things
-                            dialog.dismiss();
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
-        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(SyncMaster.this);
+        builder.setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //do things
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
 
     public void readusermanual() {
 
@@ -8012,7 +8233,7 @@ public class SyncMaster extends Activity {
                                     final Calendar calendar1 = Calendar
                                             .getInstance();
                                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                            "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                                     String Createddate = formatter1
                                             .format(calendar1.getTime());
 
@@ -8071,7 +8292,7 @@ public class SyncMaster extends Activity {
                         final Calendar calendar1 = Calendar
                                 .getInstance();
                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                         String Createddate = formatter1
                                 .format(calendar1.getTime());
 
@@ -8113,9 +8334,11 @@ public class SyncMaster extends Activity {
             }
 
         } else {
+            new CheckpasswordChange().execute();
             Toast.makeText(this, "No Stock For Data Upload", Toast.LENGTH_SHORT).show();
             Log.e("NoStock dataupload",
                     String.valueOf(stock_array.getCount()));
+
         }
 
     }
@@ -8259,7 +8482,7 @@ public class SyncMaster extends Activity {
                                             final Calendar calendar1 = Calendar
                                                     .getInstance();
                                             SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                                    "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                                    "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                                             String Createddate = formatter1
                                                     .format(calendar1.getTime());
 
@@ -8283,7 +8506,7 @@ public class SyncMaster extends Activity {
                                         final Calendar calendar1 = Calendar
                                                 .getInstance();
                                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                                "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                                         String Createddate = formatter1
                                                 .format(calendar1.getTime());
 
@@ -8324,7 +8547,7 @@ public class SyncMaster extends Activity {
 
                         final Calendar cal = Calendar.getInstance();
                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                         String Createddate = formatter1.format(cal.getTime());
 
                         int n = Thread.currentThread().getStackTrace()[2]
@@ -8495,9 +8718,9 @@ public class SyncMaster extends Activity {
                                         String outputPattern = "yyyy-MM-dd HH:mm:ss";
 
                                         DateFormat inputFormat = new SimpleDateFormat(
-                                                inputPattern,Locale.ENGLISH);
+                                                inputPattern, Locale.ENGLISH);
                                         SimpleDateFormat outputFormat = new SimpleDateFormat(
-                                                outputPattern,Locale.ENGLISH);
+                                                outputPattern, Locale.ENGLISH);
 
                                         Date date = inputFormat.parse(LMD);
                                         LMD = outputFormat.format(date);
@@ -8520,9 +8743,9 @@ public class SyncMaster extends Activity {
                                         String outputPattern = "yyyy-MM-dd HH:mm:ss";
 
                                         SimpleDateFormat inputFormat = new SimpleDateFormat(
-                                                inputPattern,Locale.ENGLISH);
+                                                inputPattern, Locale.ENGLISH);
                                         SimpleDateFormat outputFormat = new SimpleDateFormat(
-                                                outputPattern,Locale.ENGLISH);
+                                                outputPattern, Locale.ENGLISH);
 
                                         Date date = inputFormat
                                                 .parse(AndroidCreatedDate);
@@ -8538,9 +8761,9 @@ public class SyncMaster extends Activity {
                                         YEAR = addd2[0];
                                         //
                                         SimpleDateFormat monthParse = new SimpleDateFormat(
-                                                "MM",Locale.ENGLISH);
+                                                "MM", Locale.ENGLISH);
                                         SimpleDateFormat monthDisplay = new SimpleDateFormat(
-                                                "MMMM",Locale.ENGLISH);
+                                                "MMMM", Locale.ENGLISH);
                                         MONTH = monthDisplay.format(monthParse
                                                 .parse(month));
                                         //
@@ -8735,7 +8958,7 @@ public class SyncMaster extends Activity {
                                 final Calendar calendar = Calendar
                                         .getInstance();
                                 SimpleDateFormat formatter = new SimpleDateFormat(
-                                        "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                        "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                                 String Createddate = formatter.format(calendar
                                         .getTime());
                                 Log.v("", "se error");
@@ -8757,7 +8980,7 @@ public class SyncMaster extends Activity {
                         syncstockdata = 0;
                         final Calendar calendar = Calendar.getInstance();
                         SimpleDateFormat formatter = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                         String Createddate = formatter.format(calendar
                                 .getTime());
 
@@ -8788,7 +9011,7 @@ public class SyncMaster extends Activity {
                 Flag = "3";
                 final Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat formatter = new SimpleDateFormat(
-                        "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                        "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                 String Createddate = formatter.format(calendar.getTime());
                 int n = Thread.currentThread().getStackTrace()[2]
                         .getLineNumber();
@@ -8962,7 +9185,7 @@ public class SyncMaster extends Activity {
 
             Calendar cal2 = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat(
-                    "yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
+                    "yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
             String insert_timestamp = sdf.format(cal2.getTime());
 
             if (!cd.isConnectingToInternet()) {
@@ -8972,7 +9195,7 @@ public class SyncMaster extends Activity {
             } else {
                 try {
 
-                    soap_result = service.ClearDataLog("Doing Clear Data", username, insert_timestamp);
+                    soap_result = service.ClearDataLog("Doing Clear Data", username, insert_timestamp, "");
 
                     if (soap_result != null) {
 
@@ -9030,7 +9253,7 @@ public class SyncMaster extends Activity {
 
     }
 
-    private void ClearLocalAppData() {
+    /*private void ClearLocalAppData() {
         try {
             db.open();
 
@@ -9051,6 +9274,270 @@ public class SyncMaster extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }*/
+
+   /* private void DataUpload_on_ClearData() {
+
+        JSONArray array = new JSONArray();
+        db.open();
+        Cursor stock_array = db.getStockdetails();
+
+        if (stock_array.getCount() > 0) {
+            if (stock_array != null && stock_array.moveToFirst()) {
+                stock_array.moveToFirst();
+
+                String shad;
+                do {
+
+                    JSONObject obj = new JSONObject();
+                    try {
+
+                        if (stock_array.getString(23) != null
+                                || !stock_array.getString(23).equalsIgnoreCase("null")) {
+
+                            Log.v("", "shadeno=" + stock_array.getString(23));
+                            shad = stock_array.getString(23).toString();
+
+                        } else {
+                            Log.v("", "shadeno=" + stock_array.getString(23));
+                            shad = "";
+                        }
+
+                        obj.put("id", cd.getNonNullValues(stock_array.getString(0)));
+                        obj.put("Pid", cd.getNonNullValues(stock_array.getString(2)));
+                        obj.put("CatCodeId", cd.getNonNullValues(stock_array.getString(1)));
+                        obj.put("EANCode", cd.getNonNullValues(stock_array.getString(3)));
+                        obj.put("empId", cd.getNonNullValues(username));
+                        obj.put("ProductCategory", cd.getNonNullValues(stock_array.getString(4)));
+                        obj.put("product_type", cd.getNonNullValues(stock_array.getString(5)));
+                        obj.put("product_name", cd.getNonNullValues(stock_array.getString(6)));
+                        obj.put("shadeno", cd.getNonNullValues(shad));
+                        obj.put("Opening_Stock", cd.getNonNullValues(stock_array.getString(10)));
+                        obj.put("FreshStock", cd.getNonNullValues(stock_array.getString(11)));
+                        obj.put("Stock_inhand", cd.getNonNullValues(stock_array.getString(12)));
+                        obj.put("SoldStock", cd.getNonNullValues(stock_array.getString(16)));
+                        obj.put("S_Return_Saleable", cd.getNonNullValues(stock_array.getString(14)));
+                        obj.put("S_Return_NonSaleable", cd.getNonNullValues(stock_array.getString(15)));
+                        obj.put("ClosingBal", cd.getNonNullValues(stock_array.getString(13)));
+                        obj.put("GrossAmount", cd.getNonNullValues(stock_array.getString(17)));
+                        obj.put("Discount", cd.getNonNullValues(stock_array.getString(19)));
+                        obj.put("NetAmount", cd.getNonNullValues(stock_array.getString(18)));
+                        obj.put("Size", cd.getNonNullValues(stock_array.getString(7)));
+                        obj.put("Price", cd.getNonNullValues(stock_array.getString(8)));
+                        obj.put("AndroidCreatedDate", cd.getNonNullValues(stock_array.getString(21)));
+                        obj.put("FLRCode", "");
+                        obj.put("flag", cd.getNonNullValues(stock_array.getString(35)));
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    array.put(obj);
+//                }
+                } while (stock_array.moveToNext());
+                //stock_array.close();
+            }
+
+            if (cd.isConnectingToInternet()) {
+
+                showProgreesDialog();
+                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, URL, array, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray jsonResponse) {
+
+                        Log.e("onResponse: ", jsonResponse.toString());
+                        int indexOfOpenBracket = jsonResponse.toString().indexOf("[");
+                        int indexOfLastBracket = jsonResponse.toString().lastIndexOf("]");
+
+                        String jsonStr = jsonResponse.toString().substring(indexOfOpenBracket + 1, indexOfLastBracket);
+
+                        if (jsonStr != null) {
+                            try {
+                                JSONObject jsonObj = new JSONObject(jsonStr);
+
+                                // Getting JSON Array node
+                                String flag = jsonObj.getString("Flag");
+                                String message = jsonObj.getString("errormsg");
+                                JSONArray id = jsonObj.getJSONArray("IdInserted");
+
+                                if (flag != null && flag.equalsIgnoreCase("TRUE")) {
+                                    for (int i = 0; i < id.length(); i++) {
+
+                                        String stockid = id.get(i).toString();
+
+                                        db.open();
+                                        db.update_stock_data(stockid);
+                                        Log.e("Data is Updating here ",
+                                                stockid);
+                                        db.close();
+
+
+                                    }
+
+                                    Log.e("JSON_TRUE", flag + "_MSG_" + message);
+
+                                    cd.ClearLocalAppData();
+                                    new ClearDataLog().execute();
+
+                                } else {
+                                    ErroFlag = "0";
+                                    final Calendar calendar1 = Calendar
+                                            .getInstance();
+                                    SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                    String Createddate = formatter1
+                                            .format(calendar1.getTime());
+
+                                    int n = Thread.currentThread().getStackTrace()[2].getLineNumber();
+                                    db.insertSyncLog(message, String.valueOf(n), "SaveStock()", Createddate,
+                                            Createddate, username,
+                                            "SaveStock()", "Fail");
+                                    Log.e("JSON_FALSE", flag + "_MSG_" + message);
+                                }
+                                dissmissDialog();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        dissmissDialog();
+                        ErroFlag = "0";
+                        final Calendar calendar1 = Calendar
+                                .getInstance();
+                        SimpleDateFormat formatter1 = new SimpleDateFormat(
+                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                        String Createddate = formatter1
+                                .format(calendar1.getTime());
+
+                        int n = Thread.currentThread()
+                                .getStackTrace()[2]
+                                .getLineNumber();
+                        db.insertSyncLog(error.getMessage(),
+                                String.valueOf(n),
+                                "SaveStock()", Createddate,
+                                Createddate, sp.getString(
+                                        "username", ""),
+                                "SaveStock()", "Fail");
+
+//                        Toast.makeText(context,"Stock Data not upload", Toast.LENGTH_SHORT).show();
+                        //Log.e("JSON_ERROR", error.getMessage());
+
+                    }
+                }) {
+                    @Override
+                    protected Response<JSONArray> parseNetworkResponse(NetworkResponse response) {
+                        return super.parseNetworkResponse(response);
+                    }
+
+                    @Override
+                    public String getBodyContentType() {
+                        return "application/json";
+                    }
+                };
+                jsonArrayRequest.setShouldCache(false);
+                jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        300000,
+                        0,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                TestApplication.getInstance().addToRequestQueue(jsonArrayRequest);
+
+            } else {
+                Toast.makeText(this, "Connectivity Error Please check internet", Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+
+            cd.ClearLocalAppData();
+            new ClearDataLog().execute();
+            Log.e("NoStock dataupload", String.valueOf(stock_array.getCount()));
+        }
+
+    }*/
+
+    public class CheckpasswordChange extends AsyncTask<String, Void, SoapObject> {
+
+        private SoapPrimitive soap_result = null;
+
+        String Flag = "";
+
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+
+            mProgress.setMessage("Please Wait....");
+            mProgress.show();
+            mProgress.setCancelable(false);
+
+        }
+
+        @Override
+        protected SoapObject doInBackground(String... params) {
+            // TODO Auto-generated method stub
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    soap_result = service.CheckpasswordChange(username, pass);
+
+                    if (soap_result != null) {
+
+                        if (soap_result.toString().equalsIgnoreCase("Correct")) {
+                            Flag = "1";
+                        } else if (soap_result.toString().equalsIgnoreCase("Incorrect")) {
+                            Flag = "2";
+                        } else if (soap_result.toString().equalsIgnoreCase("SE")) {
+                            Flag = "SE";
+
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+
+            if (mProgress != null && mProgress.isShowing() && !SyncMaster.this.isFinishing()) {
+                mProgress.dismiss();
+            }
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                Toast.makeText(getApplicationContext(), "Connectivity Error, Please check Internet connection!!", Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                Intent i = new Intent(SyncMaster.this, SyncMaster.class);
+                startActivity(i);
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+
+                Intent i = new Intent(SyncMaster.this, LoginActivity.class);
+                startActivity(i);
+            } else if (Flag.equalsIgnoreCase("SE")) {
+
+                Toast.makeText(getApplicationContext(), "Please check Internet connection!! Try Again", Toast.LENGTH_SHORT).show();
+
+            }
+
+        }
+
+
     }
 
 }

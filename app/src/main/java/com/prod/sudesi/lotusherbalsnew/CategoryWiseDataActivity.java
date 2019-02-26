@@ -208,7 +208,7 @@ public class CategoryWiseDataActivity extends Activity{
         categoryDetailsArraylist = new ArrayList<String>();
         String div = shp.getString("div", "");
 
-        if (div.equalsIgnoreCase("LH & LHM") || div.equalsIgnoreCase("LH & LM")) {
+        /*if (div.equalsIgnoreCase("LH & LHM") || div.equalsIgnoreCase("LH & LM")) {
 
             db.open();
             categoryDetailsArraylist = db.getproductcategory1(); // ------------
@@ -230,7 +230,11 @@ public class CategoryWiseDataActivity extends Activity{
             categoryDetailsArraylist.add("Select");
             categoryDetailsArraylist.add("COLOR");
 
-        }
+        }*/
+
+        db.open();
+        categoryDetailsArraylist = db.getproductcategory(flotername);
+        db.close();
     }
 
     public class ShowCategoryWiseData extends AsyncTask<String, String, ArrayList<HashMap<String, String>>> {

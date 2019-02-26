@@ -261,7 +261,7 @@ public class TargetActivity extends Activity {
         categoryDetailsArraylist = new ArrayList<String>();
         String div = shp.getString("div", "");
 
-        if (div.equalsIgnoreCase("LH & LHM") || div.equalsIgnoreCase("LH & LM")) {
+        /*if (div.equalsIgnoreCase("LH & LHM") || div.equalsIgnoreCase("LH & LM")) {
 
             db.open();
             categoryDetailsArraylist = db.getproductcategory1(); // ------------
@@ -283,7 +283,11 @@ public class TargetActivity extends Activity {
             categoryDetailsArraylist.add("Select");
             categoryDetailsArraylist.add("COLOR");
 
-        }
+        }*/
+
+        db.open();
+        categoryDetailsArraylist = db.getproductcategory(username);
+        db.close();
     }
 
     public class SaveBocTarget extends AsyncTask<Void, Void, SoapObject> {

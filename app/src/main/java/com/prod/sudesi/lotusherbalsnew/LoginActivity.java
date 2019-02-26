@@ -38,6 +38,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -52,6 +58,9 @@ import com.prod.sudesi.lotusherbalsnew.libs.ConnectionDetector;
 import com.prod.sudesi.lotusherbalsnew.libs.ExceptionHandler;
 import com.prod.sudesi.lotusherbalsnew.libs.LotusWebservice;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
 
@@ -59,6 +68,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -67,6 +77,7 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -143,6 +154,13 @@ public class LoginActivity extends Activity {
             return false;
         }
     }
+
+    private ProgressDialog progressDialog;
+    Cursor stock_array;
+    ArrayList<String> uploadidlist;
+    private JSONArray array;
+    String ErroFlag = "";
+    boolean firstlogin = false;
 
 
     @SuppressLint("HardwareIds")
@@ -338,7 +356,7 @@ public class LoginActivity extends Activity {
         }*/
     }
 
-    private void DataUploadAlaramReceiver() {
+    /*private void DataUploadAlaramReceiver() {
 
         try {
             Intent intentAlarm = new Intent(this, UploadDataBrodcastReceiver.class);
@@ -363,10 +381,11 @@ public class LoginActivity extends Activity {
             e.printStackTrace();
         }
 
-    }
+    }*/
 
     @SuppressLint("WrongConstant")
-    private void Boc26AlaramReceiver() {
+    // popup dialog commit code 2019-01-22
+   /* private void Boc26AlaramReceiver() {
         try {
 
             //Create pending intent & register it to your alarm notifier class
@@ -412,7 +431,7 @@ public class LoginActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 
     private void exportDB() {
@@ -453,9 +472,9 @@ public class LoginActivity extends Activity {
         protected void onPreExecute() {
             // TODO Auto-generated method stub
 
-            pd.setMessage("Please Wait....");
+           /* pd.setMessage("Please Wait....");
             pd.show();
-            pd.setCancelable(false);
+            pd.setCancelable(false);*/
 
         }
 
@@ -478,257 +497,262 @@ public class LoginActivity extends Activity {
 
                     soap_result = service.GetLogin(username, pass, version);
 
-                    if (soap_result.equals("anyType{}")) {
+                    if (soap_result != null) {
+                        if (soap_result.equals("anyType{}")) {
 
-                        Flag = "5";
-                    } else {
+                            Flag = "5";
+                        } else {
 
-                        if (soap_result != null) {
+                            if (soap_result != null) {
 
-                            for (int i = 0; i < soap_result
-                                    .getPropertyCount(); i++) {
+                                for (int i = 0; i < soap_result
+                                        .getPropertyCount(); i++) {
 
-                                SoapObject getmessaage = (SoapObject) soap_result
-                                        .getProperty(i);
+                                    SoapObject getmessaage = (SoapObject) soap_result
+                                            .getProperty(i);
 
-                                if (String.valueOf(
-                                        getmessaage.getProperty("status"))
-                                        .equals("INACTIVE")) {
+                                    if (String.valueOf(
+                                            getmessaage.getProperty("status"))
+                                            .equals("INACTIVE")) {
 
-                                    Flag = "INACTIVE";
+                                        Flag = "INACTIVE";
 
-                                } else if (String.valueOf(
-                                        getmessaage.getProperty("status"))
-                                        .equals("N")) {
+                                    } else if (String.valueOf(
+                                            getmessaage.getProperty("status"))
+                                            .equals("N")) {
 
-                                    Flag = "N";
+                                        Flag = "N";
 
-                                } else if (String.valueOf(
-                                        getmessaage.getProperty("status"))
-                                        .equalsIgnoreCase("Expired")) {
-                                    Flag = "Expired";
-                                }
-                                // 27.03.2015
-                                else if (String.valueOf(
-                                        getmessaage.getProperty("status"))
-                                        .equalsIgnoreCase("SE")) {
-                                    Flag = "SE";
-                                } else if (String.valueOf(
-                                        getmessaage.getProperty("status"))
-                                        .equalsIgnoreCase("V")) {
-                                    Flag = "V";
-                                }
-                                // 27.03.2015
-
-                                else {
-
-                                    status = String.valueOf(getmessaage
-                                            .getProperty("status"));
-
-                                    if (String.valueOf(getmessaage
-                                            .getProperty("div")) != null) {
-
-                                        div = String.valueOf(getmessaage
-                                                .getProperty("div"));
-                                        if (div.contentEquals("anyType{}")) {
-                                            div = "";
-                                        }
-                                        spe.putString("div", div);
-                                        spe.commit();
-
+                                    } else if (String.valueOf(
+                                            getmessaage.getProperty("status"))
+                                            .equalsIgnoreCase("Expired")) {
+                                        Flag = "Expired";
                                     }
+                                    // 27.03.2015
+                                    else if (String.valueOf(
+                                            getmessaage.getProperty("status"))
+                                            .equalsIgnoreCase("SE")) {
+                                        Flag = "SE";
+                                    } else if (String.valueOf(
+                                            getmessaage.getProperty("status"))
+                                            .equalsIgnoreCase("V")) {
+                                        Flag = "V";
+                                    }
+                                    // 27.03.2015
 
-                                    if (String.valueOf(getmessaage
-                                            .getProperty("username")) != null) {
+                                    else {
 
-                                        spe.putString(
+                                        status = String.valueOf(getmessaage
+                                                .getProperty("status"));
 
-                                                "username",
-                                                String.valueOf(getmessaage
-                                                        .getProperty("username")));
-                                        spe.putString(
-                                                "BDEusername",
-                                                String.valueOf(getmessaage
-                                                        .getProperty("bdename")));
-                                        spe.putString(
-                                                "BDE_Code",
-                                                String.valueOf(getmessaage
-                                                        .getProperty("bdecode")));
-                                        spe.putString(
-                                                "Role",
-                                                String.valueOf(getmessaage
-                                                        .getProperty("Role")));
-                                        spe.commit();
+                                        if (String.valueOf(getmessaage
+                                                .getProperty("div")) != null) {
 
-                                        Flag = String.valueOf(getmessaage
-                                                .getProperty("username"));
+                                            div = String.valueOf(getmessaage
+                                                    .getProperty("div"));
+                                            if (div.contentEquals("anyType{}")) {
+                                                div = "";
+                                            }
+                                            spe.putString("div", div);
+                                            spe.commit();
 
-                                        role = String.valueOf(getmessaage
-                                                .getProperty("Role"));
+                                        }
 
-                                        contentvalues.put("username",
-                                                username);
-                                        contentvalues.put("password", pass);
-                                        contentvalues.put(
-                                                "bde_Name",
-                                                getmessaage.getProperty(
-                                                        "bdename")
-                                                        .toString());
-                                        contentvalues.put("bde_Code", getmessaage.getProperty("bdecode").toString());
-                                        contentvalues.put("Role", role);
+                                        if (String.valueOf(getmessaage
+                                                .getProperty("username")) != null) {
 
-                                        contentvalues
-                                                .put("status",
-                                                        String.valueOf(getmessaage
-                                                                .getProperty("status")));
+                                            spe.putString(
 
-                                        loginstaus = "true";
-                                        soap_result2 = service.setDeviceId(
-                                                username, deviceId);
+                                                    "username",
+                                                    String.valueOf(getmessaage
+                                                            .getProperty("username")));
+                                            spe.putString(
+                                                    "BDEusername",
+                                                    String.valueOf(getmessaage
+                                                            .getProperty("bdename")));
+                                            spe.putString(
+                                                    "BDE_Code",
+                                                    String.valueOf(getmessaage
+                                                            .getProperty("bdecode")));
+                                            spe.putString(
+                                                    "Role",
+                                                    String.valueOf(getmessaage
+                                                            .getProperty("Role")));
+                                            spe.putString("Password", pass);
+                                            spe.commit();
 
-                                        if (soap_result2 != null) {
-                                            if (soap_result2.toString()
-                                                    .equalsIgnoreCase(
-                                                            "success")) {
+                                            Flag = String.valueOf(getmessaage
+                                                    .getProperty("username"));
 
-                                                contentvalues.put(
-                                                        "android_uid",
-                                                        deviceId);
+                                            role = String.valueOf(getmessaage
+                                                    .getProperty("Role"));
 
-                                                // contentvalues.put("ACTIVE",1);
+                                            contentvalues.put("username",
+                                                    username);
+                                            contentvalues.put("password", pass);
+                                            contentvalues.put(
+                                                    "bde_Name",
+                                                    getmessaage.getProperty(
+                                                            "bdename")
+                                                            .toString());
+                                            contentvalues.put("bde_Code", getmessaage.getProperty("bdecode").toString());
+                                            contentvalues.put("Role", role);
 
-                                                db.open();
-                                                String ddd = db.check_password_from_db(
-                                                        username,
-                                                        pass);
-                                                db.close();
+                                            contentvalues
+                                                    .put("status",
+                                                            String.valueOf(getmessaage
+                                                                    .getProperty("status")));
 
-                                                if (ddd.equalsIgnoreCase("1")) {
-                                                    contentvalues
-                                                            .put("last_modified_date",
-                                                                    serverdate);
+                                            loginstaus = "true";
+                                            soap_result2 = service.setDeviceId(
+                                                    username, deviceId);
+
+                                            if (soap_result2 != null) {
+                                                if (soap_result2.toString()
+                                                        .equalsIgnoreCase(
+                                                                "success")) {
+
+                                                    contentvalues.put(
+                                                            "android_uid",
+                                                            deviceId);
+
+                                                    // contentvalues.put("ACTIVE",1);
+
                                                     db.open();
-                                                    db.updatevalues(
-                                                            "login",
-                                                            contentvalues,
-                                                            "username",
-                                                            username);
-                                                    db.close();
-                                                    loginstaus = "valid_user";
-
-                                                } else {
-
-                                                    // db.insertValues(contentvalues,"login");
-                                                    db.open();
-
-                                                    db.insertLogin(
+                                                    String ddd = db.check_password_from_db(
                                                             username,
-                                                            pass,
-                                                            deviceId,
-                                                            serverdate,
-                                                            "f",
-                                                            div,
-                                                            status,
-                                                            getmessaage.getProperty("bdename").toString(),
-                                                            getmessaage.getProperty("bdecode").toString(),
-                                                            getmessaage.getProperty("Role").toString());
+                                                            pass);
+                                                    db.close();
+
+                                                    if (ddd.equalsIgnoreCase("1")) {
+                                                        contentvalues
+                                                                .put("last_modified_date",
+                                                                        serverdate);
+                                                        db.open();
+                                                        db.updatevalues(
+                                                                "login",
+                                                                contentvalues,
+                                                                "username",
+                                                                username);
+                                                        db.close();
+                                                        loginstaus = "valid_user";
+
+                                                    } else {
+
+                                                        // db.insertValues(contentvalues,"login");
+                                                        db.open();
+
+                                                        db.insertLogin(
+                                                                username,
+                                                                pass,
+                                                                deviceId,
+                                                                serverdate,
+                                                                "f",
+                                                                div,
+                                                                status,
+                                                                getmessaage.getProperty("bdename").toString(),
+                                                                getmessaage.getProperty("bdecode").toString(),
+                                                                getmessaage.getProperty("Role").toString());
+                                                        db.close();
+
+                                                    }
+                                                    loginstaus = "true1";
+                                                    //checkAndSaveMonthly();
+
+                                                } else if (soap_result2
+                                                        .toString()
+                                                        .equalsIgnoreCase(
+                                                                "false")) {
+                                                    loginstaus = "true2";
+
+                                                } else if (soap_result2
+                                                        .toString()
+                                                        .equalsIgnoreCase(
+                                                                "EXIST")) {
+
+                                                    loginstaus = "true3";
+
+                                                } else if (soap_result2
+                                                        .toString()
+                                                        .equalsIgnoreCase(
+                                                                "NotActive")) {
+                                                    loginstaus = "NotActive";
+                                                } else if (soap_result2
+                                                        .toString()
+                                                        .equalsIgnoreCase(
+                                                                "NoKey")) {
+                                                    loginstaus = "NoKey";
+                                                } else if (soap_result2
+                                                        .toString()
+                                                        .equalsIgnoreCase(
+                                                                "success")) {
+                                                    loginstaus = "success";
+                                                } else if (soap_result2
+                                                        .toString()
+                                                        .equalsIgnoreCase("SE")) {
+                                                    loginstaus = "true4";
+
+                                                    final Calendar calendar = Calendar
+                                                            .getInstance();
+                                                    SimpleDateFormat formatter = new SimpleDateFormat(
+                                                            "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                                                    String Createddate = formatter
+                                                            .format(calendar
+                                                                    .getTime());
+
+                                                    int n = Thread
+                                                            .currentThread()
+                                                            .getStackTrace()[2]
+                                                            .getLineNumber();
+                                                    db.open();
+                                                    db.insertSyncLog(
+                                                            "SE error in GetLogin()",
+                                                            String.valueOf(n),
+                                                            "GetLogin()",
+                                                            Createddate,
+                                                            Createddate,
+                                                            sp.getString(
+                                                                    "username",
+                                                                    ""),
+                                                            "Login Check",
+                                                            "Fail");
                                                     db.close();
 
                                                 }
-                                                loginstaus = "true1";
-                                                //checkAndSaveMonthly();
-
-                                            } else if (soap_result2
-                                                    .toString()
-                                                    .equalsIgnoreCase(
-                                                            "false")) {
-                                                loginstaus = "true2";
-
-                                            } else if (soap_result2
-                                                    .toString()
-                                                    .equalsIgnoreCase(
-                                                            "EXIST")) {
-
-                                                loginstaus = "true3";
-
-                                            } else if (soap_result2
-                                                    .toString()
-                                                    .equalsIgnoreCase(
-                                                            "NotActive")) {
-                                                loginstaus = "NotActive";
-                                            } else if (soap_result2
-                                                    .toString()
-                                                    .equalsIgnoreCase(
-                                                            "NoKey")) {
-                                                loginstaus = "NoKey";
-                                            } else if (soap_result2
-                                                    .toString()
-                                                    .equalsIgnoreCase(
-                                                            "success")) {
-                                                loginstaus = "success";
-                                            } else if (soap_result2
-                                                    .toString()
-                                                    .equalsIgnoreCase("SE")) {
-                                                loginstaus = "true4";
-
-                                                final Calendar calendar = Calendar
-                                                        .getInstance();
-                                                SimpleDateFormat formatter = new SimpleDateFormat(
-                                                        "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
-                                                String Createddate = formatter
-                                                        .format(calendar
-                                                                .getTime());
-
-                                                int n = Thread
-                                                        .currentThread()
-                                                        .getStackTrace()[2]
-                                                        .getLineNumber();
-                                                db.open();
-                                                db.insertSyncLog(
-                                                        "SE error in GetLogin()",
-                                                        String.valueOf(n),
-                                                        "GetLogin()",
-                                                        Createddate,
-                                                        Createddate,
-                                                        sp.getString(
-                                                                "username",
-                                                                ""),
-                                                        "Login Check",
-                                                        "Fail");
-                                                db.close();
-
                                             }
+
                                         }
 
                                     }
 
                                 }
+                            } else {
+                                Flag = "SOUP NULL";
+                                String errors = "Login soap giving null response. GetLogin Method";
+                                // we.writeToSD(errors.toString());
+                                final Calendar calendar = Calendar
+                                        .getInstance();
+                                SimpleDateFormat formatter = new SimpleDateFormat(
+                                        "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                                String Createddate = formatter.format(calendar
+                                        .getTime());
+
+                                int n = Thread.currentThread().getStackTrace()[2]
+                                        .getLineNumber();
+                                db.open();
+                                db.insertSyncLog(
+                                        "Soup is Null While GetLogin()",
+                                        String.valueOf(n), "GetLogin()",
+                                        Createddate, Createddate,
+                                        sp.getString("username", ""),
+                                        "Login Check", "Fail");
+                                db.close();
 
                             }
-                        } else {
-                            Flag = "SOUP NULL";
-                            String errors = "Login soap giving null response. GetLogin Method";
-                            // we.writeToSD(errors.toString());
-                            final Calendar calendar = Calendar
-                                    .getInstance();
-                            SimpleDateFormat formatter = new SimpleDateFormat(
-                                    "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
-                            String Createddate = formatter.format(calendar
-                                    .getTime());
-
-                            int n = Thread.currentThread().getStackTrace()[2]
-                                    .getLineNumber();
-                            db.open();
-                            db.insertSyncLog(
-                                    "Soup is Null While GetLogin()",
-                                    String.valueOf(n), "GetLogin()",
-                                    Createddate, Createddate,
-                                    sp.getString("username", ""),
-                                    "Login Check", "Fail");
-                            db.close();
 
                         }
-
+                    } else {
+                        Flag = "0";
                     }
 
                 } catch (Exception e) {
@@ -744,9 +768,9 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(SoapObject result) {
             // TODO Auto-generated method stub
 
-            if (pd != null && pd.isShowing() && !LoginActivity.this.isFinishing()) {
+            /*if (pd != null && pd.isShowing() && !LoginActivity.this.isFinishing()) {
                 pd.dismiss();
-            }
+            }*/
 
 
             try {
@@ -759,23 +783,37 @@ public class LoginActivity extends Activity {
 
                                 if (Flag.toString().equalsIgnoreCase(
                                         "INACTIVE")) {
-
+                                    if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                                        return;
+                                    }
+                                    cd.dismissProgressDialog();
                                     Toast.makeText(LoginActivity.this,
                                             "User is Inactive",
                                             Toast.LENGTH_SHORT).show();
 
                                 } else if (Flag.toString()
                                         .equalsIgnoreCase("N")) {
-
+                                    if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                                        return;
+                                    }
+                                    cd.dismissProgressDialog();
                                     Toast.makeText(
                                             LoginActivity.this,
                                             "Enter Correct UserName and Password.",
                                             Toast.LENGTH_SHORT).show();
                                 } else if (Flag.equalsIgnoreCase("Expired")) {
+                                    if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                                        return;
+                                    }
+                                    cd.dismissProgressDialog();
                                     Toast.makeText(LoginActivity.this,
                                             "Activation Key is Expired",
                                             Toast.LENGTH_SHORT).show();
                                 } else if (Flag.equalsIgnoreCase("V")) {
+                                    if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                                        return;
+                                    }
+                                    cd.dismissProgressDialog();
                                     Toast.makeText(
                                             LoginActivity.this,
                                             "Please Update to Newer Version!",
@@ -789,14 +827,18 @@ public class LoginActivity extends Activity {
 
                                     if (userid.equalsIgnoreCase("no")) {*/
 
-                                        Toast.makeText(
-                                                LoginActivity.this,
-                                                "This device is already assigned to another user.Please contact your system administrator!.",
-                                                Toast.LENGTH_LONG).show();
+                                    if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                                        return;
+                                    }
+                                    cd.dismissProgressDialog();
+                                    Toast.makeText(
+                                            LoginActivity.this,
+                                            "This device is already assigned to another user.Please contact your system administrator!.",
+                                            Toast.LENGTH_LONG).show();
 
-                                 /*   } else {
+                                    /*   } else {
 
-                                        *//*String[] serverdatearray = serverdate
+                                     *//*String[] serverdatearray = serverdate
                                                 .split(" ");
 
                                         server_date = serverdatearray[0];
@@ -842,25 +884,39 @@ public class LoginActivity extends Activity {
                                     }*/
                                 } else if (loginstaus
                                         .equalsIgnoreCase("true2")) {
-
+                                    if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                                        return;
+                                    }
+                                    cd.dismissProgressDialog();
                                     Toast.makeText(LoginActivity.this,
                                             "Invalid User!!",
                                             Toast.LENGTH_SHORT).show();
                                 } else if (loginstaus
                                         .equalsIgnoreCase("true4")) {
-
+                                    if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                                        return;
+                                    }
+                                    cd.dismissProgressDialog();
                                     Toast.makeText(
                                             LoginActivity.this,
                                             "Server Error! Please try again!!",
                                             Toast.LENGTH_SHORT).show();
                                 } else if (loginstaus
                                         .equalsIgnoreCase("NotActive")) {
+                                    if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                                        return;
+                                    }
+                                    cd.dismissProgressDialog();
                                     Toast.makeText(
                                             LoginActivity.this,
                                             "Activation Key is Not Updated",
                                             Toast.LENGTH_LONG).show();
                                 } else if (loginstaus
                                         .equalsIgnoreCase("NoKey")) {
+                                    if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                                        return;
+                                    }
+                                    cd.dismissProgressDialog();
                                     Toast.makeText(LoginActivity.this,
                                             "No Activation Key",
                                             Toast.LENGTH_LONG).show();
@@ -898,10 +954,25 @@ public class LoginActivity extends Activity {
 
                                     //SetClosingISOpeningOnlyOnce();
                                     // checkAndSaveMonthly();
-                                    db.open();
+                                  /*  db.open();
                                     db.deleteTables("attendance");
                                     db.close();
-                                    new GetAttendance().execute();
+                                    new GetAttendance().execute();*/
+
+                                    if (role.equalsIgnoreCase("FLR") ||
+                                            role.equalsIgnoreCase("ADR") ||
+                                            role.equalsIgnoreCase("BP")) {
+                                        db.open();
+                                        db.deleteTables("attendance");
+                                        db.close();
+                                        new GetAttendance().execute();
+                                    } else {
+                                        if(firstlogin) {
+                                            new DataDownload().execute();
+                                        }else{
+                                            new GetAttendance().execute();
+                                        }
+                                    }
                                     //checkpresentornot(todaydate1);
 
                                 } else {
@@ -940,15 +1011,34 @@ public class LoginActivity extends Activity {
 
                                     //SetClosingISOpeningOnlyOnce();
                                     // checkAndSaveMonthly();
-                                    db.open();
+                                    /*db.open();
                                     db.deleteTables("attendance");
                                     db.close();
-                                    new GetAttendance().execute();
+                                    new GetAttendance().execute();*/
+
+                                    if (role.equalsIgnoreCase("FLR") ||
+                                            role.equalsIgnoreCase("ADR") ||
+                                            role.equalsIgnoreCase("BP")) {
+                                        db.open();
+                                        db.deleteTables("attendance");
+                                        db.close();
+                                        new GetAttendance().execute();
+                                    } else {
+                                        if(firstlogin) {
+                                            new DataDownload().execute();
+                                        }else{
+                                            new GetAttendance().execute();
+                                        }
+                                    }
                                     //checkpresentornot(todaydate1);
 
                                 }
 
                             } else {
+                                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                                    return;
+                                }
+                                cd.dismissProgressDialog();
                                 Toast.makeText(
                                         getApplicationContext(),
                                         "Connectivity Error, Please check Internet connection!!",
@@ -957,14 +1047,20 @@ public class LoginActivity extends Activity {
                             }
 
                         } else {
-
+                            if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                                return;
+                            }
+                            cd.dismissProgressDialog();
                             Toast.makeText(getApplicationContext(),
                                     "Connectivity Error!!",
                                     Toast.LENGTH_SHORT).show();
 
                         }
                     } else {
-
+                        if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                            return;
+                        }
+                        cd.dismissProgressDialog();
                         Toast.makeText(
                                 getApplicationContext(),
                                 "User not activated ,Please contact admin!!",
@@ -972,6 +1068,10 @@ public class LoginActivity extends Activity {
 
                     }
                 } else {
+                    if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                        return;
+                    }
+                    cd.dismissProgressDialog();
                     Toast.makeText(
                             getApplicationContext(),
                             "Connectivity Error, Please check Internet connection!!",
@@ -1039,7 +1139,7 @@ public class LoginActivity extends Activity {
                                 }
 
                                 SimpleDateFormat sdf = new SimpleDateFormat(
-                                        "MM/dd/yyyy hh:mm:ss a",Locale.ENGLISH);
+                                        "MM/dd/yyyy hh:mm:ss a", Locale.ENGLISH);
                                 Date d = sdf.parse(holiday_date);
                                 sdf.applyPattern("yyyy-MM-dd hh:mm:ss");
                                 holiday_date1 = sdf.format(d);
@@ -1145,8 +1245,8 @@ public class LoginActivity extends Activity {
         String a = db.getdatepresentorabsent(givendate, username);
         db.close();
         // String a="P";
-        if (role.equalsIgnoreCase("FLR")||
-                role.equalsIgnoreCase("ADR")||
+        if (role.equalsIgnoreCase("FLR") ||
+                role.equalsIgnoreCase("ADR") ||
                 role.equalsIgnoreCase("BP")) {
 
             if (a.equalsIgnoreCase("")) {
@@ -1211,11 +1311,12 @@ public class LoginActivity extends Activity {
             } else {
 
             }*/
-                if (!sp.getString("Role", "").equalsIgnoreCase("FLR")||
+                // popup dialog commit code 2019-01-22
+               /* if (!sp.getString("Role", "").equalsIgnoreCase("FLR")||
                         !sp.getString("Role", "").equalsIgnoreCase("ADR")||
                         !sp.getString("Role", "").equalsIgnoreCase("BP")) {
                     Boc26AlaramReceiver();
-                }
+                }*/
                 Intent i = new Intent(getApplicationContext(), AttendanceFragment.class);
                 i.putExtra("FromLoginpage", "L");
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -1226,12 +1327,12 @@ public class LoginActivity extends Activity {
 
 
                 result = true;
-
-                if (!sp.getString("Role", "").equalsIgnoreCase("FLR")||
+                // popup dialog commit code 2019-01-22
+                /*if (!sp.getString("Role", "").equalsIgnoreCase("FLR")||
                         !sp.getString("Role", "").equalsIgnoreCase("ADR")||
                         !sp.getString("Role", "").equalsIgnoreCase("BP")) {
                     Boc26AlaramReceiver();
-                }
+                }*/
                 Intent i = new Intent(getApplicationContext(),
                         DashboardNewActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -2285,7 +2386,7 @@ public class LoginActivity extends Activity {
         }
     }
 
-   public void CheckServerApkVersionDownloadFile(String configFileUrl) {
+    public void CheckServerApkVersionDownloadFile(String configFileUrl) {
         try {
             URL url = new URL(configFileUrl);
             HttpURLConnection c = (HttpURLConnection) url.openConnection();
@@ -2405,7 +2506,6 @@ public class LoginActivity extends Activity {
     }*/
 
 
-
     public String ReadVersionFromSDCardFile() {
 
         String serverApkVersion = "";
@@ -2510,10 +2610,12 @@ public class LoginActivity extends Activity {
             e.printStackTrace();
         }
     }
+
     /**
      * This method disables the Broadcast receiver registered in the AndroidManifest file.
      */
-    public void enableBroadcastReceiver() {
+    // popup dialog commit code 2019-01-22
+   /* public void enableBroadcastReceiver() {
         ComponentName receiver = new ComponentName(this, BocBroadcastReceiver.class);
         PackageManager pm = this.getPackageManager();
 
@@ -2521,7 +2623,7 @@ public class LoginActivity extends Activity {
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
         Toast.makeText(this, "Enabled broadcast receiver", Toast.LENGTH_SHORT).show();
-    }
+    }*/
 
 
     public class GetServerDate extends AsyncTask<Void, Void, SoapPrimitive> {
@@ -2533,9 +2635,11 @@ public class LoginActivity extends Activity {
             // TODO Auto-generated method stub
             super.onPreExecute();
 
-            mProgress.setMessage("Please Wait");
+           /* mProgress.setMessage("Please Wait");
             mProgress.setCancelable(false);
-            mProgress.show();
+            mProgress.show();*/
+            String msg = "Please Wait....";
+            cd.showProgressDialog(msg);
         }
 
         @Override
@@ -2557,9 +2661,9 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(SoapPrimitive result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-            if (mProgress != null && mProgress.isShowing() && !LoginActivity.this.isFinishing()) {
+           /* if (mProgress != null && mProgress.isShowing() && !LoginActivity.this.isFinishing()) {
                 mProgress.dismiss();
-            }
+            }*/
 
             try {
                 if (result != null) {
@@ -2572,7 +2676,7 @@ public class LoginActivity extends Activity {
                     final Calendar calendar1 = Calendar
                             .getInstance();
                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                            "M/d/yyyy",Locale.ENGLISH);
+                            "M/d/yyyy", Locale.ENGLISH);
                     String systemdate = formatter1.format(calendar1
                             .getTime());
 
@@ -2594,7 +2698,7 @@ public class LoginActivity extends Activity {
 
                     final Calendar calendar = Calendar.getInstance();
                     SimpleDateFormat formatter = new SimpleDateFormat(
-                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                            "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                     String Createddate = formatter.format(calendar
                             .getTime());
 
@@ -2609,6 +2713,10 @@ public class LoginActivity extends Activity {
                             "Login Check", "Fail");
                     db.close();
 
+                    if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                        return;
+                    }
+                    cd.dismissProgressDialog();
                     Toast.makeText(
                             getApplicationContext(),
                             "Connectivity Error, Please check Internet connection!!",
@@ -2643,9 +2751,9 @@ public class LoginActivity extends Activity {
             // TODO Auto-generated method stub
             super.onPreExecute();
 
-            mProgress.setMessage("Please Wait");
+            /*mProgress.setMessage("Please Wait");
             mProgress.show();
-            mProgress.setCancelable(false);
+            mProgress.setCancelable(false);*/
         }
 
         @Override
@@ -2668,7 +2776,17 @@ public class LoginActivity extends Activity {
 
                 try {
 
-                    soap_result_attendance = service.GetAttendanceList(username);
+                    Calendar calendar2 = Calendar.getInstance();
+                    SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                    String strDate = mdformat.format(calendar2.getTime());
+                    String firlogin;
+                    if(firstlogin){
+                       firlogin = "No";
+                    }else{
+                        firlogin = "";
+                    }
+
+                    soap_result_attendance = service.GetAttendanceList(username,strDate,firlogin);
 
                     if (soap_result_attendance != null) {
                         log = "soap not null";
@@ -2800,7 +2918,7 @@ public class LoginActivity extends Activity {
                         final Calendar calendar1 = Calendar
                                 .getInstance();
                         SimpleDateFormat formatter1 = new SimpleDateFormat(
-                                "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                                "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                         String Createddate = formatter1.format(calendar1
                                 .getTime());
                         log = log + "-attendance null";
@@ -2819,7 +2937,7 @@ public class LoginActivity extends Activity {
                     final Calendar calendar1 = Calendar
                             .getInstance();
                     SimpleDateFormat formatter1 = new SimpleDateFormat(
-                            "MM/dd/yyyy HH:mm:ss",Locale.ENGLISH);
+                            "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                     String Createddate = formatter1.format(calendar1
                             .getTime());
 
@@ -2838,19 +2956,25 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(String result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-            if (mProgress != null && mProgress.isShowing() && !LoginActivity.this.isFinishing()) {
+            /*if (mProgress != null && mProgress.isShowing() && !LoginActivity.this.isFinishing()) {
                 mProgress.dismiss();
-            }
+            }*/
 
             //Toast.makeText(getApplicationContext(), Error, Toast.LENGTH_SHORT).show();
 
             if (Flag.equalsIgnoreCase("3")) {
-
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
                 Toast.makeText(getApplicationContext(), "Connectivity Error Please check internet ", Toast.LENGTH_SHORT).show();
             }
 
             if (ErroFlag.equalsIgnoreCase("0")) {
-
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
                 Toast.makeText(getApplicationContext(), "Attendance Sync Incomplete please try again!!", Toast.LENGTH_SHORT).show();
             }
             if (ErroFlag.equalsIgnoreCase("1")) {
@@ -2858,6 +2982,12 @@ public class LoginActivity extends Activity {
                 //Toast.makeText(getApplicationContext(), "Attendance Successfully Sync", Toast.LENGTH_SHORT).show();
 
                 //LoginUser();
+
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
+
                 String[] serverdatearray = serverdate
                         .split(" ");
 
@@ -2873,7 +3003,7 @@ public class LoginActivity extends Activity {
                 spe.commit();
 
                 SimpleDateFormat sdf = new SimpleDateFormat(
-                        "MM/dd/yyyy",Locale.ENGLISH);
+                        "MM/dd/yyyy", Locale.ENGLISH);
 
                 Date curntdte = null;
                 try {
@@ -2896,7 +3026,10 @@ public class LoginActivity extends Activity {
             }
 
             if (ErroFlag.equalsIgnoreCase("2")) {
-
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
                 Toast.makeText(getApplicationContext(), "Database getting null", Toast.LENGTH_SHORT).show();
 
             }
@@ -2952,7 +3085,7 @@ public class LoginActivity extends Activity {
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, broadCastIntent, 0);
                 //set timer you want alarm to work (here I have set it to 7.00)
                 Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY, 5);  //24
+                calendar.set(Calendar.HOUR_OF_DAY, 24);  //24
                 calendar.set(Calendar.MINUTE, 0);   //0
                 calendar.set(Calendar.SECOND, 0);
 
@@ -3086,9 +3219,11 @@ public class LoginActivity extends Activity {
         protected void onPreExecute() {
             // TODO Auto-generated method stub
 
-            mProgress.setMessage("Please Wait....");
+           /* mProgress.setMessage("Please Wait....");
             mProgress.show();
-            mProgress.setCancelable(false);
+            mProgress.setCancelable(false);*/
+            String msg = "Please Wait....";
+            cd.showProgressDialog(msg);
 
         }
 
@@ -3105,7 +3240,7 @@ public class LoginActivity extends Activity {
 
                     Date date = new Date();
                     @SuppressLint("SimpleDateFormat")
-                    SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
+                    SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 
                     DateLMD = form.format(date);
                     String lmd[] = DateLMD.split(" ");
@@ -3120,10 +3255,12 @@ public class LoginActivity extends Activity {
                             Flag = "1";
                         } else if (soap_result.toString().equalsIgnoreCase("FALSE")) {
                             Flag = "2";
-                        }else if (soap_result.toString().equalsIgnoreCase("SE")) {
+                        } else if (soap_result.toString().equalsIgnoreCase("SE")) {
                             Flag = "SE";
 
                         }
+                    } else {
+                        Flag = "0";
                     }
 
                 } catch (Exception e) {
@@ -3139,31 +3276,924 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(SoapObject result) {
             // TODO Auto-generated method stub
 
-            if (mProgress != null && mProgress.isShowing() && !LoginActivity.this.isFinishing()) {
+           /* if (mProgress != null && mProgress.isShowing() && !LoginActivity.this.isFinishing()) {
                 mProgress.dismiss();
-            }
+            }*/
 
             if (Flag.equalsIgnoreCase("0")) {
 
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
                 Toast.makeText(getApplicationContext(), "Connectivity Error, Please check Internet connection!!", Toast.LENGTH_SHORT).show();
 
             } else if (Flag.equalsIgnoreCase("1")) {
 
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
                 Toast.makeText(getApplicationContext(), "You are not allowed to login because," + "\n" + "You already punched checkout for today...", Toast.LENGTH_SHORT).show();
 
             } else if (Flag.equalsIgnoreCase("2")) {
 
-                new SyncApkCheck().execute();
-            }
-            else if (Flag.equalsIgnoreCase("SE")) {
+                String[] parts = username.split("-");
+                String role = parts[0];
 
-                Toast.makeText(getApplicationContext(),"You Not punch checkout time", Toast.LENGTH_SHORT).show();
+                if (role.equalsIgnoreCase("FLR") ||
+                        role.equalsIgnoreCase("ADR") ||
+                        role.equalsIgnoreCase("BP")) {
+                    //cd.ClearLocalAppData();
+                    if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                        return;
+                    }
+                    cd.dismissProgressDialog();
+                    new SyncApkCheck().execute();
+                } else {
+                    new CheckfirstLoginData().execute();
+                }
+
+            } else if (Flag.equalsIgnoreCase("SE")) {
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
+
+                Toast.makeText(getApplicationContext(), "Please check Internet connection!! Try Again", Toast.LENGTH_SHORT).show();
 
             }
 
         }
 
 
+    }
+
+
+    public class CheckfirstLoginData extends AsyncTask<String, Void, SoapObject> {
+
+        private SoapPrimitive soap_result = null;
+
+        String Flag = "";
+
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+
+           /* mProgress.setMessage("Please Wait....");
+            mProgress.show();
+            mProgress.setCancelable(false);*/
+
+        }
+
+        @Override
+        protected SoapObject doInBackground(String... params) {
+            // TODO Auto-generated method stub
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    soap_result = service.CheckfirstLoginData(username);
+
+                    if (soap_result != null) {
+
+                        if (soap_result.toString().equalsIgnoreCase("Yes")) {
+                            Flag = "1";
+                            firstlogin = true;
+                        } else if (soap_result.toString().equalsIgnoreCase("No")) {
+                            Flag = "2";
+                        } else if (soap_result.toString().equalsIgnoreCase("SE")) {
+                            Flag = "SE";
+
+                        }
+                    } else {
+                        Flag = "0";
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+
+            /*if (mProgress != null && mProgress.isShowing() && !LoginActivity.this.isFinishing()) {
+                mProgress.dismiss();
+            }*/
+
+            if (Flag.equalsIgnoreCase("0")) {
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
+
+                Toast.makeText(getApplicationContext(), "Connectivity Error, Please check Internet connection!!", Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                cd.ClearLocalAppData();
+                new ClearDataLog().execute();
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
+                new SyncApkCheck().execute();
+            } else if (Flag.equalsIgnoreCase("SE")) {
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
+                Toast.makeText(getApplicationContext(), "Please check Internet connection!! Try Again", Toast.LENGTH_SHORT).show();
+
+            }
+
+        }
+
+
+    }
+
+    public class ClearDataLog extends AsyncTask<Void, Void, SoapObject> {
+
+        private SoapPrimitive soap_result = null;
+
+        String Flag = "";
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+
+            /*mProgress.setMessage("Please Wait....");
+            mProgress.show();
+            mProgress.setCancelable(false);*/
+
+        }
+
+        @Override
+        protected SoapObject doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+
+            Calendar cal2 = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat(
+                    "yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+            String insert_timestamp = sdf.format(cal2.getTime());
+
+            if (!cd.isConnectingToInternet()) {
+
+                Flag = "0";
+
+            } else {
+                try {
+
+                    soap_result = service.ClearDataLog("Clear Data on Login", username, insert_timestamp, "");
+
+                    if (soap_result != null) {
+
+                        if (soap_result.toString().equalsIgnoreCase("True")) {
+                            Flag = "1";
+                        } else {
+                            Flag = "2";
+                        }
+                    } else {
+                        Flag = "0";
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected void onPostExecute(SoapObject result) {
+            // TODO Auto-generated method stub
+
+            /*if (mProgress != null && mProgress.isShowing() && !LoginActivity.this.isFinishing()) {
+                mProgress.dismiss();
+            }*/
+
+            if (Flag.equalsIgnoreCase("0")) {
+
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Connectivity Error, Please check Internet connection!!",
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                // new DataDownload().execute();
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
+                new SyncApkCheck().execute();
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Please check Internet connection!! Try Again",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        }
+
+    }
+
+    public class DataDownload extends AsyncTask<Void, Void, SoapObject> {
+
+        private SoapObject soap_result = null;
+
+        SoapObject soap_result1 = null;
+        String Flag;
+
+        SoapPrimitive soap_update_stock_row = null;
+
+        int syncstockdata = 1;
+
+        String db_stock_id_array = "";
+
+        String EmpId = sp.getString("username", "");
+        String Erro_function = "";
+        String ErroFlag = "";
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+
+            /*mProgress.setMessage("Receiving.....");
+            mProgress.show();
+            mProgress.setCancelable(false);*/
+        }
+
+        @Override
+        protected SoapObject doInBackground(Void... params) {
+
+            try {
+
+                if (!cd.isConnectingToInternet()) {
+
+                    Flag = "0";
+                    // stop executing code by return
+
+                } else {
+
+                    if (!cd.isConnectingToInternet()) {
+
+                        Flag = "0";
+                        // stop executing code by return
+
+                    } else {
+
+                        Calendar calendar1 = Calendar.getInstance();
+                        SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                        String strDate = mdformat.format(calendar1.getTime());
+
+                        soap_result = service.DataDownloadForSale(
+                                username, strDate);//strDate
+
+                        if (soap_result != null) {
+
+                            for (int i = 0; i < soap_result.getPropertyCount(); i++) {
+
+                                soap_result1 = (SoapObject) soap_result
+                                        .getProperty(i);
+
+                                Log.e("pm",
+                                        "status="
+                                                + soap_result1
+                                                .getProperty("status")
+                                                .toString());
+
+                                if (soap_result1.getProperty("status").toString()
+                                        .equalsIgnoreCase("C")) {
+
+                                    String db_stock_id = soap_result1.getProperty(
+                                            "Id").toString();
+
+                                    String db_Id = soap_result1.getProperty(
+                                            "ProductId").toString();
+
+                                    Log.v("", "db_Id=" + db_Id);
+
+                                    String CatCodeId = soap_result1.getProperty(
+                                            "CatCodeId").toString();
+
+                                    if (CatCodeId == null) {
+                                        CatCodeId = "";
+
+                                    }
+                                    Log.v("", "CatCodeId=" + CatCodeId);
+
+                                    String ProductId = soap_result1.getProperty(
+                                            "ProductId").toString();
+                                    Log.v("", "ProductId=" + ProductId);
+
+                                    if (ProductId == null) {
+                                        ProductId = "";
+
+                                    }
+
+                                    String EANCode = soap_result1.getProperty(
+                                            "EANCode").toString();
+
+                                    if (EANCode == null) {
+                                        EANCode = "";
+
+                                    }
+                                    EmpId = soap_result1.getProperty("EmpId")
+                                            .toString();
+
+                                    if (EmpId == null) {
+                                        EmpId = "";
+
+                                    }
+                                    String ProductCategory = soap_result1
+                                            .getProperty("ProductCategory")
+                                            .toString();
+
+                                    if (ProductCategory == null) {
+                                        ProductCategory = "";
+
+                                    }
+                                    String ProductType = soap_result1.getProperty(
+                                            "ProductType").toString();
+
+                                    if (ProductType == null) {
+                                        ProductType = "";
+
+                                    }
+                                    String ProductName = soap_result1.getProperty(
+                                            "ProductName").toString();
+                                    if (ProductName == null) {
+                                        ProductName = "";
+
+                                    }
+
+                                    String Opening_Stock = soap_result1
+                                            .getProperty("Opening_Stock")
+                                            .toString();
+                                    if (Opening_Stock == null) {
+                                        Opening_Stock = "";
+
+                                    }
+
+                                    String FreshStock = soap_result1.getProperty(
+                                            "FreshStock").toString();
+                                    if (FreshStock == null) {
+                                        FreshStock = "";
+
+                                    }
+
+                                    String Stock_inhand = soap_result1.getProperty(
+                                            "Stock_inhand").toString();
+
+                                    if (Stock_inhand == null) {
+                                        Stock_inhand = "";
+
+                                    }
+                                    String SoldStock = soap_result1.getProperty(
+                                            "SoldStock").toString();
+
+                                    if (SoldStock == null) {
+                                        SoldStock = "";
+
+                                    }
+                                    String S_Return_Saleable = soap_result1
+                                            .getProperty("S_Return_Saleable")
+                                            .toString();
+
+                                    if (S_Return_Saleable == null) {
+                                        S_Return_Saleable = "";
+
+                                    }
+                                    String S_Return_NonSaleable = soap_result1
+                                            .getProperty("S_Return_NonSaleable")
+                                            .toString();
+
+                                    if (S_Return_NonSaleable == null) {
+                                        S_Return_NonSaleable = "";
+
+                                    }
+                                    String ClosingBal = soap_result1.getProperty(
+                                            "ClosingBal").toString();
+
+                                    if (ClosingBal == null) {
+                                        ClosingBal = "";
+
+                                    }
+                                    String GrossAmount = soap_result1.getProperty(
+                                            "GrossAmount").toString();
+
+                                    if (GrossAmount == null) {
+                                        GrossAmount = "";
+
+                                    }
+                                    String Discount = soap_result1.getProperty(
+                                            "Discount").toString();
+
+                                    float dis = Float.parseFloat(Discount);
+                                    int d = (int) dis;
+                                    Discount = String.valueOf(d);
+
+                                    if (Discount == null) {
+                                        Discount = "";
+
+                                    }
+                                    String NetAmount = soap_result1.getProperty(
+                                            "NetAmount").toString();
+
+                                    float net = Float.parseFloat(NetAmount);
+                                    int n = (int) net;
+                                    NetAmount = String.valueOf(n);
+
+                                    if (NetAmount == null) {
+                                        NetAmount = "";
+
+                                    }
+                                    String Size = soap_result1.getProperty("Size")
+                                            .toString();
+
+                                    if (Size == null) {
+                                        Size = "";
+
+                                    }
+                                    String Price = soap_result1
+                                            .getProperty("Price").toString();
+
+                                    if (Price == null) {
+                                        Price = "";
+
+                                    }
+                                    String LMD = soap_result1.getProperty("LMD")
+                                            .toString();
+
+                                    if (LMD == null) {
+                                        LMD = "";
+
+                                    } else {
+
+                                        try {
+                                            String inputPattern = "MM/dd/yyyy hh:mm:ss a";
+                                            String outputPattern = "yyyy-MM-dd HH:mm:ss";
+
+                                            DateFormat inputFormat = new SimpleDateFormat(
+                                                    inputPattern, Locale.ENGLISH);
+                                            SimpleDateFormat outputFormat = new SimpleDateFormat(
+                                                    outputPattern, Locale.ENGLISH);
+
+                                            Date date = inputFormat.parse(LMD);
+                                            LMD = outputFormat.format(date);
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    String AndroidCreatedDate = soap_result1
+                                            .getProperty("AndroidCreatedDate")
+                                            .toString();
+
+
+                                    String MONTH = "", YEAR = "";
+                                    if (AndroidCreatedDate == null) {
+                                        AndroidCreatedDate = "";
+
+                                    } else {
+
+                                        try {
+                                            String inputPattern = "MM/dd/yyyy hh:mm:ss a";
+                                            String outputPattern = "yyyy-MM-dd HH:mm:ss";
+
+                                            SimpleDateFormat inputFormat = new SimpleDateFormat(
+                                                    inputPattern, Locale.ENGLISH);
+                                            SimpleDateFormat outputFormat = new SimpleDateFormat(
+                                                    outputPattern, Locale.ENGLISH);
+
+                                            Date date = inputFormat
+                                                    .parse(AndroidCreatedDate);
+                                            AndroidCreatedDate = outputFormat
+                                                    .format(date);
+
+                                            String[] addd = AndroidCreatedDate
+                                                    .split(" ");
+                                            String addd1 = addd[0];
+                                            String[] addd2 = addd1.split("-");
+
+                                            String month = addd2[1];
+                                            YEAR = addd2[0];
+                                            //
+                                            SimpleDateFormat monthParse = new SimpleDateFormat(
+                                                    "MM", Locale.ENGLISH);
+                                            SimpleDateFormat monthDisplay = new SimpleDateFormat(
+                                                    "MMMM", Locale.ENGLISH);
+                                            MONTH = monthDisplay.format(monthParse
+                                                    .parse(month));
+                                            //
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    if (db_Id.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for db_Id");
+                                        db_Id = " ";
+                                    }
+                                    if (CatCodeId.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for CatCodeId");
+                                        CatCodeId = " ";
+                                    }
+
+                                    if (ProductId.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for ProductId");
+                                        ProductId = " ";
+                                    }
+                                    if (EANCode.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for EANCode");
+                                        EANCode = " ";
+                                    }
+
+                                    if (EmpId.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for EmpId");
+                                        EmpId = " ";
+                                    }
+                                    if (ProductCategory
+                                            .equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for ProductCategory");
+                                        ProductCategory = " ";
+                                    }
+                                    if (ProductType.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for ProductType");
+                                        ProductType = " ";
+                                    }
+
+                                    if (ProductName.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for ProductName");
+                                        ProductName = " ";
+                                    }
+                                    if (Opening_Stock.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for Opening_Stock");
+                                        Opening_Stock = " ";
+                                    }
+
+                                    if (FreshStock.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for FreshStock");
+                                        FreshStock = " ";
+                                    }
+                                    if (Stock_inhand.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for Stock_inhand");
+                                        Stock_inhand = " ";
+                                    }
+                                    if (SoldStock.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for SoldStock");
+                                        SoldStock = " ";
+                                    }
+                                    if (S_Return_Saleable
+                                            .equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for S_Return_Saleable");
+                                        S_Return_Saleable = " ";
+                                    }
+                                    if (S_Return_NonSaleable
+                                            .equalsIgnoreCase("anyType{}")) {
+                                        Log.e("",
+                                                "anytype for S_Return_NonSaleable");
+                                        S_Return_NonSaleable = " ";
+                                    }
+                                    if (ClosingBal.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for ClosingBal");
+                                        ClosingBal = " ";
+                                    }
+                                    if (GrossAmount.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for GrossAmount");
+                                        GrossAmount = " ";
+                                    }
+                                    if (Discount.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for Discount");
+                                        Discount = " ";
+                                    }
+                                    if (NetAmount.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for NetAmount");
+                                        NetAmount = " ";
+                                    }
+                                    if (Size.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for Size");
+                                        Size = " ";
+                                    }
+                                    if (Price.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for sku_l");
+                                        Price = " ";
+                                    }
+                                    if (LMD.equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for LMD");
+                                        LMD = " ";
+                                    }
+                                    if (AndroidCreatedDate
+                                            .equalsIgnoreCase("anyType{}")) {
+                                        Log.e("", "anytype for AndroidCreatedDate");
+                                        AndroidCreatedDate = " ";
+                                    }
+
+                                    String openingamt = String.valueOf(Integer.parseInt(Opening_Stock) * Integer.parseInt(Price));
+                                    String closingamt = String.valueOf(Integer.parseInt(ClosingBal) * Integer.parseInt(Price));
+                                    String Soldamt = String.valueOf(Integer.parseInt(SoldStock) * Integer.parseInt(Price));
+                                    String Freshamt = String.valueOf(Integer.parseInt(FreshStock) * Integer.parseInt(Price));
+
+                                    Log.e("pm", "pm5--");
+                                    db.open();
+
+                                    Cursor c1 = db.CheckDataExist("stock", db_Id,
+                                            ProductCategory, ProductType,
+                                            ProductName);
+
+
+                                    int count = c1.getCount();
+                                    Log.v("", "" + count);
+                                    db.close();
+                                    if (count > 0) {
+
+                                        db.open();
+                                        db.UpdateStockSync1(ProductCategory,
+                                                ProductType, ProductName, EmpId,
+                                                Opening_Stock, openingamt, Stock_inhand, ClosingBal, closingamt,
+                                                FreshStock, Freshamt, GrossAmount, SoldStock, Soldamt,
+                                                Price, Size, db_Id, LMD, Discount,
+                                                NetAmount,
+                                                S_Return_Saleable,
+                                                S_Return_NonSaleable);
+
+                                        db.close();
+
+                                        db_stock_id_array = db_stock_id_array + ","
+                                                + db_Id;
+
+                                    } else {
+
+                                        Log.e("pm", "pm5");
+                                        db.open();
+                                        db.insertProductMasterFirsttime(
+                                                db_stock_id, db_Id, ProductId,
+                                                CatCodeId, EANCode, EmpId,
+                                                ProductCategory, ProductType,
+                                                ProductName, Opening_Stock, openingamt,
+                                                FreshStock, Freshamt, Stock_inhand,
+                                                SoldStock, Soldamt, S_Return_NonSaleable,
+                                                S_Return_Saleable, ClosingBal, closingamt,
+                                                GrossAmount, Discount, NetAmount,
+                                                Size, Price, LMD,
+                                                AndroidCreatedDate, MONTH, YEAR);
+
+                                        db.close();
+
+                                        db_stock_id_array = db_stock_id_array + ","
+                                                + db_Id;
+
+                                    }
+
+                                    syncstockdata = 1;
+
+                                } else if (soap_result1.getProperty("status")
+                                        .toString().equalsIgnoreCase("E")) {
+                                    Log.e("pm", "pm7");
+
+                                    writeStringAsFile(db_stock_id_array);
+
+                                    soap_update_stock_row = service
+                                            .UpdateTableData(db_stock_id_array,
+                                                    "S", EmpId);
+
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat(
+                                            "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                                    // get current date time with Date()
+                                    Calendar cal = Calendar.getInstance();
+                                    // dateFormat.format(cal.getTime())
+                                    db.open();
+                                    db.updateDateSync(
+                                            dateFormat.format(cal.getTime()),
+                                            "stock");
+                                    db.close();
+
+                                } else if (soap_result1.getProperty("status")
+                                        .toString().equalsIgnoreCase("N")) {
+
+                                    Log.e("", "string ids== " + db_stock_id_array);
+                                    soap_update_stock_row = service
+                                            .UpdateTableData(db_stock_id_array,
+                                                    "S", EmpId);
+                                    Log.e("", "soap_update_stock_row= "
+                                            + soap_update_stock_row.toString());
+
+                                    syncstockdata = 2;
+                                } else if (soap_result1.getProperty("status")
+                                        .toString().equalsIgnoreCase("SE")) {
+
+                                    soap_update_stock_row = service
+                                            .UpdateTableData(db_stock_id_array,
+                                                    "S", EmpId);
+                                    Log.e("", "soap_update_stock_row= "
+                                            + soap_update_stock_row.toString());
+
+                                    Log.e("", "string ids== " + db_stock_id_array);
+                                    syncstockdata = 0;
+                                    final Calendar calendar = Calendar
+                                            .getInstance();
+                                    SimpleDateFormat formatter = new SimpleDateFormat(
+                                            "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                                    String Createddate = formatter.format(calendar
+                                            .getTime());
+                                    Log.v("", "se error");
+                                    int n = Thread.currentThread().getStackTrace()[2]
+                                            .getLineNumber();
+                                    db.open();
+                                    db.insertSyncLog("FirstTimeSync_SE",
+                                            String.valueOf(n), "DataDownload()",
+                                            Createddate, Createddate,
+                                            username,
+                                            "DataDownload()", "Fail");
+                                    db.close();
+                                }
+                            }
+
+                        } else {
+                            Log.v("", "Soap result is null");
+
+                            syncstockdata = 0;
+                            final Calendar calendar = Calendar.getInstance();
+                            SimpleDateFormat formatter = new SimpleDateFormat(
+                                    "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                            String Createddate = formatter.format(calendar
+                                    .getTime());
+
+                            int n = Thread.currentThread().getStackTrace()[2]
+                                    .getLineNumber();
+                            db.open();
+                            db.insertSyncLog("Soup is null - DataDownload()",
+                                    String.valueOf(n), "DataDownload()",
+                                    Createddate, Createddate,
+                                    username, "Data Download",
+                                    "Fail");
+                            db.close();
+
+                        }
+
+                    }
+
+                    if (syncstockdata == 1) {
+
+                        Flag = "1";
+
+                    } else if (syncstockdata == 2) {
+
+                        Flag = "2";
+
+                    } else {
+
+                        Flag = "3";
+                    }
+                }
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                String Error = e.toString();
+
+                final Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat formatter = new SimpleDateFormat(
+                        "MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                String Createddate = formatter.format(calendar.getTime());
+                Flag = "4";
+                int n = Thread.currentThread().getStackTrace()[2]
+                        .getLineNumber();
+                db.open();
+                db.insertSyncLog(Error, String.valueOf(n), "", Createddate,
+                        Createddate, username,
+                        "Data Download", "Fail");
+                db.close();
+
+            }
+
+            return soap_result;
+        }
+
+
+        @Override
+        protected void onPostExecute(SoapObject result) {
+
+           /* if (mProgress != null && mProgress.isShowing() && !LoginActivity.this.isFinishing()) {
+                mProgress.dismiss();
+            }*/
+
+            if (Flag.equalsIgnoreCase("0")) {
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Connectivity Error, Please check Internet connection!!",
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (Flag.equalsIgnoreCase("1")) {
+
+                db.open();
+                db.deleteTables("attendance");
+                db.close();
+                new GetAttendance().execute();
+                // new SyncApkCheck().execute();
+
+            } else if (Flag.equalsIgnoreCase("2")) {
+
+                db.open();
+                db.deleteTables("attendance");
+                db.close();
+                new GetAttendance().execute();
+                //new SyncApkCheck().execute();
+
+            } else if (Flag.equalsIgnoreCase("3")) {
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
+                DisplayDialogMessage("Data Download Incomplete!!");
+
+            } else if (Flag.equalsIgnoreCase("4")) {
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
+                DisplayDialogMessage("Data Download Incomplete!!,Please try again after some time");
+
+            } else {
+                if (LoginActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+                cd.dismissProgressDialog();
+                DisplayDialogMessage("Data Download Incomplete!!");
+
+            }
+
+        }
+
+
+    }
+
+    private void DisplayDialogMessage(String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+        builder.setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //do things
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public void writeStringAsFile(String fileContents) {
+        Context context1 = context;
+        try {
+            File root;
+            root = new File(Environment.getExternalStorageDirectory()
+                    + File.separator + "sudesi" + File.separator);
+
+            root.mkdirs();
+
+            FileWriter out = new FileWriter(new File(root, "sample.text"));
+            out.write(fileContents);
+            out.close();
+        } catch (IOException e) {
+            // Logger.logError(TAG, e);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        cd.dismissProgressDialog();
+        super.onDestroy();
     }
 
 }
