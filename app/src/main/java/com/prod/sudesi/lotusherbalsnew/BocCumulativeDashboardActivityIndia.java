@@ -108,7 +108,11 @@ public class BocCumulativeDashboardActivityIndia extends Activity {
         year1 = y[1];
 
         txt_boc.setText(str_BOC);
-        txt_year.setText(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+        if(year.equalsIgnoreCase(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)))) {
+            txt_year.setText(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+        }else{
+            txt_year.setText(year);
+        }
 
         tv_h_username = (TextView) findViewById(R.id.tv_h_username);
         tv_h_username.setText(bdename);

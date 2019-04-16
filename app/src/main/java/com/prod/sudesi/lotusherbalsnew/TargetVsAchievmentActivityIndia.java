@@ -59,9 +59,9 @@ public class TargetVsAchievmentActivityIndia extends Activity {
 
     //TextView tv_current_year_n1, tv_current_year_n2, tv_previous_year_p1, tv_previous_year_p2;//, tvPreviousyear, tvCurrentyear;
 
-    //String current_year_n1, current_year_n2, previous_year_p1, previous_year_p2;
+    String current_year_n1, current_year_n2, previous_year_p1, previous_year_p2;
 
-    //int int_current_year_n1, int_current_year_n2, int_previous_year_p1, int_previous_year_p2;
+    int int_current_year_n1, int_current_year_n2, int_previous_year_p1, int_previous_year_p2;
 
     String current_server_date;
 
@@ -80,7 +80,8 @@ public class TargetVsAchievmentActivityIndia extends Activity {
 
     //String currentyear,prevyear,preprevyear;
 
-    String curryear,prepryear,preyear;
+    //String curryear,prepryear,preyear;
+
 
 
     @Override
@@ -242,10 +243,58 @@ public class TargetVsAchievmentActivityIndia extends Activity {
             e.printStackTrace();
         }*/
 
-         curryear = shp.getString("current_year", "");
+        current_year_n2 = shp.getString("current_year", "");
+        int int_current_year_n2 = Integer.parseInt(current_year_n2);
 
-         prepryear = String.valueOf(Integer.parseInt(curryear) - 2);
-         preyear = String.valueOf(Integer.parseInt(curryear) - 1);
+        String comparedatewith = current_year_n2 + "-03-25";
+
+
+        current_server_date = shp.getString("todaydate", "");
+
+        Log.v("", "current_server_date=" + current_server_date);
+
+        Log.v("", "comparedatewith=" + comparedatewith);
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1 = sdf.parse(current_server_date);
+            date2 = sdf.parse(comparedatewith);
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        if (!current_year_n2.equalsIgnoreCase("") && date1.compareTo(date2) > 0) {
+
+            int int_current_year_n22 = int_current_year_n2 + 1;
+
+            current_year_n2 = String.valueOf(int_current_year_n22);
+
+            int_current_year_n1 = int_current_year_n22 - 1;
+
+            current_year_n1 = String.valueOf(int_current_year_n1);
+
+            int_previous_year_p1 = int_current_year_n1 - 1;
+
+            previous_year_p1 = String.valueOf(int_previous_year_p1);
+
+        }else{
+
+            int_current_year_n1 = int_current_year_n2 - 1;
+
+            current_year_n1 = String.valueOf(int_current_year_n1);
+
+            int_previous_year_p1 = int_current_year_n1 - 1;
+
+            previous_year_p1 = String.valueOf(int_previous_year_p1);
+
+        }
+        /*curryear = shp.getString("current_year", "");
+        prepryear = String.valueOf(Integer.parseInt(curryear) - 2);
+        preyear = String.valueOf(Integer.parseInt(curryear) - 1);*/
 
         //currentyear = curryear.substring(2);
         //prevyear = preyear.substring(2);
@@ -483,100 +532,100 @@ public class TargetVsAchievmentActivityIndia extends Activity {
             if (categoryDetailsArraylist != null) {
                 if (categoryDetailsArraylist.size() > 0) {
                     if (categoryDetailsArraylist.size() == 5) {
-                        achivementModel.setNAPrefirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Achievement" + "\n" + prepryear + " - " + preyear);
-                        achivementModel.setNAPresecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Achievement" + "\n" + prepryear + " - " + preyear);
+                        achivementModel.setNAPrefirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Achievement" + "\n" + previous_year_p1 + " - " + current_year_n1);
+                        achivementModel.setNAPresecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Achievement" + "\n" + previous_year_p1 + " - " + current_year_n1);
 
-                        achivementModel.setNAPrethird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Achievement" + "\n" + prepryear + " - " + preyear);
-                        achivementModel.setNAPrefourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Achievement" + "\n" + prepryear + " - " + preyear);
-                        achivementModel.setNAPrefifth(cd.getNonNullValues(categoryDetailsArraylist.get(4)) + "\n" + " Achievement" + "\n" + prepryear + " - " + preyear);
+                        achivementModel.setNAPrethird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Achievement" + "\n" + previous_year_p1 + " - " + current_year_n1);
+                        achivementModel.setNAPrefourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Achievement" + "\n" + previous_year_p1 + " - " + current_year_n1);
+                        achivementModel.setNAPrefifth(cd.getNonNullValues(categoryDetailsArraylist.get(4)) + "\n" + " Achievement" + "\n" + previous_year_p1 + " - " + current_year_n1);
 
-                        achivementModel.setTACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Target" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setTACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Target" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setTACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Target" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setTACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Target" + "\n" + current_year_n1 + " - " + current_year_n2);
 
-                        achivementModel.setTACurthird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Target" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setTACurfourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Target" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setTACurfifth(cd.getNonNullValues(categoryDetailsArraylist.get(4)) + "\n" + " Target" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setTACurthird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Target" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setTACurfourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Target" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setTACurfifth(cd.getNonNullValues(categoryDetailsArraylist.get(4)) + "\n" + " Target" + "\n" + current_year_n1 + " - " + current_year_n2);
 
-                        achivementModel.setNACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Achievement" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setNACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Achievement" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setNACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Achievement" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setNACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Achievement" + "\n" + current_year_n1 + " - " + current_year_n2);
 
-                        achivementModel.setNACurthird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Achievement" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setNACurfourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Achievement" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setNACurfifth(cd.getNonNullValues(categoryDetailsArraylist.get(4)) + "\n" + " Achievement" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setNACurthird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Achievement" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setNACurfourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Achievement" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setNACurfifth(cd.getNonNullValues(categoryDetailsArraylist.get(4)) + "\n" + " Achievement" + "\n" + current_year_n1 + " - " + current_year_n2);
 
-                        achivementModel.setGrowthfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Growth" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setGrowthsecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Growth" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setGrowthfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Growth" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setGrowthsecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Growth" + "\n" + current_year_n1 + " - " + current_year_n2);
 
-                        achivementModel.setGrowththird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Growth" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setGrowthfourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Growth" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setGrowthfifth(cd.getNonNullValues(categoryDetailsArraylist.get(4)) + "\n" + " Growth" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setGrowththird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Growth" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setGrowthfourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Growth" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setGrowthfifth(cd.getNonNullValues(categoryDetailsArraylist.get(4)) + "\n" + " Growth" + "\n" + current_year_n1 + " - " + current_year_n2);
 
 
                     }else if (categoryDetailsArraylist.size() == 4) {
-                        achivementModel.setNAPrefirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Achievement" + "\n" + prepryear + " - " + preyear);
-                        achivementModel.setNAPresecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Achievement" + "\n" + prepryear + " - " + preyear);
+                        achivementModel.setNAPrefirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Achievement" + "\n" + previous_year_p1 + " - " + current_year_n1);
+                        achivementModel.setNAPresecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Achievement" + "\n" + previous_year_p1 + " - " + current_year_n1);
 
-                        achivementModel.setNAPrethird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Achievement" + "\n" + prepryear + " - " + preyear);
-                        achivementModel.setNAPrefourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Achievement" + "\n" + prepryear + " - " + preyear);
+                        achivementModel.setNAPrethird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Achievement" + "\n" + previous_year_p1 + " - " + current_year_n1);
+                        achivementModel.setNAPrefourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Achievement" + "\n" + previous_year_p1 + " - " + current_year_n1);
 
-                        achivementModel.setTACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Target" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setTACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Target" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setTACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Target" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setTACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Target" + "\n" + current_year_n1 + " - " + current_year_n2);
 
-                        achivementModel.setTACurthird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Target" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setTACurfourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Target" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setTACurthird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Target" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setTACurfourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Target" + "\n" + current_year_n1 + " - " + current_year_n2);
 
-                        achivementModel.setNACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Achievement" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setNACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Achievement" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setNACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Achievement" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setNACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Achievement" + "\n" + current_year_n1 + " - " + current_year_n2);
 
-                        achivementModel.setNACurthird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Achievement" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setNACurfourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Achievement" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setNACurthird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Achievement" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setNACurfourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Achievement" + "\n" + current_year_n1 + " - " + current_year_n2);
 
-                        achivementModel.setGrowthfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Growth" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setGrowthsecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Growth" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setGrowthfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Growth" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setGrowthsecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Growth" + "\n" + current_year_n1 + " - " + current_year_n2);
 
-                        achivementModel.setGrowththird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Growth" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setGrowthfourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Growth" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setGrowththird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Growth" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setGrowthfourth(cd.getNonNullValues(categoryDetailsArraylist.get(3)) + "\n" + " Growth" + "\n" + current_year_n1 + " - " + current_year_n2);
 
 
                     }else if (categoryDetailsArraylist.size() == 3) {
-                        achivementModel.setNAPrefirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Achievement" + "\n" + prepryear + " - " + preyear);
-                        achivementModel.setNAPresecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Achievement" + "\n" + prepryear + " - " + preyear);
+                        achivementModel.setNAPrefirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Achievement" + "\n" + previous_year_p1 + " - " + current_year_n1);
+                        achivementModel.setNAPresecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Achievement" + "\n" + previous_year_p1 + " - " + current_year_n1);
 
-                        achivementModel.setNAPrethird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Achievement" + "\n" + prepryear + " - " + preyear);
+                        achivementModel.setNAPrethird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Achievement" + "\n" + previous_year_p1 + " - " + current_year_n1);
 
-                        achivementModel.setTACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Target" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setTACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Target" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setTACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Target" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setTACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Target" + "\n" + current_year_n1 + " - " + current_year_n2);
 
-                        achivementModel.setTACurthird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Target" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setTACurthird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Target" + "\n" + current_year_n1 + " - " + current_year_n2);
 
-                        achivementModel.setNACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Achievement" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setNACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Achievement" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setNACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Achievement" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setNACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Achievement" + "\n" + current_year_n1 + " - " + current_year_n2);
 
-                        achivementModel.setNACurthird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Achievement" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setNACurthird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Achievement" + "\n" + current_year_n1 + " - " + current_year_n2);
 
-                        achivementModel.setGrowthfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Growth" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setGrowthsecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Growth" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setGrowthfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + " Growth" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setGrowthsecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + " Growth" + "\n" + current_year_n1 + " - " + current_year_n2);
 
-                        achivementModel.setGrowththird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Growth" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setGrowththird(cd.getNonNullValues(categoryDetailsArraylist.get(2)) + "\n" + " Growth" + "\n" + current_year_n1 + " - " + current_year_n2);
 
 
                     }else if (categoryDetailsArraylist.size() == 2) {
 
-                        achivementModel.setNAPrefirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Achievement" + "\n" + prepryear + " - " + preyear);
-                        achivementModel.setNAPresecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + "Achievement" + "\n" + prepryear + " - " + preyear);
-                        achivementModel.setTACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Target" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setTACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + "Target" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setNACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Achievement" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setNACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + "Achievement" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setGrowthfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Growth" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setGrowthsecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + "Growth" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setNAPrefirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Achievement" + "\n" + previous_year_p1 + " - " + current_year_n1);
+                        achivementModel.setNAPresecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + "Achievement" + "\n" + previous_year_p1 + " - " + current_year_n1);
+                        achivementModel.setTACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Target" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setTACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + "Target" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setNACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Achievement" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setNACursecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + "Achievement" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setGrowthfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Growth" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setGrowthsecond(cd.getNonNullValues(categoryDetailsArraylist.get(1)) + "\n" + "Growth" + "\n" + current_year_n1 + " - " + current_year_n2);
 
                     } else {
 
-                        achivementModel.setNAPrefirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Achievement" + "\n" + prepryear + " - " + preyear);
-                        achivementModel.setTACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Target" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setNACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Achievement" + "\n" + preyear + " - " + curryear);
-                        achivementModel.setGrowthfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Growth" + "\n" + preyear + " - " + curryear);
+                        achivementModel.setNAPrefirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Achievement" + "\n" + previous_year_p1 + " - " + current_year_n1);
+                        achivementModel.setTACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Target" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setNACurfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Achievement" + "\n" + current_year_n1 + " - " + current_year_n2);
+                        achivementModel.setGrowthfirst(cd.getNonNullValues(categoryDetailsArraylist.get(0)) + "\n" + "Growth" + "\n" + current_year_n1 + " - " + current_year_n2);
 
                     }
 

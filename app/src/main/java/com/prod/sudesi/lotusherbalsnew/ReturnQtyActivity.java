@@ -105,12 +105,12 @@ public class ReturnQtyActivity extends Activity {
     LotusWebservice service;
 
     //UAT Server
-    /*public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";
-    public static String CoCheckStockURL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/Check_AvailableStock";*/
+    public static String URL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";
+    public static String CoCheckStockURL = "http://sandboxws.lotussmartforce.com/WebAPIStock/api/Stock/Check_AvailableStock";
 
     //Production Server
-    public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";
-    public static String CoCheckStockURL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/Check_AvailableStock";
+   /* public static String URL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/SaveStock";
+    public static String CoCheckStockURL = "http://lotusws.lotussmartforce.com/WebAPIStock/api/Stock/Check_AvailableStock";*/
 
 
 
